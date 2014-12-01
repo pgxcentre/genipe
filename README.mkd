@@ -1,0 +1,71 @@
+# gwip - A Python module to perform genome-wide imputation analysis
+
+*Version 0.1*
+
+The `gwip` module includes a script (named `gwip-launcher`) that automatically
+runs a genome-wide imputation pipeline using *Plink*, *shapeit2* and *impute2*.
+
+
+## Dependencies
+
+The tool requires a standard [Python](http://python.org/) installation.
+
+The tool has been tested on *Linux* only.
+
+
+## Usage
+
+For Linux users, make sure that the script is executable (using the *chmod*
+command).
+
+```console
+$ gwip-launcher --help
+usage: gwip-launcher [-h] [-v] [--debug] [--thread THREAD] --bfile PREFIX
+                     [--output-dir DIR] [--use-drmaa] [--shapeit-bin BINARY]
+                     [--shapeit-thread SHAPEIT_THREAD] [--plink-bin BINARY]
+                     [--impute2-bin BINARY] --hap-template TEMPLATE
+                     --legend-template TEMPLATE --map-template TEMPLATE
+                     --sample-file FILE
+
+Execute the genome-wide imputation pipeline (version 0.1).
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+  --debug               Set the logging level to debug
+  --thread THREAD       The number of thread [1]
+
+Input Options:
+  --bfile PREFIX        The prefix of the binary pedfiles (input data)
+
+Output Options:
+  --output-dir DIR      The name of the output directory [gwip]
+
+HPC Options:
+  --use-drmaa           Launch tasks using DRMAA
+
+SHAPEIT Options:
+  --shapeit-bin BINARY  The SHAPEIT binary if it's not in the path
+  --shapeit-thread SHAPEIT_THREAD
+                        The number of thread for phasing [1]
+
+Plink Options:
+  --plink-bin BINARY    The Plink binary if it's not in the path
+
+IMPUTE2 Options:
+  --impute2-bin BINARY  The IMPUTE2 binary if it's not in the path
+  --hap-template TEMPLATE
+                        The template for IMPUTE2's haplotype files (replace
+                        the chromosome number by '{chrom}', e.g.
+                        '1000GP_Phase3_chr{chrom}.hap.gz')
+  --legend-template TEMPLATE
+                        The template for IMPUTE2's legend files (replace the
+                        chromosome number by '{chrom}', e.g.
+                        '1000GP_Phase3_chr{chrom}.legend.gz')
+  --map-template TEMPLATE
+                        The template for IMPUTE2's map files (replace the
+                        chromosome number by '{chrom}', e.g.
+                        'genetic_map_chr{chrom}_combined_b37.txt')
+  --sample-file FILE    The name of IMPUTE2's sample file
+```
+
