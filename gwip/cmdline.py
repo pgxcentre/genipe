@@ -5,6 +5,7 @@ import sys
 import json
 import logging
 import argparse
+from math import floor
 from shutil import which
 from urllib.request import urlopen
 
@@ -38,7 +39,6 @@ def main():
     try:
         # Parsing the options
         args = parse_args(parser)
-        check_args(args)
 
         # Adding the logging capability
         log_file = os.path.join(args.out_dir, "gwip.log")
@@ -50,6 +50,9 @@ def main():
                       logging.FileHandler(log_file, mode="w")]
         )
         logging.info("Logging everything into '{}'".format(log_file))
+
+        # Checking the options
+        check_args(args)
 
         # Getting the task options
         args.task_options = None
@@ -91,17 +94,22 @@ def main():
                                      "chr{chrom}.to_exclude"),
                         db_name, args)
 
-        # Phasing the data
-        phase_markers(
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.final"),
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.final.phased"),
-            db_name,
-            args,
-        )
+##         # Phasing the data
+##         phase_markers(
+##             os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.final"),
+##             os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.final.phased"),
+##             db_name,
+##             args,
+##         )
 
         # Gathering the chromosome length from Ensembl REST API
         chromosome_length = get_chromosome_length()
-        print(chromosome_length)
+
+##         impute_markers(os.path.join(args.out_dir, "chr{chrom}",
+##                                     "chr{chrom}.final.phased.haps"),
+##                        os.path.join(args.out_dir, "chr{chrom}",
+##                                     "chr{chrom}.{start}_{end}.impute2"),
+##                        chromosome_length, db_name, args)
 
     # Catching the Ctrl^C
     except KeyboardInterrupt:
@@ -222,6 +230,52 @@ def phase_markers(prefix, o_prefix, db_name, options):
                           hpc_options=options.task_options,
                           out_dir=options.out_dir)
     logging.info("Done phasing markers")
+
+
+def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
+                   options):
+    """Imputes the markers using IMPUTE2."""
+    commands_info = []
+    base_command = [
+        "impute2" if options.impute2_bin is None else options.impute2_bin,
+        "-use_prephased_g",
+        "-Ne", "20000",
+    ]
+
+    # Each chromosome have multiple segments
+    for chrom in range(1, 23):
+        assert str(chrom) in chrom_length
+
+        length = chrom_length[str(chrom)]
+        start = 1
+        while start < length:
+            end = start + floor(options.segment_length) - 1
+
+            # The command for this segment
+            remaining_command = [
+                "-known_haps_g", phased_haplotypes.format(chrom=chrom),
+                "-h", options.hap_template.format(chrom=chrom),
+                "-l", options.legend_template.format(chrom=chrom),
+                "-m", options.map_template.format(chrom=chrom),
+                "-int", str(start), str(end),
+                "-o", out_prefix.format(chrom=chrom, start=start, end=end),
+            ]
+            commands_info.append({
+                "task_id": "impute2_chr{}_{}_{}".format(chrom, start, end),
+                "name": "IMPUTE2 chr{} from {} to {}".format(chrom, start, end),
+                "command": base_command + remaining_command,
+                "task_db": db_name,
+            })
+
+            # The new starting position
+            start = end + 1
+
+    # Executing the commands
+    logging.info("Imputing markers")
+    launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
+                          hpc_options=options.task_options,
+                          out_dir=options.out_dir)
+    logging.info("Done imputing markers")
 
 
 def get_chromosome_length():
@@ -530,67 +584,141 @@ def check_args(args):
         if which("plink") is None:
             raise ProgramError("plink: not in the path")
 
+    # Checking the segment length
+    if args.segment_length < 0:
+        raise ProgramError("{}: invalid segment "
+                           "length".format(args.segment_length))
+    if args.segment_length > 5e6:
+        # This is too big... We continue with a warning
+        logging.warning("segment length ({:g} bp) is more than "
+                        "5Mb".format(args.segment_length))
+
     return True
 
 
 def parse_args(parser):
     """Parses the command line options and arguments."""
-    parser.add_argument("-v", "--version", action="version",
-                        version="%(prog)s {}".format(__version__))
-    parser.add_argument("--debug", action="store_true",
-                        help="Set the logging level to debug")
-    parser.add_argument("--thread", type=int, default=1,
-                        help="The number of thread [%(default)d]")
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version="%(prog)s {}".format(__version__),
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="Set the logging level to debug",
+    )
+    parser.add_argument(
+        "--thread",
+        type=int,
+        default=1,
+        help="The number of thread [%(default)d]",
+    )
 
     # The input files
     group = parser.add_argument_group("Input Options")
-    group.add_argument("--bfile", type=str, metavar="PREFIX", required=True,
-                       help="The prefix of the binary pedfiles (input data)")
+    group.add_argument(
+        "--bfile",
+        type=str,
+        metavar="PREFIX",
+        required=True,
+        help="The prefix of the binary pedfiles (input data)",
+    )
 
     # The output options
     group = parser.add_argument_group("Output Options")
-    group.add_argument("--output-dir", type=str, metavar="DIR", default="gwip",
-                       dest="out_dir",
-                       help="The name of the output directory [%(default)s]")
+    group.add_argument(
+        "--output-dir",
+        type=str,
+        metavar="DIR",
+        default="gwip",
+        dest="out_dir",
+        help="The name of the output directory [%(default)s]",
+    )
 
     # The HPC options
     group = parser.add_argument_group("HPC Options")
-    group.add_argument("--use-drmaa", action="store_true",
-                       help="Launch tasks using DRMAA")
+    group.add_argument(
+        "--use-drmaa",
+        action="store_true",
+        help="Launch tasks using DRMAA",
+    )
 
     # The SHAPEIT software options
     group = parser.add_argument_group("SHAPEIT Options")
-    group.add_argument("--shapeit-bin", type=str, metavar="BINARY",
-                       help="The SHAPEIT binary if it's not in the path")
-    group.add_argument("--shapeit-thread", type=int, default=1,
-                       help="The number of thread for phasing [%(default)d]")
+    group.add_argument(
+        "--shapeit-bin",
+        type=str,
+        metavar="BINARY",
+        help="The SHAPEIT binary if it's not in the path",
+    )
+    group.add_argument(
+        "--shapeit-thread",
+        type=int,
+        default=1,
+        help="The number of thread for phasing [%(default)d]",
+    )
 
     # The Plink option
     group = parser.add_argument_group("Plink Options")
-    group.add_argument("--plink-bin", type=str, metavar="BINARY",
-                       help="The Plink binary if it's not in the path")
+    group.add_argument(
+        "--plink-bin",
+        type=str,
+        metavar="BINARY",
+        help="The Plink binary if it's not in the path",
+    )
 
     # The IMPUTE2 software options
     group = parser.add_argument_group("IMPUTE2 Options")
-    group.add_argument("--impute2-bin", type=str, metavar="BINARY",
-                       help="The IMPUTE2 binary if it's not in the path")
-    group.add_argument("--hap-template", type=str, metavar="TEMPLATE",
-                       required=True,
-                       help=("The template for IMPUTE2's haplotype files "
-                             "(replace the chromosome number by '{chrom}', "
-                             "e.g. '1000GP_Phase3_chr{chrom}.hap.gz')"))
-    group.add_argument("--legend-template", type=str, metavar="TEMPLATE",
-                       required=True,
-                       help=("The template for IMPUTE2's legend files (replace "
-                             "the chromosome number by '{chrom}', e.g. "
-                             "'1000GP_Phase3_chr{chrom}.legend.gz')"))
-    group.add_argument("--map-template", type=str, metavar="TEMPLATE",
-                       required=True,
-                       help=("The template for IMPUTE2's map files (replace "
-                             "the chromosome number by '{chrom}', e.g. "
-                             "'genetic_map_chr{chrom}_combined_b37.txt')"))
-    group.add_argument("--sample-file", type=str, metavar="FILE", required=True,
-                       help="The name of IMPUTE2's sample file")
+    group.add_argument(
+        "--impute2-bin",
+        type=str,
+        metavar="BINARY",
+        help="The IMPUTE2 binary if it's not in the path",
+    )
+    group.add_argument(
+        "--segment-length",
+        type=float,
+        metavar="BP",
+        default=5e6,
+        help=("The length of a single segment for imputation "
+              "[%(default).1g)]"),
+    )
+    group.add_argument(
+        "--hap-template",
+        type=str,
+        metavar="TEMPLATE",
+        required=True,
+        help=("The template for IMPUTE2's haplotype files (replace the "
+              "chromosome number by '{chrom}', e.g. "
+              "'1000GP_Phase3_chr{chrom}.hap.gz')"),
+    )
+    group.add_argument(
+        "--legend-template",
+        type=str,
+        metavar="TEMPLATE",
+        required=True,
+        help=("The template for IMPUTE2's legend files (replace the chromosome "
+              "number by '{chrom}', e.g. "
+              "'1000GP_Phase3_chr{chrom}.legend.gz')"),
+    )
+    group.add_argument(
+        "--map-template",
+        type=str,
+        metavar="TEMPLATE",
+        required=True,
+        help=("The template for IMPUTE2's map files (replace the chromosome "
+              "number by '{chrom}', e.g. "
+              "'genetic_map_chr{chrom}_combined_b37.txt')"),
+    )
+    group.add_argument(
+        "--sample-file",
+        type=str,
+        metavar="FILE",
+        required=True,
+        help="The name of IMPUTE2's sample file",
+    )
 
     return parser.parse_args()
 
