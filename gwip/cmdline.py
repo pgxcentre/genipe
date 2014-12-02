@@ -91,10 +91,13 @@ def main():
                                      "chr{chrom}.to_exclude"),
                         db_name, args)
 
-##         # Phasing the data
-##         phase_markers(os.path.join("chr{chrom}", "chr{chrom}.final"),
-##                       os.path.join("chr{chrom}", "chr{chrom}.final.phased"),
-##                       args)
+        # Phasing the data
+        phase_markers(
+            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.final"),
+            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.final.phased"),
+            db_name,
+            args,
+        )
 
         # Gathering the chromosome length from Ensembl REST API
         chromosome_length = get_chromosome_length()
@@ -173,13 +176,26 @@ def get_task_options():
             "nodes": bytes("-l nodes=1:ppn=1", encoding="ascii"),
         }
 
+    walltimes = {1: "24:00:00", 2: "24:00:00", 3: "20:00:00", 4: "20:00:00",
+                 5: "18:00:00", 6: "18:00:00", 7: "15:00:00", 8: "15:00:00",
+                 9: "12:00:00", 10: "15:00:00", 11: "15:00:00", 12: "12:00:00",
+                 13: "10:00:00", 14: "09:00:00", 15: "08:00:00", 16: "08:00:00",
+                 17: "08:00:00", 18: "08:00:00", 19: "06:00:00", 20: "07:00:00",
+                 21: "05:00:00", 22: "05:00:00"}
+    for chrom in range(1, 23):
+        task_name = "shapeit_phase_chr{}".format(chrom)
+        # Creating the task options
+        task_options[task_name] = {
+            "walltime": bytes(walltimes[chrom], encoding="ascii"),
+            "nodes": bytes("-l nodes=1:ppn=1", encoding="ascii"),
+        }
+
     return task_options
 
 
-def phase_markers(prefix, o_prefix, options):
+def phase_markers(prefix, o_prefix, db_name, options):
     """Phase markers using shapeit."""
-    names = []
-    commands = []
+    commands_info = []
     base_command = [
         "shapeit" if options.shapeit_bin is None else options.shapeit_bin,
         "-phase",
@@ -193,12 +209,18 @@ def phase_markers(prefix, o_prefix, options):
             "-O", o_prefix.format(chrom=chrom),
             "-L", o_prefix.format(chrom=chrom) + ".log",
         ]
-        commands.append(base_command + remaining_command)
-        names.append("SHAPEIT: phase chr{}".format(chrom))
+        commands_info.append({
+            "task_id": "shapeit_phase_chr{}".format(chrom),
+            "name": "SHAPEIT phase chr{}".format(chrom),
+            "command": base_command + remaining_command,
+            "task_db": db_name,
+        })
 
     # Executing command
     logging.info("Phasing markers")
-    execute_command(names, commands, options.thread)
+    launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
+                          hpc_options=options.task_options,
+                          out_dir=options.out_dir)
     logging.info("Done phasing markers")
 
 
