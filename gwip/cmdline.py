@@ -40,6 +40,10 @@ def main():
         # Parsing the options
         args = parse_args(parser)
 
+        # Creating the output directory if it doesn't exist
+        if not os.path.isdir(args.out_dir):
+            os.mkdir(args.out_dir)
+
         # Adding the logging capability
         log_file = os.path.join(args.out_dir, "gwip.log")
         logging.basicConfig(
@@ -77,22 +81,29 @@ def main():
                      "_1", db_name, args)
 
         # Flipping the markers
-        flip_markers(os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}"),
-                     os.path.join(args.out_dir, "chr{chrom}",
-                                  "chr{chrom}.to_flip"),
-                     db_name, args)
+        flip_markers(
+            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}"),
+            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.to_flip"),
+            db_name,
+            args,
+        )
 
         # Checking the strand
-        check_strand(os.path.join(args.out_dir, "chr{chrom}",
-                                  "chr{chrom}.flipped"),
-                     "_2", db_name, args, exclude=True)
+        check_strand(
+            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.flipped"),
+            "_2",
+            db_name,
+            args,
+            exclude=True,
+        )
 
         # The final marker exclusion
-        final_exclusion(os.path.join(args.out_dir, "chr{chrom}",
-                                     "chr{chrom}.flipped"),
-                        os.path.join(args.out_dir, "chr{chrom}",
-                                     "chr{chrom}.to_exclude"),
-                        db_name, args)
+        final_exclusion(
+            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.flipped"),
+            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.to_exclude"),
+            db_name,
+            args,
+        )
 
 ##         # Phasing the data
 ##         phase_markers(
@@ -211,17 +222,21 @@ def phase_markers(prefix, o_prefix, db_name, options):
     ]
 
     for chrom in range(1, 23):
+        # The current output prefix
+        c_prefix = o_prefix.format(chrom=chrom)
+
         remaining_command = [
             "-B", prefix.format(chrom=chrom),
             "-M", options.map_template.format(chrom=chrom),
-            "-O", o_prefix.format(chrom=chrom),
-            "-L", o_prefix.format(chrom=chrom) + ".log",
+            "-O", c_prefix,
+            "-L", c_prefix + ".log",
         ]
         commands_info.append({
             "task_id": "shapeit_phase_chr{}".format(chrom),
             "name": "SHAPEIT phase chr{}".format(chrom),
             "command": base_command + remaining_command,
             "task_db": db_name,
+            "o_files": [c_prefix + ext for ext in (".haps", ".sample")],
         })
 
     # Executing command
@@ -251,6 +266,9 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
         while start < length:
             end = start + floor(options.segment_length) - 1
 
+            # The current output prefix
+            c_prefix = out_prefix.format(chrom=chrom, start=start, end=end)
+
             # The command for this segment
             remaining_command = [
                 "-known_haps_g", phased_haplotypes.format(chrom=chrom),
@@ -258,13 +276,14 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
                 "-l", options.legend_template.format(chrom=chrom),
                 "-m", options.map_template.format(chrom=chrom),
                 "-int", str(start), str(end),
-                "-o", out_prefix.format(chrom=chrom, start=start, end=end),
+                "-o", c_prefix,
             ]
             commands_info.append({
                 "task_id": "impute2_chr{}_{}_{}".format(chrom, start, end),
                 "name": "IMPUTE2 chr{} from {} to {}".format(chrom, start, end),
                 "command": base_command + remaining_command,
                 "task_db": db_name,
+                "o_files": [c_prefix + "_summary", ],
             })
 
             # The new starting position
@@ -321,22 +340,28 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
         # This is for exclusion
         suffix = "to_exclude.alignments"
 
+    # The output file prefix
+    o_prefix = os.path.join(options.out_dir, "chr{chrom}",
+                            "chr{chrom}." + suffix)
+
     for chrom in range(1, 23):
+        # The current output prefix
+        c_prefix = o_prefix.format(chrom=chrom)
+
         remaining_command = [
             "-B", prefix.format(chrom=chrom),
             "-M", options.map_template.format(chrom=chrom),
             "--input-ref", options.hap_template.format(chrom=chrom),
                            options.legend_template.format(chrom=chrom),
                            options.sample_file,
-            "--output-log", os.path.join(options.out_dir, "chr{chrom}",
-                                         "chr{chrom}.{suffix}").format(chrom=chrom,
-                                                                       suffix=suffix),
+            "--output-log", c_prefix,
         ]
         commands_info.append({
             "task_id": "shapeit_check_chr{}{}".format(chrom, id_suffix),
             "name": "SHAPEIT check strand chr{}".format(chrom),
             "command": base_command + remaining_command,
             "task_db": db_name,
+            "o_files": [c_prefix + ".snp.strand", ],
         })
 
     # Executing command
@@ -355,15 +380,14 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
         what = "exclude"
 
     # The name of the files
-    filename = os.path.join(options.out_dir, "chr{chrom}",
-                            "chr{chrom}.{suffix}.snp.strand")
+    filename = o_prefix + ".snp.strand"
     o_filename = os.path.join(options.out_dir, "chr{chrom}",
                               "chr{chrom}.{o_suffix}")
 
     # For each chromosome, we find markers to change strand
     nb_total = 0
     for chrom in range(1, 23):
-        chrom_filename = filename.format(chrom=chrom, suffix=suffix)
+        chrom_filename = filename.format(chrom=chrom)
         chrom_o_filename = o_filename.format(chrom=chrom, o_suffix=o_suffix)
 
         # Checking the input file exists
@@ -408,18 +432,25 @@ def flip_markers(prefix, to_flip, db_name, options):
         "--noweb",
         "--make-bed",
     ]
+
+    # The output prefix
+    o_prefix = os.path.join(options.out_dir, "chr{chrom}", "chr{chrom}.flipped")
+
     for chrom in range(1, 23):
+        # The current output prefix
+        c_prefix = o_prefix.format(chrom=chrom)
+
         remaining_command = [
             "--bfile", prefix.format(chrom=chrom),
             "--flip", to_flip.format(chrom=chrom),
-            "--out", os.path.join(options.out_dir, "chr{chrom}",
-                                  "chr{chrom}.flipped").format(chrom=chrom)
+            "--out", c_prefix,
         ]
         commands_info.append({
             "task_id": "plink_flip_chr{}".format(chrom),
             "name": "plink flip chr{}".format(chrom),
             "command": base_command + remaining_command,
             "task_db": db_name,
+            "o_files": [c_prefix + ext for ext in (".bed", ".bim", ".fam")],
         })
 
     # Executing command
@@ -439,18 +470,25 @@ def final_exclusion(prefix, to_exclude, db_name, options):
         "--noweb",
         "--make-bed",
     ]
+
+    # The output prefix
+    o_prefix = os.path.join(options.out_dir, "chr{chrom}", "chr{chrom}.final")
+
     for chrom in range(1, 23):
+        # The current output prefix
+        c_prefix = o_prefix.format(chrom=chrom)
+
         remaining_command = [
             "--bfile", prefix.format(chrom=chrom),
             "--exclude", to_exclude.format(chrom=chrom),
-            "--out", os.path.join(options.out_dir, "chr{chrom}",
-                                  "chr{chrom}.final").format(chrom=chrom)
+            "--out", c_prefix,
         ]
         commands_info.append({
             "task_id": "plink_final_exclude_chr{}".format(chrom),
             "name": "plink final exclude chr{}".format(chrom),
             "command": base_command + remaining_command,
             "task_db": db_name,
+            "o_files": [c_prefix + ext for ext in (".bed", ".bim", ".fam")],
         })
 
     # Executing command
@@ -511,18 +549,25 @@ def exclude_markers_before_phasing(prefix, db_name, options):
         "--exclude", os.path.join(options.out_dir, "markers_to_exclude.txt"),
         "--make-bed",
     ]
+
+    # The output prefix
+    o_prefix = os.path.join(options.out_dir, "chr{chrom}", "chr{chrom}")
+
     for chrom in range(1, 23):
+        # The current output prefix
+        c_prefix = o_prefix.format(chrom=chrom)
+
         remaining_command = [
             "--bfile", prefix,
             "--chr", str(chrom),
-            "--out", os.path.join(options.out_dir, "chr{chrom}",
-                                  "chr{chrom}").format(chrom=chrom)
+            "--out", c_prefix,
         ]
         commands_info.append({
             "task_id": "plink_exclude_chr{}".format(chrom),
             "name": "plink exclude chr{}".format(chrom),
             "command": base_command + remaining_command,
             "task_db": db_name,
+            "o_files": [c_prefix + ext for ext in (".bed", ".bim", ".fam")],
         })
 
     # Executing command
@@ -535,10 +580,6 @@ def exclude_markers_before_phasing(prefix, db_name, options):
 
 def check_args(args):
     """Checks the arguments and options."""
-    # Creating the output directory if it doesn't exist
-    if not os.path.isdir(args.out_dir):
-        os.mkdir(args.out_dir)
-
     # Checking the presence of the BED, BIM and BAM files
     for suffix in (".bed", ".bim", ".fam"):
         if not os.path.isfile(args.bfile + suffix):

@@ -90,6 +90,14 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
                 raise ProgramError("problem executing {}".format(data["name"]))
 
 
+def _check_output_files(o_files):
+    """Check that the files exist."""
+    for filename in o_files:
+        if not os.path.isfile(filename):
+            return False
+    return True
+
+
 def _execute_command(command_info):
     """Executes a single command."""
     # Some assertions
@@ -98,6 +106,7 @@ def _execute_command(command_info):
     assert "command" in command_info
     assert "check_retcode" in command_info
     assert "task_db" in command_info
+    assert "o_files" in command_info
 
     # Getting the command's information
     name = command_info["name"]
@@ -108,9 +117,9 @@ def _execute_command(command_info):
 
     # Checking if the command was completed
     if check_task_completion(task_id, db_name):
-        # The task was completed
-        return True, name, "already performed", get_task_runtime(task_id,
-                                                                 db_name)
+        if _check_output_files(command_info["o_files"]):
+            runtime = get_task_runtime(task_id, db_name)
+            return True, name, "already performed", runtime
 
     # Creating a new entry in the database
     create_task_entry(task_id, db_name)
@@ -145,6 +154,7 @@ def _execute_command_drmaa(command_info):
     assert "task_db" in command_info
     assert "name" in command_info
     assert "check_retcode" in command_info
+    assert "o_files" in command_info
 
     # Getting the command's information
     name = command_info["name"]
@@ -156,9 +166,10 @@ def _execute_command_drmaa(command_info):
 
     # Checking if the command was completed
     if check_task_completion(task_id, db_name):
-        # The task was completed
-        return True, name, "already performed", get_task_runtime(task_id,
-                                                                 db_name)
+        if _check_output_files(command_info["o_files"]):
+            runtime = get_task_runtime(task_id, db_name)
+            return True, name, "already performed", runtime
+
     # Creating the script
     tmp_file = NamedTemporaryFile(mode="w", suffix="_execute.sh", delete=False,
                                   dir=out_dir)
