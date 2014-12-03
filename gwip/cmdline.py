@@ -105,22 +105,22 @@ def main():
             args,
         )
 
-##         # Phasing the data
-##         phase_markers(
-##             os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.final"),
-##             os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.final.phased"),
-##             db_name,
-##             args,
-##         )
+        # Phasing the data
+        phase_markers(
+            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.final"),
+            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.final.phased"),
+            db_name,
+            args,
+        )
 
         # Gathering the chromosome length from Ensembl REST API
         chromosome_length = get_chromosome_length()
 
-##         impute_markers(os.path.join(args.out_dir, "chr{chrom}",
-##                                     "chr{chrom}.final.phased.haps"),
-##                        os.path.join(args.out_dir, "chr{chrom}",
-##                                     "chr{chrom}.{start}_{end}.impute2"),
-##                        chromosome_length, db_name, args)
+        impute_markers(os.path.join(args.out_dir, "chr{chrom}",
+                                    "chr{chrom}.final.phased.haps"),
+                       os.path.join(args.out_dir, "chr{chrom}",
+                                    "chr{chrom}.{start}_{end}.impute2"),
+                       chromosome_length, db_name, args)
 
     # Catching the Ctrl^C
     except KeyboardInterrupt:
@@ -209,6 +209,12 @@ def get_task_options():
             "nodes": bytes("-l nodes=1:ppn=1", encoding="ascii"),
         }
 
+    # The time for an impute2 segment
+    task_options["impute"] = {
+        "walltime": bytes("40:00:00", encoding="ascii"),
+        "nodes": bytes("-l nodes=1:ppn=1", encoding="ascii"),
+    }
+
     return task_options
 
 
@@ -269,6 +275,9 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
             # The current output prefix
             c_prefix = out_prefix.format(chrom=chrom, start=start, end=end)
 
+            # The task ID
+            task_id = "impute2_chr{}_{}_{}".format(chrom, start, end)
+
             # The command for this segment
             remaining_command = [
                 "-known_haps_g", phased_haplotypes.format(chrom=chrom),
@@ -279,7 +288,7 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
                 "-o", c_prefix,
             ]
             commands_info.append({
-                "task_id": "impute2_chr{}_{}_{}".format(chrom, start, end),
+                "task_id": task_id,
                 "name": "IMPUTE2 chr{} from {} to {}".format(chrom, start, end),
                 "command": base_command + remaining_command,
                 "task_db": db_name,
@@ -288,6 +297,9 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
 
             # The new starting position
             start = end + 1
+
+            # Adding the walltime for this particular task_id
+            options.task_options[task_id] = options.task_options["impute"]
 
     # Executing the commands
     logging.info("Imputing markers")
