@@ -22,6 +22,7 @@ setup(
         "console_scripts": ["gwip-launcher=gwip.pipeline:main",
                             "impute2-merger=gwip.tool.impute2_merger:main",],
     },
+    install_requires=["numpy >= 1.8.2", ],
     packages=["gwip", "gwip.task", "gwip.db", "gwip.tool", ],
     classifiers=['Operating System :: Linux',
                  'Programming Language :: Python',
