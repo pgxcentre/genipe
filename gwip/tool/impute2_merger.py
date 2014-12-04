@@ -1,4 +1,4 @@
-"""Concatenate IMPTUE2 files and retrieve some statistics."""
+"""Concatenate IMPUTE2 files and retrieve some statistics."""
 
 
 import os
@@ -16,7 +16,7 @@ from ..error import ProgramError
 def main():
     """The main function."""
     # Creating the option parser
-    desc = ("Concatenate IMPTUE2 files and retrieve some statistics "
+    desc = ("Concatenate IMPUTE2 files and retrieve some statistics "
             "(gwip version {}).".format(__version__))
     parser = argparse.ArgumentParser(description=desc)
 
@@ -157,19 +157,7 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
 
 
 def check_args(args):
-    """Checks the arguments and options.
-
-    :param args: an object containing the options and arguments of the program.
-
-    :type args: :py:class:`argparse.Namespace`
-
-    :returns: ``True`` if everything was OK.
-
-    If there is a problem with an option, an exception is raised using the
-    :py:class:`ProgramError` class, a message is printed to the
-    :class:`sys.stderr` and the program exits with error code 1.
-
-    """
+    """Checks the arguments and options."""
     # Checking the input files
     for filename in args.impute2:
         if not os.path.isfile(filename):
