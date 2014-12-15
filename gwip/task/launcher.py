@@ -19,9 +19,25 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
                  hpc_options=None, out_dir=None):
     """Executes commands."""
     # Do we need to check the return code?
+    to_run = []
     for i in range(len(to_process)):
         assert "name" in to_process[i]
         assert "task_id" in to_process[i]
+        assert "task_db" in to_process[i]
+        assert "o_files" in to_process[i]
+
+        task_name = to_process[i]["name"]
+        task_id = to_process[i]["task_id"]
+        db_name = to_process[i]["task_db"]
+        o_files = to_process[i]["o_files"]
+
+        # Checking if we need to run this task
+        if check_task_completion(task_id, db_name):
+            if _check_output_files(o_files):
+                run_time = get_task_runtime(task_id, db_name)
+                logging.info("Task '{}': already performed in {:,d} "
+                             "seconds".format(task_name, run_time))
+                continue
 
         # The name of the task
         task_id = to_process[i]["task_id"]
@@ -43,6 +59,9 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
             to_process[i]["walltime"] = walltime
             to_process[i]["nodes"] = nodes
 
+        # Adding to list to run
+        to_run.append(to_process[i])
+
     # The execution command
     execute_func = _execute_command
     if hpc:
@@ -55,7 +74,7 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
         results = None
 
         try:
-            results = pool.map(execute_func, to_process)
+            results = pool.map(execute_func, to_run)
 
         except Exception as e:
             pool.terminate()
@@ -80,7 +99,7 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
                                repr(problems))
 
     else:
-        for data in to_process:
+        for data in to_run:
             logging.info("Executing {}".format(data["name"]))
             result = execute_func(data)
             if result[0]:
@@ -115,29 +134,37 @@ def _execute_command(command_info):
     task_id = command_info["task_id"]
     db_name = command_info["task_db"]
 
+    logging.debug("Checking status for '{}'".format(task_id))
     # Checking if the command was completed
     if check_task_completion(task_id, db_name):
         if _check_output_files(command_info["o_files"]):
+            logging.debug("'{}' completed".format(task_id))
             runtime = get_task_runtime(task_id, db_name)
             return True, name, "already performed", runtime
+        else:
+            logging.debug("'{}' problem with output files".format(task_id))
+    logging.debug("'{}' to run".format(task_id))
 
     # Creating a new entry in the database
     create_task_entry(task_id, db_name)
 
     # Launching the command
     proc = Popen(command, stdout=PIPE, stderr=PIPE)
+    logging.debug("'{}' finished".format(task_id))
 
     # Waiting for the process to terminate
     outs, errs = proc.communicate()
     rc = proc.returncode
     if check_rc and rc != 0:
         # There was a problem...
+        logging.debug("'{}' exit status problem".format(task_id))
         return False, name, "problem", None
 
     # The task was performed correctly, so we update to completed
     mark_task_completed(task_id, db_name)
 
     # Everything when well
+    logging.debug("'{}' everything was fine".format(task_id))
     return True, name, "performed", get_task_runtime(task_id, db_name)
 
 
@@ -165,10 +192,17 @@ def _execute_command_drmaa(command_info):
     check_rc = command_info["check_retcode"]
 
     # Checking if the command was completed
+    logging.debug("Checking status for '{}'".format(task_id))
     if check_task_completion(task_id, db_name):
         if _check_output_files(command_info["o_files"]):
+            logging.debug("'{}' completed".format(task_id))
             runtime = get_task_runtime(task_id, db_name)
             return True, name, "already performed", runtime
+        else:
+            logging.debug("'{}' problem with output files".format(task_id))
+    else:
+        logging.debug("'{}' to run because not completed".format(task_id))
+    logging.debug("'{}' to run".format(task_id))
 
     # Creating the script
     tmp_file = NamedTemporaryFile(mode="w", suffix="_execute.sh", delete=False,
@@ -206,6 +240,7 @@ def _execute_command_drmaa(command_info):
 
     # Waiting for the job
     ret_val = s.wait(job_id, drmaa.Session.TIMEOUT_WAIT_FOREVER)
+    logging.debug("'{}' finished".format(task_id))
 
     # Deleting the job
     s.deleteJobTemplate(job)
@@ -218,8 +253,15 @@ def _execute_command_drmaa(command_info):
 
     # Checking the task's return values
     if ret_val.hasCoreDump or ret_val.wasAborted or ret_val.hasSignal:
+        logging.debug("'{}' problems ({}, {}, {})".format(
+            task_id,
+            ret_val.hasCoreDump,
+            ret_val.wasAborted,
+            ret_val.hasSignal,
+        ))
         return False, name, "problem", None
     if check_rc and ret_val.exitStatus != 0:
+        logging.debug("'{}' exit status problem".format(task_id))
         return False, name, "problem", None
 
     # Getting the time
@@ -232,5 +274,6 @@ def _execute_command_drmaa(command_info):
                               db_name)
 
     # Everything when well
+    logging.debug("'{}' everything was fine".format(task_id))
     return True, name, "performed", get_task_runtime(task_id, db_name)
 

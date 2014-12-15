@@ -36,7 +36,7 @@ def create_task_db(out_dir):
 
 def _create_db_connection(db_name):
     """Creates a DB connection."""
-    conn = sqlite3.connect(db_name, timeout=60,
+    conn = sqlite3.connect(db_name, timeout=360,
                            detect_types=sqlite3.PARSE_DECLTYPES |
                                         sqlite3.PARSE_COLNAMES)
     c = conn.cursor()
@@ -56,10 +56,12 @@ def check_task_completion(task_id, db_name):
 
     if r is None:
         # There is not entry with this task ID
+        logging.debug("'{}' no entry".format(task_id))
         return False
 
-    if r[0] != 1:
+    if r[0] is None or r[0] != 1:
         # There is an entry, but it wasn't completed
+        logging.debug("'{}' not completed ({})".format(task_id, r[0]))
         return False
 
     return True

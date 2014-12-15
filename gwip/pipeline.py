@@ -129,6 +129,7 @@ def main():
 
     # Catching the ProgramError
     except ProgramError as e:
+        logging.error(e)
         parser.error(e.message)
 
 
@@ -211,8 +212,8 @@ def get_task_options():
 
     # The time for an impute2 segment
     task_options["impute"] = {
-        "walltime": bytes("40:00:00", encoding="ascii"),
-        "nodes": bytes("-l nodes=2:ppn=1", encoding="ascii"),
+        "walltime": bytes("50:00:00", encoding="ascii"),
+        "nodes": bytes("-l nodes=3:ppn=1", encoding="ascii"),
     }
 
     return task_options
