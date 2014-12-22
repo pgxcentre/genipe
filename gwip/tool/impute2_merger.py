@@ -29,7 +29,7 @@ def main():
         out_dir = os.path.dirname(args.prefix)
 
         # Adding the logging capability
-        log_file = os.path.join(out_dir, args.prefix + ".log")
+        log_file = args.prefix + ".log"
         logging.basicConfig(
             format="[%(asctime)s %(levelname)s] %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
