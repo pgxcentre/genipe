@@ -114,7 +114,7 @@ def main():
         )
 
         # Gathering the chromosome length from Ensembl REST API
-        chromosome_length = get_chromosome_length()
+        chromosome_length = get_chromosome_length(args.out_dir)
 
         # Performs the imputation
         impute_markers(os.path.join(args.out_dir, "chr{chrom}",
@@ -312,30 +312,48 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
     logging.info("Done imputing markers")
 
 
-def get_chromosome_length():
+def get_chromosome_length(out_dir):
     """Gets the chromosome length from Ensembl REST API."""
-    logging.info("Gathering chromosome length (Ensembl, GRCh37)")
+    chrom_length = None
+    filename = os.path.join(out_dir, "chromosome_lengths.txt")
+    if not os.path.isfile(filename):
+        logging.info("Gathering chromosome length (Ensembl, GRCh37)")
 
-    # The URL
-    url = ("http://grch37.rest.ensembl.org/info/assembly/homo_sapiens"
-           "?content-type=application/json")
-    result = json.loads(urlopen(url).read().decode())
+        # The URL
+        url = ("http://grch37.rest.ensembl.org/info/assembly/homo_sapiens"
+               "?content-type=application/json")
+        result = json.loads(urlopen(url).read().decode())
 
-    # Checking the build
-    if not result["assembly_name"].startswith("GRCh37") or \
-           result["default_coord_system_version"] != "GRCh37":
-        raise ProgramError("{}: wrong build".format(result["assembly_name"]))
+        # Checking the build
+        if not result["assembly_name"].startswith("GRCh37") or \
+            result["default_coord_system_version"] != "GRCh37":
+            raise ProgramError("{}: wrong "
+                               "build".format(result["assembly_name"]))
 
-    # Gathering the chromosome length
-    chrom_length = {}
-    chromosomes = {str(i) for i in range(23)} | {"X"}
-    for region in result["top_level_region"]:
-        if region["name"] in chromosomes:
-            chrom_length[region["name"]] = region["length"]
+        # Gathering the chromosome length
+        chrom_length = {}
+        chromosomes = {str(i) for i in range(23)} | {"X"}
+        for region in result["top_level_region"]:
+            if region["name"] in chromosomes:
+                chrom_length[region["name"]] = region["length"]
 
-    # Checking we have all the required data
-    if len(chrom_length) != 23:
-        raise ProgramError("missing chromosomes")
+        # Checking we have all the required data
+        if len(chrom_length) != 23:
+            raise ProgramError("missing chromosomes")
+
+        # Saving to file
+        with open(filename, "w") as o_file:
+            for chrom in sorted(chrom_length.keys()):
+                print(chrom, chrom_length[chrom], sep="\t", file=o_file)
+
+    else:
+        # Gathering from file
+        logging.info("Gathering chromosome length ({})".format(filename))
+        with open(filename, "r") as i_file:
+            chrom_length = {}
+            for line in i_file:
+                row = line.rstrip("\n").split("\t")
+                chrom_length[row[0]] = row[1]
 
     return chrom_length
 
