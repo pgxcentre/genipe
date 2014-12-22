@@ -5,6 +5,7 @@ import sys
 import json
 import logging
 import argparse
+from glob import glob
 from math import floor
 from shutil import which
 from urllib.request import urlopen
@@ -123,15 +124,26 @@ def main():
                                     "chr{chrom}.{start}_{end}.impute2"),
                        chromosome_length, db_name, args)
 
+        # Merging the impute2 files
+        merge_impute2_files(os.path.join(args.out_dir, "chr{chrom}",
+                            "chr{chrom}.*.impute2"),
+                            os.path.join(args.out_dir, "chr{chrom}",
+                            "final_impute2", "chr{chrom}.imputed"),
+                            args.probability, args.completion, db_name, args)
+
     # Catching the Ctrl^C
     except KeyboardInterrupt:
-        print("Cancelled by user", file=sys.stderr)
+        logging.info("Cancelled by user")
         sys.exit(0)
 
     # Catching the ProgramError
     except ProgramError as e:
         logging.error(e)
         parser.error(e.message)
+
+    except Exception as e:
+        logging.error(e)
+        raise
 
 
 def get_task_options():
@@ -216,6 +228,21 @@ def get_task_options():
         "walltime": bytes("120:00:00", encoding="ascii"),
         "nodes": bytes("-l nodes=3:ppn=1", encoding="ascii"),
     }
+
+    # The approximate time for file merging
+    walltimes = {1: "25:30:00", 2: "27:45:00", 3: "23:30:00", 4: "23:30:00",
+                 5: "21:30:00", 6: "20:30:00", 7: "19:30:00", 8: "19:00:00",
+                 9: "15:00:00", 10: "16:45:00", 11: "16:45:00", 12: "16:15:00",
+                 13: "12:45:00", 14: "11:45:00", 15: "11:00:00", 16: "11:45:00",
+                 17: "10:30:00", 18: "10:30:00", 19: "08:45:00", 20: "08:45:00",
+                 21: "06:15:00", 22: "06:15:00"}
+    for chrom in range(1, 23):
+        task_name = "merge_impute2_chr{}".format(chrom)
+        # Creating the task options
+        task_options[task_name] = {
+            "walltime": bytes(walltimes[chrom], encoding="ascii"),
+            "nodes": bytes("-l nodes=1:ppn=1", encoding="ascii"),
+        }
 
     return task_options
 
@@ -310,6 +337,51 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
                           hpc_options=options.task_options,
                           out_dir=options.out_dir)
     logging.info("Done imputing markers")
+
+
+def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t, db_name,
+                        options):
+    """Merges impute2 files."""
+    commands_info = []
+    base_command = [
+        "impute2-merger",
+        "--probability", str(probability_t),
+        "--completion", str(completion_t),
+    ]
+
+    for chrom in range(1, 23):
+        # The current output prefix
+        c_prefix = o_prefix.format(chrom=chrom)
+
+        # Checking that the output directory exists
+        if not os.path.isdir(os.path.dirname(c_prefix)):
+            os.mkdir(os.path.dirname(c_prefix))
+
+        remaining_command = [
+            "--prefix", c_prefix,
+            "--chr", str(chrom),
+            "-i",
+        ]
+        remaining_command.extend(glob(in_glob.format(chrom=chrom)))
+        commands_info.append({
+            "task_id": "merge_impute2_chr{}".format(chrom),
+            "name": "Merge imputed chr{}".format(chrom),
+            "command": base_command + remaining_command,
+            "task_db": db_name,
+            "o_files": [c_prefix + ext for ext in (".alleles",
+                                                   ".completion_rates",
+                                                   ".good_sites",
+                                                   ".impute2",
+                                                   ".imputed_sites",
+                                                   ".map")],
+        })
+
+    # Executing command
+    logging.info("Merging impute2 files")
+    launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
+                          hpc_options=options.task_options,
+                          out_dir=options.out_dir)
+    logging.info("Done phasing markers")
 
 
 def get_chromosome_length(out_dir):
@@ -731,6 +803,15 @@ def parse_args(parser):
                              "'genetic_map_chr{chrom}_combined_b37.txt')"))
     group.add_argument("--sample-file", type=str, metavar="FILE",
                        required=True, help="The name of IMPUTE2's sample file")
+
+    # The impute2 file merger options
+    group = parser.add_argument_group("IMPUTE2 Merger Options")
+    group.add_argument("--probability", type=float, metavar="FLOAT",
+                       default=0.9, help=("The probability threshold for no "
+                                          "calls [%(default).1f]"))
+    group.add_argument("--completion", type=float, metavar="FLOAT",
+                       default=0.98, help=("The site completion rate threshold "
+                                           "[%(default).2f]"))
 
     return parser.parse_args()
 
