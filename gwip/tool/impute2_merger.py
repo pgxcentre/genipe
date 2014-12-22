@@ -2,6 +2,7 @@
 
 
 import os
+import re
 import sys
 import logging
 import argparse
@@ -28,7 +29,7 @@ def main():
         out_dir = os.path.dirname(args.prefix)
 
         # Adding the logging capability
-        log_file = os.path.join(out_dir, "impute2_merger.log")
+        log_file = os.path.join(out_dir, args.prefix + ".log")
         logging.basicConfig(
             format="[%(asctime)s %(levelname)s] %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
@@ -46,12 +47,17 @@ def main():
 
     # Catching the Ctrl^C
     except KeyboardInterrupt:
-        print("Cancelled by user", file=sys.stderr)
+        logging.info("Cancelled by user")
         sys.exit(0)
 
     # Catching the ProgramError
     except ProgramError as e:
+        logging.error(e)
         parser.error(e.message)
+
+    except Exception as e:
+        logging.error(e)
+        raise
 
 
 def concatenate_files(i_filenames, out_prefix, real_chrom, options):
@@ -74,11 +80,28 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
     for i_filename in i_filenames:
         logging.info("Working with {}".format(i_filename))
 
+        # Getting the expected number of lines from summary file
+        summary = None
+        with open(i_filename + "_summary", "r") as i_file:
+            summary = i_file.read()
+        r = re.search(r"-Output file\n --\d+ type 0 SNPs\n --\d+ type 1 SNPs"
+                      r"\n --\d+ type 2 SNPs\n --\d+ type 3 SNPs\n"
+                      r" --(\d+) total SNPs", summary)
+        if r is None:
+            raise ProgramError("{}: unknown "
+                               "format".format(i_filename + "_summary"))
+        nb_expected = int(r.group(1))
+        logging.info("  - expecting {:,d} lines".format(nb_expected))
+
         # The input file
         i_file = open(i_filename, "r")
 
         already_seen = defaultdict(int)
+        nb_line = 0
         for line in i_file:
+            # The number of line
+            nb_line += 1
+
             # Splitting the line
             row = line.rstrip("\r\n").split(" ")
 
@@ -147,6 +170,10 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
         # Closing the input file
         i_file.close()
 
+    if nb_line != nb_expected:
+        logging.warning("  - number of lines ({:,d}) is not as expected "
+                        "({:,d})".format(nb_line, nb_expected))
+
     # Closing output files
     impute2_o_file.close()
     alleles_o_file.close()
@@ -161,8 +188,10 @@ def check_args(args):
     # Checking the input files
     for filename in args.impute2:
         if not os.path.isfile(filename):
-            m = "{}: no such file".format(filename)
-            raise ProgramError(m)
+            raise ProgramError("{}: no such file".format(filename))
+
+        if not os.path.isfile(filename + "_summary"):
+            raise ProgramError("{}: no such file".format(filename + "_summary"))
 
     return True
 
