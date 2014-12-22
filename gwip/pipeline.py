@@ -116,6 +116,7 @@ def main():
         # Gathering the chromosome length from Ensembl REST API
         chromosome_length = get_chromosome_length()
 
+        # Performs the imputation
         impute_markers(os.path.join(args.out_dir, "chr{chrom}",
                                     "chr{chrom}.final.phased.haps"),
                        os.path.join(args.out_dir, "chr{chrom}",
@@ -212,7 +213,7 @@ def get_task_options():
 
     # The time for an impute2 segment
     task_options["impute"] = {
-        "walltime": bytes("50:00:00", encoding="ascii"),
+        "walltime": bytes("120:00:00", encoding="ascii"),
         "nodes": bytes("-l nodes=3:ppn=1", encoding="ascii"),
     }
 
@@ -300,7 +301,8 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
             start = end + 1
 
             # Adding the walltime for this particular task_id
-            options.task_options[task_id] = options.task_options["impute"]
+            if options.use_drmaa:
+                options.task_options[task_id] = options.task_options["impute"]
 
     # Executing the commands
     logging.info("Imputing markers")
