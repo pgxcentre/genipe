@@ -1,6 +1,7 @@
 """The main script that do everything."""
 
 import os
+import re
 import sys
 import json
 import logging
@@ -230,12 +231,12 @@ def get_task_options():
     }
 
     # The approximate time for file merging
-    walltimes = {1: "25:30:00", 2: "27:45:00", 3: "23:30:00", 4: "23:30:00",
-                 5: "21:30:00", 6: "20:30:00", 7: "19:30:00", 8: "19:00:00",
-                 9: "15:00:00", 10: "16:45:00", 11: "16:45:00", 12: "16:15:00",
-                 13: "12:45:00", 14: "11:45:00", 15: "11:00:00", 16: "11:45:00",
-                 17: "10:30:00", 18: "10:30:00", 19: "08:45:00", 20: "08:45:00",
-                 21: "06:15:00", 22: "06:15:00"}
+    walltimes = {1: "63:30:00", 2: "69:30:00", 3: "58:00:00", 4: "58:00:00",
+                 5: "52:45:00", 6: "50:30:00", 7: "45:30:00", 8: "46:30:00",
+                 9: "37:00:00", 10: "40:30:00", 11: "39:45:00", 12: "38:30:00",
+                 13: "29:00:00", 14: "27:30:00", 15: "25:45:00", 16: "28:00:00",
+                 17: "24:00:00", 18: "22:15:00", 19: "19:15:00", 20: "19:30:00",
+                 21: "12:35:00", 22: "12:25:00"}
     for chrom in range(1, 23):
         task_name = "merge_impute2_chr{}".format(chrom)
         # Creating the task options
@@ -362,7 +363,8 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t, db_name,
             "--chr", str(chrom),
             "-i",
         ]
-        remaining_command.extend(glob(in_glob.format(chrom=chrom)))
+        filenames = sorted(glob(in_glob.format(chrom=chrom)), key=file_sorter)
+        remaining_command.extend(filenames)
         commands_info.append({
             "task_id": "merge_impute2_chr{}".format(chrom),
             "name": "Merge imputed chr{}".format(chrom),
@@ -382,6 +384,12 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t, db_name,
                           hpc_options=options.task_options,
                           out_dir=options.out_dir)
     logging.info("Done phasing markers")
+
+
+def file_sorter(filename):
+    """Helps in filename sorting."""
+    r = re.search(r"chr\d+\.(\d+)_(\d+)\.impute2", filename)
+    return (int(r.group(1)), int(r.group(2)))
 
 
 def get_chromosome_length(out_dir):
