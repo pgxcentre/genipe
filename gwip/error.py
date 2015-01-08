@@ -1,6 +1,7 @@
 
 __all__ = ["ProgramError"]
 
+
 class ProgramError(Exception):
     """An Exception raised in case of a problem."""
     def __init__(self, msg):

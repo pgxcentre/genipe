@@ -36,9 +36,11 @@ def create_task_db(out_dir):
 
 def _create_db_connection(db_name):
     """Creates a DB connection."""
-    conn = sqlite3.connect(db_name, timeout=360,
-                           detect_types=sqlite3.PARSE_DECLTYPES |
-                                        sqlite3.PARSE_COLNAMES)
+    conn = sqlite3.connect(
+        db_name,
+        timeout=360,
+        detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
+    )
     c = conn.cursor()
 
     return conn, c
@@ -135,4 +137,3 @@ def get_task_runtime(task_id, db_name):
     conn.close()
 
     return int((r[1] - r[0]).total_seconds())
-

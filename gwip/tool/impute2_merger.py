@@ -110,7 +110,7 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
 
             # Gathering genotypes
             geno = np.array(row[5:], dtype=float)
-            geno.shape=(len(geno) // 3, 3)
+            geno.shape = (len(geno) // 3, 3)
 
             # Checking the name of the marker
             if name == ".":
@@ -133,9 +133,9 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
                     # (pseudo-autosomal) region, so we print a warning
                     # and continue
                     if not chr23_par_already_warned:
-                        logging.warning("WARNING: asked for chromosome 25, but "
-                                        "in chromosome 23: be sure to be in "
-                                        "the pseudo-autosomal region")
+                        logging.warning("WARNING: asked for chromosome 25, "
+                                        "but in chromosome 23: be sure to be "
+                                        "in the pseudo-autosomal region")
                         chr23_par_already_warned = True
 
                 else:
@@ -190,8 +190,9 @@ def check_args(args):
         if not os.path.isfile(filename):
             raise ProgramError("{}: no such file".format(filename))
 
-        if not os.path.isfile(filename + "_summary"):
-            raise ProgramError("{}: no such file".format(filename + "_summary"))
+        summary_file = filename + "_summary"
+        if not os.path.isfile(summary_file):
+            raise ProgramError("{}: no such file".format(summary_file))
 
     return True
 
@@ -218,8 +219,8 @@ def parse_args(parser):
                        default=0.9, help=("The probability threshold for no "
                                           "calls [%(default).1f]"))
     group.add_argument("--completion", type=float, metavar="FLOAT",
-                       default=0.98, help=("The site completion rate threshold "
-                                           "[%(default).2f]"))
+                       default=0.98, help=("The site completion rate "
+                                           "threshold [%(default).2f]"))
 
     # The output files
     group = parser.add_argument_group("Output Files")
@@ -232,4 +233,3 @@ def parse_args(parser):
 # Calling the main, if necessary
 if __name__ == "__main__":
     main()
-

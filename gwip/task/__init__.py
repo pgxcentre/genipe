@@ -5,4 +5,3 @@ __license__ = "GPL"
 
 
 from .launcher import *
-

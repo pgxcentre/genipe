@@ -93,7 +93,7 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
                 logging.error("Task '{}': did not finish...".format(result[1]))
             else:
                 logging.info("Task '{}': {} in {:,d} "
-                            "seconds".format(result[1], result[2], result[3]))
+                             "seconds".format(result[1], result[2], result[3]))
         if len(problems) > 0:
             raise ProgramError("the following task did not work: " +
                                repr(problems))
@@ -276,4 +276,3 @@ def _execute_command_drmaa(command_info):
     # Everything when well
     logging.debug("'{}' everything was fine".format(task_id))
     return True, name, "performed", get_task_runtime(task_id, db_name)
-

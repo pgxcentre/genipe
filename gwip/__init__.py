@@ -9,5 +9,3 @@ __version__ = "0.1"
 __maintainer__ = "Louis-Philippe Lemieux Perreault"
 __email__ = "louis-philippe.lemieux.perreault@statgen.org"
 __status__ = "Development"
-
-

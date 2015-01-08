@@ -19,7 +19,7 @@ from .error import ProgramError
 
 def main():
     """The main function.
-    
+
     This is what the pipeline should do:
         1- Exclude markers that have ambiguous alleles [A/T or C/G] (Plink)
         2- Exclude duplicated markers (only keep one) (Plink)
@@ -30,7 +30,7 @@ def main():
         6- Exclude markers with strand problem (Plink)
         7- Phase using SHAPEIT
         8- Impute using IMPUTE2
-    
+
     """
     # Creating the option parser
     desc = ("Execute the genome-wide imputation pipeline "
@@ -110,7 +110,8 @@ def main():
         # Phasing the data
         phase_markers(
             os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.final"),
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.final.phased"),
+            os.path.join(args.out_dir, "chr{chrom}",
+                         "chr{chrom}.final.phased"),
             db_name,
             args,
         )
@@ -213,9 +214,10 @@ def get_task_options():
     walltimes = {1: "24:00:00", 2: "24:00:00", 3: "20:00:00", 4: "20:00:00",
                  5: "18:00:00", 6: "18:00:00", 7: "15:00:00", 8: "15:00:00",
                  9: "12:00:00", 10: "15:00:00", 11: "15:00:00", 12: "12:00:00",
-                 13: "10:00:00", 14: "09:00:00", 15: "08:00:00", 16: "08:00:00",
-                 17: "08:00:00", 18: "08:00:00", 19: "06:00:00", 20: "07:00:00",
-                 21: "05:00:00", 22: "05:00:00"}
+                 13: "10:00:00", 14: "09:00:00", 15: "08:00:00",
+                 16: "08:00:00", 17: "08:00:00", 18: "08:00:00",
+                 19: "06:00:00", 20: "07:00:00", 21: "05:00:00",
+                 22: "05:00:00"}
     for chrom in range(1, 23):
         task_name = "shapeit_phase_chr{}".format(chrom)
         # Creating the task options
@@ -231,12 +233,13 @@ def get_task_options():
     }
 
     # The approximate time for file merging
-    walltimes = {1: "63:30:00", 2: "69:30:00", 3: "58:00:00", 4: "58:00:00",
-                 5: "52:45:00", 6: "50:30:00", 7: "45:30:00", 8: "46:30:00",
-                 9: "37:00:00", 10: "40:30:00", 11: "39:45:00", 12: "38:30:00",
-                 13: "29:00:00", 14: "27:30:00", 15: "25:45:00", 16: "28:00:00",
-                 17: "24:00:00", 18: "22:15:00", 19: "19:15:00", 20: "19:30:00",
-                 21: "12:35:00", 22: "12:25:00"}
+    walltimes = {1: "65:30:00", 2: "73:30:00", 3: "61:00:00", 4: "58:00:00",
+                 5: "57:00:00", 6: "50:30:00", 7: "51:00:00", 8: "46:30:00",
+                 9: "37:00:00", 10: "40:30:00", 11: "44:00:00", 12: "42:00:00",
+                 13: "29:00:00", 14: "27:30:00", 15: "25:45:00",
+                 16: "28:00:00", 17: "24:00:00", 18: "25:00:00",
+                 19: "19:15:00", 20: "19:30:00", 21: "12:35:00",
+                 22: "12:25:00"}
     for chrom in range(1, 23):
         task_name = "merge_impute2_chr{}".format(chrom)
         # Creating the task options
@@ -319,7 +322,8 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
             ]
             commands_info.append({
                 "task_id": task_id,
-                "name": "IMPUTE2 chr{} from {} to {}".format(chrom, start, end),
+                "name": "IMPUTE2 chr{} from {} to {}".format(chrom, start,
+                                                             end),
                 "command": base_command + remaining_command,
                 "task_db": db_name,
                 "o_files": [c_prefix + "_summary", ],
@@ -340,8 +344,8 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
     logging.info("Done imputing markers")
 
 
-def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t, db_name,
-                        options):
+def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
+                        db_name, options):
     """Merges impute2 files."""
     commands_info = []
     base_command = [
@@ -406,7 +410,7 @@ def get_chromosome_length(out_dir):
 
         # Checking the build
         if not result["assembly_name"].startswith("GRCh37") or \
-            result["default_coord_system_version"] != "GRCh37":
+           result["default_coord_system_version"] != "GRCh37":
             raise ProgramError("{}: wrong "
                                "build".format(result["assembly_name"]))
 
@@ -464,9 +468,10 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
         remaining_command = [
             "-B", prefix.format(chrom=chrom),
             "-M", options.map_template.format(chrom=chrom),
-            "--input-ref", options.hap_template.format(chrom=chrom),
-                           options.legend_template.format(chrom=chrom),
-                           options.sample_file,
+            "--input-ref",
+            options.hap_template.format(chrom=chrom),
+            options.legend_template.format(chrom=chrom),
+            options.sample_file,
             "--output-log", c_prefix,
         ]
         commands_info.append({
@@ -509,8 +514,8 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
 
         # Markers to flip
         to_flip = 0
-        with open(chrom_filename, "r") as i_file,\
-             open(chrom_o_filename, "w") as o_file:
+        with open(chrom_filename, "r") as i_file, \
+                open(chrom_o_filename, "w") as o_file:
             # Reading the header
             header = i_file.readline().rstrip("\r\n").split("\t")
             header = {name: i + 1 for i, name in enumerate(header)}
@@ -547,7 +552,8 @@ def flip_markers(prefix, to_flip, db_name, options):
     ]
 
     # The output prefix
-    o_prefix = os.path.join(options.out_dir, "chr{chrom}", "chr{chrom}.flipped")
+    o_prefix = os.path.join(options.out_dir, "chr{chrom}",
+                            "chr{chrom}.flipped")
 
     for chrom in range(1, 23):
         # The current output prefix
@@ -613,7 +619,7 @@ def final_exclusion(prefix, to_exclude, db_name, options):
 
 
 def exclude_markers_before_phasing(prefix, db_name, options):
-    """Finds and excludes ambiguous markers (A/T and G/C) or duplicated ones."""
+    """Finds and excludes ambiguous markers (A/T and G/C) or duplicated."""
     # The ambiguous genotypes
     ambiguous_genotypes = {"AT", "TA", "GC", "CG"}
 
@@ -627,7 +633,7 @@ def exclude_markers_before_phasing(prefix, db_name, options):
 
     o_filename = os.path.join(options.out_dir, "markers_to_exclude.txt")
     with open(o_filename, "w") as o_file, \
-         open(prefix + ".bim", "r") as i_file:
+            open(prefix + ".bim", "r") as i_file:
         for line in i_file:
             row = line.rstrip("\r\n").split("\t")
 
@@ -636,7 +642,7 @@ def exclude_markers_before_phasing(prefix, db_name, options):
                 nb_ambiguous += 1
                 print(row[1], file=o_file)
                 logging.debug("  - {}: {}: "
-                             "ambiguous".format(row[1], row[4] + row[5]))
+                              "ambiguous".format(row[1], row[4] + row[5]))
                 continue
 
             # Checking if we already have this marker
@@ -705,7 +711,8 @@ def check_args(args):
         raise ProgramError("thread should be one or more")
 
     # Checking IMPUTE2's files
-    for template in (args.hap_template, args.legend_template, args.map_template):
+    for template in (args.hap_template, args.legend_template,
+                     args.map_template):
         for chrom in range(1, 23):
             # Checking the haplotype file
             filename = template.format(chrom=chrom)
@@ -767,8 +774,8 @@ def parse_args(parser):
     # The output options
     group = parser.add_argument_group("Output Options")
     group.add_argument("--output-dir", type=str, metavar="DIR", default="gwip",
-                       dest="out_dir", help=("The name of the output directory "
-                                             "[%(default)s]"))
+                       dest="out_dir", help=("The name of the output "
+                                             "directory [%(default)s]"))
 
     # The HPC options
     group = parser.add_argument_group("HPC Options")
@@ -801,9 +808,9 @@ def parse_args(parser):
                              "e.g. '1000GP_Phase3_chr{chrom}.hap.gz')"))
     group.add_argument("--legend-template", type=str, metavar="TEMPLATE",
                        required=True,
-                       help=("The template for IMPUTE2's legend files (replace "
-                             "the chromosome number by '{chrom}', e.g. "
-                             "'1000GP_Phase3_chr{chrom}.legend.gz')"))
+                       help=("The template for IMPUTE2's legend files "
+                             "(replace the chromosome number by '{chrom}', "
+                             "e.g. '1000GP_Phase3_chr{chrom}.legend.gz')"))
     group.add_argument("--map-template", type=str, metavar="TEMPLATE",
                        required=True,
                        help=("The template for IMPUTE2's map files (replace "
@@ -818,12 +825,11 @@ def parse_args(parser):
                        default=0.9, help=("The probability threshold for no "
                                           "calls [%(default).1f]"))
     group.add_argument("--completion", type=float, metavar="FLOAT",
-                       default=0.98, help=("The site completion rate threshold "
-                                           "[%(default).2f]"))
+                       default=0.98, help=("The site completion rate "
+                                           "threshold [%(default).2f]"))
 
     return parser.parse_args()
 
 
 if __name__ == "__main__":
     main()
-
