@@ -129,9 +129,10 @@ def main():
 
         # Merging the impute2 files
         merge_impute2_files(os.path.join(args.out_dir, "chr{chrom}",
-                            "chr{chrom}.*.impute2"),
+                                         "chr{chrom}.*.impute2"),
                             os.path.join(args.out_dir, "chr{chrom}",
-                            "final_impute2", "chr{chrom}.imputed"),
+                                         "final_impute2",
+                                         "chr{chrom}.imputed"),
                             args.probability, args.completion, db_name, args)
 
     # Catching the Ctrl^C
