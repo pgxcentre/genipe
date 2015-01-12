@@ -4,6 +4,7 @@ import sys
 import shlex
 import logging
 import traceback
+from os.path import isfile
 from multiprocessing import Pool
 from subprocess import Popen, PIPE
 from tempfile import NamedTemporaryFile
@@ -112,8 +113,14 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
 def _check_output_files(o_files):
     """Check that the files exist."""
     for filename in o_files:
-        if not os.path.isfile(filename):
+        if filename.endswith(".impute2"):
+            # IMPUTE2 files might be gzipped
+            if not (isfile(filename) or isfile(filename + ".gz")):
+                return False
+
+        if not isfile(filename):
             return False
+
     return True
 
 
