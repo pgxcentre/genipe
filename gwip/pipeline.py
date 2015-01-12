@@ -30,6 +30,7 @@ def main():
         6- Exclude markers with strand problem (Plink)
         7- Phase using SHAPEIT
         8- Impute using IMPUTE2
+        9- Merge IMPUTE2 files
 
     """
     # Creating the option parser
