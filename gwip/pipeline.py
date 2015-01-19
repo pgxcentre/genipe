@@ -121,7 +121,6 @@ def main():
         chromosome_length = get_chromosome_length(args.out_dir)
 
         # Performs the imputation
-        chromosome_length=10
         impute_markers(os.path.join(args.out_dir, "chr{chrom}",
                                     "chr{chrom}.final.phased.haps"),
                        os.path.join(args.out_dir, "chr{chrom}",
