@@ -121,6 +121,7 @@ def main():
         chromosome_length = get_chromosome_length(args.out_dir)
 
         # Performs the imputation
+        chromosome_length=10
         impute_markers(os.path.join(args.out_dir, "chr{chrom}",
                                     "chr{chrom}.final.phased.haps"),
                        os.path.join(args.out_dir, "chr{chrom}",
@@ -297,6 +298,12 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
         "-use_prephased_g",
         "-Ne", "20000",
     ]
+
+    # Are there any filtering rules?
+    if options.filtering_rules is not None:
+        base_command.append("-filt_rules_l")
+        for rule in options.filtering_rules:
+            base_command.append(rule)
 
     # Each chromosome have multiple segments
     for chrom in range(1, 23):
@@ -820,6 +827,8 @@ def parse_args(parser):
                              "'genetic_map_chr{chrom}_combined_b37.txt')"))
     group.add_argument("--sample-file", type=str, metavar="FILE",
                        required=True, help="The name of IMPUTE2's sample file")
+    group.add_argument("--filtering-rules", type=str, metavar="RULE",
+                       nargs="+", help="IMPUTE2 filtering rules (if required)")
 
     # The impute2 file merger options
     group = parser.add_argument_group("IMPUTE2 Merger Options")
