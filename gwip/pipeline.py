@@ -70,7 +70,7 @@ def main():
         db_name = create_task_db(args.out_dir)
 
         # Creating the output directories
-        for chromosome in range(1, 24):
+        for chromosome in range(1, 23):
             chr_dir = os.path.join(args.out_dir, "chr{}".format(chromosome))
             if not os.path.isdir(chr_dir):
                 os.mkdir(chr_dir)
