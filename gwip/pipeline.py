@@ -395,7 +395,7 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
     launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
                           hpc_options=options.task_options,
                           out_dir=options.out_dir)
-    logging.info("Done phasing markers")
+    logging.info("Done merging reports")
 
 
 def file_sorter(filename):
