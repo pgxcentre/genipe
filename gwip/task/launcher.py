@@ -118,7 +118,7 @@ def _check_output_files(o_files):
             if not (isfile(filename) or isfile(filename + ".gz")):
                 return False
 
-        if not isfile(filename):
+        elif not isfile(filename):
             return False
 
     return True
