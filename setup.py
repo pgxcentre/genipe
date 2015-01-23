@@ -18,13 +18,14 @@ setup(
     author_email="louis-philippe.lemieux.perreault@statgen.org",
     url="http://www.statgen.org",
     license="GPL",
-    entry_points = {
+    entry_points={
         "console_scripts": ["gwip-launcher=gwip.pipeline:main",
-                            "impute2-merger=gwip.tool.impute2_merger:main",],
+                            "impute2-merger=gwip.tool.impute2_merger:main", ],
     },
-    install_requires=["numpy >= 1.8.2", ],
-    packages=["gwip", "gwip.task", "gwip.db", "gwip.tool", ],
-    classifiers=['Operating System :: Linux',
-                 'Programming Language :: Python',
-                 'Programming Language :: Python :: 3.4'],
+    install_requires=["numpy >= 1.8.2", "jinja2 >= 2.7.3", ],
+    packages=["gwip", "gwip.task", "gwip.db", "gwip.tool", "gwip.reporting", ],
+    package_data={"gwip.reporting": ["template/*.tex", ], },
+    classifiers=["Operating System :: Linux",
+                 "Programming Language :: Python",
+                 "Programming Language :: Python :: 3", ],
 )

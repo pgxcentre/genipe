@@ -1,0 +1,121 @@
+\documentclass[10pt,twoside,english]{scrartcl}
+\usepackage[T1]{fontenc}
+\usepackage[latin9]{inputenc}
+\usepackage[letterpaper]{geometry}
+\geometry{verbose,tmargin=2cm,bmargin=2cm,lmargin=2cm,rmargin=2cm,footskip=1cm}
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\setlength{\parindent}{0cm}
+\usepackage{color}
+\usepackage{babel}
+\usepackage[unicode=true,
+ bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,
+ breaklinks=false,pdfborder={0 0 0},backref=false,colorlinks=true]
+ {hyperref}
+\hypersetup{pdftitle={\VAR{ report_number }},
+ pdfauthor={Louis-Philippe Lemieux Perreault},
+ linkcolor={link_blue},citecolor={link_blue},urlcolor={link_blue}}
+
+\makeatletter
+\usepackage[activate={true,nocompatibility},final,tracking=true,kerning=true,spacing=true,factor=1100,stretch=10,shrink=10]{microtype}
+
+% Some color definitions
+\usepackage{xcolor}
+\definecolor{blue}{HTML}{0099CC}
+\definecolor{red}{HTML}{CC0000}
+\definecolor{green}{HTML}{669900}
+\definecolor{link_blue}{HTML}{21759B}
+
+% Caption and subcaptions
+\usepackage[bf]{caption}
+\usepackage{subcaption}
+
+% Enables page in landscape mode
+\usepackage{pdflscape}
+
+% Color in tables + dashed line
+\usepackage{colortbl}
+\usepackage{arydshln}
+
+% The Report number...
+\newcommand{\ReportNumber}{\VAR{ report_number }}
+
+% Fancy header
+\pagestyle{fancy}
+\fancyhf{}
+\fancyfoot[RO,LE]{{\footnotesize\thepage}}
+\fancyfoot[LO,RE]{{\footnotesize\ReportNumber}}
+\renewcommand{\headrulewidth}{0pt}
+\renewcommand{\footrulewidth}{1pt}
+
+% The plain fancy header
+\fancypagestyle{plain}{
+    \fancyhf{} % clear all header and footer fields
+    \fancyfoot[RO,LE]{{\footnotesize\thepage}}
+    \fancyfoot[LO,RE]{{\footnotesize\ReportNumber}}
+    \renewcommand{\headrulewidth}{0pt}
+    \renewcommand{\footrulewidth}{1pt}
+}
+
+% Table's numerotations are in Roman numbers
+\renewcommand{\thetable}{\Roman{table}}
+
+% Subfigure numbering
+\renewcommand{\thesubfigure}{\Alph{subfigure}}
+
+\let\tempone\itemize
+\let\temptwo\enditemize
+\renewenvironment{itemize}{\tempone\setlength{\itemsep}{0pt}}{\temptwo}
+
+\let\ttempone\enumerate
+\let\ttemptwo\endenumerate
+\renewenvironment{enumerate}{\ttempone\setlength{\itemsep}{0pt}}{\ttemptwo}
+
+\let\tttempone\description
+\let\tttemptwo\enddescription
+\renewenvironment{description}{\tttempone\setlength{\itemsep}{0pt}}{\tttemptwo}
+
+\makeatother
+
+\begin{document}
+
+\title{\VAR{ title }}
+
+
+\subtitle{\ReportNumber}
+
+
+\author{\VAR{ author }}
+
+
+\date{\VAR{ date }}
+
+\maketitle
+\microtypesetup{protrusion=false} % disables protrusion locally in the document
+
+\tableofcontents{}
+
+\microtypesetup{protrusion=true} % enables protrusion
+
+
+\section{Background}
+
+Write the background here...
+
+
+\section{Methods}
+
+Write the methods here...
+
+
+\section{Results}
+
+Write results here...
+
+
+\section{Conclusions}
+
+Write conclusions here...
+
+
+\end{document}
