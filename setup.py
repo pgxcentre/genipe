@@ -40,7 +40,7 @@ def setup_package():
         author="Louis-Philippe Lemieux Perreault",
         author_email="louis-philippe.lemieux.perreault@statgen.org",
         url="http://www.statgen.org",
-        license="MIT",
+        license="CC BY-NC 4.0",
         entry_points={
             "console_scripts": [
                 "gwip-launcher=gwip.pipeline:main",
