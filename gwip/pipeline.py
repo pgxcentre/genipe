@@ -231,7 +231,7 @@ def get_task_options():
     # The time for an impute2 segment
     task_options["impute"] = {
         "walltime": bytes("120:00:00", encoding="ascii"),
-        "nodes": bytes("-l nodes=3:ppn=1", encoding="ascii"),
+        "nodes": bytes("-l nodes=1:ppn=1", encoding="ascii"),
     }
 
     # The approximate time for file merging

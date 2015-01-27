@@ -22,7 +22,7 @@ def write_version_file(fn=os.path.join("gwip", "version.py")):
 # THIS FILE WAS GENERATED AUTOMATICALLY BY GWIP SETUP.PY
 gwip_version = {version}
 """
-    a = Noneopen(fn, "w")
+    a = open(fn, "w")
     try:
         a.write(content.format(version=VERSION))
     finally:
