@@ -1,9 +1,10 @@
 
 
-__all__ = ["config_jinja2", "sanitize_tex", "format_tex"]
+__all__ = ["config_jinja2", "sanitize_tex", "format_tex", "wrap_tex"]
 
 
 import re
+from textwrap import wrap
 
 import jinja2
 
@@ -43,6 +44,11 @@ def sanitize_tex(original_text):
         sanitized_tex = sanitized_tex.replace(char, mod)
 
     return sanitized_tex
+
+
+def wrap_tex(original_text):
+    """Wraps the text."""
+    return "\n".join(wrap(original_text))
 
 
 def format_tex(text, tex_format):
