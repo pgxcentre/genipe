@@ -10,11 +10,13 @@ from glob import glob
 from math import floor
 from shutil import which
 from urllib.request import urlopen
+from subprocess import Popen, PIPE
 
 from .db import *
 from . import __version__
 from .task import launcher
 from .error import ProgramError
+from .reporting import generate_report
 
 
 def main():
@@ -75,13 +77,32 @@ def main():
             if not os.path.isdir(chr_dir):
                 os.mkdir(chr_dir)
 
+        # Creating a data structure to gather run information
+        run_information = {}
+
+        # Getting shapeit version
+        run_information["shapeit_version"] = get_shapeit_version(
+            "shapeit" if args.shapeit_bin is None else args.shapeit_bin
+        )
+
+        # Getting impute2 version
+        run_information["impute2_version"] = get_impute2_version(
+            "impute2" if args.impute2_bin is None else args.impute2_bin
+        )
+
         # Excluding markers prior to phasing (ambiguous markers [A/T and [G/C]
         # and duplicated markers
-        exclude_markers_before_phasing(args.bfile, db_name, args)
+        numbers = exclude_markers_before_phasing(args.bfile, db_name, args)
+        run_information.update(numbers)
 
         # Checking the strand
-        check_strand(os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}"),
-                     "_1", db_name, args)
+        numbers = check_strand(
+            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}"),
+            "_1",
+            db_name,
+            args,
+        )
+        run_information.update(numbers)
 
         # Flipping the markers
         flip_markers(
@@ -92,21 +113,23 @@ def main():
         )
 
         # Checking the strand
-        check_strand(
+        numbers = check_strand(
             os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.flipped"),
             "_2",
             db_name,
             args,
             exclude=True,
         )
+        run_information.update(numbers)
 
         # The final marker exclusion
-        final_exclusion(
+        numbers = final_exclusion(
             os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.flipped"),
             os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.to_exclude"),
             db_name,
             args,
         )
+        run_information.update(numbers)
 
         # Phasing the data
         phase_markers(
@@ -134,6 +157,14 @@ def main():
                                          "final_impute2",
                                          "chr{chrom}.imputed"),
                             args.probability, args.completion, db_name, args)
+
+        # Creating the output directory (if it doesn't exits)
+        report_dir = os.path.join(args.out_dir, "report")
+        if not os.path.isdir(report_dir):
+            os.mkdir(report_dir)
+
+        # Generating the report
+        generate_report(report_dir, args, run_information)
 
     # Catching the Ctrl^C
     except KeyboardInterrupt:
@@ -513,6 +544,9 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
     # For each chromosome, we find markers to change strand
     nb_total = 0
     for chrom in range(1, 23):
+        # The SNP to print in the output file
+        to_write = set()
+
         chrom_filename = filename.format(chrom=chrom)
         chrom_o_filename = o_filename.format(chrom=chrom, o_suffix=o_suffix)
 
@@ -521,9 +555,7 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
             raise ProgramError("{}: no such file".format(chrom_filename))
 
         # Markers to flip
-        to_flip = 0
-        with open(chrom_filename, "r") as i_file, \
-                open(chrom_o_filename, "w") as o_file:
+        with open(chrom_filename, "r") as i_file:
             # Reading the header
             header = i_file.readline().rstrip("\r\n").split("\t")
             header = {name: i + 1 for i, name in enumerate(header)}
@@ -538,8 +570,13 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
             for line in i_file:
                 row = line.rstrip("\r\n").split("\t")
                 if row[header["type"]] == "Strand":
-                    print(row[header["main_id"]], file=o_file)
-                    to_flip += 1
+                    to_write.add(row[header["main_id"]])
+
+        # The number of markers to flip
+        to_flip = len(to_write)
+
+        with open(chrom_o_filename, "w") as o_file:
+            print(*to_write, sep="\n", file=o_file)
 
         nb_total += to_flip
         logging.info("chr{}: {:,d} markers to {}".format(chrom, to_flip, what))
@@ -547,6 +584,8 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
     # Logging the last one
     logging.info("After strand check: {:,d} markers "
                  "to {}".format(nb_total, what))
+
+    return {"nb_{}".format(what): nb_total}
 
 
 def flip_markers(prefix, to_flip, db_name, options):
@@ -601,6 +640,9 @@ def final_exclusion(prefix, to_exclude, db_name, options):
     # The output prefix
     o_prefix = os.path.join(options.out_dir, "chr{chrom}", "chr{chrom}.final")
 
+    # The output files (for statistics)
+    bims =[]
+
     for chrom in range(1, 23):
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
@@ -618,12 +660,22 @@ def final_exclusion(prefix, to_exclude, db_name, options):
             "o_files": [c_prefix + ext for ext in (".bed", ".bim", ".fam")],
         })
 
+        bims.append(c_prefix + ".bim")
+
     # Executing command
     logging.info("Final marker exclusion")
     launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
                           hpc_options=options.task_options,
                           out_dir=options.out_dir)
     logging.info("Done final marker exclusion")
+
+    nb_markers = 0
+    for bim in bims:
+        with open(bim, "r") as i_file:
+            for line in i_file:
+                nb_markers += 1
+
+    return {"nb_phasing_markers": nb_markers}
 
 
 def exclude_markers_before_phasing(prefix, db_name, options):
@@ -634,20 +686,37 @@ def exclude_markers_before_phasing(prefix, db_name, options):
     # The positions that have been written to file
     kept_positions = set()
     nb_ambiguous = 0
+    nb_kept = 0
     nb_dup = 0
 
     # Logging
     logging.info("Finding markers to exclude")
 
+    # Counting the total number of markers and samples
+    nb_markers = 0
+    nb_samples = 0
+    nb_special_markers = 0
+
+    with open(prefix + ".fam", "r") as i_file:
+        for line in i_file:
+            nb_samples += 1
+
     o_filename = os.path.join(options.out_dir, "markers_to_exclude.txt")
     with open(o_filename, "w") as o_file, \
             open(prefix + ".bim", "r") as i_file:
         for line in i_file:
+            nb_markers += 1
             row = line.rstrip("\r\n").split("\t")
+
+            is_special = False
+            if row[0] in {"23", "24", "25", "26"}:
+                nb_special_markers += 1
+                is_special = True
 
             # Checking the alleles
             if row[4] + row[5] in ambiguous_genotypes:
-                nb_ambiguous += 1
+                if not is_special:
+                    nb_ambiguous += 1
                 print(row[1], file=o_file)
                 logging.debug("  - {}: {}: "
                               "ambiguous".format(row[1], row[4] + row[5]))
@@ -655,18 +724,22 @@ def exclude_markers_before_phasing(prefix, db_name, options):
 
             # Checking if we already have this marker
             if (row[0], row[3]) in kept_positions:
-                nb_dup += 1
+                if not is_special:
+                    nb_dup += 1
                 print(row[1], file=o_file)
                 logging.debug("  - {}: duplicated".format(row[1]))
                 continue
 
             # We keep this marker
             kept_positions.add((row[0], row[3]))
+            if not is_special:
+                nb_kept += 1
 
     # Logging
-    logging.info("  - {:,d} markers kept".format(len(kept_positions)))
+    logging.info("  - {:,d} special markers".format(nb_special_markers))
     logging.info("  - {:,d} ambiguous markers removed".format(nb_ambiguous))
     logging.info("  - {:,d} duplicated markers removed".format(nb_dup))
+    logging.info("  - {:,d} markers kept".format(nb_kept))
 
     # The commands to run
     commands_info = []
@@ -703,6 +776,57 @@ def exclude_markers_before_phasing(prefix, db_name, options):
                           hpc_options=options.task_options,
                           out_dir=options.out_dir)
     logging.info("Done excluding and splitting markers")
+
+    return {
+        "initial_nb_markers": nb_markers,
+        "initial_nb_samples": nb_samples,
+        "nb_ambiguous":       nb_ambiguous,
+        "nb_duplicates":      nb_dup,
+        "nb_special_markers": nb_special_markers,
+    }
+
+
+def get_shapeit_version(binary):
+    """Gets the SHAPEIT version from the binary."""
+    # Running the command
+    command = [binary, "--version"]
+    proc = Popen(command, stdout=PIPE)
+    output = proc.communicate()[0].decode()
+
+    # Finding the version
+    version = re.search(r"Version : ([\S]+)", output)
+    if version is None:
+        version = "unknown"
+    else:
+        version = version.group(1)
+
+    logging.info("Will be using SHAPEIT version {}".format(version))
+
+    return version
+
+
+def get_impute2_version(binary):
+    """Gets the IMPUTE2 version from the binary."""
+    # Running the command
+    command = [binary]
+    proc = Popen(command, stdout=PIPE)
+    output = proc.communicate()[0].decode()
+
+    # Deleting the output file automatically created by IMPUTE2
+    for filename in ["test.impute2_summary", "test.impute2_warnings"]:
+        if os.path.isfile(filename):
+            os.remove(filename)
+
+    # Finding the version
+    version = re.search(r"IMPUTE version ([\S]+)", output)
+    if version is None:
+        version = "unknown"
+    else:
+        version = version.group(1)
+
+    logging.info("Will be using IMPUTE2 version {}".format(version))
+
+    return version
 
 
 def check_args(args):
@@ -837,6 +961,18 @@ def parse_args(parser):
     group.add_argument("--completion", type=float, metavar="FLOAT",
                        default=0.98, help=("The site completion rate "
                                            "threshold [%(default).2f]"))
+
+    # The automatic report options
+    group = parser.add_argument_group("Automatic Report Options")
+    group.add_argument("--report-number", type=str, metavar="NB",
+                       default="GWIP automatic report",
+                       help="The report number")
+    group.add_argument("--report-title", type=str, metavar="TITLE",
+                       default="GWIP: Automatic genome-wide imputation",
+                       help="The report title")
+    group.add_argument("--report-author", type=str, metavar="AUTHOR",
+                       default="Automatically generated by GWIP",
+                       help="The report author")
 
     return parser.parse_args()
 
