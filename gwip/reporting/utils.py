@@ -1,6 +1,7 @@
 
 
-__all__ = ["config_jinja2", "sanitize_tex", "format_tex", "wrap_tex"]
+__all__ = ["config_jinja2", "sanitize_tex", "format_tex", "wrap_tex",
+           "create_tabular", "create_float", "tex_inline_math", ]
 
 
 import re
@@ -59,6 +60,56 @@ def format_tex(text, tex_format):
     return r"\%s{%s}" % (tex_format, text)
 
 
+def tex_inline_math(content):
+    """Creates an inline mathematical formula in TeX."""
+    return "${}$".format(content)
+
+
 def _is_sanitized(text):
     """Check if text is sanitized."""
     return re.search(r"[^\\][{}]".format("".join(_escaped_char)), text) is None
+
+
+def create_tabular(template, header, data, header_multicol=None,
+                   col_align=None):
+    """Creates a TeX tabular."""
+    if header_multicol is None:
+        header_multicol = [1 for i in header]
+
+    # Getting the number of columns
+    nb_col = sum(header_multicol)
+
+    if col_align is None:
+        col_align = ["c"] * nb_col
+
+    # Checking that the number of columns holds
+    assert len(header) == nb_col
+    assert len(col_align) == nb_col
+
+    # Generating the tabular data
+    tabular_data = {
+        "col_alignments": "".join(col_align),
+        "header_data":    zip(header, header_multicol),
+        "tabular_data":   data,
+    }
+
+    # Rendering
+    return template.render(**tabular_data)
+
+
+def create_float(template, float_type, caption, label, content, placement="H"):
+    """Creates a TeX float."""
+    # Some assertions
+    assert float_type in ["figure", "table"]
+
+    # Generating the float data
+    float_data = {
+        "float_type":      float_type,
+        "float_placement": placement,
+        "float_caption":   caption,
+        "float_label":     label,
+        "table_content":   content,
+    }
+
+    # Rendering
+    return template.render(**float_data)

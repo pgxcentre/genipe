@@ -1,0 +1,18 @@
+
+\begin{tabular}{\VAR{ col_alignments }}
+\hline 
+\BLOCK{ for h_data in header_data }
+\multicolumn{\VAR{ h_data[1] }}{c}{\VAR{ h_data[0] }}
+\BLOCK{ if not loop.last } & \BLOCK{ else }\\\BLOCK{ endif }
+\BLOCK{ endfor }
+
+\hline 
+
+\BLOCK{ for row in tabular_data }
+\BLOCK{ for cell in row }
+\VAR{ cell }\BLOCK{ if not loop.last } & \BLOCK{ else }\\\VAR{ "\n" }\BLOCK{ endif }
+\BLOCK{ endfor }
+\BLOCK{ endfor }
+\hline 
+\end{tabular}
+
