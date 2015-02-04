@@ -90,9 +90,11 @@ def _generate_methods(templates, run_options, run_information):
         "imputation. Although pre-phasing allows for very fast imputation, it "
         "leads to a small loss in accuracy since the estimation uncertainty "
         "in the study haplotypes is ignored. SHAPEIT version {shapeit} and "
-        "IMPUTE2 version {impute2} were used for this analysis.".format(
+        "IMPUTE2 version {impute2} were used for this analysis. Binary "
+        "pedfiles were processed using Plink version {plink}.".format(
             shapeit=run_information["shapeit_version"],
             impute2=run_information["impute2_version"],
+            plink=run_information["plink_version"],
         )
     ))
 

@@ -91,6 +91,11 @@ def main():
             "impute2" if args.impute2_bin is None else args.impute2_bin
         )
 
+        # Getting Plink version
+        run_information["plink_version"] = get_plink_version(
+            "plink" if args.plink_bin is None else args.plink_bin
+        )
+
         # Excluding markers prior to phasing (ambiguous markers [A/T and [G/C]
         # and duplicated markers
         numbers = exclude_markers_before_phasing(args.bfile, db_name, args)
@@ -141,15 +146,15 @@ def main():
             args,
         )
 
-##         # Gathering the chromosome length from Ensembl REST API
-##         chromosome_length = get_chromosome_length(args.out_dir)
-## 
-##         # Performs the imputation
-##         impute_markers(os.path.join(args.out_dir, "chr{chrom}",
-##                                     "chr{chrom}.final.phased.haps"),
-##                        os.path.join(args.out_dir, "chr{chrom}",
-##                                     "chr{chrom}.{start}_{end}.impute2"),
-##                        chromosome_length, db_name, args)
+        # Gathering the chromosome length from Ensembl REST API
+        chromosome_length = get_chromosome_length(args.out_dir)
+
+        # Performs the imputation
+        impute_markers(os.path.join(args.out_dir, "chr{chrom}",
+                                    "chr{chrom}.final.phased.haps"),
+                       os.path.join(args.out_dir, "chr{chrom}",
+                                    "chr{chrom}.{start}_{end}.impute2"),
+                       chromosome_length, db_name, args)
 
         # Getting the weighed average for cross-validation
         numbers = get_cross_validation_results(
@@ -158,13 +163,13 @@ def main():
         )
         run_information.update(numbers)
 
-##         # Merging the impute2 files
-##         merge_impute2_files(os.path.join(args.out_dir, "chr{chrom}",
-##                                          "chr{chrom}.*.impute2"),
-##                             os.path.join(args.out_dir, "chr{chrom}",
-##                                          "final_impute2",
-##                                          "chr{chrom}.imputed"),
-##                             args.probability, args.completion, db_name, args)
+        # Merging the impute2 files
+        merge_impute2_files(os.path.join(args.out_dir, "chr{chrom}",
+                                         "chr{chrom}.*.impute2"),
+                            os.path.join(args.out_dir, "chr{chrom}",
+                                         "final_impute2",
+                                         "chr{chrom}.imputed"),
+                            args.probability, args.completion, db_name, args)
 
         # Creating the output directory (if it doesn't exits)
         report_dir = os.path.join(args.out_dir, "report")
@@ -649,7 +654,7 @@ def final_exclusion(prefix, to_exclude, db_name, options):
     o_prefix = os.path.join(options.out_dir, "chr{chrom}", "chr{chrom}.final")
 
     # The output files (for statistics)
-    bims =[]
+    bims = []
 
     for chrom in range(1, 23):
         # The current output prefix
@@ -1034,7 +1039,7 @@ def get_impute2_version(binary):
     proc = Popen(command, stdout=PIPE)
     output = proc.communicate()[0].decode()
 
-    # Deleting the output file automatically created by IMPUTE2
+    # Deleting the output files automatically created by IMPUTE2
     for filename in ["test.impute2_summary", "test.impute2_warnings"]:
         if os.path.isfile(filename):
             os.remove(filename)
@@ -1047,6 +1052,29 @@ def get_impute2_version(binary):
         version = version.group(1)
 
     logging.info("Will be using IMPUTE2 version {}".format(version))
+
+    return version
+
+
+def get_plink_version(binary):
+    """Gets the Plink version from the binary."""
+    # Running the command
+    command = [binary, "--noweb"]
+    proc = Popen(command, stdout=PIPE, stderr=PIPE)
+    output = proc.communicate()[0].decode()
+
+    # Deleting the output file automatically created by Plink
+    if os.path.isfile("plink.log"):
+        os.remove("plink.log")
+
+    # Finding the version
+    version = re.search(r"\|\s+PLINK!\s+\|\s+(\S+)\s+\|", output)
+    if version is None:
+        version = "unknown"
+    else:
+        version = version.group(1)
+
+    logging.info("Will be using Plink version {}".format(version))
 
     return version
 
