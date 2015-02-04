@@ -11,6 +11,7 @@ from math import floor
 from shutil import which
 from urllib.request import urlopen
 from subprocess import Popen, PIPE
+from collections import defaultdict
 
 from .db import *
 from . import __version__
@@ -140,23 +141,30 @@ def main():
             args,
         )
 
-        # Gathering the chromosome length from Ensembl REST API
-        chromosome_length = get_chromosome_length(args.out_dir)
+##         # Gathering the chromosome length from Ensembl REST API
+##         chromosome_length = get_chromosome_length(args.out_dir)
+## 
+##         # Performs the imputation
+##         impute_markers(os.path.join(args.out_dir, "chr{chrom}",
+##                                     "chr{chrom}.final.phased.haps"),
+##                        os.path.join(args.out_dir, "chr{chrom}",
+##                                     "chr{chrom}.{start}_{end}.impute2"),
+##                        chromosome_length, db_name, args)
 
-        # Performs the imputation
-        impute_markers(os.path.join(args.out_dir, "chr{chrom}",
-                                    "chr{chrom}.final.phased.haps"),
-                       os.path.join(args.out_dir, "chr{chrom}",
-                                    "chr{chrom}.{start}_{end}.impute2"),
-                       chromosome_length, db_name, args)
+        # Getting the weighed average for cross-validation
+        numbers = get_cross_validation_results(
+            os.path.join(args.out_dir, "chr{chrom}",
+                         "chr{chrom}.*.impute2_summary"),
+        )
+        run_information.update(numbers)
 
-        # Merging the impute2 files
-        merge_impute2_files(os.path.join(args.out_dir, "chr{chrom}",
-                                         "chr{chrom}.*.impute2"),
-                            os.path.join(args.out_dir, "chr{chrom}",
-                                         "final_impute2",
-                                         "chr{chrom}.imputed"),
-                            args.probability, args.completion, db_name, args)
+##         # Merging the impute2 files
+##         merge_impute2_files(os.path.join(args.out_dir, "chr{chrom}",
+##                                          "chr{chrom}.*.impute2"),
+##                             os.path.join(args.out_dir, "chr{chrom}",
+##                                          "final_impute2",
+##                                          "chr{chrom}.imputed"),
+##                             args.probability, args.completion, db_name, args)
 
         # Creating the output directory (if it doesn't exits)
         report_dir = os.path.join(args.out_dir, "report")
@@ -783,6 +791,220 @@ def exclude_markers_before_phasing(prefix, db_name, options):
         "nb_ambiguous":       nb_ambiguous,
         "nb_duplicates":      nb_dup,
         "nb_special_markers": nb_special_markers,
+    }
+
+
+def get_cross_validation_results(glob_pattern):
+    """Creates a weighed mean for each chromosome for cross-validation."""
+    # The regular expressions used here
+    nb_genotypes_re = re.compile(r"^In the current analysis, IMPUTE2 masked, "
+                                 r"imputed, and evaluated (\d+) genotypes")
+    table_header_re = re.compile(r"Interval\s+#Genotypes\s+%Concordance\s+"
+                                 r"Interval\s+%Called\s+%Concordance")
+    split_re = re.compile(r"\s+")
+
+    # The intervals
+    table_1_intervals = ["[0.0-0.1]", "[0.1-0.2]", "[0.2-0.3]", "[0.3-0.4]",
+                         "[0.4-0.5]", "[0.5-0.6]", "[0.6-0.7]", "[0.7-0.8]",
+                         "[0.8-0.9]", "[0.9-1.0]"]
+    table_2_intervals = ["[>=0.0]", "[>=0.1]", "[>=0.2]", "[>=0.3]", "[>=0.4]",
+                         "[>=0.5]", "[>=0.6]", "[>=0.7]", "[>=0.8]", "[>=0.9]"]
+
+    # The final data per chromosome
+    per_chrom_table_1 = {}
+    per_chrom_table_2 = {}
+    chrom_nb_geno = {}
+
+    # The final data for all the dataset
+    tot_concordance = defaultdict(float)
+    tot_nb_geno = defaultdict(int)
+    tot_weight = defaultdict(int)
+    tot_cumm_called = defaultdict(int)
+    tot_cumm_concordance = defaultdict(float)
+    tot_cumm_weight = defaultdict(int)
+    final_nb_genotypes = 0
+
+    # For each chromosome
+    for chrom in range(1, 23):
+        filenames = glob(glob_pattern.format(chrom=chrom))
+
+        # The total number of genotypes for this chromosome
+        tot_chrom_nb_genotypes = 0
+
+        # The numbers for table 1
+        tot_chrom_concordance = defaultdict(float)
+        tot_chrom_nb_geno = defaultdict(int)
+        tot_chrom_weight = defaultdict(int)
+
+        # The numbers for table 2
+        tot_chrom_cumm_called = defaultdict(int)
+        tot_chrom_cumm_concordance = defaultdict(float)
+        tot_chrom_cumm_weight = defaultdict(int)
+
+        for filename in filenames:
+            with open(filename, "r") as i_file:
+                line = i_file.readline()
+                nb_genotypes = nb_genotypes_re.search(line)
+                while (line != "") and (nb_genotypes is None):
+                    line = i_file.readline()
+                    nb_genotypes = nb_genotypes_re.search(line)
+
+                # Check if we have data
+                if nb_genotypes is None:
+                    continue
+
+                # We have the number of genotypes
+                nb_genotypes = int(nb_genotypes.group(1))
+                if nb_genotypes == 0:
+                    continue
+
+                # Increasing the total number of genotypes for this chromosome
+                tot_chrom_nb_genotypes += nb_genotypes
+                final_nb_genotypes += nb_genotypes
+
+                # Looking for the headers of the two tables
+                line = i_file.readline()
+                table_header = table_header_re.search(line)
+                while (line != "") and (table_header is None):
+                    line = i_file.readline()
+                    table_header = table_header_re.search(line)
+
+                # We now should have data
+                if table_header is None:
+                    raise ProgramError("Problem with {}".format(filename))
+
+                # Now reading the data inside the tables
+                for line in i_file:
+                    # Getting the value for the tables
+                    table = split_re.split(line.strip())
+
+                    # The first table
+                    interval, nb_geno, concordance = table[:3]
+
+                    # Casting to values
+                    nb_geno = int(nb_geno)
+                    concordance = float(concordance)
+
+                    # The total number of genotypes for this interval
+                    tot_nb_geno[interval] += nb_geno
+                    tot_chrom_nb_geno[interval] += nb_geno
+
+                    # The concordance for this interval
+                    tot_concordance[interval] += (concordance * nb_geno)
+                    tot_chrom_concordance[interval] += (concordance * nb_geno)
+
+                    # The weight for this interval
+                    tot_weight[interval] += nb_geno
+                    tot_chrom_weight[interval] += nb_geno
+
+                    # The second table
+                    table = table[3:]
+                    interval = "".join(table[:3])
+                    pc_called = float(table[-2])
+                    pc_concordance = float(table[-1])
+
+                    # The interval number of genotypes
+                    nb_called = pc_called * nb_genotypes / 100
+                    tot_chrom_cumm_called[interval] += nb_called
+                    tot_cumm_called[interval] += nb_called
+
+                    # The concordance for this interval
+                    weighted_value = nb_called * pc_concordance
+                    tot_chrom_cumm_concordance[interval] += weighted_value
+                    tot_cumm_concordance[interval] += weighted_value
+
+                    # The weight for this interval
+                    tot_chrom_cumm_weight[interval] += nb_called
+                    tot_cumm_weight[interval] += nb_called
+
+        # Computing the weighted average for the first table
+        table_1_data = []
+        for interval in table_1_intervals:
+            nb_geno = tot_chrom_nb_geno[interval]
+            concordance = tot_chrom_concordance[interval]
+            weight = tot_chrom_weight[interval]
+
+            # Computing the weighted concordance
+            weighted_concordance = 0
+            if weight != 0:
+                weighted_concordance = concordance / weight
+
+            # Saving the data for the current chromosome
+            table_1_data.append([
+                interval,
+                "{:,d}".format(nb_geno),
+                "{:.1f}".format(weighted_concordance),
+            ])
+
+        # Computing the weighed average for the second table
+        table_2_data = []
+        for interval in table_2_intervals:
+            nb_called = tot_chrom_cumm_called[interval]
+            concordance = tot_chrom_cumm_concordance[interval]
+            weight = tot_chrom_cumm_weight[interval]
+
+            # Computing the weighted concordance
+            weighted_concordance = 0
+            if weight != 0:
+                weighted_concordance = concordance / weight
+
+            # Saving the data for the current chromosome
+            table_2_data.append([
+                interval,
+                "{:.1f}".format(nb_called / tot_chrom_nb_genotypes * 100),
+                "{:.1f}".format(weighted_concordance),
+            ])
+
+        # Saving the tables
+        per_chrom_table_1[chrom] = table_1_data
+        per_chrom_table_2[chrom] = table_2_data
+        chrom_nb_geno[chrom] = tot_chrom_nb_genotypes
+
+    # The final table 1
+    table_1_data = []
+    for interval in table_1_intervals:
+        nb_geno = tot_nb_geno[interval]
+        concordance = tot_concordance[interval]
+        weight = tot_weight[interval]
+
+        # Computing the weighted concordance
+        weighted_concordance = 0
+        if weight != 0:
+            weighted_concordance = concordance / weight
+
+        table_1_data.append([
+            interval,
+            "{:,d}".format(nb_geno),
+            "{:.1f}".format(weighted_concordance),
+        ])
+
+    # The final table 2
+    table_2_data = []
+    for interval in table_2_intervals:
+        nb_called = tot_cumm_called[interval]
+        concordance = tot_cumm_concordance[interval]
+        weight = tot_cumm_weight[interval]
+
+        # Computing the weighted concordance
+        weighted_concordance = 0
+        if weight != 0:
+            weighted_concordance = concordance / weight
+
+        # Saving the data for all the chromosome
+        table_2_data.append([
+            interval,
+            "{:.1f}".format(nb_called / final_nb_genotypes * 100),
+            "{:.1f}".format(weighted_concordance),
+        ])
+
+    # Returning the data
+    return {
+        "cross_validation_final_nb_genotypes": final_nb_genotypes,
+        "cross_validation_nb_genotypes_chrom": chrom_nb_geno,
+        "cross_validation_table_1":            table_1_data,
+        "cross_validation_table_2":            table_2_data,
+        "cross_validation_table_1_chrom":      per_chrom_table_1,
+        "cross_validation_table_2_chrom":      per_chrom_table_2,
     }
 
 

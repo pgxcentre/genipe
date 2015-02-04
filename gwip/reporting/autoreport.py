@@ -26,6 +26,7 @@ def generate_report(out_dir, run_opts, run_info):
     # Gathering the report content
     report_content = ""
     report_content += _generate_methods(jinja2_env, run_opts, run_info)
+    report_content += _generate_results(jinja2_env, run_opts, run_info)
     report_data["report_content"] = report_content
 
     # Getting the template
@@ -168,4 +169,143 @@ def _generate_methods(templates, run_options, run_information):
 
     # Returning the section
     return section_template.render(section_name="Methods",
+                                   section_type="section",
+                                   section_content=content)
+
+
+def _generate_results(templates, run_options, run_information):
+    """Generates the results section of the report."""
+    # Some assertions
+    required_variables = ["cross_validation_final_nb_genotypes",
+                          "cross_validation_nb_genotypes_chrom",
+                          "cross_validation_table_1",
+                          "cross_validation_table_2",
+                          "cross_validation_table_1_chrom",
+                          "cross_validation_table_2_chrom"]
+    for required_variable in required_variables:
+        assert required_variable in run_information
+
+    # Loading the templates
+    section_template = templates.get_template("section_template.tex")
+    tabular_template = templates.get_template("tabular_template.tex")
+    float_template = templates.get_template("float_template.tex")
+
+    # First, creating the cross validation subsection
+    content = wrap_tex(sanitize_tex(
+        "According to IMPUTE2's documentation, the cross-validation tables "
+        'are "based on an internal cross-validation that is performed during '
+        "each IMPUTE2 run. For this analysis, the program masks the genotypes "
+        "of one variant at a time in the study data and imputes the masked "
+        "genotypes by using the remaining study and reference data. The "
+        "imputed genotypes are then compared with the original genotypes to "
+        'produce the concordance statistics."'
+    ))
+
+    # Then, we add the tables
+    t = (r"Tables~\ref{tab:cross_validation_chr_1} to "
+         r"\ref{tab:cross_validation_chr_22} ")
+    t += sanitize_tex(
+        "shows the cross-validation results for the autosomes (chromosomes 1 "
+        "to 22). "
+    )
+    t += r"Table~\ref{tab:cross_validation} "
+    t += sanitize_tex(
+        "shows the cross-validation results across the autosomes."
+    )
+    content += r"\\" + "\n\n" + wrap_tex(t)
+
+    # The header of the two tables
+    header_table_1 = [
+        format_tex(sanitize_tex("Interval"), "textbf"),
+        format_tex(sanitize_tex("Nb Geno"), "textbf"),
+        format_tex(sanitize_tex("Concordance (%)"), "textbf"),
+    ]
+    header_table_2 = [
+        format_tex(sanitize_tex("Interval"), "textbf"),
+        format_tex(sanitize_tex("Called (%)"), "textbf"),
+        format_tex(sanitize_tex("Concordance (%)"), "textbf"),
+    ]
+
+    # Adding the table for each of the chromosomes
+    for chrom in range(1, 23):
+        # Getting the table 1
+        table_1 = run_information["cross_validation_table_1_chrom"][chrom]
+        for i in range(len(table_1)):
+            table_1[i][0] = tex_inline_math(table_1[i][0])
+        table_1 = create_tabular(
+            template=tabular_template,
+            header=header_table_1,
+            col_align=["c", "r", "r"],
+            data=table_1,
+        )
+
+        # Getting the table 2
+        table_2 = run_information["cross_validation_table_2_chrom"][chrom]
+        for i in range(len(table_2)):
+            table_2[i][0] = tex_inline_math(
+                table_2[i][0].replace(">=", r"\geq "),
+            )
+        table_2 = create_tabular(
+            template=tabular_template,
+            header=header_table_2,
+            col_align=["c", "r", "r"],
+            data=table_2,
+        )
+
+        # The number of genotypes
+        nb_genotypes = run_information["cross_validation_nb_genotypes_chrom"]
+        nb_genotypes = nb_genotypes[chrom]
+
+        # Adding the float
+        content += "\n\n" + create_float(
+            template=float_template,
+            float_type="table",
+            caption=wrap_tex(sanitize_tex(
+                "IMPUTE2's internal cross-validation for chromosome {}. "
+                "Tables show the percentage of concordance between genotyped "
+                "calls and imputed calls for {:,d} "
+                "genotypes.".format(chrom, nb_genotypes)
+            )),
+            label="tab:cross_validation_chr_{}".format(chrom),
+            placement="H",
+            content=table_1 + r"\hfill" + table_2,
+        )
+
+    # Adding the table for all the autosomes (Table 1)
+    table_1 = run_information["cross_validation_table_1"]
+    for i in range(len(table_1)):
+        table_1[i][0] = tex_inline_math(table_1[i][0])
+    table_1 = create_tabular(template=tabular_template, header=header_table_1,
+                             col_align=["c", "r", "r"], data=table_1)
+
+    # Adding the table for all the autosomes (Table 2)
+    table_2 = run_information["cross_validation_table_2"]
+    for i in range(len(table_2)):
+        table_2[i][0] = tex_inline_math(table_2[i][0].replace(">=", r"\geq "))
+    table_2 = create_tabular(template=tabular_template, header=header_table_2,
+                             col_align=["c", "r", "r"], data=table_2)
+
+    # The number of genotypes
+    nb_genotypes = run_information["cross_validation_final_nb_genotypes"]
+
+    # Adding the float
+    content += "\n\n" + create_float(
+        template=float_template,
+        float_type="table",
+        caption=wrap_tex(sanitize_tex(
+            "IMPUTE2's internal cross-validation across the genome. Tables "
+            "show the percentage of concordance between genotyped calls and "
+            "imputed calls for {:,d} genotypes.".format(nb_genotypes)
+        )),
+        label="tab:cross_validation",
+        placement="H",
+        content=table_1 + r"\hfill" + table_2,
+    )
+
+    content = section_template.render(section_name="Cross-validation",
+                                      section_type="subsection",
+                                      section_content=content)
+
+    return section_template.render(section_name="Results",
+                                   section_type="section",
                                    section_content=content)
