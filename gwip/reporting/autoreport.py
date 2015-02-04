@@ -191,32 +191,10 @@ def _generate_results(templates, run_options, run_information):
     section_template = templates.get_template("section_template.tex")
     tabular_template = templates.get_template("tabular_template.tex")
     float_template = templates.get_template("float_template.tex")
+    cross_validation = templates.get_template("parts/cross_validation.tex")
+    completion_rate = templates.get_template("parts/completion_rate.tex")
 
-    # First, creating the cross validation subsection
-    content = wrap_tex(sanitize_tex(
-        "According to IMPUTE2's documentation, the cross-validation tables "
-        'are "based on an internal cross-validation that is performed during '
-        "each IMPUTE2 run. For this analysis, the program masks the genotypes "
-        "of one variant at a time in the study data and imputes the masked "
-        "genotypes by using the remaining study and reference data. The "
-        "imputed genotypes are then compared with the original genotypes to "
-        'produce the concordance statistics."'
-    ))
-
-    # Then, we add the tables
-    t = (r"Tables~\ref{tab:cross_validation_chr_1} to "
-         r"\ref{tab:cross_validation_chr_22} ")
-    t += sanitize_tex(
-        "shows the cross-validation results for the autosomes (chromosomes 1 "
-        "to 22). "
-    )
-    t += r"Table~\ref{tab:cross_validation} "
-    t += sanitize_tex(
-        "shows the cross-validation results across the autosomes."
-    )
-    content += r"\\" + "\n\n" + wrap_tex(t)
-
-    # The header of the two tables
+    # The header of the two kind of tables
     header_table_1 = [
         format_tex(sanitize_tex("Interval"), "textbf"),
         format_tex(sanitize_tex("Nb Geno"), "textbf"),
@@ -227,6 +205,9 @@ def _generate_results(templates, run_options, run_information):
         format_tex(sanitize_tex("Called (%)"), "textbf"),
         format_tex(sanitize_tex("Concordance (%)"), "textbf"),
     ]
+
+    # Creating the tables
+    tables = ""
 
     # Adding the table for each of the chromosomes
     for chrom in range(1, 23):
@@ -259,7 +240,7 @@ def _generate_results(templates, run_options, run_information):
         nb_genotypes = nb_genotypes[chrom]
 
         # Adding the float
-        content += "\n\n" + create_float(
+        tables += create_float(
             template=float_template,
             float_type="table",
             caption=wrap_tex(sanitize_tex(
@@ -291,7 +272,7 @@ def _generate_results(templates, run_options, run_information):
     nb_genotypes = run_information["cross_validation_final_nb_genotypes"]
 
     # Adding the float
-    content += "\n\n" + create_float(
+    tables += "\n\n" + create_float(
         template=float_template,
         float_type="table",
         caption=wrap_tex(sanitize_tex(
@@ -304,10 +285,43 @@ def _generate_results(templates, run_options, run_information):
         content=table_1 + r"\hfill" + table_2,
     )
 
-    content = section_template.render(section_name="Cross-validation",
-                                      section_type="subsection",
-                                      section_content=content)
+    # Creating the cross-validation subsection
+    cross_validation_content = section_template.render(
+        section_name="Cross-validation",
+        section_type="subsection",
+        section_content=cross_validation.render(tables=tables),
+        section_label="subsec:cross_validation",
+    )
+
+    # Creating the completion rate subsection
+    content = dict(
+        prob_threshold="{:.3f}".format(0.9),
+        nb_imputed="{:,d}".format(28846501),
+        average_comp_rate="{:.1f}".format(99.216),
+        rate_threshold="{:.1f}".format(0.98 * 100),
+        nb_good_sites="{:,d}".format(26757631),
+        average_comp_rate_cleaned="{:.1f}".format(99.820),
+        mean_missing="{:.1f}".format(10.3),
+        nb_samples="{:,d}".format(5749),
+        nb_genotyped="{:,d}".format(1982870),
+        nb_genotyped_not_complete="{:,d}".format(1572212),
+        pct_genotyped_not_complete="{:.1f}".format(79.29),
+        nb_geno_now_complete="{:,d}".format(18697000),
+        pct_geno_now_complete="{:.1f}".format(100),
+        nb_site_now_complete="{:,d}".format(1572212)
+    )
+
+    completion_rate_content = section_template.render(
+        section_name="Completion rate",
+        section_type="subsection",
+        section_content=completion_rate.render(**content),
+        section_label="subsec:completion_rate",
+    )
+
+    # The final content
+    content = cross_validation_content + completion_rate_content
 
     return section_template.render(section_name="Results",
                                    section_type="section",
-                                   section_content=content)
+                                   section_content=content,
+                                   section_label="sec:results")
