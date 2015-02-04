@@ -1,0 +1,22 @@
+
+To evaluate the completion rate, we first used a probability threshold of
+$\geq \VAR{ prob_threshold }$, which means that a genotype must have one of the
+three allele combination (\texttt{AA}, \texttt{AB} or \texttt{BB})
+probabilities higher or equal to \VAR{ prob_threshold } to be considered as a
+good call.\\
+
+For the \VAR{ nb_imputed } imputed variants, an average completion rate of
+\VAR{ average_comp_rate }\% was obtained. When removing variants with a
+completion rate under \VAR{ rate_threshold }\%, \VAR{ nb_good_sites } markers
+were left, with an average completion rate of
+\VAR{ average_comp_rate_cleaned }\%, meaning that there is a mean of
+\VAR{ mean_missing } missing genotypes (for \VAR{ nb_samples } samples) for
+each markers.\\
+
+A total of \VAR{ nb_genotyped } variants were previously genotyped,
+\VAR{ nb_genotyped_not_complete } (\VAR{ pct_genotyped_not_complete }\%) of
+which had  a call rate lower than 100\%. A total of
+\VAR{ nb_geno_now_complete } (\VAR{ pct_geno_now_complete }\%) missing
+genotypes were imputed with high quality (\textit{i.e.}
+\VAR{ nb_site_now_complete } markers now have a call rate of 100\%).
+
