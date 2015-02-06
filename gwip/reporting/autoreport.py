@@ -183,7 +183,14 @@ def _generate_results(templates, run_options, run_information):
                           "cross_validation_table_1",
                           "cross_validation_table_2",
                           "cross_validation_table_1_chrom",
-                          "cross_validation_table_2_chrom"]
+                          "cross_validation_table_2_chrom", "prob_threshold",
+                          "nb_imputed", "average_comp_rate", "rate_threshold",
+                          "nb_good_sites", "average_comp_rate_cleaned",
+                          "mean_missing", "nb_samples", "nb_genotyped",
+                          "nb_genotyped_not_complete",
+                          "pct_genotyped_not_complete", "nb_geno_now_complete",
+                          "pct_geno_now_complete", "nb_site_now_complete",
+                          "pct_good_sites"]
     for required_variable in required_variables:
         assert required_variable in run_information
 
@@ -293,28 +300,10 @@ def _generate_results(templates, run_options, run_information):
         section_label="subsec:cross_validation",
     )
 
-    # Creating the completion rate subsection
-    content = dict(
-        prob_threshold="{:.3f}".format(0.9),
-        nb_imputed="{:,d}".format(28846501),
-        average_comp_rate="{:.1f}".format(99.216),
-        rate_threshold="{:.1f}".format(0.98 * 100),
-        nb_good_sites="{:,d}".format(26757631),
-        average_comp_rate_cleaned="{:.1f}".format(99.820),
-        mean_missing="{:.1f}".format(10.3),
-        nb_samples="{:,d}".format(5749),
-        nb_genotyped="{:,d}".format(1982870),
-        nb_genotyped_not_complete="{:,d}".format(1572212),
-        pct_genotyped_not_complete="{:.1f}".format(79.29),
-        nb_geno_now_complete="{:,d}".format(18697000),
-        pct_geno_now_complete="{:.1f}".format(100),
-        nb_site_now_complete="{:,d}".format(1572212)
-    )
-
     completion_rate_content = section_template.render(
         section_name="Completion rate",
         section_type="subsection",
-        section_content=completion_rate.render(**content),
+        section_content=completion_rate.render(**run_information),
         section_label="subsec:completion_rate",
     )
 

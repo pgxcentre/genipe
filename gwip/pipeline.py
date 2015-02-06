@@ -13,6 +13,8 @@ from urllib.request import urlopen
 from subprocess import Popen, PIPE
 from collections import defaultdict
 
+import pandas as pd
+
 from .db import *
 from . import __version__
 from .task import launcher
@@ -101,6 +103,9 @@ def main():
         numbers = exclude_markers_before_phasing(args.bfile, db_name, args)
         run_information.update(numbers)
 
+        # Computing the marker missing rate
+        missing_rate = compute_marker_missing_rate(args.bfile, db_name, args)
+
         # Checking the strand
         numbers = check_strand(
             os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}"),
@@ -138,7 +143,7 @@ def main():
         run_information.update(numbers)
 
         # Phasing the data
-        phase_markers(
+        samples = phase_markers(
             os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.final"),
             os.path.join(args.out_dir, "chr{chrom}",
                          "chr{chrom}.final.phased"),
@@ -171,6 +176,12 @@ def main():
                                          "chr{chrom}.imputed"),
                             args.probability, args.completion, db_name, args)
 
+        # Gathering the imputation statistics
+        numbers = gather_imputation_stats(args.probability, args.completion,
+                                          len(samples), missing_rate,
+                                          args.out_dir)
+        run_information.update(numbers)
+
         # Creating the output directory (if it doesn't exits)
         report_dir = os.path.join(args.out_dir, "report")
         if not os.path.isdir(report_dir):
@@ -197,7 +208,8 @@ def main():
 def get_task_options():
     """Gets the task options."""
     task_options = {}
-    task_names = ["plink_exclude_chr1", "plink_exclude_chr10",
+    task_names = ["plink_missing_rate",
+                  "plink_exclude_chr1", "plink_exclude_chr10",
                   "plink_exclude_chr11", "plink_exclude_chr12",
                   "plink_exclude_chr13", "plink_exclude_chr14",
                   "plink_exclude_chr15", "plink_exclude_chr16",
@@ -330,6 +342,22 @@ def phase_markers(prefix, o_prefix, db_name, options):
                           hpc_options=options.task_options,
                           out_dir=options.out_dir)
     logging.info("Done phasing markers")
+
+    # Checking that all the sample files are the same
+    compare_with = None
+    for chrom in range(1, 23):
+        filename = o_prefix.format(chrom=chrom) + ".sample"
+        compare_to = None
+        with open(filename, "r") as i_file:
+            compare_to = i_file.read()
+            if chrom == 1:
+                compare_with = compare_to
+
+        if compare_with != compare_to:
+            raise ProgramError("phased sample files are different...")
+
+    # Returning the samples
+    return [i.split(" ")[0] for i in compare_with.splitlines()[2:]]
 
 
 def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
@@ -691,6 +719,44 @@ def final_exclusion(prefix, to_exclude, db_name, options):
     return {"nb_phasing_markers": nb_markers}
 
 
+def compute_marker_missing_rate(prefix, db_name, options):
+    """Compute (using Plink) marker missing rate."""
+    # The output prefix
+    o_prefix = os.path.join(options.out_dir, "missing")
+    if not os.path.isdir(o_prefix):
+        os.mkdir(o_prefix)
+    o_prefix = os.path.join(o_prefix, "missing")
+
+    # The command to run
+    commands_info = []
+    command = [
+        "plink" if options.plink_bin is None else options.plink_bin,
+        "--noweb",
+        "--bfile", prefix,
+        "--missing",
+        "--out", o_prefix,
+    ]
+
+    commands_info.append({
+        "task_id": "plink_missing_rate",
+        "name": "plink missing rate",
+        "command": command,
+        "task_db": db_name,
+        "o_files": [o_prefix + ext for ext in (".lmiss", ".imiss")],
+    })
+
+    # Executing command
+    logging.info("Computing missing rate")
+    launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
+                          hpc_options=options.task_options,
+                          out_dir=options.out_dir)
+    logging.info("Done computing missing rate")
+
+    # Getting the missing rate
+    logging.info("Reading the missing rate")
+    return pd.read_csv(o_prefix + ".lmiss", delim_whitespace=True)
+
+
 def exclude_markers_before_phasing(prefix, db_name, options):
     """Finds and excludes ambiguous markers (A/T and G/C) or duplicated."""
     # The ambiguous genotypes
@@ -801,6 +867,8 @@ def exclude_markers_before_phasing(prefix, db_name, options):
 
 def get_cross_validation_results(glob_pattern):
     """Creates a weighed mean for each chromosome for cross-validation."""
+    logging.info("Gathering cross-validation statistics")
+
     # The regular expressions used here
     nb_genotypes_re = re.compile(r"^In the current analysis, IMPUTE2 masked, "
                                  r"imputed, and evaluated (\d+) genotypes")
@@ -1012,6 +1080,70 @@ def get_cross_validation_results(glob_pattern):
         "cross_validation_table_2_chrom":      per_chrom_table_2,
     }
 
+
+def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
+    """Gathers imputation statistics from the merged dataset."""
+    logging.info("Gathering imputation statistics")
+
+    # The stats we want to gather
+    # For all the sites
+    tot_nb_sites = 0
+    sum_rates = 0
+
+    # For the best sites
+    tot_good_sites = 0
+    sum_good_rates = 0
+
+    # For each chromosome, get the statistics
+    filename_template = os.path.join(o_dir, "chr{chrom}", "final_impute2",
+                                     "chr{chrom}.imputed.{suffix}")
+    for chrom in range(1, 23):
+        # First, we read the imputed sites
+        filename = filename_template.format(chrom=chrom,
+                                            suffix="imputed_sites")
+        imputed_sites = None
+        with open(filename, "r") as i_file:
+            imputed_sites = {i for i in i_file.read().splitlines()}
+
+        # Then, we read the completion using a DataFrame
+        filename = filename_template.format(chrom=chrom,
+                                            suffix="completion_rates")
+        completion_data = pd.read_csv(filename, sep="\t")
+
+        # Saving the stats for all sites
+        tot_nb_sites += completion_data.shape[0]
+        sum_rates += completion_data.completion_rate.sum()
+
+        # Saving the stats for good sites
+        good_sites = completion_data.completion_rate >= completion_t
+        tot_good_sites += completion_data[good_sites].shape[0]
+        sum_good_rates += completion_data[good_sites].completion_rate.sum()
+
+    # Computing the rates
+    comp_rate = sum_rates / tot_nb_sites
+    good_comp_rate = sum_good_rates / tot_good_sites
+
+    # Other statistics
+    pct_good_sites = tot_good_sites / tot_nb_sites * 100
+    mean_missing = nb_samples * (1 - good_comp_rate)
+
+    return {
+        "prob_threshold":             "{:.1f}".format(prob_t * 100),
+        "nb_imputed":                 "{:,d}".format(tot_nb_sites),
+        "average_comp_rate":          "{:.1f}".format(comp_rate * 100),
+        "rate_threshold":             "{:.1f}".format(completion_t * 100),
+        "nb_good_sites":              "{:,d}".format(tot_good_sites),
+        "pct_good_sites":             "{:.1f}".format(pct_good_sites),
+        "average_comp_rate_cleaned":  "{:.1f}".format(good_comp_rate * 100),
+        "mean_missing":               "{:.1f}".format(mean_missing),
+        "nb_samples":                 "{:,d}".format(nb_samples),
+        "nb_genotyped":               "{:,d}".format(1982870),
+        "nb_genotyped_not_complete":  "{:,d}".format(1572212),
+        "pct_genotyped_not_complete": "{:.1f}".format(79.29),
+        "nb_geno_now_complete":       "{:,d}".format(18697000),
+        "pct_geno_now_complete":      "{:.1f}".format(100),
+        "nb_site_now_complete":       "{:,d}".format(1572212)
+    }
 
 def get_shapeit_version(binary):
     """Gets the SHAPEIT version from the binary."""
