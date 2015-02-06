@@ -118,7 +118,12 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
 
             # Have we seen this marker?
             if name in already_seen:
-                name = "{}_{}".format(name, already_seen[name] + 1)
+                new_name = "{}_{}".format(name, already_seen[name])
+                while new_name in already_seen:
+                    already_seen[name] += 1
+                    new_name = "{}_{}".format(name, already_seen[name])
+                name = new_name
+            already_seen[name] += 1
 
             # Checking the chromosome
             if chrom == "---":
@@ -164,9 +169,6 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
             print(real_chrom, name, pos, a1, a2, *row[5:], sep=" ",
                   file=impute2_o_file)
 
-            # We mark this marker as already seen
-            already_seen[name] += 1
-
         # Closing the input file
         i_file.close()
 
@@ -201,7 +203,8 @@ def parse_args(parser):
     """Parses the command line options and arguments."""
     # The parser object
     parser.add_argument("--version", action="version",
-                        version="%(prog)s {}".format(__version__))
+                        version="%(prog)s (part of GWIP "
+                                "version {})".format(__version__))
     parser.add_argument("--debug", action="store_true",
                         help="Set the logging level to debug")
 
