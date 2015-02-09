@@ -1,0 +1,28 @@
+
+The following (cleaned) files provided information about the study cohort
+dataset for \VAR{ initial_nb_samples } samples and \VAR{ initial_nb_markers }
+markers (including \VAR{ nb_special_markers } markers located on sexual or
+mitochondrial chromosomes):
+
+\VAR{ data_files }
+
+IMPUTE2's pre-phasing approach can work with phased haplotypes from SHAPEIT, a
+highly accurate phasing algorithm that can handle mixtures of unrelated
+samples, duos or trios. The usage of SHAPEIT is highly recommended to infer
+haplotypes underlying the study genotypes. The phased haplotypes are then
+passed to IMPUTE2 for imputation. Although pre-phasing allows for very fast
+imputation, it leads to a small loss in accuracy since the estimation
+uncertainty in the study haplotypes is ignored. SHAPEIT version
+\VAR{ shapeit_version } and IMPUTE2 version \VAR{ impute2_version } were used
+for this analysis. Binary pedfiles were processed using Plink version
+\VAR{ plink_version }.\\
+
+To speed up the pre-phasing and imputation steps, the dataset was split by
+chromosome. The following quality steps were then performed on each chromosome:
+
+\VAR{ steps_data }
+
+\textbf{In total, \VAR{ nb_phasing_markers } were used for phasing using
+SHAPEIT.} IMPUTE2 was then used to impute markers genome-wide using its
+reference file.
+

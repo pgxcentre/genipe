@@ -25,8 +25,10 @@ def generate_report(out_dir, run_opts, run_info):
 
     # Gathering the report content
     report_content = ""
+    report_content += _generate_background(jinja2_env, run_opts, run_info)
     report_content += _generate_methods(jinja2_env, run_opts, run_info)
     report_content += _generate_results(jinja2_env, run_opts, run_info)
+    report_content += _generate_conclusions(jinja2_env, run_opts, run_info)
     report_data["report_content"] = report_content
 
     # Getting the template
@@ -42,6 +44,21 @@ def generate_report(out_dir, run_opts, run_info):
         raise ProgramError("{}: cannot write file".format(report_filename))
 
 
+def _generate_background(templates, run_options, run_information):
+    """Generates the background section of the report."""
+    # Loading the template
+    section_template = templates.get_template("section_template.tex")
+    background = templates.get_template("parts/background.tex")
+
+    # Returning the section
+    return section_template.render(
+        section_name="Background",
+        section_type="section",
+        section_label="sec:background",
+        section_content=background.render(**run_information),
+    )
+
+
 def _generate_methods(templates, run_options, run_information):
     """Generate the method section of the report."""
     # Some assertions
@@ -55,54 +72,19 @@ def _generate_methods(templates, run_options, run_information):
     # Loading the templates
     section_template = templates.get_template("section_template.tex")
     itemize_template = templates.get_template("iterate_template.tex")
-
-    # The text of the introduction
-    content = wrap_tex(sanitize_tex(
-        "The following (cleaned) files provided information about the study "
-        "cohort dataset for {nb_samples:,d} samples and {nb_markers:,d} "
-        "markers (including {nb_special:,d} markers located on sexual or "
-        "mitochondrial chromosomes):".format(
-            nb_samples=run_information["initial_nb_samples"],
-            nb_markers=run_information["initial_nb_markers"],
-            nb_special=run_information["nb_special_markers"],
-        )
-    ))
+    methods = templates.get_template("parts/methods.tex")
 
     # The input files
-    input_files = [
+    data_files = [
         "{}.{}".format(run_options.bfile, ext) for ext in ["bed", "bim", "fam"]
     ]
-    input_files = [
-        format_tex(sanitize_tex(text), "texttt") for text in input_files
+    data_files = [
+        format_tex(sanitize_tex(text), "texttt") for text in data_files
     ]
 
     # Creating the iteration
-    content += "\n" + itemize_template.render(iteration_type="itemize",
-                                              iteration_list=input_files)
-
-    # The values for the different steps
-    content += "\n" + wrap_tex(sanitize_tex(
-        "IMPUTE2's pre-phasing approach can work with phased haplotypes from "
-        "SHAPEIT, a highly accurate phasing algorithm that can handle "
-        "mixtures of unrelated samples, duos or trios. The usage of SHAPEIT "
-        "is highly recommended to infer haplotypes underlying the study "
-        "genotypes. The phased haplotypes are then passed to IMPUTE2 for "
-        "imputation. Although pre-phasing allows for very fast imputation, it "
-        "leads to a small loss in accuracy since the estimation uncertainty "
-        "in the study haplotypes is ignored. SHAPEIT version {shapeit} and "
-        "IMPUTE2 version {impute2} were used for this analysis. Binary "
-        "pedfiles were processed using Plink version {plink}.".format(
-            shapeit=run_information["shapeit_version"],
-            impute2=run_information["impute2_version"],
-            plink=run_information["plink_version"],
-        )
-    ))
-
-    content += r"\\" + "\n\n" + wrap_tex(sanitize_tex(
-        "To speed up the pre-phasing and imputation steps, the dataset was "
-        "split by chromosome. The following quality steps were then performed "
-        "on each chromosome:"
-    ))
+    data_files = itemize_template.render(iteration_type="itemize",
+                                         iteration_list=data_files)
 
     # The text for the different steps
     steps = []
@@ -118,8 +100,8 @@ def _generate_methods(templates, run_options, run_information):
         "the imputation. "
     ) + format_tex(
         sanitize_tex(
-            "In total, {ambiguous:,d} ambiguous, {duplicated:,d} duplicated "
-            "and {special:,d} special markers were excluded.".format(
+            "In total, {ambiguous} ambiguous, {duplicated} duplicated and "
+            "{special} special markers were excluded.".format(
                 ambiguous=run_information["nb_ambiguous"],
                 duplicated=run_information["nb_duplicates"],
                 special=run_information["nb_special_markers"],
@@ -157,22 +139,20 @@ def _generate_methods(templates, run_options, run_information):
         "textbf",
     )))
 
-    content += "\n" + itemize_template.render(iteration_type="enumerate",
-                                              iteration_list=steps)
-
-    content += "\n" + wrap_tex(format_tex(
-        sanitize_tex("In total, {:,d} were used for phasing using "
-                     "SHAPEIT.".format(run_information["nb_phasing_markers"])),
-        "textbf",
-    ) + sanitize_tex(
-        " IMPUTE2 was then used to impute markers genome-wide using its "
-        "reference file."
-    ))
+    steps = itemize_template.render(iteration_type="enumerate",
+                                    iteration_list=steps)
 
     # Returning the section
-    return section_template.render(section_name="Methods",
-                                   section_type="section",
-                                   section_content=content)
+    return section_template.render(
+        section_name="Methods",
+        section_type="section",
+        section_label="sec:methods",
+        section_content=methods.render(
+            data_files=data_files,
+            steps_data=steps,
+            **run_information
+        ),
+    )
 
 
 def _generate_results(templates, run_options, run_information):
@@ -314,3 +294,18 @@ def _generate_results(templates, run_options, run_information):
                                    section_type="section",
                                    section_content=content,
                                    section_label="sec:results")
+
+
+def _generate_conclusions(templates, run_options, run_information):
+    """Generates the background section of the report."""
+    # Loading the template
+    section_template = templates.get_template("section_template.tex")
+    conclusions = templates.get_template("parts/conclusions.tex")
+
+    # Returning the section
+    return section_template.render(
+        section_name="Conclusions",
+        section_type="section",
+        section_label="sec:conclusions",
+        section_content=conclusions.render(**run_information),
+    )

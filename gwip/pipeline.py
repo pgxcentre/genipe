@@ -857,11 +857,11 @@ def exclude_markers_before_phasing(prefix, db_name, options):
     logging.info("Done excluding and splitting markers")
 
     return {
-        "initial_nb_markers": nb_markers,
-        "initial_nb_samples": nb_samples,
-        "nb_ambiguous":       nb_ambiguous,
-        "nb_duplicates":      nb_dup,
-        "nb_special_markers": nb_special_markers,
+        "initial_nb_markers": "{:,d}".format(nb_markers),
+        "initial_nb_samples": "{:,d}".format(nb_samples),
+        "nb_ambiguous":       "{:,d}".format(nb_ambiguous),
+        "nb_duplicates":      "{:,d}".format(nb_dup),
+        "nb_special_markers": "{:,d}".format(nb_special_markers),
     }
 
 
