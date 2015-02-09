@@ -4,7 +4,10 @@ __all__ = ["generate_report", ]
 
 
 import os
+import shutil
 from datetime import date
+
+from pkg_resources import resource_filename
 
 from .utils import *
 from ..error import ProgramError
@@ -42,6 +45,14 @@ def generate_report(out_dir, run_opts, run_info):
 
     except FileNotFoundError:
         raise ProgramError("{}: cannot write file".format(report_filename))
+
+    # Copying the bibliography file
+    bib_file = resource_filename(__name__, "templates/biblio/references.bib")
+    shutil.copy(bib_file, out_dir)
+
+    # Copying the bibliography style
+    bib_style = resource_filename(__name__, "templates/biblio/bmc_article.bst")
+    shutil.copy(bib_style, out_dir)
 
 
 def _generate_background(templates, run_options, run_information):
