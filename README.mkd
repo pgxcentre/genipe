@@ -8,7 +8,13 @@ runs a genome-wide imputation pipeline using *Plink*, *shapeit2* and *impute2*.
 
 ## Dependencies
 
-The tool requires a standard [Python](http://python.org/) installation.
+The tool requires a standard [Python](http://python.org/) 3 installation with
+the following modules:
+
+* `numpy` version 1.8.2 and latest
+* `jinja2` version 2.7.3 and latest
+* `pandas` version 0.15.2 and latest
+* `setuptools` version 12.0.5 and latest
 
 The tool has been tested on *Linux* only.
 
@@ -23,11 +29,14 @@ $ gwip-launcher --help
 usage: gwip-launcher [-h] [-v] [--debug] [--thread THREAD] --bfile PREFIX
                      [--output-dir DIR] [--use-drmaa] [--shapeit-bin BINARY]
                      [--shapeit-thread SHAPEIT_THREAD] [--plink-bin BINARY]
-                     [--impute2-bin BINARY] --hap-template TEMPLATE
-                     --legend-template TEMPLATE --map-template TEMPLATE
-                     --sample-file FILE
+                     [--impute2-bin BINARY] [--segment-length BP]
+                     --hap-template TEMPLATE --legend-template TEMPLATE
+                     --map-template TEMPLATE --sample-file FILE
+                     [--filtering-rules RULE [RULE ...]] [--probability FLOAT]
+                     [--completion FLOAT] [--report-number NB]
+                     [--report-title TITLE] [--report-author AUTHOR]
 
-Execute the genome-wide imputation pipeline (version 0.1).
+Execute the genome-wide imputation pipeline (gwip version 0.1).
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -54,6 +63,7 @@ Plink Options:
 
 IMPUTE2 Options:
   --impute2-bin BINARY  The IMPUTE2 binary if it's not in the path
+  --segment-length BP   The length of a single segment for imputation [5e+06)]
   --hap-template TEMPLATE
                         The template for IMPUTE2's haplotype files (replace
                         the chromosome number by '{chrom}', e.g.
@@ -67,5 +77,17 @@ IMPUTE2 Options:
                         chromosome number by '{chrom}', e.g.
                         'genetic_map_chr{chrom}_combined_b37.txt')
   --sample-file FILE    The name of IMPUTE2's sample file
+  --filtering-rules RULE [RULE ...]
+                        IMPUTE2 filtering rules (if required)
+
+IMPUTE2 Merger Options:
+  --probability FLOAT   The probability threshold for no calls [0.9]
+  --completion FLOAT    The site completion rate threshold [0.98]
+
+Automatic Report Options:
+  --report-number NB    The report number
+  --report-title TITLE  The report title
+  --report-author AUTHOR
+                        The report author
 ```
 
