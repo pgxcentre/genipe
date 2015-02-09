@@ -7,11 +7,6 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 
-__author__ = "Louis-Philippe Lemieux Perreault"
-__copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
-__license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
-
-
 import os
 import sys
 import shlex
@@ -24,6 +19,11 @@ from tempfile import NamedTemporaryFile
 
 from ..db import *
 from ..error import ProgramError
+
+
+__author__ = "Louis-Philippe Lemieux Perreault"
+__copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
+__license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
 __all__ = ["launch_tasks", ]

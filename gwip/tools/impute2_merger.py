@@ -7,11 +7,6 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 
-__author__ = "Louis-Philippe Lemieux Perreault"
-__copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
-__license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
-
-
 import os
 import re
 import sys
@@ -23,6 +18,11 @@ import numpy as np
 
 from .. import __version__
 from ..error import ProgramError
+
+
+__author__ = "Louis-Philippe Lemieux Perreault"
+__copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
+__license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
 def main():

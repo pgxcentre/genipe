@@ -7,15 +7,15 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 
-__author__ = "Louis-Philippe Lemieux Perreault"
-__copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
-__license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
-
-
 import os
 import logging
 import sqlite3
 from datetime import datetime
+
+
+__author__ = "Louis-Philippe Lemieux Perreault"
+__copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
+__license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
 __all__ = ["create_task_db", "check_task_completion", "create_task_entry",

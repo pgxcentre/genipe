@@ -7,11 +7,6 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 
-__author__ = "Louis-Philippe Lemieux Perreault"
-__copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
-__license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
-
-
 import os
 import re
 import sys
@@ -32,6 +27,11 @@ from . import __version__
 from .task import launcher
 from .error import ProgramError
 from .reporting import generate_report
+
+
+__author__ = "Louis-Philippe Lemieux Perreault"
+__copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
+__license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
 def main():
@@ -1185,6 +1185,7 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
         "pct_geno_now_complete":      "{:.1f}".format(pct_geno_now_complete),
         "nb_site_now_complete":       "{:,d}".format(nb_sites_now_complete)
     }
+
 
 def get_shapeit_version(binary):
     """Gets the SHAPEIT version from the binary."""

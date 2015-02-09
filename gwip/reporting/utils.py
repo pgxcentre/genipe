@@ -7,6 +7,12 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 
+import re
+from textwrap import wrap
+
+import jinja2
+
+
 __author__ = "Louis-Philippe Lemieux Perreault"
 __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
 __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
@@ -14,12 +20,6 @@ __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 __all__ = ["config_jinja2", "sanitize_tex", "format_tex", "wrap_tex",
            "create_tabular", "create_float", "tex_inline_math", ]
-
-
-import re
-from textwrap import wrap
-
-import jinja2
 
 
 _char_mod = {

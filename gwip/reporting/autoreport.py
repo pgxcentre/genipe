@@ -7,14 +7,6 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 
-__author__ = "Louis-Philippe Lemieux Perreault"
-__copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
-__license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
-
-
-__all__ = ["generate_report", ]
-
-
 import os
 import shutil
 from datetime import date
@@ -24,6 +16,14 @@ from pkg_resources import resource_filename
 from .utils import *
 from .. import __version__
 from ..error import ProgramError
+
+
+__author__ = "Louis-Philippe Lemieux Perreault"
+__copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
+__license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
+
+
+__all__ = ["generate_report", ]
 
 
 def generate_report(out_dir, run_opts, run_info):
