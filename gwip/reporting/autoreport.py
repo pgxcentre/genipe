@@ -10,6 +10,7 @@ from datetime import date
 from pkg_resources import resource_filename
 
 from .utils import *
+from .. import __version__
 from ..error import ProgramError
 
 
@@ -20,10 +21,12 @@ def generate_report(out_dir, run_opts, run_info):
 
     # Gathering the report data
     report_data = {
-        "report_number": sanitize_tex(run_opts.report_number),
-        "title":         sanitize_tex(run_opts.report_title),
-        "author":        sanitize_tex(run_opts.report_author),
-        "date":          sanitize_tex("{:%B %d, %Y}".format(date.today())),
+        "report_number":   sanitize_tex(run_opts.report_number),
+        "title":           sanitize_tex(run_opts.report_title),
+        "author":          sanitize_tex(run_opts.report_author),
+        "date":            sanitize_tex("{:%B %d, %Y}".format(date.today())),
+        "package_name":    sanitize_tex(__name__.split(".")[0]),
+        "package_version": sanitize_tex(__version__),
     }
 
     # Gathering the report content
