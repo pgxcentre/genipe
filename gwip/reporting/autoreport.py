@@ -51,7 +51,7 @@ def generate_report(out_dir, run_opts, run_info):
     shutil.copy(bib_file, out_dir)
 
     # Copying the bibliography style
-    bib_style = resource_filename(__name__, "templates/biblio/bmc_article.bst")
+    bib_style = resource_filename(__name__, "templates/biblio/references.bst")
     shutil.copy(bib_style, out_dir)
 
 
