@@ -1094,10 +1094,15 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
     tot_good_sites = 0
     sum_good_rates = 0
 
+    # All imputed sites
+    genotyped_sites = []
+
     # For each chromosome, get the statistics
     filename_template = os.path.join(o_dir, "chr{chrom}", "final_impute2",
                                      "chr{chrom}.imputed.{suffix}")
     for chrom in range(1, 23):
+        logging.info("  - chromosome {}".format(chrom))
+
         # First, we read the imputed sites
         filename = filename_template.format(chrom=chrom,
                                             suffix="imputed_sites")
@@ -1119,6 +1124,29 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
         tot_good_sites += completion_data[good_sites].shape[0]
         sum_good_rates += completion_data[good_sites].completion_rate.sum()
 
+        # Saving the imputed sites call rates
+        imputed_sites = completion_data.name.isin(imputed_sites)
+        genotyped_sites.append(completion_data[~imputed_sites])
+
+    # Concatenating the completion rates for the genotyped sites
+    genotyped_sites = pd.concat(genotyped_sites)
+    now_incomplete_sites = genotyped_sites.nb_missing > 0
+
+    # Getting the original missing rates for the genotyped sites
+    sites = missing.SNP.isin(genotyped_sites.name)
+    incomplete_sites = missing.N_MISS > 0
+
+    # Gathering genotyped sites statistics
+    nb_genotyped_sites = genotyped_sites.shape[0]
+    nb_incomplete_sites = missing[sites & incomplete_sites].shape[0]
+    pct_incomplete_sites = nb_incomplete_sites / nb_genotyped_sites * 100
+    nb_sites_now_complete = genotyped_sites[~now_incomplete_sites].shape[0]
+    nb_missing_geno = missing[sites & incomplete_sites].N_MISS.sum()
+    now_nb_missing_geno = genotyped_sites[now_incomplete_sites]
+    now_nb_missing_geno = now_nb_missing_geno.nb_missing.sum()
+    nb_geno_now_complete = nb_missing_geno - now_nb_missing_geno
+    pct_geno_now_complete = nb_geno_now_complete / nb_missing_geno * 100
+
     # Computing the rates
     comp_rate = sum_rates / tot_nb_sites
     good_comp_rate = sum_good_rates / tot_good_sites
@@ -1137,12 +1165,13 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
         "average_comp_rate_cleaned":  "{:.1f}".format(good_comp_rate * 100),
         "mean_missing":               "{:.1f}".format(mean_missing),
         "nb_samples":                 "{:,d}".format(nb_samples),
-        "nb_genotyped":               "{:,d}".format(1982870),
-        "nb_genotyped_not_complete":  "{:,d}".format(1572212),
-        "pct_genotyped_not_complete": "{:.1f}".format(79.29),
-        "nb_geno_now_complete":       "{:,d}".format(18697000),
-        "pct_geno_now_complete":      "{:.1f}".format(100),
-        "nb_site_now_complete":       "{:,d}".format(1572212)
+        "nb_genotyped":               "{:,d}".format(nb_genotyped_sites),
+        "nb_genotyped_not_complete":  "{:,d}".format(nb_incomplete_sites),
+        "pct_genotyped_not_complete": "{:.1f}".format(pct_incomplete_sites),
+        "nb_geno_now_complete":       "{:,d}".format(nb_geno_now_complete),
+        "nb_missing_geno":            "{:,d}".format(nb_missing_geno),
+        "pct_geno_now_complete":      "{:.1f}".format(pct_geno_now_complete),
+        "nb_site_now_complete":       "{:,d}".format(nb_sites_now_complete)
     }
 
 def get_shapeit_version(binary):

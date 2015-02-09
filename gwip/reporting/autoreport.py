@@ -190,7 +190,7 @@ def _generate_results(templates, run_options, run_information):
                           "nb_genotyped_not_complete",
                           "pct_genotyped_not_complete", "nb_geno_now_complete",
                           "pct_geno_now_complete", "nb_site_now_complete",
-                          "pct_good_sites"]
+                          "pct_good_sites", "nb_missing_geno"]
     for required_variable in required_variables:
         assert required_variable in run_information
 
