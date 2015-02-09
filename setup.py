@@ -44,11 +44,11 @@ def setup_package():
         entry_points={
             "console_scripts": [
                 "gwip-launcher=gwip.pipeline:main",
-                "impute2-merger=gwip.tool.impute2_merger:main",
+                "impute2-merger=gwip.tools.impute2_merger:main",
             ],
         },
         install_requires=["numpy >= 1.8.2", "jinja2 >= 2.7.3", ],
-        packages=["gwip", "gwip.task", "gwip.db", "gwip.tool",
+        packages=["gwip", "gwip.task", "gwip.db", "gwip.tools",
                   "gwip.reporting", ],
         package_data={"gwip.reporting": ["templates/*.tex",
                                          "templates/parts/*.tex"], },
