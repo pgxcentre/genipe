@@ -728,7 +728,7 @@ def final_exclusion(prefix, to_exclude, db_name, options):
             for line in i_file:
                 nb_markers += 1
 
-    return {"nb_phasing_markers": nb_markers}
+    return {"nb_phasing_markers": "{:,d}".format(nb_markers)}
 
 
 def compute_marker_missing_rate(prefix, db_name, options):
