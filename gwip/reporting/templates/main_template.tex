@@ -1,4 +1,5 @@
 \documentclass[10pt,twoside,english]{scrartcl}
+
 \usepackage[T1]{fontenc}
 \usepackage[latin9]{inputenc}
 \usepackage[letterpaper]{geometry}
@@ -6,7 +7,6 @@
 \usepackage{fancyhdr}
 \pagestyle{fancy}
 \setlength{\parindent}{0cm}
-\usepackage{color}
 \usepackage{babel}
 \usepackage[unicode=true,
  bookmarks=true,bookmarksnumbered=false,bookmarksopen=false,
@@ -29,14 +29,6 @@
 % Floats, caption and subcaptions
 \usepackage{float}
 \usepackage[bf]{caption}
-\usepackage{subcaption}
-
-% Enables page in landscape mode
-\usepackage{pdflscape}
-
-% Color in tables + dashed line
-\usepackage{colortbl}
-\usepackage{arydshln}
 
 % The Report number...
 \newcommand{\ReportNumber}{\VAR{ report_number }}
@@ -62,9 +54,6 @@
 
 % Table's numerotations are in Roman numbers
 \renewcommand{\thetable}{\Roman{table}}
-
-% Subfigure numbering
-\renewcommand{\thesubfigure}{\Alph{subfigure}}
 
 \let\tempone\itemize
 \let\temptwo\enditemize
