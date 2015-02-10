@@ -30,7 +30,7 @@ __all__ = ["launch_tasks", ]
 
 
 def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
-                 hpc_options=None, out_dir=None):
+                 hpc_options=None, out_dir=None, preamble=""):
     """Executes commands."""
     # Do we need to check the return code?
     to_run = []
@@ -72,6 +72,7 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
                     nodes = hpc_options[task_id]["nodes"]
             to_process[i]["walltime"] = walltime
             to_process[i]["nodes"] = nodes
+            to_process[i]["preamble"] = preamble
 
         # Adding to list to run
         to_run.append(to_process[i])
@@ -202,6 +203,7 @@ def _execute_command_drmaa(command_info):
     assert "name" in command_info
     assert "check_retcode" in command_info
     assert "o_files" in command_info
+    assert "preamble" in command_info
 
     # Getting the command's information
     name = command_info["name"]
@@ -210,6 +212,7 @@ def _execute_command_drmaa(command_info):
     db_name = command_info["task_db"]
     out_dir = command_info["out_dir"]
     check_rc = command_info["check_retcode"]
+    preamble = command_info["preamble"]
 
     # Checking if the command was completed
     logging.debug("Checking status for '{}'".format(task_id))
@@ -227,11 +230,20 @@ def _execute_command_drmaa(command_info):
     # Creating the script
     tmp_file = NamedTemporaryFile(mode="w", suffix="_execute.sh", delete=False,
                                   dir=out_dir)
+
+    # Writing the shebang
     print("#!/usr/bin/env bash", file=tmp_file)
+
+    # Writing the preamble
+    print(preamble, file=tmp_file)
+
+    # Writing the command
     print(command[0], end=" ", file=tmp_file)
     for chunk in command[1:]:
         print(shlex.quote(chunk), end=" ", file=tmp_file)
     print("", file=tmp_file)
+
+    # Closing the temporary file
     tmp_file.close()
 
     # Making the script executable
@@ -246,7 +258,6 @@ def _execute_command_drmaa(command_info):
     job.remoteCommand = tmp_file.name
     job.jobName = "_{}".format(task_id)
     job.workingDirectory = os.getcwd()
-    job.jobEnvironment = os.environ
     if command_info["walltime"] is not None:
         job.hardWallclockTimeLimit = command_info["walltime"]
     if command_info["nodes"] is not None:

@@ -82,6 +82,7 @@ def main():
         args.task_options = None
         if args.use_drmaa:
             args.task_options = get_task_options()
+            args.preamble = read_preamble(args.preamble)
 
         # Creating the database
         db_name = create_task_db(args.out_dir)
@@ -352,7 +353,7 @@ def phase_markers(prefix, o_prefix, db_name, options):
     logging.info("Phasing markers")
     launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
                           hpc_options=options.task_options,
-                          out_dir=options.out_dir)
+                          out_dir=options.out_dir, preamble=options.preamble)
     logging.info("Done phasing markers")
 
     # Checking that all the sample files are the same
@@ -432,7 +433,7 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
     logging.info("Imputing markers")
     launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
                           hpc_options=options.task_options,
-                          out_dir=options.out_dir)
+                          out_dir=options.out_dir, preamble=options.preamble)
     logging.info("Done imputing markers")
 
 
@@ -478,7 +479,7 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
     logging.info("Merging impute2 files")
     launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
                           hpc_options=options.task_options,
-                          out_dir=options.out_dir)
+                          out_dir=options.out_dir, preamble=options.preamble)
     logging.info("Done merging reports")
 
 
@@ -579,7 +580,7 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
     launcher.launch_tasks(commands_info, options.thread, check_rc=False,
                           hpc=options.use_drmaa,
                           hpc_options=options.task_options,
-                          out_dir=options.out_dir)
+                          out_dir=options.out_dir, preamble=options.preamble)
     logging.info("Done checking strand of markers")
 
     # The output suffix
@@ -676,7 +677,7 @@ def flip_markers(prefix, to_flip, db_name, options):
     logging.info("Flipping markers")
     launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
                           hpc_options=options.task_options,
-                          out_dir=options.out_dir)
+                          out_dir=options.out_dir, preamble=options.preamble)
     logging.info("Done flipping markers")
 
 
@@ -719,7 +720,7 @@ def final_exclusion(prefix, to_exclude, db_name, options):
     logging.info("Final marker exclusion")
     launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
                           hpc_options=options.task_options,
-                          out_dir=options.out_dir)
+                          out_dir=options.out_dir, preamble=options.preamble)
     logging.info("Done final marker exclusion")
 
     nb_markers = 0
@@ -761,7 +762,7 @@ def compute_marker_missing_rate(prefix, db_name, options):
     logging.info("Computing missing rate")
     launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
                           hpc_options=options.task_options,
-                          out_dir=options.out_dir)
+                          out_dir=options.out_dir, preamble=options.preamble)
     logging.info("Done computing missing rate")
 
     # Getting the missing rate
@@ -865,7 +866,7 @@ def exclude_markers_before_phasing(prefix, db_name, options):
     logging.info("Excluding and splitting markers")
     launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
                           hpc_options=options.task_options,
-                          out_dir=options.out_dir)
+                          out_dir=options.out_dir, preamble=options.preamble)
     logging.info("Done excluding and splitting markers")
 
     return {
@@ -1187,6 +1188,24 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
     }
 
 
+def read_preamble(filename):
+    """Reads the preamble file."""
+    if filename is None:
+        return ""
+
+    preamble = None
+    with open(filename, "r") as i_file:
+        preamble = i_file.read()
+
+    while not preamble.endswith("\n\n"):
+        preamble += "\n"
+
+    if not preamble.startswith("\n"):
+        preamble = "\n" + preamble
+
+    return preamble
+
+
 def get_shapeit_version(binary):
     """Gets the SHAPEIT version from the binary."""
     # Running the command
@@ -1310,6 +1329,11 @@ def check_args(args):
         logging.warning("segment length ({:g} bp) is more than "
                         "5Mb".format(args.segment_length))
 
+    # Checking the preamble file (if required)
+    if args.preamble is not None:
+        if not os.path.isfile(args.preamble):
+            raise ProgramError("{}: no such file".format(args.preamble))
+
     return True
 
 
@@ -1337,6 +1361,12 @@ def parse_args(parser):
     group = parser.add_argument_group("HPC Options")
     group.add_argument("--use-drmaa", action="store_true",
                        help="Launch tasks using DRMAA",)
+    group.add_argument("--preamble", type=str, metavar="FILE",
+                       help=("This option should be used when using DRMAA on "
+                             "a HPC to load required module and set "
+                             "environment variables. The content of the file "
+                             "will be added between the 'shebang' line and "
+                             "the tool command."))
 
     # The SHAPEIT software options
     group = parser.add_argument_group("SHAPEIT Options")
