@@ -100,6 +100,20 @@ def _generate_methods(templates, run_options, run_information):
     itemize_template = templates.get_template("iterate_template.tex")
     methods = templates.get_template("parts/methods.tex")
 
+    # Are there any filtering rules?
+    filtering_rules = ""
+    if run_options.filtering_rules is not None:
+        filtering_rules = sanitize_tex(" (filtering out sites where")
+        for i, rule in enumerate(run_options.filtering_rules):
+            p = ", "
+            if i == 0:
+                p = " "
+            elif i == len(run_options.filtering_rules) - 1:
+                p = " or "
+            p = sanitize_tex(p)
+            filtering_rules += p + format_tex(sanitize_tex(rule), "texttt")
+        filtering_rules += sanitize_tex(")")
+
     # The input files
     data_files = [
         "{}.{}".format(run_options.bfile, ext) for ext in ["bed", "bim", "fam"]
@@ -176,6 +190,7 @@ def _generate_methods(templates, run_options, run_information):
         section_content=methods.render(
             data_files=data_files,
             steps_data=steps,
+            filtering_rules=filtering_rules,
             **run_information
         ),
     )
