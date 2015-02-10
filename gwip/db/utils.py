@@ -19,7 +19,7 @@ __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
 __all__ = ["create_task_db", "check_task_completion", "create_task_entry",
-           "mark_task_completed", "get_task_runtime",
+           "mark_task_completed", "get_task_runtime", "get_all_runtimes",
            "mark_drmaa_task_completed"]
 
 
@@ -150,3 +150,17 @@ def get_task_runtime(task_id, db_name):
     conn.close()
 
     return int((r[1] - r[0]).total_seconds())
+
+
+def get_all_runtimes(db_name):
+    """Gets all tasks execution time."""
+    conn, c = _create_db_connection(db_name)
+
+    # Getting the start and end time
+    c.execute("SELECT name, start, end FROM gwip_task")
+    r = c.fetchall()
+
+    conn.close()
+
+    # Computing the execution time
+    return {i[0]: int((i[2] - i[1]).total_seconds()) for i in r}

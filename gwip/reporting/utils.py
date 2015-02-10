@@ -19,7 +19,7 @@ __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
 __all__ = ["config_jinja2", "sanitize_tex", "format_tex", "wrap_tex",
-           "create_tabular", "create_float", "tex_inline_math", ]
+           "create_tabular", "create_float", "tex_inline_math", "format_time"]
 
 
 _char_mod = {
@@ -125,3 +125,27 @@ def create_float(template, float_type, caption, label, content, placement="H"):
 
     # Rendering
     return template.render(**float_data)
+
+
+def format_time(total_seconds):
+    """Format the time to HH:MM:SS."""
+    # The format for the time
+    time_fmt = "{hours:02d}:{minutes:02d}:{seconds:02d}"
+
+    # Getting the number of seconds, minutes and hours
+    minutes, seconds = divmod(total_seconds, 60)
+    hours, minutes = divmod(minutes, 60)
+
+    # Formatting the hours
+    formatted_time = ""
+    for i, elapsed in enumerate((hours, minutes, seconds)):
+        time = sanitize_tex("{:02d}".format(elapsed))
+        sep = ":" if i < 2 else ""
+        if elapsed == 0:
+            time = r"{\color{light_gray}" + time + sep +"}"
+        else:
+            time += sep
+        formatted_time += time
+
+    # Formatting the time
+    return formatted_time

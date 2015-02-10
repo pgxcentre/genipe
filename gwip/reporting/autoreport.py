@@ -49,6 +49,10 @@ def generate_report(out_dir, run_opts, run_info):
     report_content += _generate_conclusions(jinja2_env, run_opts, run_info)
     report_data["report_content"] = report_content
 
+    # Gathering the annex content
+    annex_content = _generate_annex(jinja2_env, run_opts, run_info)
+    report_data["annex_content"] = annex_content
+
     # Getting the template
     main_template = jinja2_env.get_template("main_template.tex")
 
@@ -339,6 +343,12 @@ def _generate_results(templates, run_options, run_information):
 
 def _generate_conclusions(templates, run_options, run_information):
     """Generates the background section of the report."""
+    # Some assertions
+    required_variables = ["nb_good_sites", "prob_threshold", "rate_threshold",
+                          "nb_genotyped"]
+    for required_variable in required_variables:
+        assert required_variable in run_information
+
     # Loading the template
     section_template = templates.get_template("section_template.tex")
     conclusions = templates.get_template("parts/conclusions.tex")
@@ -349,4 +359,72 @@ def _generate_conclusions(templates, run_options, run_information):
         section_type="section",
         section_label="sec:conclusions",
         section_content=conclusions.render(**run_information),
+    )
+
+
+def _generate_annex(templates, run_options, run_information):
+    """Generates the annex section of the report (execution times)."""
+    # Some assertions
+    required_variables = ["plink_exclude_exec_time",
+                          "shapeit_check_1_exec_time",
+                          "plink_missing_exec_time"]
+    for required_variable in required_variables:
+        assert required_variable in run_information
+
+    # Loading the templates
+    tabular_template = templates.get_template("tabular_template.tex")
+    float_template = templates.get_template("float_template.tex")
+
+    # This section content
+    content = ""
+
+    # The header of the tables
+    table_header = [
+        format_tex(sanitize_tex("Chrom"), "textbf"),
+        format_tex(sanitize_tex("Time"), "textbf"),
+    ]
+
+    # Getting the first tables (plink_exclude)
+    content += _generate_time_float(
+        table=run_information["plink_exclude_exec_time"],
+        header=table_header,
+        task_name="plink_exclude_chr*",
+        tabular_t=tabular_template,
+        float_t=float_template,
+    )
+
+    return content
+
+
+def _generate_time_float(task_name, table, header, tabular_t, float_t):
+    """Generates time tables (split one long table in two)."""
+    assert len(table) == 22
+
+    # Adding the first table
+    table_1 = table[:11]
+    for i in range(len(table_1)):
+        table_1[i][1] = format_time(table_1[i][1])
+    table_1 = create_tabular(template=tabular_t, header=header,
+                             col_align=["r", "r"], data=table_1)
+
+    # Adding the second table
+    table_2 = table[11:]
+    for i in range(len(table_2)):
+        table_2[i][1] = format_time(table_2[i][1])
+    table_2 = create_tabular(template=tabular_t, header=header,
+                             col_align=["r", "r"], data=table_2)
+
+    # The caption
+    caption = sanitize_tex("Execution time for the '")
+    caption += format_tex(sanitize_tex(task_name), "texttt")
+    caption += sanitize_tex("' tasks.")
+
+    # Returning the float
+    return create_float(
+        template=float_t,
+        float_type="table",
+        caption=wrap_tex(caption),
+        label="tab:plink_exclude_exec_time",
+        placement="H",
+        content=table_1 + r"\hspace{1cm}" + table_2,
     )

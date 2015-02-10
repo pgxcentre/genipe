@@ -195,6 +195,10 @@ def main():
                                           args.out_dir)
         run_information.update(numbers)
 
+        # Gathering the execution time
+        exec_time = gather_execution_time(db_name)
+        run_information.update(exec_time)
+
         # Creating the output directory (if it doesn't exits)
         report_dir = os.path.join(args.out_dir, "report")
         if not os.path.isdir(report_dir):
@@ -1185,6 +1189,34 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
         "nb_missing_geno":            "{:,d}".format(nb_missing_geno),
         "pct_geno_now_complete":      "{:.1f}".format(pct_geno_now_complete),
         "nb_site_now_complete":       "{:,d}".format(nb_sites_now_complete)
+    }
+
+
+def gather_execution_time(db_name):
+    """Gather all the execution times."""
+    # Getting all the execution time from the DB
+    exec_time = get_all_runtimes(db_name)
+
+    # Getting the execution time for the steps
+    plink_exclude_exec_time = []
+    shapeit_check_1_exec_time = []
+    for chrom in range(1, 23):
+        # Getting the time for 'plink_exclude'
+        seconds = exec_time["plink_exclude_chr{}".format(chrom)]
+        plink_exclude_exec_time.append([chrom, seconds])
+
+        # Getting the time for 'shapeit_check'
+        seconds = exec_time["shapeit_check_chr{}_1".format(chrom)]
+        shapeit_check_1_exec_time.append([chrom, seconds])
+
+    # Getting the execution time for the second step (plink missing)
+    plink_missing_exec_time = exec_time["plink_missing_rate"]
+
+    # Returning the time
+    return {
+        "plink_exclude_exec_time":   plink_exclude_exec_time,
+        "shapeit_check_1_exec_time": shapeit_check_1_exec_time,
+        "plink_missing_exec_time":   plink_missing_exec_time,
     }
 
 
