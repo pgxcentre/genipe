@@ -136,16 +136,17 @@ def format_time(total_seconds):
     minutes, seconds = divmod(total_seconds, 60)
     hours, minutes = divmod(minutes, 60)
 
-    # Formatting the hours
-    formatted_time = ""
-    for i, elapsed in enumerate((hours, minutes, seconds)):
-        time = sanitize_tex("{:02d}".format(elapsed))
-        sep = ":" if i < 2 else ""
-        if elapsed == 0:
-            time = r"{\color{light_gray}" + time + sep +"}"
-        else:
-            time += sep
-        formatted_time += time
+    # Formatting
+    formatted_time = time_fmt.format(seconds=seconds, minutes=minutes,
+                                     hours=hours)
+
+    # Setting the color
+    colored_time = formatted_time
+    to_color = re.match("([0:]+)", formatted_time)
+    if to_color is not None:
+        colored_time = r"{\color{light_gray}"
+        colored_time += formatted_time[:to_color.end()]
+        colored_time += "}" + formatted_time[to_color.end():]
 
     # Formatting the time
-    return formatted_time
+    return colored_time
