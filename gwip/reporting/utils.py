@@ -128,8 +128,8 @@ def create_float(template, float_type, caption, label, content, placement="H"):
     return template.render(**float_data)
 
 
-def format_time(total_seconds):
-    """Format time in HH:MM:SS."""
+def format_time(total_seconds, written_time=False):
+    """Format time (either "HH:MM:SS" or "H hours, M minutes and S seconds"."""
     # The format for the time
     time_fmt = "{hours:02d}:{minutes:02d}:{seconds:02d}"
 
@@ -138,13 +138,47 @@ def format_time(total_seconds):
     hours, minutes = divmod(minutes, 60)
 
     # Formatting
-    return time_fmt.format(seconds=seconds, minutes=minutes, hours=hours)
+    if not written_time:
+        return time_fmt.format(seconds=seconds, minutes=minutes, hours=hours)
+
+    # The written time
+    written_time = []
+
+    # The hours
+    if hours > 0:
+        written_time.append(
+            "{} hour{}".format(hours, "s" if hours > 1 else "")
+        )
+
+    # The minutes
+    if minutes > 0:
+        written_time.append(
+            "{} minute{}".format(minutes, "s" if minutes > 1 else "")
+        )
+
+    # The seconds
+    if seconds > 0:
+        written_time.append(
+            "{} second{}".format(seconds, "s" if seconds > 1 else "")
+        )
+
+    # Formatting the written time
+    if len(written_time) == 0:
+        return "no time"
+
+    if len(written_time) == 1:
+        return written_time[0]
+
+    return ", ".join(written_time[:-1]) + " and " + written_time[-1]
 
 
 def colorize_time(total_seconds):
-    """Format the time to HH:MM:SS."""
+    """Colorize the time."""
+    # Formatting the time
+    formatted_time = format_time(total_seconds)
+
     # Setting the color
-    colored_time = format_time(total_seconds)
+    colored_time = formatted_time
     to_color = re.match("([0:]+)", formatted_time)
     if to_color is not None:
         colored_time = r"{\color{light_gray}"
