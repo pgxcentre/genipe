@@ -19,7 +19,8 @@ __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
 __all__ = ["config_jinja2", "sanitize_tex", "format_tex", "wrap_tex",
-           "create_tabular", "create_float", "tex_inline_math", "format_time"]
+           "create_tabular", "create_float", "tex_inline_math", "format_time",
+           "colorize_time"]
 
 
 _char_mod = {
@@ -128,7 +129,7 @@ def create_float(template, float_type, caption, label, content, placement="H"):
 
 
 def format_time(total_seconds):
-    """Format the time to HH:MM:SS."""
+    """Format time in HH:MM:SS."""
     # The format for the time
     time_fmt = "{hours:02d}:{minutes:02d}:{seconds:02d}"
 
@@ -137,11 +138,13 @@ def format_time(total_seconds):
     hours, minutes = divmod(minutes, 60)
 
     # Formatting
-    formatted_time = time_fmt.format(seconds=seconds, minutes=minutes,
-                                     hours=hours)
+    return time_fmt.format(seconds=seconds, minutes=minutes, hours=hours)
 
+
+def colorize_time(total_seconds):
+    """Format the time to HH:MM:SS."""
     # Setting the color
-    colored_time = formatted_time
+    colored_time = format_time(total_seconds)
     to_color = re.match("([0:]+)", formatted_time)
     if to_color is not None:
         colored_time = r"{\color{light_gray}"
