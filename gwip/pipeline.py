@@ -1200,14 +1200,55 @@ def gather_execution_time(db_name):
     # Getting the execution time for the steps
     plink_exclude_exec_time = []
     shapeit_check_1_exec_time = []
+    plink_flip_exec_time = []
+    shapeit_check_2_exec_time = []
+    plink_final_exec_time = []
+    shapeit_phase_exec_time = []
+    impute2_exec_time = []
+    merge_impute2_exec_time = []
     for chrom in range(1, 23):
         # Getting the time for 'plink_exclude'
         seconds = exec_time["plink_exclude_chr{}".format(chrom)]
         plink_exclude_exec_time.append([chrom, seconds])
 
-        # Getting the time for 'shapeit_check'
+        # Getting the time for 'shapeit_check_1'
         seconds = exec_time["shapeit_check_chr{}_1".format(chrom)]
         shapeit_check_1_exec_time.append([chrom, seconds])
+
+        # Getting the time for 'plink_flip'
+        seconds = exec_time["plink_flip_chr{}".format(chrom)]
+        plink_flip_exec_time.append([chrom, seconds])
+
+        # Getting the time for 'shapeit_check_2'
+        seconds = exec_time["shapeit_check_chr{}_2".format(chrom)]
+        shapeit_check_2_exec_time.append([chrom, seconds])
+
+        # Getting the time for 'plink_final_exclude'
+        seconds = exec_time["plink_final_exclude_chr{}".format(chrom)]
+        plink_final_exec_time.append([chrom, seconds])
+
+        # Getting the time for 'shapeit_phase'
+        seconds = exec_time["shapeit_phase_chr{}".format(chrom)]
+        shapeit_phase_exec_time.append([chrom, seconds])
+
+        # Getting the execution times for the imputation step
+        chr_imputation_tasks = [
+            i for i in exec_time.keys()
+            if i.startswith("impute2_chr{}".format(chrom))
+        ]
+        seconds = [
+            exec_time[task_name] for task_name in chr_imputation_tasks
+        ]
+        impute2_exec_time.append([
+            chrom,
+            len(chr_imputation_tasks),
+            int(round(sum(seconds) / len(seconds), 0)),
+            max(seconds),
+        ])
+
+        # Getting the time for 'merge_impute2'
+        seconds = exec_time["merge_impute2_chr{}".format(chrom)]
+        merge_impute2_exec_time.append([chrom, seconds])
 
     # Getting the execution time for the second step (plink missing)
     plink_missing_exec_time = exec_time["plink_missing_rate"]
@@ -1217,6 +1258,12 @@ def gather_execution_time(db_name):
         "plink_exclude_exec_time":   plink_exclude_exec_time,
         "shapeit_check_1_exec_time": shapeit_check_1_exec_time,
         "plink_missing_exec_time":   plink_missing_exec_time,
+        "plink_flip_exec_time":      plink_flip_exec_time,
+        "shapeit_check_2_exec_time": shapeit_check_2_exec_time,
+        "plink_final_exec_time":     plink_final_exec_time,
+        "shapeit_phase_exec_time":   shapeit_phase_exec_time,
+        "merge_impute2_exec_time":   merge_impute2_exec_time,
+        "impute2_exec_time":         impute2_exec_time,
     }
 
 

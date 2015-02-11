@@ -367,7 +367,10 @@ def _generate_annex(templates, run_options, run_information):
     # Some assertions
     required_variables = ["plink_exclude_exec_time",
                           "shapeit_check_1_exec_time",
-                          "plink_missing_exec_time"]
+                          "shapeit_check_2_exec_time",
+                          "plink_missing_exec_time", "plink_flip_exec_time",
+                          "plink_final_exec_time", "shapeit_phase_exec_time",
+                          "merge_impute2_exec_time", "impute2_exec_time"]
     for required_variable in required_variables:
         assert required_variable in run_information
 
@@ -376,7 +379,15 @@ def _generate_annex(templates, run_options, run_information):
     float_template = templates.get_template("float_template.tex")
 
     # This section content
-    content = ""
+    content = ("The following tables shows the execution time required by all "
+               "the different tasks. All tasks are split by chromosomes. "
+               "Execution times for imputation for each chromosome are means "
+               "of individual segment times. Computing all genotyped markers' "
+               "missing rate took {}.")
+    content = wrap_tex(sanitize_tex(content.format(format_time(
+        run_information["plink_missing_exec_time"],
+        written_time=True,
+    ))))
 
     # The header of the tables
     table_header = [
@@ -384,11 +395,86 @@ def _generate_annex(templates, run_options, run_information):
         format_tex(sanitize_tex("Time"), "textbf"),
     ]
 
-    # Getting the first tables (plink_exclude)
-    content += _generate_time_float(
+    # Getting the first table (plink_exclude_chr*)
+    content += "\n\n" + _generate_time_float(
         table=run_information["plink_exclude_exec_time"],
         header=table_header,
         task_name="plink_exclude_chr*",
+        label="plink_exclude_exec_time",
+        tabular_t=tabular_template,
+        float_t=float_template,
+    )
+
+    # Getting the second table (shapeit_check_chr*_1)
+    content += _generate_time_float(
+        table=run_information["shapeit_check_1_exec_time"],
+        header=table_header,
+        task_name="shapeit_check_chr*_1",
+        label="shapeit_check_1_exec_time",
+        tabular_t=tabular_template,
+        float_t=float_template,
+    )
+
+    # Getting the third table (plink_flip_chr*)
+    content += _generate_time_float(
+        table=run_information["plink_flip_exec_time"],
+        header=table_header,
+        task_name="plink_flip_chr*",
+        label="plink_flip_exec_time",
+        tabular_t=tabular_template,
+        float_t=float_template,
+    )
+
+    # Getting the fourth table (shapeit_check_chr*_2)
+    content += _generate_time_float(
+        table=run_information["shapeit_check_2_exec_time"],
+        header=table_header,
+        task_name="shapeit_check_chr*_2",
+        label="shapeit_check_2_exec_time",
+        tabular_t=tabular_template,
+        float_t=float_template,
+    )
+
+    # Getting the fifth table (plink_final_exclude_chr*)
+    content += _generate_time_float(
+        table=run_information["plink_final_exec_time"],
+        header=table_header,
+        task_name="plink_final_exclude_chr*",
+        label="plink_final_exclude_exec_time",
+        tabular_t=tabular_template,
+        float_t=float_template,
+    )
+
+    # Getting the sixth table (shapeit_phase_chr*)
+    content += _generate_time_float(
+        table=run_information["shapeit_phase_exec_time"],
+        header=table_header,
+        task_name="shapeit_phase_chr*",
+        label="shapeit_phase_exec_time",
+        tabular_t=tabular_template,
+        float_t=float_template,
+    )
+
+    # Getting the seventh table (impute2_chr*)
+    content += _generate_time_float(
+        table=run_information["impute2_exec_time"],
+        header=[format_tex(sanitize_tex("Chrom"), "textbf"),
+                format_tex(sanitize_tex("Nb Seg."), "textbf"),
+                format_tex(sanitize_tex("Mean T."), "textbf"),
+                format_tex(sanitize_tex("Max T."), "textbf")],
+        task_name="impute2_chr*",
+        label="impute2_exec_time",
+        tabular_t=tabular_template,
+        float_t=float_template,
+        first_time_col=2,
+    )
+
+    # Getting the eight table (merge_impute2_chr*)
+    content += _generate_time_float(
+        table=run_information["merge_impute2_exec_time"],
+        header=table_header,
+        task_name="merge_impute2_chr*",
+        label="merge_impute2_exec_time",
         tabular_t=tabular_template,
         float_t=float_template,
     )
@@ -396,23 +482,22 @@ def _generate_annex(templates, run_options, run_information):
     return content
 
 
-def _generate_time_float(task_name, table, header, tabular_t, float_t):
+def _generate_time_float(task_name, label, table, header, tabular_t, float_t,
+                         first_time_col=1):
     """Generates time tables (split one long table in two)."""
     assert len(table) == 22
 
     # Adding the first table
-    table_1 = table[:11]
-    for i in range(len(table_1)):
-        table_1[i][1] = format_time(table_1[i][1])
     table_1 = create_tabular(template=tabular_t, header=header,
-                             col_align=["r", "r"], data=table_1)
+                             col_align=["r"] * len(header),
+                             data=_format_time_columns(table[:11],
+                                                       first_time_col))
 
     # Adding the second table
-    table_2 = table[11:]
-    for i in range(len(table_2)):
-        table_2[i][1] = format_time(table_2[i][1])
     table_2 = create_tabular(template=tabular_t, header=header,
-                             col_align=["r", "r"], data=table_2)
+                             col_align=["r"] * len(header),
+                             data=_format_time_columns(table[11:],
+                                                       first_time_col))
 
     # The caption
     caption = sanitize_tex("Execution time for the '")
@@ -424,7 +509,15 @@ def _generate_time_float(task_name, table, header, tabular_t, float_t):
         template=float_t,
         float_type="table",
         caption=wrap_tex(caption),
-        label="tab:plink_exclude_exec_time",
+        label="tab:{}".format(label),
         placement="H",
         content=table_1 + r"\hspace{1cm}" + table_2,
     )
+
+
+def _format_time_columns(table, first_col):
+    """Colorize the time in the table (columns 2 and up)."""
+    for i in range(len(table)):
+        for j in range(first_col, len(table[i])):
+            table[i][j] = colorize_time(table[i][j])
+    return table
