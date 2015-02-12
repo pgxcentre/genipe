@@ -73,6 +73,10 @@ def generate_report(out_dir, run_opts, run_info):
     bib_style = resource_filename(__name__, "templates/biblio/references.bst")
     shutil.copy(bib_style, out_dir)
 
+    # Copying the Makefile (to help build the report)
+    makefile = resource_filename(__name__, "templates/utils/Makefile")
+    shutil.copy(makefile, out_dir)
+
 
 def _generate_background(templates, run_options, run_information):
     """Generates the background section of the report."""

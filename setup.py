@@ -53,6 +53,7 @@ def setup_package():
                   "gwip.reporting", ],
         package_data={"gwip.reporting": ["templates/*.tex",
                                          "templates/biblio/*",
+                                         "templates/utils/*",
                                          "templates/parts/*.tex"], },
         classifiers=["Operating System :: Linux",
                      "Programming Language :: Python",
