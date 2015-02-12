@@ -24,8 +24,10 @@ import pandas as pd
 
 from .db import *
 from . import __version__
+from . import chromosomes
 from .task import launcher
 from .error import ProgramError
+from .config import parse_drmaa_config
 from .reporting import generate_report
 
 
@@ -81,15 +83,16 @@ def main():
         # Getting the task options
         args.task_options = None
         if args.use_drmaa:
-            args.task_options = get_task_options()
+            logging.info("Task will be launched with DRMAA")
+            args.task_options = parse_drmaa_config(args.drmaa_config)
             args.preamble = read_preamble(args.preamble)
 
         # Creating the database
         db_name = create_task_db(args.out_dir)
 
         # Creating the output directories
-        for chromosome in range(1, 23):
-            chr_dir = os.path.join(args.out_dir, "chr{}".format(chromosome))
+        for chrom in chromosomes:
+            chr_dir = os.path.join(args.out_dir, "chr{}".format(chrom))
             if not os.path.isdir(chr_dir):
                 os.mkdir(chr_dir)
 
@@ -293,7 +296,7 @@ def get_task_options():
                  16: "08:00:00", 17: "08:00:00", 18: "08:00:00",
                  19: "06:00:00", 20: "07:00:00", 21: "05:00:00",
                  22: "05:00:00"}
-    for chrom in range(1, 23):
+    for chrom in chromosomes:
         task_name = "shapeit_phase_chr{}".format(chrom)
         # Creating the task options
         task_options[task_name] = {
@@ -315,7 +318,7 @@ def get_task_options():
                  16: "28:00:00", 17: "24:00:00", 18: "25:00:00",
                  19: "19:15:00", 20: "19:30:00", 21: "12:35:00",
                  22: "12:25:00"}
-    for chrom in range(1, 23):
+    for chrom in chromosomes:
         task_name = "merge_impute2_chr{}".format(chrom)
         # Creating the task options
         task_options[task_name] = {
@@ -335,7 +338,7 @@ def phase_markers(prefix, o_prefix, db_name, options):
         "--thread", str(options.shapeit_thread),
     ]
 
-    for chrom in range(1, 23):
+    for chrom in chromosomes:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
@@ -362,7 +365,7 @@ def phase_markers(prefix, o_prefix, db_name, options):
 
     # Checking that all the sample files are the same
     compare_with = None
-    for chrom in range(1, 23):
+    for chrom in chromosomes:
         filename = o_prefix.format(chrom=chrom) + ".sample"
         compare_to = None
         with open(filename, "r") as i_file:
@@ -394,7 +397,7 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
             base_command.append(rule)
 
     # Each chromosome have multiple segments
-    for chrom in range(1, 23):
+    for chrom in chromosomes:
         assert str(chrom) in chrom_length
 
         length = chrom_length[str(chrom)]
@@ -451,7 +454,7 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
         "--completion", str(completion_t),
     ]
 
-    for chrom in range(1, 23):
+    for chrom in chromosomes:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
@@ -513,9 +516,9 @@ def get_chromosome_length(out_dir):
 
         # Gathering the chromosome length
         chrom_length = {}
-        chromosomes = {str(i) for i in range(23)} | {"X"}
+        req_chrom = {str(i) for i in range(23)} | {"X"}
         for region in result["top_level_region"]:
-            if region["name"] in chromosomes:
+            if region["name"] in req_chrom:
                 chrom_length[region["name"]] = region["length"]
 
         # Checking we have all the required data
@@ -558,7 +561,7 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
     o_prefix = os.path.join(options.out_dir, "chr{chrom}",
                             "chr{chrom}." + suffix)
 
-    for chrom in range(1, 23):
+    for chrom in chromosomes:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
@@ -601,7 +604,7 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
 
     # For each chromosome, we find markers to change strand
     nb_total = 0
-    for chrom in range(1, 23):
+    for chrom in chromosomes:
         # The SNP to print in the output file
         to_write = set()
 
@@ -660,7 +663,7 @@ def flip_markers(prefix, to_flip, db_name, options):
     o_prefix = os.path.join(options.out_dir, "chr{chrom}",
                             "chr{chrom}.flipped")
 
-    for chrom in range(1, 23):
+    for chrom in chromosomes:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
@@ -701,7 +704,7 @@ def final_exclusion(prefix, to_exclude, db_name, options):
     # The output files (for statistics)
     bims = []
 
-    for chrom in range(1, 23):
+    for chrom in chromosomes:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
@@ -849,7 +852,7 @@ def exclude_markers_before_phasing(prefix, db_name, options):
     # The output prefix
     o_prefix = os.path.join(options.out_dir, "chr{chrom}", "chr{chrom}")
 
-    for chrom in range(1, 23):
+    for chrom in chromosomes:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
@@ -915,7 +918,7 @@ def get_cross_validation_results(glob_pattern):
     final_nb_genotypes = 0
 
     # For each chromosome
-    for chrom in range(1, 23):
+    for chrom in chromosomes:
         filenames = glob(glob_pattern.format(chrom=chrom))
 
         # The total number of genotypes for this chromosome
@@ -1117,7 +1120,7 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
     # For each chromosome, get the statistics
     filename_template = os.path.join(o_dir, "chr{chrom}", "final_impute2",
                                      "chr{chrom}.imputed.{suffix}")
-    for chrom in range(1, 23):
+    for chrom in chromosomes:
         logging.info("  - chromosome {}".format(chrom))
 
         # First, we read the imputed sites
@@ -1206,7 +1209,7 @@ def gather_execution_time(db_name):
     shapeit_phase_exec_time = []
     impute2_exec_time = []
     merge_impute2_exec_time = []
-    for chrom in range(1, 23):
+    for chrom in chromosomes:
         # Getting the time for 'plink_exclude'
         seconds = exec_time["plink_exclude_chr{}".format(chrom)]
         plink_exclude_exec_time.append([chrom, seconds])
@@ -1367,7 +1370,7 @@ def check_args(args):
     # Checking IMPUTE2's files
     for template in (args.hap_template, args.legend_template,
                      args.map_template):
-        for chrom in range(1, 23):
+        for chrom in chromosomes:
             # Checking the haplotype file
             filename = template.format(chrom=chrom)
             if not os.path.isfile(filename):
@@ -1413,6 +1416,13 @@ def check_args(args):
         if not os.path.isfile(args.preamble):
             raise ProgramError("{}: no such file".format(args.preamble))
 
+    # Checking the DRMAA configuration file
+    if args.use_drmaa:
+        if args.drmaa_config is not None:
+            if not os.path.isfile(args.drmaa_config):
+                raise ProgramError("{}: no such "
+                                   "file".format(args.drmaa_config))
+
     return True
 
 
@@ -1440,6 +1450,12 @@ def parse_args(parser):
     group = parser.add_argument_group("HPC Options")
     group.add_argument("--use-drmaa", action="store_true",
                        help="Launch tasks using DRMAA",)
+    group.add_argument("--drmaa-config", type=str, metavar="FILE",
+                       help=("The configuration file for tasks (use this "
+                             "option when launching tasks using DRMAA). This "
+                             "file should describe the walltime and the "
+                             "number of nodes/processors to use for each "
+                             "task."))
     group.add_argument("--preamble", type=str, metavar="FILE",
                        help=("This option should be used when using DRMAA on "
                              "a HPC to load required module and set "

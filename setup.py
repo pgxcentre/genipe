@@ -50,7 +50,7 @@ def setup_package():
         install_requires=["numpy >= 1.8.2", "jinja2 >= 2.7.3",
                           "pandas >= 0.15.2", "setuptools >= 12.0.5"],
         packages=["gwip", "gwip.task", "gwip.db", "gwip.tools",
-                  "gwip.reporting", ],
+                  "gwip.reporting", "gwip.config"],
         package_data={"gwip.reporting": ["templates/*.tex",
                                          "templates/biblio/*",
                                          "templates/utils/*",

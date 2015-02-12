@@ -15,6 +15,7 @@ from pkg_resources import resource_filename
 
 from .utils import *
 from .. import __version__
+from .. import chromosomes
 from ..error import ProgramError
 
 
@@ -246,7 +247,7 @@ def _generate_results(templates, run_options, run_information):
     tables = ""
 
     # Adding the table for each of the chromosomes
-    for chrom in range(1, 23):
+    for chrom in chromosomes:
         # Getting the table 1
         table_1 = run_information["cross_validation_table_1_chrom"][chrom]
         for i in range(len(table_1)):
