@@ -225,110 +225,6 @@ def main():
         raise
 
 
-def get_task_options():
-    """Gets the task options."""
-    task_options = {}
-    task_names = ["plink_missing_rate",
-                  "plink_exclude_chr1", "plink_exclude_chr10",
-                  "plink_exclude_chr11", "plink_exclude_chr12",
-                  "plink_exclude_chr13", "plink_exclude_chr14",
-                  "plink_exclude_chr15", "plink_exclude_chr16",
-                  "plink_exclude_chr17", "plink_exclude_chr18",
-                  "plink_exclude_chr19", "plink_exclude_chr2",
-                  "plink_exclude_chr20", "plink_exclude_chr21",
-                  "plink_exclude_chr22", "plink_exclude_chr3",
-                  "plink_exclude_chr4", "plink_exclude_chr5",
-                  "plink_exclude_chr6", "plink_exclude_chr7",
-                  "plink_exclude_chr8", "plink_exclude_chr9",
-                  "plink_final_exclude_chr1", "plink_final_exclude_chr10",
-                  "plink_final_exclude_chr11", "plink_final_exclude_chr12",
-                  "plink_final_exclude_chr13", "plink_final_exclude_chr14",
-                  "plink_final_exclude_chr15", "plink_final_exclude_chr16",
-                  "plink_final_exclude_chr17", "plink_final_exclude_chr18",
-                  "plink_final_exclude_chr19", "plink_final_exclude_chr2",
-                  "plink_final_exclude_chr20", "plink_final_exclude_chr21",
-                  "plink_final_exclude_chr22", "plink_final_exclude_chr3",
-                  "plink_final_exclude_chr4", "plink_final_exclude_chr5",
-                  "plink_final_exclude_chr6", "plink_final_exclude_chr7",
-                  "plink_final_exclude_chr8", "plink_final_exclude_chr9",
-                  "plink_flip_chr1", "plink_flip_chr10", "plink_flip_chr11",
-                  "plink_flip_chr12", "plink_flip_chr13", "plink_flip_chr14",
-                  "plink_flip_chr15", "plink_flip_chr16", "plink_flip_chr17",
-                  "plink_flip_chr18", "plink_flip_chr19", "plink_flip_chr2",
-                  "plink_flip_chr20", "plink_flip_chr21", "plink_flip_chr22",
-                  "plink_flip_chr3", "plink_flip_chr4", "plink_flip_chr5",
-                  "plink_flip_chr6", "plink_flip_chr7", "plink_flip_chr8",
-                  "plink_flip_chr9", "shapeit_check_chr10_1",
-                  "shapeit_check_chr10_2", "shapeit_check_chr11_1",
-                  "shapeit_check_chr11_2", "shapeit_check_chr12_1",
-                  "shapeit_check_chr12_2", "shapeit_check_chr13_1",
-                  "shapeit_check_chr13_2", "shapeit_check_chr14_1",
-                  "shapeit_check_chr14_2", "shapeit_check_chr15_1",
-                  "shapeit_check_chr15_2", "shapeit_check_chr16_1",
-                  "shapeit_check_chr16_2", "shapeit_check_chr17_1",
-                  "shapeit_check_chr17_2", "shapeit_check_chr18_1",
-                  "shapeit_check_chr18_2", "shapeit_check_chr19_1",
-                  "shapeit_check_chr19_2", "shapeit_check_chr1_1",
-                  "shapeit_check_chr1_2", "shapeit_check_chr20_1",
-                  "shapeit_check_chr20_2", "shapeit_check_chr21_1",
-                  "shapeit_check_chr21_2", "shapeit_check_chr22_1",
-                  "shapeit_check_chr22_2", "shapeit_check_chr2_1",
-                  "shapeit_check_chr2_2", "shapeit_check_chr3_1",
-                  "shapeit_check_chr3_2", "shapeit_check_chr4_1",
-                  "shapeit_check_chr4_2", "shapeit_check_chr5_1",
-                  "shapeit_check_chr5_2", "shapeit_check_chr6_1",
-                  "shapeit_check_chr6_2", "shapeit_check_chr7_1",
-                  "shapeit_check_chr7_2", "shapeit_check_chr8_1",
-                  "shapeit_check_chr8_2", "shapeit_check_chr9_1",
-                  "shapeit_check_chr9_2"]
-
-    for task_name in task_names:
-        # Creating the task options
-        task_options[task_name] = {
-            "walltime": bytes("00:15:00", encoding="ascii"),
-            "nodes": bytes("-l nodes=1:ppn=1", encoding="ascii"),
-        }
-
-    walltimes = {1: "24:00:00", 2: "24:00:00", 3: "20:00:00", 4: "20:00:00",
-                 5: "18:00:00", 6: "18:00:00", 7: "15:00:00", 8: "15:00:00",
-                 9: "12:00:00", 10: "15:00:00", 11: "15:00:00", 12: "12:00:00",
-                 13: "10:00:00", 14: "09:00:00", 15: "08:00:00",
-                 16: "08:00:00", 17: "08:00:00", 18: "08:00:00",
-                 19: "06:00:00", 20: "07:00:00", 21: "05:00:00",
-                 22: "05:00:00"}
-    for chrom in chromosomes:
-        task_name = "shapeit_phase_chr{}".format(chrom)
-        # Creating the task options
-        task_options[task_name] = {
-            "walltime": bytes(walltimes[chrom], encoding="ascii"),
-            "nodes": bytes("-l nodes=1:ppn=1", encoding="ascii"),
-        }
-
-    # The time for an impute2 segment
-    task_options["impute"] = {
-        "walltime": bytes("120:00:00", encoding="ascii"),
-        "nodes": bytes("-l nodes=1:ppn=1", encoding="ascii"),
-    }
-
-    # The approximate time for file merging
-    walltimes = {1: "65:30:00", 2: "73:30:00", 3: "61:00:00", 4: "58:00:00",
-                 5: "57:00:00", 6: "50:30:00", 7: "51:00:00", 8: "46:30:00",
-                 9: "37:00:00", 10: "40:30:00", 11: "44:00:00", 12: "42:00:00",
-                 13: "29:00:00", 14: "27:30:00", 15: "25:45:00",
-                 16: "28:00:00", 17: "24:00:00", 18: "25:00:00",
-                 19: "19:15:00", 20: "19:30:00", 21: "12:35:00",
-                 22: "12:25:00"}
-    for chrom in chromosomes:
-        task_name = "merge_impute2_chr{}".format(chrom)
-        # Creating the task options
-        task_options[task_name] = {
-            "walltime": bytes(walltimes[chrom], encoding="ascii"),
-            "nodes": bytes("-l nodes=1:ppn=1", encoding="ascii"),
-        }
-
-    return task_options
-
-
 def phase_markers(prefix, o_prefix, db_name, options):
     """Phase markers using shapeit."""
     commands_info = []
@@ -434,7 +330,10 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
 
             # Adding the walltime for this particular task_id
             if options.use_drmaa:
-                options.task_options[task_id] = options.task_options["impute"]
+                if task_id not in options.task_options:
+                    # Sending the chromosome specific instead
+                    value = options.task_options["impute2_chr{}".format(chrom)]
+                    options.task_options[task_id] = value
 
     # Executing the commands
     logging.info("Imputing markers")
