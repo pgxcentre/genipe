@@ -135,18 +135,18 @@ directory is `imputation_project`):
 
 ```console
 $ gwip-launcher \
-    --use-drmaa \
-    --drmaa-config gwip.ini \
-    --thread 22 \
-    --preamble preamble.sh \
-    --bfile genetic_data \
-    --legend-template impute2_files/1000GP_Phase3/1000GP_Phase3_chr{chrom}.legend.gz \
-    --hap-template impute2_files/1000GP_Phase3/1000GP_Phase3_chr{chrom}.hap.gz \
-    --map-template impute2_files/1000GP_Phase3/genetic_map_chr{chrom}_combined_b37.txt \
-    --sample-file impute2_files/1000GP_Phase3/1000GP_Phase3.sample \
-    --report-title "Genome-wide imputation" \
-    --report-number "12345" \
-    --report-author "John Doe"
+>     --use-drmaa \
+>     --drmaa-config gwip.ini \
+>     --thread 22 \
+>     --preamble preamble.sh \
+>     --bfile genetic_data \
+>     --legend-template impute2_files/1000GP_Phase3/1000GP_Phase3_chr{chrom}.legend.gz \
+>     --hap-template impute2_files/1000GP_Phase3/1000GP_Phase3_chr{chrom}.hap.gz \
+>     --map-template impute2_files/1000GP_Phase3/genetic_map_chr{chrom}_combined_b37.txt \
+>     --sample-file impute2_files/1000GP_Phase3/1000GP_Phase3.sample \
+>     --report-title "Genome-wide imputation" \
+>     --report-number "12345" \
+>     --report-author "John Doe"
 [2015-02-13 13:38:38 INFO] Logging everything into 'gwip/gwip.log'
 [2015-02-13 13:38:38 INFO] Task will be launched with DRMAA
 [2015-02-13 13:38:38 INFO] Connecting to DB 'gwip/tasks.db'
