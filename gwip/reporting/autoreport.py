@@ -383,7 +383,7 @@ def _generate_annex(templates, run_options, run_information):
     float_template = templates.get_template("float_template.tex")
 
     # This section content
-    content = ("The following tables shows the execution time required by all "
+    content = ("The following tables show the execution time required by all "
                "the different tasks. All tasks are split by chromosomes. "
                "Execution times for imputation for each chromosome are means "
                "of individual segment times. Computing all genotyped markers' "
