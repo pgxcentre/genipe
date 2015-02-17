@@ -220,6 +220,15 @@ def check_args(args):
         if not os.path.isfile(summary_file):
             raise ProgramError("{}: no such file".format(summary_file))
 
+    # Checking the chromosome
+    valid_chromosome = [str(i) for i in range(1, 24)]
+    valid_chromosome.append("25")
+    if args.chrom not in valid_chromosome:
+        raise ProgramError("{}: invalid chromosome".format(args.chrom))
+    if args.chrom == "23":
+        logging.warning("MAF computation is wrong for chromosome 23 (males "
+                        "have 2 alleles in the computation, instead of 1)...")
+
     return True
 
 
