@@ -3,7 +3,7 @@
 *Version 0.1*
 
 The `gwip` module includes a script (named `gwip-launcher`) that automatically
-runs a genome-wide imputation pipeline using *Plink*, *shapeit2* and *impute2*.
+runs a genome-wide imputation pipeline using *Plink*, *shapeit* and *impute2*.
 
 
 ## Dependencies
@@ -16,7 +16,13 @@ the following modules:
 * `pandas` version 0.15.2 and latest
 * `setuptools` version 12.0.5 and latest
 
-The tool has been tested on *Linux* only.
+The tool requires the binaries for
+[Plink](http://pngu.mgh.harvard.edu/~purcell/plink/download.shtml),
+[shapeit](https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html#download) and
+[impute2](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#download).
+
+Finally, the tool also requires a LaTeX installation to compile the automatically
+generated report in PDF format.
 
 
 ## Basic usage
@@ -208,11 +214,11 @@ default, the `walltime` is 15 minutes, and 1 node with 1 processor is used. If
 changes are required (*e.g.* longer execution time is required), this is
 specified in the `.ini` file. Each task corresponds to a section where a
 general execution time can be set (`walltime` variable) along with the number
-of nodes (`nodes` variable) and process per node (`ppn` variable). If a specif
-chromosome require more time, this can be set using the `chrN_walltime`
-variable (where `N` is the required chromosome). Finally, segment specific
-execution time can be set for the imputation task (`impute2` section). For more
-example, see the `.ini` file below.
+of nodes (`nodes` variable) and process per node (`ppn` variable). If a
+specific chromosome require more time, this can be set using the
+`chrN_walltime` variable (where `N` is the required chromosome). Finally,
+segment specific execution time can be set for the imputation task (`impute2`
+section). For more example, see the `.ini` file below.
 
 ```ini
 [plink_exclude]
@@ -303,4 +309,53 @@ chr20_walltime = 01:00:00
 chr21_walltime = 01:00:00
 chr22_walltime = 01:00:00
 ```
+
+## Output files
+
+There will be one directory for each chromosome in the output directory. This
+directory will contain the `*.impute2` files (one for each segment) and a
+`final_impute2` directory containing all the merged `*.impute2` files. The
+directory tree below shows the content of such a directory for chromosome 22.
+
+```text
+chr22
+├── ...
+└── final_impute2
+    ├── chr22.imputed.alleles
+    ├── chr22.imputed.completion_rates
+    ├── chr22.imputed.good_sites
+    ├── chr22.imputed.impute2
+    ├── chr22.imputed.imputed_sites
+    ├── chr22.imputed.log
+    └── chr22.imputed.map
+```
+
+Here is the description of the output files in the `final_impute2` directory:
+
+* `*.imputed.alleles`: contains the two alleles for each sites located on this
+  chromosome.
+* `*.completion_rates`: includes the completion rate (when considering a
+  certain probability threshold) for all sites (the `--probability` option).
+* `*.good_sites`: contains the sites with a certain completion rate (using a
+  certain probability threshold) that are complete enough to use in a
+  downstream analysis (the `--completion` option).
+* `*.impute2`: contains the merge imputation for this particular chromosome.
+* `*.imputed_sites`: contains the list of imputed sites (*i.e.* the sites that
+  were not genotyped. It is important to note that genotyped sites were indeed
+  imputed (their missing calls were imputed).
+* `*.map`: the mapping information for all sites on the chromosome.
+
+## Automatic report
+
+The pipeline provides a report containing relevant imputation statistics. This
+report is located in the `report` directory. It can be compile into a PDF file
+using the following `make` command:
+
+```console
+$ make && make clean
+...
+```
+
+This report uses LaTeX and the `*.tex` file can be modified to add project
+specific information.
 
