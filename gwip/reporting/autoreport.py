@@ -141,9 +141,8 @@ def _generate_methods(templates, run_options, run_information):
     # The ambiguous and duplicated markers that were removed
     steps.append(wrap_tex(sanitize_tex(
         "Ambiguous markers with alleles "
-    ) + format_tex("A", "texttt") + "/" + format_tex("T", "texttt") + " and "
-        + format_tex("C", "texttt") + "/" + format_tex("G", "texttt")
-        + (
+    ) + format_tex("A", "texttt") + "/" + format_tex("T", "texttt") + " and " +
+        format_tex("C", "texttt") + "/" + format_tex("G", "texttt") + (
         ", duplicated markers (same position), and markers located on special "
         "chromosomes (sexual or mitochondrial chromosomes) were excluded from "
         "the imputation. "
