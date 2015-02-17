@@ -80,11 +80,13 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
     completion_o_file = open(out_prefix + ".completion_rates", "w")
     good_sites_o_file = open(out_prefix + ".good_sites", "w")
     map_o_file = open(out_prefix + ".map", "w")
+    maf_o_file = open(out_prefix + ".maf", "w")
 
     # Printing the headers
     print("name", "nb_missing", "completion_rate", sep="\t",
           file=completion_o_file)
     print("name", "a1", "a2", sep="\t", file=alleles_o_file)
+    print("name", "major", "minor", "maf", sep="\t", file=maf_o_file)
 
     # Opening the input file(s) one by one
     chr23_par_already_warned = False
@@ -163,11 +165,21 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
             print(name, a1, a2, sep="\t", file=alleles_o_file)
 
             # Checking the completion rate and saving it
-            max_probs = np.amax(geno, axis=1)
-            nb = np.sum(max_probs >= options.probability)
+            good_calls = np.amax(geno, axis=1) >= options.probability
+            nb = np.sum(good_calls)
             comp = nb / geno.shape[0]
             print(name, geno.shape[0] - nb, comp, sep="\t",
                   file=completion_o_file)
+
+            # Computing the MAF and saving it
+            good_calls = geno[good_calls]
+            nb_geno = np.bincount(np.argmax(good_calls, axis=1), minlength=3)
+            maf = ((nb_geno[2] * 2) + nb_geno[1]) / (good_calls.shape[0] * 2)
+            major, minor = a1, a2
+            if maf > 0.5:
+                minor, major = a1, a2
+                maf = 1 - maf
+            print(name, major, minor, maf, sep="\t", file=maf_o_file)
 
             if comp >= options.completion:
                 # The completion is over the threshold
@@ -194,6 +206,7 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
     completion_o_file.close()
     good_sites_o_file.close()
     map_o_file.close()
+    maf_o_file.close()
 
 
 def check_args(args):
