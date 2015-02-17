@@ -1136,7 +1136,7 @@ def gather_execution_time(db_name):
         # Getting the execution times for the imputation step
         chr_imputation_tasks = [
             i for i in exec_time.keys()
-            if i.startswith("impute2_chr{}".format(chrom))
+            if i.startswith("impute2_chr{}_".format(chrom))
         ]
         seconds = [
             exec_time[task_name] for task_name in chr_imputation_tasks
