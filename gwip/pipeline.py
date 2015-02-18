@@ -378,7 +378,8 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
                                                    ".good_sites",
                                                    ".impute2",
                                                    ".imputed_sites",
-                                                   ".map")],
+                                                   ".map",
+                                                   ".maf")],
         })
 
     # Executing command
