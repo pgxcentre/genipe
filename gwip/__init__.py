@@ -23,3 +23,11 @@ __status__ = "Development"
 
 
 chromosomes = range(1, 23)
+
+
+def test():
+    """The test functions of gwip."""
+    import unittest
+    from .tests import test_suite
+
+    unittest.TextTestRunner(verbosity=2).run(test_suite)
