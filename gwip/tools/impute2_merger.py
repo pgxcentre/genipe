@@ -25,28 +25,31 @@ __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
 __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
-def main():
+def main(args=None):
     """The main function."""
     # Creating the option parser
     desc = ("Concatenate IMPUTE2 files and retrieve some statistics "
             "(gwip version {}).".format(__version__))
     parser = argparse.ArgumentParser(description=desc)
 
+    # Files that need closing
+    logging_fh = None
+
     try:
         # Parsing the options
-        args = parse_args(parser)
+        args = parse_args(parser, args)
 
         # Getting the output directory (dirname of the output prefix
         out_dir = os.path.dirname(args.prefix)
 
         # Adding the logging capability
         log_file = args.prefix + ".log"
+        logging_fh = logging.FileHandler(log_file, mode="w")
         logging.basicConfig(
             format="[%(asctime)s %(levelname)s] %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
             level=logging.DEBUG if args.debug else logging.INFO,
-            handlers=[logging.StreamHandler(),
-                      logging.FileHandler(log_file, mode="w")]
+            handlers=[logging.StreamHandler(), logging_fh]
         )
         logging.info("Logging everything into '{}'".format(log_file))
 
@@ -70,6 +73,10 @@ def main():
         logging.error(e)
         raise
 
+    finally:
+        if logging_fh is not None:
+            logging_fh.close()
+
 
 def concatenate_files(i_filenames, out_prefix, real_chrom, options):
     """Concatenates and extracts information from IMPUTE2 GEN file(s)."""
@@ -87,6 +94,9 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
           file=completion_o_file)
     print("name", "a1", "a2", sep="\t", file=alleles_o_file)
     print("name", "major", "minor", "maf", sep="\t", file=maf_o_file)
+
+    # The markers that were already seen
+    already_seen = defaultdict(int)
 
     # Opening the input file(s) one by one
     chr23_par_already_warned = False
@@ -109,7 +119,6 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
         # The input file
         i_file = open(i_filename, "r")
 
-        already_seen = defaultdict(int)
         nb_line = 0
         for line in i_file:
             # The number of line
@@ -167,16 +176,20 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
             # Checking the completion rate and saving it
             good_calls = np.amax(geno, axis=1) >= options.probability
             nb = np.sum(good_calls)
-            comp = nb / geno.shape[0]
+            comp = 0
+            if geno.shape[0] != 0:
+                comp = nb / geno.shape[0]
             print(name, geno.shape[0] - nb, comp, sep="\t",
                   file=completion_o_file)
 
             # Computing the MAF and saving it
             good_calls = geno[good_calls]
             nb_geno = np.bincount(np.argmax(good_calls, axis=1), minlength=3)
-            maf = ((nb_geno[2] * 2) + nb_geno[1]) / (good_calls.shape[0] * 2)
+            maf = "NA"
+            if good_calls.shape[0] != 0:
+                maf = ((nb_geno[2]*2) + nb_geno[1]) / (good_calls.shape[0]*2)
             major, minor = a1, a2
-            if maf > 0.5:
+            if maf != "NA" and maf > 0.5:
                 minor, major = a1, a2
                 maf = 1 - maf
             print(name, major, minor, maf, sep="\t", file=maf_o_file)
@@ -232,7 +245,7 @@ def check_args(args):
     return True
 
 
-def parse_args(parser):
+def parse_args(parser, args=None):
     """Parses the command line options and arguments."""
     # The parser object
     parser.add_argument("--version", action="version",
@@ -262,6 +275,9 @@ def parse_args(parser):
     group = parser.add_argument_group("Output Files")
     group.add_argument("--prefix", type=str, metavar="FILE", default="imputed",
                        help="The prefix for the output files [%(default)s]")
+
+    if args is not None:
+        return parser.parse_args(args)
 
     return parser.parse_args()
 
