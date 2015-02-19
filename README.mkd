@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/pgxcentre/gwip.svg?branch=master)](https://travis-ci.org/pgxcentre/gwip)
+
 # gwip - A Python module to perform genome-wide imputation analysis
 
 *Version 0.1*
@@ -18,12 +20,29 @@ the following modules:
 
 The tool requires the binaries for
 [Plink](http://pngu.mgh.harvard.edu/~purcell/plink/download.shtml),
-[shapeit](https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html#download) and
-[impute2](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#download).
+[shapeit](https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html#download)
+and [impute2](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#download).
 
 Finally, the tool also requires a LaTeX installation to compile the automatically
 generated report in PDF format.
 
+
+## Testing
+
+Basic testing was implemented for the script to merge *impute2* files resulting
+from different segment (on the same chromosome). To test (after installation),
+launch Python and execute the following command:
+
+```python
+>>> import gwip
+>>> gwip.test()
+```
+
+Some functionalities are difficult to test, since they mostly use external
+tools to perform analysis (*i.e.* *Plink*, *shapeit* and *impute2*) and it
+is assumed that they were properly tested by their author.
+
+We will try to add further tests in the future.
 
 ## Basic usage
 
