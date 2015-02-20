@@ -49,9 +49,12 @@ def config_jinja2():
 
 def sanitize_tex(original_text):
     """Sanitize TeX text."""
+    # The backslashes
+    sanitized_tex = original_text.replace("\\", r"\textbackslash ")
+
     # Escaping
     sanitized_tex = re.sub(r"([{}])".format("".join(_escaped_char)),
-                           r"\\\g<1>", original_text)
+                           r"\\\g<1>", sanitized_tex)
 
     # Replacing
     for char, mod in _char_mod.items():
