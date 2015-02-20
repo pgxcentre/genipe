@@ -107,7 +107,7 @@ def create_tabular(template, header, data, header_multicol=None,
         col_align = ["c"] * nb_col
 
     # Checking that the number of columns holds
-    assert len(header) == nb_col
+    assert len(header) == len(header_multicol)
     assert len(col_align) == nb_col
 
     # Generating the tabular data
