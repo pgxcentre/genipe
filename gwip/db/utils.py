@@ -19,8 +19,8 @@ __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
 __all__ = ["create_task_db", "check_task_completion", "create_task_entry",
-           "mark_task_completed", "get_task_runtime", "get_all_runtimes",
-           "mark_drmaa_task_completed"]
+           "mark_task_completed", "mark_task_incomplete", "get_task_runtime",
+           "get_all_runtimes", "mark_drmaa_task_completed"]
 
 
 def create_task_db(out_dir):
@@ -100,9 +100,9 @@ def create_task_entry(task_id, db_name):
                   (task_id, time, time))
 
     else:
-        # We saw this entry, but we need to relaunch it
+        # We saw this task, but we need to relaunch it (setting completed=0)
         c.execute("UPDATE gwip_task "
-                  "SET launch=?, start=? WHERE name=?",
+                  "SET launch=?, start=?, completed=0 WHERE name=?",
                   (time, time, task_id))
 
     conn.commit()
@@ -116,6 +116,17 @@ def mark_task_completed(task_id, db_name):
     # Updating the end time
     c.execute("UPDATE gwip_task SET end=?, completed=1 WHERE name=?",
               (datetime.now(), task_id))
+
+    conn.commit()
+    conn.close()
+
+
+def mark_task_incomplete(task_id, db_name):
+    """Marks a task as incomplete."""
+    conn, c = _create_db_connection(db_name)
+
+    # Setting the completion to 0 for this task
+    c.execute("UPDATE gwip_task SET completed=0 WHERE name=?", (task_id, ))
 
     conn.commit()
     conn.close()
