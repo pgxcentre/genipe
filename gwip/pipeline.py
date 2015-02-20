@@ -392,8 +392,8 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
 
 def file_sorter(filename):
     """Helps in filename sorting."""
-    r = re.search(r"chr\d+\.(\d+)_(\d+)\.impute2", filename)
-    return (int(r.group(1)), int(r.group(2)))
+    r = re.search(r"chr(\d+)\.(\d+)_(\d+)\.impute2", filename)
+    return (int(r.group(1)), int(r.group(2)), int(r.group(3)))
 
 
 def get_chromosome_length(out_dir):
@@ -421,10 +421,6 @@ def get_chromosome_length(out_dir):
             if region["name"] in req_chrom:
                 chrom_length[region["name"]] = region["length"]
 
-        # Checking we have all the required data
-        if len(chrom_length) != 23:
-            raise ProgramError("missing chromosomes")
-
         # Saving to file
         with open(filename, "w") as o_file:
             for chrom in sorted(chrom_length.keys()):
@@ -438,6 +434,12 @@ def get_chromosome_length(out_dir):
             for line in i_file:
                 row = line.rstrip("\n").split("\t")
                 chrom_length[row[0]] = int(row[1])
+
+    # Checking we have all the required data
+    required_chrom = {str(i) for i in chromosomes}
+    if (set(chrom_length) & required_chrom) != required_chrom:
+        missing = ", ".join(sorted(required_chrom - set(chrom_length)))
+        raise ProgramError("missing chromosomes: {}".format(missing))
 
     return chrom_length
 
