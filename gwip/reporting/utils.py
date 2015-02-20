@@ -83,7 +83,15 @@ def tex_inline_math(content):
 
 def _is_sanitized(text):
     """Check if text is sanitized."""
-    return re.search(r"[^\\][{}]".format("".join(_escaped_char)), text) is None
+    # Checking the escaped characters
+    sanitized = re.search(r"[^\\][{}]".format("".join(_escaped_char)), text)
+    sanitized = sanitized is None
+
+    # Checking the characters to replace
+    for char in _char_mod.keys():
+        sanitized = sanitized and (char not in text)
+
+    return sanitized
 
 
 def create_tabular(template, header, data, header_multicol=None,
