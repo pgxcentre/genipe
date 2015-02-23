@@ -153,12 +153,77 @@ class TestReportingUtils(unittest.TestCase):
             )
         self.assertEqual(str(cm.exception), "invalid placement")
 
-    @unittest.skip("Test not implemented")
     def test_format_time(self):
         """Tests the 'format_time' function."""
-        self.fail("Test not implemented")
+        seconds = [0, 1, 30]
+        minutes = [0, 1, 30]
+        hours = [0, 1, 30, 101]
 
-    @unittest.skip("Test not implemented")
+        written_times = ["no time", "1 hour", "30 hours", "101 hours",
+                         "1 minute", "1 hour and 1 minute",
+                         "30 hours and 1 minute", "101 hours and 1 minute",
+                         "30 minutes", "1 hour and 30 minutes",
+                         "30 hours and 30 minutes", "101 hours and 30 minutes",
+                         "1 second", "1 hour and 1 second",
+                         "30 hours and 1 second", "101 hours and 1 second",
+                         "1 minute and 1 second",
+                         "1 hour, 1 minute and 1 second",
+                         "30 hours, 1 minute and 1 second",
+                         "101 hours, 1 minute and 1 second",
+                         "30 minutes and 1 second",
+                         "1 hour, 30 minutes and 1 second",
+                         "30 hours, 30 minutes and 1 second",
+                         "101 hours, 30 minutes and 1 second", "30 seconds",
+                         "1 hour and 30 seconds", "30 hours and 30 seconds",
+                         "101 hours and 30 seconds", "1 minute and 30 seconds",
+                         "1 hour, 1 minute and 30 seconds",
+                         "30 hours, 1 minute and 30 seconds",
+                         "101 hours, 1 minute and 30 seconds",
+                         "30 minutes and 30 seconds",
+                         "1 hour, 30 minutes and 30 seconds",
+                         "30 hours, 30 minutes and 30 seconds",
+                         "101 hours, 30 minutes and 30 seconds",
+        ]
+
+        i = 0
+        for second in seconds:
+            for minute in minutes:
+                for hour in hours:
+                    # Computing the total number of seconds
+                    total_seconds = second + (minute * 60) + (hour * 3600)
+
+                    # Checking the time
+                    self.assertEqual(
+                        "{:02d}:{:02d}:{:02d}".format(hour, minute, second),
+                        format_time(total_seconds),
+                    )
+
+                    # Checking the written time
+                    self.assertEqual(
+                        written_times[i],
+                        format_time(total_seconds, written_time=True),
+                    )
+                    i += 1
+
     def test_colorize_time(self):
         """Tests the 'colorize_time' function."""
-        self.fail("Test not implemented")
+        # Testing 1 second
+        self.assertEqual(r"{\color{light_gray}00:00:0}1", colorize_time(1))
+
+        # Testing 10 seconds
+        self.assertEqual(r"{\color{light_gray}00:00:}10", colorize_time(10))
+
+        # Testing 1 minute
+        self.assertEqual(r"{\color{light_gray}00:0}1:00", colorize_time(60))
+
+        # Testing 10 minutes
+        self.assertEqual(r"{\color{light_gray}00:}10:00", colorize_time(600))
+
+        # Testing 1 hour
+        self.assertEqual(r"{\color{light_gray}0}1:00:00", colorize_time(3600))
+
+        # Testing 10 hours
+        self.assertEqual("10:00:00", colorize_time(36000))
+
+        # Testing 100 hours
+        self.assertEqual("100:00:00", colorize_time(360000))
