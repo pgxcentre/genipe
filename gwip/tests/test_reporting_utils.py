@@ -172,8 +172,7 @@ class TestReportingUtils(unittest.TestCase):
                          "30 minutes and 30 seconds",
                          "1 hour, 30 minutes and 30 seconds",
                          "30 hours, 30 minutes and 30 seconds",
-                         "101 hours, 30 minutes and 30 seconds",
-        ]
+                         "101 hours, 30 minutes and 30 seconds"]
 
         i = 0
         for second in seconds:
