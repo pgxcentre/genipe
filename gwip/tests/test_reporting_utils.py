@@ -21,16 +21,6 @@ __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 class TestReportingUtils(unittest.TestCase):
 
-    def setUp(self):
-        """Setup the tests."""
-        # Creating the temporary directory
-        self.output_dir = TemporaryDirectory(prefix="gwip_test_")
-
-    def tearDown(self):
-        """Finishes the test."""
-        # Deleting the output directory
-        self.output_dir.cleanup()
-
     def test_sanitize_tex(self):
         """Tests the 'sanitize_tex' function."""
         # Sanitize all required characters
