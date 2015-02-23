@@ -160,7 +160,7 @@ def get_task_runtime(task_id, db_name):
 
     conn.close()
 
-    return int((r[1] - r[0]).total_seconds())
+    return int(round((r[1] - r[0]).total_seconds(), ndigits=0))
 
 
 def get_all_runtimes(db_name):
@@ -174,4 +174,6 @@ def get_all_runtimes(db_name):
     conn.close()
 
     # Computing the execution time
-    return {i[0]: int((i[2] - i[1]).total_seconds()) for i in r}
+    return {
+        i[0]: int(round((i[2] - i[1]).total_seconds(), ndigits=0)) for i in r
+    }
