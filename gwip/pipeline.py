@@ -1278,7 +1278,7 @@ def check_args(args):
             if not os.path.isfile(filename):
                 raise ProgramError("{}: no such file".format(filename))
     if not os.path.isfile(args.sample_file):
-        raise ProgramError("{}: no such file".format(filename))
+        raise ProgramError("{}: no such file".format(args.sample_file))
 
     # Checking the SHAPEIT binary if required
     if args.shapeit_bin is not None:
@@ -1302,12 +1302,16 @@ def check_args(args):
             raise ProgramError("{}: no such file".format(args.plink_bin))
     else:
         if which("plink") is None:
-            raise ProgramError("plink: not in the path")
+            raise ProgramError("plink: not in the path (use --plink-bin)")
 
     # Checking the segment length
-    if args.segment_length < 0:
+    if args.segment_length <= 0:
         raise ProgramError("{}: invalid segment "
                            "length".format(args.segment_length))
+    if args.segment_length < 1e3:
+        # This is too small.. We continue with a warning
+        logging.warning("segment length ({:g} bp) is too "
+                        "small".format(args.segment_length))
     if args.segment_length > 5e6:
         # This is too big... We continue with a warning
         logging.warning("segment length ({:g} bp) is more than "
