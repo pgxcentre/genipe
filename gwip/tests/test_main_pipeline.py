@@ -12,6 +12,8 @@ import unittest
 from tempfile import TemporaryDirectory
 
 from ..pipeline import *
+from .. import chromosomes
+from ..error import ProgramError
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -113,7 +115,267 @@ class TestMainPipeline(unittest.TestCase):
         """Tests the 'gather_execution_time' function."""
         self.fail("Test not implemented")
 
-    @unittest.skip("Test not implemented")
     def test_check_args(self):
         """Tests the 'check_args' function."""
-        self.fail("Test not implemented")
+        # Creating a dummy object that 'check_args' can work with
+        class Dummy(object):
+            pass
+        args = Dummy()
+
+        # Setting all the attributes (and creating the files if required)
+        # bfile
+        bfile = os.path.join(self.output_dir.name, "input_file")
+        for extension in [".bed", ".bim", ".fam"]:
+            with open(bfile + extension, "w") as o_file:
+                pass
+        args.bfile = bfile
+
+        # thread
+        args.thread = 1
+
+        # shapeit_thread
+        args.shapeit_thread = 1
+
+        # hap_template, legend_template and map_template
+        hap_template = os.path.join(self.output_dir.name, "chr{chrom}.hap.gz")
+        leg_template = os.path.join(self.output_dir.name, "chr{chrom}.leg.gz")
+        map_template = os.path.join(self.output_dir.name, "chr{chrom}.map")
+        for filename in [hap_template, leg_template, map_template]:
+            for chrom in chromosomes:
+                with open(filename.format(chrom=chrom), "w") as o_file:
+                    pass
+        args.hap_template = hap_template
+        args.legend_template = leg_template
+        args.map_template = map_template
+
+        # sample_file
+        sample_file = os.path.join(self.output_dir.name, "sample.txt")
+        with open(sample_file, "w") as o_file:
+            pass
+        args.sample_file = sample_file
+
+        # shapeit_bin
+        shapeit_bin = os.path.join(self.output_dir.name, "shapeit")
+        with open(shapeit_bin, "w") as o_file:
+            pass
+        args.shapeit_bin = shapeit_bin
+
+        # impute2_bin
+        impute2_bin = os.path.join(self.output_dir.name, "impute2")
+        with open(impute2_bin, "w") as o_file:
+            pass
+        args.impute2_bin = impute2_bin
+
+        # plink_bin
+        plink_bin = os.path.join(self.output_dir.name, "plink")
+        with open(plink_bin, "w") as o_file:
+            pass
+        args.plink_bin = plink_bin
+
+        # segment_length
+        args.segment_length = 5e6
+
+        # preamble
+        preamble = os.path.join(self.output_dir.name, "preamble.txt")
+        with open(preamble, "w") as o_file:
+            pass
+        args.preamble = preamble
+
+        # use_drmaa
+        args.use_drmaa = True
+
+        # args.drmaa_config
+        drmaa_config = os.path.join(self.output_dir.name, "drmaa_config.txt")
+        with open(drmaa_config, "w") as o_file:
+            pass
+        args.drmaa_config = drmaa_config
+
+        # Testing begins
+        # Everything should work
+        self.assertTrue(check_args(args))
+
+        # Now, setting an invalid thread number (negative or 0)
+        for i in range(-1, 1):
+            args.thread = i
+            with self.assertRaises(ProgramError) as cm:
+                check_args(args)
+            self.assertEqual("thread should be one or more", str(cm.exception))
+        args.thread = 2
+
+        # Now, setting an invalid shapeit_thread number (negative or 0)
+        original_value = args.shapeit_thread
+        for i in range(-1, 1):
+            args.shapeit_thread = i
+            with self.assertRaises(ProgramError) as cm:
+                check_args(args)
+            self.assertEqual("thread should be one or more", str(cm.exception))
+        args.shapeit_thread = 2
+
+        # Deleting each of the required plink file
+        for extension in [".bed", ".bim", ".fam"]:
+            os.remove(args.bfile + extension)
+            self.assertFalse(os.path.isfile(args.bfile + extension))
+            with self.assertRaises(ProgramError) as cm:
+                check_args(args)
+            self.assertEqual("{}: no such file".format(args.bfile + extension),
+                             str(cm.exception))
+            with open(args.bfile + extension, "w") as o_file:
+                pass
+
+        # Deleting each of the template, legend or map file
+        for template in [args.hap_template, args.legend_template,
+                         args.map_template]:
+            for chrom in chromosomes:
+                filename = template.format(chrom=chrom)
+                os.remove(filename)
+                self.assertFalse(os.path.isfile(filename))
+                with self.assertRaises(ProgramError) as cm:
+                    check_args(args)
+                self.assertEqual("{}: no such file".format(filename),
+                                str(cm.exception))
+                with open(filename , "w") as o_file:
+                    pass
+
+        # Deleting the sample file
+        os.remove(args.sample_file)
+        self.assertFalse(os.path.isfile(args.sample_file))
+        with self.assertRaises(ProgramError) as cm:
+            check_args(args)
+        self.assertEqual("{}: no such file".format(args.sample_file),
+                         str(cm.exception))
+        with open(args.sample_file, "w") as o_file:
+            pass
+
+        # Deleting the shapeit dummy binary
+        os.remove(args.shapeit_bin)
+        self.assertFalse(os.path.isfile(args.shapeit_bin))
+        with self.assertRaises(ProgramError) as cm:
+            check_args(args)
+        self.assertEqual("{}: no such file".format(args.shapeit_bin),
+                         str(cm.exception))
+        with open(args.shapeit_bin, "w") as o_file:
+            pass
+
+        # Setting the shapeit binary to None (if not in the path)
+        original_value = args.shapeit_bin
+        args.shapeit_bin = None
+        if which("shapeit") is None:
+            with self.assertRaises(ProgramError) as cm:
+                check_args(args)
+            self.assertEqual("shapeit: not in the path (use --shapeit-bin)",
+                             str(cm.exception))
+        else:
+            self.assertTrue(check_args(args))
+        args.shapeit_bin = original_value
+
+        # Deleting the impute2 dummy binary
+        os.remove(args.impute2_bin)
+        self.assertFalse(os.path.isfile(args.impute2_bin))
+        with self.assertRaises(ProgramError) as cm:
+            check_args(args)
+        self.assertEqual("{}: no such file".format(args.impute2_bin),
+                         str(cm.exception))
+        with open(args.impute2_bin, "w") as o_file:
+            pass
+
+        # Setting the shapeit binary to None (if not in the path)
+        original_value = args.impute2_bin
+        args.impute2_bin = None
+        if which("shapeit") is None:
+            with self.assertRaises(ProgramError) as cm:
+                check_args(args)
+            self.assertEqual("impute2: not in the path (use --impute2-bin)",
+                             str(cm.exception))
+        else:
+            self.assertTrue(check_args(args))
+        args.impute2_bin = original_value
+ 
+        # Deleting the plink dummy binary
+        os.remove(args.plink_bin)
+        self.assertFalse(os.path.isfile(args.plink_bin))
+        with self.assertRaises(ProgramError) as cm:
+            check_args(args)
+        self.assertEqual("{}: no such file".format(args.plink_bin),
+                         str(cm.exception))
+        with open(args.plink_bin, "w") as o_file:
+            pass
+
+        # Setting the shapeit binary to None (if not in the path)
+        original_value = args.plink_bin
+        args.plink_bin = None
+        if which("shapeit") is None:
+            with self.assertRaises(ProgramError) as cm:
+                check_args(args)
+            self.assertEqual("plink: not in the path (use --plink-bin)",
+                             str(cm.exception))
+        else:
+            self.assertTrue(check_args(args))
+        args.plink_bin = original_value
+
+        # Modifying the segment length
+        original_value = args.segment_length
+        for value in [-1, 0, 1e3 - 1, 5e6 + 1]:
+            args.segment_length = value
+            if value == 5e6 + 1:
+                # Too big
+                with self.assertLogs(level="WARNING") as cm:
+                    check_args(args)
+                log_m = ("WARNING:root:segment length ({:g} bp) is more "
+                         "than 5Mb")
+                self.assertEqual(1, len(cm.output))
+                self.assertEqual(log_m.format(value), cm.output[0])
+
+            elif value == 1e3 - 1:
+                # Too small
+                with self.assertLogs(level="WARNING") as cm:
+                    check_args(args)
+                log_m = "WARNING:root:segment length ({:g} bp) is too small"
+                self.assertEqual(1, len(cm.output))
+                self.assertEqual(log_m.format(value), cm.output[0])
+
+            else:
+                # Invalid
+                with self.assertRaises(ProgramError) as cm:
+                    check_args(args)
+                error_m = "{}: invalid segment length"
+                self.assertEqual(error_m.format(value), str(cm.exception))
+        args.segment_length = original_value
+
+        # Deleting the preamble file
+        os.remove(args.preamble)
+        self.assertFalse(os.path.isfile(args.preamble))
+        with self.assertRaises(ProgramError) as cm:
+            check_args(args)
+        self.assertEqual("{}: no such file".format(args.preamble),
+                         str(cm.exception))
+
+        # Setting the preamble to None should do the trick
+        args.preamble = None
+        self.assertTrue(check_args(args))
+
+        # Deleting the drmaa config file
+        os.remove(args.drmaa_config)
+        self.assertFalse(os.path.isfile(args.drmaa_config))
+        with self.assertRaises(ProgramError) as cm:
+            check_args(args)
+        self.assertEqual("{}: no such file".format(args.drmaa_config),
+                         str(cm.exception))
+
+        # Setting to None should do the tick
+        original_value = args.drmaa_config
+        args.drmaa_config = None
+        self.assertTrue(
+            check_args(args) and not os.path.isfile(original_value)
+        )
+        args.drmaa_config = original_value
+
+        # Or, setting use_drmaa to false
+        args.use_drmaa = False
+        self.assertTrue(
+            check_args(args) and not os.path.isfile(args.drmaa_config)
+        )
+        with open(args.drmaa_config, "w") as o_file:
+            pass
+
+        # Final check
+        self.assertTrue(check_args(args))
