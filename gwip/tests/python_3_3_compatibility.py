@@ -49,7 +49,17 @@ class Python_3_4_AssertLogsContext(Python_3_4_BaseTestCaseContext):
         Python_3_4_BaseTestCaseContext.__init__(self, test_case)
         self.logger_name = logger_name
         if level:
-            self.level = logging._nameToLevel.get(level, level)
+            # Python 3.3 logging doesn't have a _nameToLevel dictionary
+            nameToLevel = {
+                'CRITICAL': logging.CRITICAL,
+                'ERROR': logging.ERROR,
+                'WARN': logging.WARNING,
+                'WARNING': logging.WARNING,
+                'INFO': logging.INFO,
+                'DEBUG': logging.DEBUG,
+                'NOTSET': logging.NOTSET,
+            }
+            self.level = nameToLevel.get(level, level)
         else:
             self.level = logging.INFO
         self.msg = None
