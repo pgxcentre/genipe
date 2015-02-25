@@ -8,7 +8,7 @@ import logging
 import collections
 
 
-class _BaseTestCaseContext:
+class Python_3_4_BaseTestCaseContext:
 
     def __init__(self, test_case):
         self.test_case = test_case
@@ -40,13 +40,13 @@ class Python_3_4_CapturingHandler(logging.Handler):
         self.watcher.output.append(msg)
 
 
-class Python_3_4_AssertLogsContext(_BaseTestCaseContext):
+class Python_3_4_AssertLogsContext(Python_3_4_BaseTestCaseContext):
     """A context manager used to implement TestCase.assertLogs()."""
 
     LOGGING_FORMAT = "%(levelname)s:%(name)s:%(message)s"
 
     def __init__(self, test_case, logger_name, level):
-        _BaseTestCaseContext.__init__(self, test_case)
+        Python_3_4_BaseTestCaseContext.__init__(self, test_case)
         self.logger_name = logger_name
         if level:
             self.level = logging._nameToLevel.get(level, level)
