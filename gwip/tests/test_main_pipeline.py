@@ -232,8 +232,8 @@ class TestMainPipeline(unittest.TestCase):
                 with self.assertRaises(ProgramError) as cm:
                     check_args(args)
                 self.assertEqual("{}: no such file".format(filename),
-                                str(cm.exception))
-                with open(filename , "w") as o_file:
+                                 str(cm.exception))
+                with open(filename, "w") as o_file:
                     pass
 
         # Deleting the sample file
@@ -289,7 +289,7 @@ class TestMainPipeline(unittest.TestCase):
         else:
             self.assertTrue(check_args(args))
         args.impute2_bin = original_value
- 
+
         # Deleting the plink dummy binary
         os.remove(args.plink_bin)
         self.assertFalse(os.path.isfile(args.plink_bin))
@@ -318,7 +318,7 @@ class TestMainPipeline(unittest.TestCase):
             args.segment_length = value
             if value == 5e6 + 1:
                 # Too big
-                with self.assertLogs(level="WARNING") as cm:
+                with self._my_compatibility_assertLogs(level="WARNING") as cm:
                     check_args(args)
                 log_m = ("WARNING:root:segment length ({:g} bp) is more "
                          "than 5Mb")
@@ -327,7 +327,7 @@ class TestMainPipeline(unittest.TestCase):
 
             elif value == 1e3 - 1:
                 # Too small
-                with self.assertLogs(level="WARNING") as cm:
+                with self._my_compatibility_assertLogs(level="WARNING") as cm:
                     check_args(args)
                 log_m = "WARNING:root:segment length ({:g} bp) is too small"
                 self.assertEqual(1, len(cm.output))
@@ -379,3 +379,12 @@ class TestMainPipeline(unittest.TestCase):
 
         # Final check
         self.assertTrue(check_args(args))
+
+    def _my_compatibility_assertLogs(self, logger=None, level=None):
+        """Compatibility 'assertLogs' function for Python 3.3."""
+        if hasattr(self, "assertLogs"):
+            return self.assertLogs(logger, level)
+
+        else:
+            from .python_3_3_compatibility import Python_3_4_AssertLogsContext
+            return Python_3_4_AssertLogsContext(self, logger, level)
