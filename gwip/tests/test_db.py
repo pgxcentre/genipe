@@ -389,7 +389,6 @@ class TestDB(unittest.TestCase):
 
         conn.close()
 
-
     def test_get_task_runtime(self):
         """Tests the 'task_runtime' function."""
         # Those two tasks will be modified
