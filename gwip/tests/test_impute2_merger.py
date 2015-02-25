@@ -31,9 +31,6 @@ class TestImpute2Merger(unittest.TestCase):
 
     def setUp(self):
         """Setup the tests."""
-        # Skipping a line
-        print()
-
         # Creating the temporary directory
         self.output_dir = TemporaryDirectory(prefix="gwip_test_")
 
