@@ -31,6 +31,16 @@ from .config import parse_drmaa_config
 from .reporting import generate_report
 
 
+try:
+    import matplotlib as mpl
+    mpl.use("Agg")
+    import matplotlib.pyplot as plt
+    import matplotlib.patches as mpatches
+    HAS_MATPLOTLIB = True
+except ImportError:
+    HAS_MATPLOTLIB = False
+
+
 __author__ = "Louis-Philippe Lemieux Perreault"
 __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
 __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
@@ -197,6 +207,22 @@ def main():
                                           len(samples), missing_rate,
                                           args.out_dir)
         run_information.update(numbers)
+
+        # Gathering the MAF statistics
+        numbers = gather_maf_stats(args.out_dir)
+        run_information.update(numbers)
+
+        # Checking that the total number of sites equals the number of sites
+        # with MAF
+        total_nb_sites = int(run_information["nb_imputed"].replace(",", ""))
+        total_nb_nan = int(run_information["nb_maf_nan"].replace(",", ""))
+        total_nb_maf = run_information["nb_marker_with_maf"].replace(",", "")
+        total_nb_maf = int(total_nb_maf)
+        if total_nb_sites != (total_nb_maf + total_nb_nan):
+            logging.warning("Out of {} imputed sites, only {} with MAF and "
+                            "{} without MAF".format(total_nb_sites,
+                                                    total_nb_maf,
+                                                    total_nb_nan))
 
         # Gathering the execution time
         exec_time = gather_execution_time(db_name)
@@ -1094,6 +1120,129 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
         "nb_missing_geno":            "{:,d}".format(nb_missing_geno),
         "pct_geno_now_complete":      "{:.1f}".format(pct_geno_now_complete),
         "nb_site_now_complete":       "{:,d}".format(nb_sites_now_complete)
+    }
+
+
+def gather_maf_stats(o_dir):
+    """Gather minor allele frequencies from imputation."""
+    # The statistics we want to gather
+    nb_marker_with_maf = 0   # The number of markers for which we have a MAF
+    nb_maf_geq_01 = 0        # The number of markers with MAF >= 0.01
+    nb_maf_geq_05 = 0        # The number of markers with MAF >= 0.05
+    nb_maf_lt_05 = 0         # The number of markers with MAF < 0.05
+    nb_maf_lt_01 = 0         # The number of markers with MAF < 0.01
+    nb_maf_geq_01_lt_05 = 0  # The number of markers with 0.01 <= MAF < 0.05
+    nb_maf_nan = 0           # The number of markers without MAF
+
+    # For each chromosome, get the MAF statistics
+    filename_template = os.path.join(o_dir, "chr{chrom}", "final_impute2",
+                                     "chr{chrom}.imputed.maf")
+    for chrom in chromosomes:
+        # The name of the file
+        filename = filename_template.format(chrom=chrom)
+
+        # Checking the file exists
+        if not os.path.isfile(filename):
+            raise ProgramError("{}: no such file".format(filename))
+
+        # Reading the file using pandas
+        maf = pd.read_csv(filename, sep="\t")
+
+        # Excluding sites with no MAF (NaN values)
+        null_maf = maf.maf.isnull()
+        nb_nan = null_maf.sum()
+        maf = maf[~null_maf]
+
+        # Checking we have MAF (and not just frequencies)
+        maf_description = maf.maf.describe()
+        if maf_description["max"] > 0.5:
+            bad = maf.loc[maf.maf.idxmax(), ["name", "maf"]]
+            raise ProgramError("{}: {}: invalid MAF".format(str(bad["name"]),
+                                                            round(bad.maf, 3)))
+        if maf_description["max"] < 0:
+            bad = maf.loc[maf.maf.idxmin(), ["name", "maf"]]
+            raise ProgramError("{}: {}: invalid MAF".format(str(bad["name"]),
+                                                            round(bad.maf, 3)))
+
+        # Some of the true/false we need to keep (to not compute multiple time)
+        maf_geq_01 = maf.maf >= 0.01
+        maf_lt_05 = maf.maf < 0.05
+
+        # Updating the statistics
+        nb_marker_with_maf += maf.shape[0]
+        nb_maf_nan += nb_nan
+        nb_maf_geq_01 += maf_geq_01.sum()
+        nb_maf_geq_05 += (maf.maf >= 0.05).sum()
+        nb_maf_lt_05 += maf_lt_05.sum()
+        nb_maf_lt_01 += (maf.maf < 0.01).sum()
+        nb_maf_geq_01_lt_05 += (maf_geq_01 & maf_lt_05).sum()
+
+    # Checking
+    nb_total = nb_maf_lt_01 + nb_maf_geq_01_lt_05 + nb_maf_geq_05
+    if nb_total != nb_marker_with_maf:
+        raise ProgramError("something went wrong")
+
+    # Generating a pie chart if matplotlib is installed
+    if HAS_MATPLOTLIB:
+        # Creating a figure and axe
+        figure, axe = plt.subplots(1, 1, figsize=(8, 8))
+
+        # The colors
+        light_colors = ["#16A5D7", "#7CAF00", "#FFA00E"]
+        dark_colors = ["#0099CC", "#669900", "#FF8800"]
+
+        # The data for the pie chart
+        labels = [
+            "{:.1f}%".format(nb_maf_lt_01 / nb_total * 100),
+            "{:.1f}%".format(nb_maf_geq_01_lt_05 / nb_total * 100),
+            "{:.1f}%".format(nb_maf_geq_05 / nb_total * 100),
+        ]
+        sizes = [nb_maf_lt_01, nb_maf_geq_01_lt_05, nb_maf_geq_05]
+        explode = (0.05, 0.05, 0.05)
+        wedges, texts = axe.pie(sizes, explode=explode, labels=labels,
+                                colors=light_colors, startangle=90,
+                                textprops={"fontsize": 14, "weight": "bold"})
+
+        # Changing the parameter for the color
+        for wedge, color in zip(wedges, dark_colors):
+            wedge.set_edgecolor(color)
+            wedge.set_linewidth(6)
+
+        # Changing the label parameters
+        for text in texts:
+            text.set_bbox({"boxstyle": "round", "fc": "#C0C0C0",
+                           "ec": "#C0C0C0"})
+
+        # Adding a legend in the margin with custom patches
+        ultra_rare = mpatches.Patch(edgecolor=dark_colors[0],
+                                    facecolor=light_colors[0], linewidth=3)
+        rare = mpatches.Patch(edgecolor=dark_colors[1],
+                              facecolor=light_colors[1], linewidth=3)
+        common = mpatches.Patch(edgecolor=dark_colors[2],
+                                facecolor=light_colors[2], linewidth=3)
+        axe.legend([ultra_rare, rare, common],
+                   [r"$MAF < 1\%$", r"$1\% \leq MAF < 5\%$",
+                    r"$MAF \geq 5\%$"],
+                   bbox_to_anchor=(0, -0.12, 1, .102),
+                   loc="upper center", ncol=3, frameon=False,
+                   mode="expand", borderaxespad=1)
+
+        # Setting the axis to equal size
+        axe.axis("equal")
+
+        # Saving and closing the figure
+        o_filename = os.path.join(o_dir, "frequency_pie.png")
+        plt.savefig(o_filename, dpi=300, bbox_inches="tight", figure=figure)
+        plt.close(figure)
+
+    return {
+        "nb_maf_nan":          "{:,d}".format(nb_maf_nan),
+        "nb_marker_with_maf":  "{:,d}".format(nb_marker_with_maf),
+        "nb_maf_geq_01":       "{:,d}".format(nb_maf_geq_01),
+        "nb_maf_geq_05":       "{:,d}".format(nb_maf_geq_05),
+        "nb_maf_lt_05":        "{:,d}".format(nb_maf_lt_05),
+        "nb_maf_lt_01":        "{:,d}".format(nb_maf_lt_01),
+        "nb_maf_geq_01_lt_05": "{:,d}".format(nb_maf_geq_01_lt_05),
     }
 
 

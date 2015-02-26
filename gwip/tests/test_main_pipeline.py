@@ -110,6 +110,135 @@ class TestMainPipeline(unittest.TestCase):
         """Tests the 'gather_imputation_stats' function."""
         self.fail("Test not implemented")
 
+    def test_gather_maf_stats(self):
+        """Tests the 'gather_maf_stats' function."""
+        # Creating one file per chromosome with two markers in each
+        header = ["name", "maf"]
+        content = [
+            ["marker_1", "0.0"],
+            ["marker_2", "0.2"],
+            ["marker_3", "NA"],
+            ["marker_4", "0.3"],
+            ["marker_5", "9.4e-05"],
+            ["marker_6", "0.04"],
+            ["marker_7", "0.01"],
+            ["marker_8", "0.003"],
+            ["marker_9", "0.015"],
+            ["marker_10", "0.020"],
+            ["marker_11", "0.005"],
+            ["marker_12", "0.004"],
+            ["marker_13", "0.05"],
+            ["marker_14", "0.055"],
+            ["marker_15", "0.001"],
+            ["marker_16", "0.004"],
+            ["marker_17", "0.056"],
+            ["marker_18", "0.0123"],
+            ["marker_19", "0.005"],
+            ["marker_20", "0.012"],
+            ["marker_21", "0.001"],
+            ["marker_22", "0.0316"],
+            ["marker_23", "0.432"],
+            ["marker_24", "0.03423"],
+            ["marker_25", "0.00514"],
+            ["marker_26", "0.01004"],
+            ["marker_27", "0.011"],
+            ["marker_28", "0.051"],
+            ["marker_29", "0.048"],
+            ["marker_30", "0.0484"],
+            ["marker_31", "0.0871"],
+            ["marker_32", "0.5"],
+            ["marker_33", "0.006"],
+            ["marker_34", "0.06"],
+            ["marker_35", "0.08"],
+            ["marker_36", "0.0784"],
+            ["marker_37", "0.0984"],
+            ["marker_38", "0.19444"],
+            ["marker_39", "1.5e-04"],
+            ["marker_40", "NA"],
+            ["marker_41", "4.87e-07"],
+            ["marker_42", "5.4e-08"],
+            ["marker_43", "0.394"],
+            ["marker_44", "0.004"],
+        ]
+
+        # The expected results
+        expected_results = {
+            "nb_marker_with_maf": "42",
+            "nb_maf_geq_01": "27",
+            "nb_maf_geq_05": "15",
+            "nb_maf_lt_05": "27",
+            "nb_maf_lt_01": "15",
+            "nb_maf_geq_01_lt_05": "12",
+            "nb_maf_nan": "2",
+        }
+
+        # Creating the files for the test
+        filename_template = os.path.join(self.output_dir.name, "chr{chrom}",
+                                         "final_impute2",
+                                         "chr{chrom}.imputed.maf")
+        for chrom in chromosomes:
+            # Getting the name of the file
+            filename = filename_template.format(chrom=chrom)
+
+            # Getting the directory and create it
+            dirname = os.path.dirname(filename)
+            if not os.path.isdir(dirname):
+                os.makedirs(dirname)
+            self.assertTrue(os.path.isdir(dirname))
+
+            # Creating the content
+            with open(filename, "w") as o_file:
+                print(*header, sep="\t", file=o_file)
+                for i in range(2):
+                    print(*content.pop(), sep="\t", file=o_file)
+            self.assertTrue(os.path.isfile(filename))
+        self.assertEqual(0, len(content))
+
+        # Executing the command (getting the observed data)
+        observed = gather_maf_stats(self.output_dir.name)
+
+        # Checking the observed results
+        self.assertEqual(len(expected_results), len(observed))
+        for expected_key, expected_value in expected_results.items():
+            self.assertTrue(expected_key in observed)
+            self.assertEqual(expected_value, observed[expected_key])
+
+        # Testing an invalid entry
+        with open(filename_template.format(chrom=1), "w") as o_file:
+            print(*header, sep="\t", file=o_file)
+            print("bad_marker", "0.6", sep="\t", file=o_file)
+
+        # This should raise an exception
+        with self.assertRaises(ProgramError) as cm:
+            gather_maf_stats(self.output_dir.name)
+        self.assertEqual("{}: {}: invalid MAF".format("bad_marker",
+                                                      round(0.6, 3)),
+                         str(cm.exception))
+
+        # Testing an invalid entry
+        with open(filename_template.format(chrom=1), "w") as o_file:
+            print(*header, sep="\t", file=o_file)
+            print("bad_marker", "-0.01", sep="\t", file=o_file)
+
+        # This should raise an exception
+        with self.assertRaises(ProgramError) as cm:
+            print("THIS ONE")
+            gather_maf_stats(self.output_dir.name)
+        self.assertEqual("{}: {}: invalid MAF".format("bad_marker",
+                                                      round(-0.01, 3)),
+                         str(cm.exception))
+
+        # Deleting the first file, and checking we have an error
+        removed_filename = filename_template.format(chrom=1)
+        os.remove(removed_filename)
+        self.assertFalse(os.path.isfile(removed_filename))
+
+        # This should raise an exception
+        with self.assertRaises(ProgramError) as cm:
+            gather_maf_stats(self.output_dir.name)
+        self.assertEqual("{}: no such file".format(removed_filename),
+                         str(cm.exception))
+
     @unittest.skip("Test not implemented")
     def test_gather_execution_time(self):
         """Tests the 'gather_execution_time' function."""
