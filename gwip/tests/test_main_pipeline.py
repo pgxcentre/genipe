@@ -171,6 +171,11 @@ class TestMainPipeline(unittest.TestCase):
                       "marker_35", "marker_36", "marker_37", "marker_38",
                       "marker_39", "marker_41", "marker_43", "marker_44"]
 
+        # The PDF generated
+        frequency_pie = ""
+        if HAS_MATPLOTLIB:
+            frequency_pie = os.path.join(self.output_dir.name,
+                                         "frequency_pie.pdf")
         # The expected results
         nb_sites = len(good_sites)
         expected_results = {
@@ -186,6 +191,7 @@ class TestMainPipeline(unittest.TestCase):
             "nb_maf_geq_01_lt_05":  "12",
             "pct_maf_geq_01_lt_05": "{:.1f}".format(12 / nb_sites * 100),
             "nb_maf_nan":           "0",
+            "frequency_pie":        frequency_pie,
         }
 
         # Creating the files for the test
@@ -230,14 +236,12 @@ class TestMainPipeline(unittest.TestCase):
             self.assertTrue(expected_key in observed)
             self.assertEqual(expected_value, observed[expected_key])
 
-        # If matplotlib is installed, checking we have a figure
-        figure_filename = os.path.join(self.output_dir.name,
-                                       "frequency_pie.png")
-        try:
-            import matplotlib as mpl
-            self.assertTrue(os.path.isfile(figure_filename))
-        except ImportError:
-            self.assertFalse(os.path.isfile(figure_filename))
+        # If matplotlib is installed, checking we have a figure (and not
+        # otherwise)
+        if HAS_MATPLOTLIB:
+            self.assertTrue(os.path.isfile(frequency_pie))
+        else:
+            self.assertFalse(os.path.isfile(frequency_pie))
 
         # Testing an invalid entry
         changed_filename = filename_template.format(chrom=1, suffix="maf")

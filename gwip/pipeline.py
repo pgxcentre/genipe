@@ -1217,9 +1217,10 @@ def gather_maf_stats(o_dir):
         logging.warning("There were no marker with MAF (something went wrong)")
 
     # Generating a pie chart if matplotlib is installed
+    frequency_pie = ""
     if (nb_marker_with_maf > 0) and HAS_MATPLOTLIB:
         # Creating a figure and axe
-        figure, axe = plt.subplots(1, 1, figsize=(8, 8))
+        figure, axe = plt.subplots(1, 1, figsize=(6, 9))
 
         # The colors
         colors = ["#0099CC", "#669900", "#FF8800"]
@@ -1235,12 +1236,17 @@ def gather_maf_stats(o_dir):
         wedges, texts = axe.pie(sizes, explode=explode, labels=labels,
                                 colors=colors, startangle=90,
                                 wedgeprops={"linewidth": 0},
-                                textprops={"fontsize": 14, "weight": "bold"})
+                                textprops={"fontsize": 12, "weight": "bold"})
 
         # Changing the label parameters
         for text in texts:
             text.set_bbox({"boxstyle": "round", "fc": "#C0C0C0",
                            "ec": "#C0C0C0"})
+
+        # Shrink current axis by 50%
+        bbox = axe.get_position()
+        axe.set_position([bbox.x0, bbox.y0, bbox.width * 0.5,
+                         bbox.height * 0.5])
 
         # If no restriction was performed while imputing, there will be a high
         # majority of ultra rare variants... We need to move the text box if
@@ -1267,20 +1273,19 @@ def gather_maf_stats(o_dir):
         axe.legend(
             [ultra_rare, rare, common],
             [r"$MAF < 1\%$", r"$1\% \leq MAF < 5\%$", r"$MAF \geq 5\%$"],
-            bbox_to_anchor=(0, -0.15, 1, .102),
-            loc="upper center",
-            ncol=3,
+            bbox_to_anchor=(1.3, 1),
+            loc="upper left",
+            ncol=1,
             frameon=False,
-            mode="expand",
-            borderaxespad=1,
+            fontsize=21,
         )
 
         # Setting the axis to equal size
         axe.axis("equal")
 
         # Saving and closing the figure
-        o_filename = os.path.join(o_dir, "frequency_pie.png")
-        plt.savefig(o_filename, dpi=300, bbox_inches="tight", figure=figure)
+        frequency_pie = os.path.join(o_dir, "frequency_pie.pdf")
+        plt.savefig(frequency_pie, bbox_inches="tight", figure=figure)
         plt.close(figure)
 
     return {
@@ -1296,6 +1301,7 @@ def gather_maf_stats(o_dir):
         "pct_maf_lt_05":        "{:.1f}".format(pct_maf_lt_05),
         "pct_maf_lt_01":        "{:.1f}".format(pct_maf_lt_01),
         "pct_maf_geq_01_lt_05": "{:.1f}".format(pct_maf_geq_01_lt_05),
+        "frequency_pie":        frequency_pie,
     }
 
 
