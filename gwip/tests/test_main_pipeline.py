@@ -230,6 +230,15 @@ class TestMainPipeline(unittest.TestCase):
             self.assertTrue(expected_key in observed)
             self.assertEqual(expected_value, observed[expected_key])
 
+        # If matplotlib is installed, checking we have a figure
+        figure_filename = os.path.join(self.output_dir.name,
+                                       "frequency_pie.png")
+        try:
+            import matplotlib as mpl
+            self.assertTrue(os.path.isfile(figure_filename))
+        except ImportError:
+            self.assertFalse(os.path.isfile(figure_filename))
+
         # Testing an invalid entry
         changed_filename = filename_template.format(chrom=1, suffix="maf")
         with open(changed_filename, "w") as o_file:

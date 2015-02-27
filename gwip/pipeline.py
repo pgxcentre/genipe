@@ -1222,8 +1222,7 @@ def gather_maf_stats(o_dir):
         figure, axe = plt.subplots(1, 1, figsize=(8, 8))
 
         # The colors
-        light_colors = ["#16A5D7", "#7CAF00", "#FFA00E"]
-        dark_colors = ["#0099CC", "#669900", "#FF8800"]
+        colors = ["#0099CC", "#669900", "#FF8800"]
 
         # The data for the pie chart
         labels = [
@@ -1234,13 +1233,9 @@ def gather_maf_stats(o_dir):
         sizes = [nb_maf_lt_01, nb_maf_geq_01_lt_05, nb_maf_geq_05]
         explode = (0.05, 0.05, 0.05)
         wedges, texts = axe.pie(sizes, explode=explode, labels=labels,
-                                colors=light_colors, startangle=90,
+                                colors=colors, startangle=90,
+                                wedgeprops={"linewidth": 0},
                                 textprops={"fontsize": 14, "weight": "bold"})
-
-        # Changing the parameter for the color
-        for wedge, color in zip(wedges, dark_colors):
-            wedge.set_edgecolor(color)
-            wedge.set_linewidth(6)
 
         # Changing the label parameters
         for text in texts:
@@ -1266,18 +1261,19 @@ def gather_maf_stats(o_dir):
             bbox_2 = texts[2].get_window_extent(renderer=renderer)
 
         # Adding a legend in the margin with custom patches
-        ultra_rare = mpatches.Patch(edgecolor=dark_colors[0],
-                                    facecolor=light_colors[0], linewidth=3)
-        rare = mpatches.Patch(edgecolor=dark_colors[1],
-                              facecolor=light_colors[1], linewidth=3)
-        common = mpatches.Patch(edgecolor=dark_colors[2],
-                                facecolor=light_colors[2], linewidth=3)
-        axe.legend([ultra_rare, rare, common],
-                   [r"$MAF < 1\%$", r"$1\% \leq MAF < 5\%$",
-                    r"$MAF \geq 5\%$"],
-                   bbox_to_anchor=(0, -0.15, 1, .102),
-                   loc="upper center", ncol=3, frameon=False,
-                   mode="expand", borderaxespad=1)
+        ultra_rare = mpatches.Patch(color=colors[0], linewidth=3)
+        rare = mpatches.Patch(color=colors[1], linewidth=3)
+        common = mpatches.Patch(color=colors[2], linewidth=3)
+        axe.legend(
+            [ultra_rare, rare, common],
+            [r"$MAF < 1\%$", r"$1\% \leq MAF < 5\%$", r"$MAF \geq 5\%$"],
+            bbox_to_anchor=(0, -0.15, 1, .102),
+            loc="upper center",
+            ncol=3,
+            frameon=False,
+            mode="expand",
+            borderaxespad=1,
+        )
 
         # Setting the axis to equal size
         axe.axis("equal")
