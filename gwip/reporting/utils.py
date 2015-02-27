@@ -136,7 +136,7 @@ def create_float(template, float_type, caption, label, content, placement="H"):
         "float_placement": placement,
         "float_caption":   caption,
         "float_label":     label,
-        "table_content":   content,
+        "float_content":   content,
     }
 
     # Rendering
