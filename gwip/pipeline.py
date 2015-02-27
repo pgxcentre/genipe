@@ -212,17 +212,14 @@ def main():
         numbers = gather_maf_stats(args.out_dir)
         run_information.update(numbers)
 
-        # Checking that the total number of sites equals the number of sites
-        # with MAF
-        total_nb_sites = int(run_information["nb_imputed"].replace(",", ""))
-        total_nb_nan = int(run_information["nb_maf_nan"].replace(",", ""))
-        total_nb_maf = run_information["nb_marker_with_maf"].replace(",", "")
-        total_nb_maf = int(total_nb_maf)
-        if total_nb_sites != (total_nb_maf + total_nb_nan):
-            logging.warning("Out of {} imputed sites, only {} with MAF and "
-                            "{} without MAF".format(total_nb_sites,
-                                                    total_nb_maf,
-                                                    total_nb_nan))
+        # Checking that the number of good sites equals the number of sites
+        # with MAF (for internal validation)
+        nb_good_sites = run_information["nb_good_sites"]
+        nb_sites_with_maf = run_information["nb_marker_with_maf"]
+        if nb_good_sites != nb_sites_with_maf:
+            logging.warning("All {} (good) imputed sites should have a MAF, "
+                            "but only {} with MAF".format(nb_good_sites,
+                                                          nb_sites_with_maf))
 
         # Gathering the execution time
         exec_time = gather_execution_time(db_name)
@@ -1125,6 +1122,8 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
 
 def gather_maf_stats(o_dir):
     """Gather minor allele frequencies from imputation."""
+    logging.info("Gathering imputation statistics")
+
     # The statistics we want to gather
     nb_marker_with_maf = 0   # The number of markers for which we have a MAF
     nb_maf_geq_01 = 0        # The number of markers with MAF >= 0.01
@@ -1136,22 +1135,40 @@ def gather_maf_stats(o_dir):
 
     # For each chromosome, get the MAF statistics
     filename_template = os.path.join(o_dir, "chr{chrom}", "final_impute2",
-                                     "chr{chrom}.imputed.maf")
+                                     "chr{chrom}.imputed.{suffix}")
     for chrom in chromosomes:
+        logging.info("  - chromosome {}".format(chrom))
+
         # The name of the file
-        filename = filename_template.format(chrom=chrom)
+        maf_filename = filename_template.format(chrom=chrom, suffix="maf")
+        good_sites_filename = filename_template.format(chrom=chrom,
+                                                       suffix="good_sites")
 
         # Checking the file exists
-        if not os.path.isfile(filename):
-            raise ProgramError("{}: no such file".format(filename))
+        for filename in [maf_filename, good_sites_filename]:
+            if not os.path.isfile(filename):
+                raise ProgramError("{}: no such file".format(filename))
+
+        # Reading the list of good sites
+        good_sites = None
+        with open(good_sites_filename, "r") as i_file:
+            good_sites = set(i_file.read().splitlines())
 
         # Reading the file using pandas
-        maf = pd.read_csv(filename, sep="\t")
+        maf = pd.read_csv(maf_filename, sep="\t")
+
+        # Keeping only the good sites
+        maf = maf[maf.name.isin(good_sites)]
 
         # Excluding sites with no MAF (NaN values)
         null_maf = maf.maf.isnull()
         nb_nan = null_maf.sum()
         maf = maf[~null_maf]
+
+        # There should not be any NaN sites...
+        if nb_nan > 0:
+            logging.warning("chr{}: good sites with invalid MAF "
+                            "(NaN)".format(chrom))
 
         # Checking we have MAF (and not just frequencies)
         maf_description = maf.maf.describe()
@@ -1182,8 +1199,25 @@ def gather_maf_stats(o_dir):
     if nb_total != nb_marker_with_maf:
         raise ProgramError("something went wrong")
 
+    # Computing the percentages
+    pct_maf_geq_01 = 0
+    pct_maf_geq_05 = 0
+    pct_maf_lt_05 = 0
+    pct_maf_lt_01 = 0
+    pct_maf_geq_01_lt_05 = 0
+
+    if nb_marker_with_maf > 0:
+        pct_maf_geq_01 = nb_maf_geq_01 / nb_marker_with_maf * 100
+        pct_maf_geq_05 = nb_maf_geq_05 / nb_marker_with_maf * 100
+        pct_maf_lt_05 = nb_maf_lt_05 / nb_marker_with_maf * 100
+        pct_maf_lt_01 = nb_maf_lt_01 / nb_marker_with_maf * 100
+        pct_maf_geq_01_lt_05 = nb_maf_geq_01_lt_05 / nb_marker_with_maf * 100
+
+    else:
+        logging.warning("There were no marker with MAF (something went wrong)")
+
     # Generating a pie chart if matplotlib is installed
-    if HAS_MATPLOTLIB:
+    if (nb_marker_with_maf > 0) and HAS_MATPLOTLIB:
         # Creating a figure and axe
         figure, axe = plt.subplots(1, 1, figsize=(8, 8))
 
@@ -1193,9 +1227,9 @@ def gather_maf_stats(o_dir):
 
         # The data for the pie chart
         labels = [
-            "{:.1f}%".format(nb_maf_lt_01 / nb_total * 100),
-            "{:.1f}%".format(nb_maf_geq_01_lt_05 / nb_total * 100),
-            "{:.1f}%".format(nb_maf_geq_05 / nb_total * 100),
+            "{:.1f}%".format(nb_maf_lt_01 / nb_marker_with_maf * 100),
+            "{:.1f}%".format(nb_maf_geq_01_lt_05 / nb_marker_with_maf * 100),
+            "{:.1f}%".format(nb_maf_geq_05 / nb_marker_with_maf * 100),
         ]
         sizes = [nb_maf_lt_01, nb_maf_geq_01_lt_05, nb_maf_geq_05]
         explode = (0.05, 0.05, 0.05)
@@ -1213,6 +1247,24 @@ def gather_maf_stats(o_dir):
             text.set_bbox({"boxstyle": "round", "fc": "#C0C0C0",
                            "ec": "#C0C0C0"})
 
+        # If no restriction was performed while imputing, there will be a high
+        # majority of ultra rare variants... We need to move the text box if
+        # they touch
+        # Getting the renderer and the bboxes
+        renderer = figure.canvas.get_renderer()
+        bbox_1 = texts[1].get_window_extent(renderer=renderer)
+        bbox_2 = texts[2].get_window_extent(renderer=renderer)
+        while bbox_1.overlaps(bbox_2):
+            # Moving the first label a bit
+            x, y = texts[1].get_position()
+            texts[1].set_x(x + 0.006)
+            bbox_1 = texts[1].get_window_extent(renderer=renderer)
+
+            # Moving the second label (MAF >= 0.05)
+            x, y = texts[2].get_position()
+            texts[2].set_x(x - 0.036)
+            bbox_2 = texts[2].get_window_extent(renderer=renderer)
+
         # Adding a legend in the margin with custom patches
         ultra_rare = mpatches.Patch(edgecolor=dark_colors[0],
                                     facecolor=light_colors[0], linewidth=3)
@@ -1223,7 +1275,7 @@ def gather_maf_stats(o_dir):
         axe.legend([ultra_rare, rare, common],
                    [r"$MAF < 1\%$", r"$1\% \leq MAF < 5\%$",
                     r"$MAF \geq 5\%$"],
-                   bbox_to_anchor=(0, -0.12, 1, .102),
+                   bbox_to_anchor=(0, -0.15, 1, .102),
                    loc="upper center", ncol=3, frameon=False,
                    mode="expand", borderaxespad=1)
 
@@ -1236,13 +1288,18 @@ def gather_maf_stats(o_dir):
         plt.close(figure)
 
     return {
-        "nb_maf_nan":          "{:,d}".format(nb_maf_nan),
-        "nb_marker_with_maf":  "{:,d}".format(nb_marker_with_maf),
-        "nb_maf_geq_01":       "{:,d}".format(nb_maf_geq_01),
-        "nb_maf_geq_05":       "{:,d}".format(nb_maf_geq_05),
-        "nb_maf_lt_05":        "{:,d}".format(nb_maf_lt_05),
-        "nb_maf_lt_01":        "{:,d}".format(nb_maf_lt_01),
-        "nb_maf_geq_01_lt_05": "{:,d}".format(nb_maf_geq_01_lt_05),
+        "nb_maf_nan":           "{:,d}".format(nb_maf_nan),
+        "nb_marker_with_maf":   "{:,d}".format(nb_marker_with_maf),
+        "nb_maf_geq_01":        "{:,d}".format(nb_maf_geq_01),
+        "nb_maf_geq_05":        "{:,d}".format(nb_maf_geq_05),
+        "nb_maf_lt_05":         "{:,d}".format(nb_maf_lt_05),
+        "nb_maf_lt_01":         "{:,d}".format(nb_maf_lt_01),
+        "nb_maf_geq_01_lt_05":  "{:,d}".format(nb_maf_geq_01_lt_05),
+        "pct_maf_geq_01":       "{:.1f}".format(pct_maf_geq_01),
+        "pct_maf_geq_05":       "{:.1f}".format(pct_maf_geq_05),
+        "pct_maf_lt_05":        "{:.1f}".format(pct_maf_lt_05),
+        "pct_maf_lt_01":        "{:.1f}".format(pct_maf_lt_01),
+        "pct_maf_geq_01_lt_05": "{:.1f}".format(pct_maf_geq_01_lt_05),
     }
 
 

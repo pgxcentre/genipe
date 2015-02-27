@@ -160,38 +160,65 @@ class TestMainPipeline(unittest.TestCase):
             ["marker_43", "0.394"],
             ["marker_44", "0.004"],
         ]
+        good_sites = ["marker_1", "marker_2", "marker_5", "marker_6",
+                      "marker_7", "marker_8", "marker_9", "marker_10",
+                      "marker_11", "marker_12", "marker_13", "marker_14",
+                      "marker_15", "marker_16", "marker_17", "marker_18",
+                      "marker_19", "marker_20", "marker_21", "marker_22",
+                      "marker_23", "marker_24", "marker_25", "marker_26",
+                      "marker_27", "marker_28", "marker_29", "marker_30",
+                      "marker_31", "marker_32", "marker_33", "marker_34",
+                      "marker_35", "marker_36", "marker_37", "marker_38",
+                      "marker_39", "marker_41", "marker_43", "marker_44"]
 
         # The expected results
+        nb_sites = len(good_sites)
         expected_results = {
-            "nb_marker_with_maf": "42",
-            "nb_maf_geq_01": "27",
-            "nb_maf_geq_05": "15",
-            "nb_maf_lt_05": "27",
-            "nb_maf_lt_01": "15",
-            "nb_maf_geq_01_lt_05": "12",
-            "nb_maf_nan": "2",
+            "nb_marker_with_maf":   str(nb_sites),
+            "nb_maf_geq_01":        "26",
+            "pct_maf_geq_01":       "{:.1f}".format(26 / nb_sites * 100),
+            "nb_maf_geq_05":        "14",
+            "pct_maf_geq_05":       "{:.1f}".format(14 / nb_sites * 100),
+            "nb_maf_lt_05":         "26",
+            "pct_maf_lt_05":        "{:.1f}".format(26 / nb_sites * 100),
+            "nb_maf_lt_01":         "14",
+            "pct_maf_lt_01":        "{:.1f}".format(14 / nb_sites * 100),
+            "nb_maf_geq_01_lt_05":  "12",
+            "pct_maf_geq_01_lt_05": "{:.1f}".format(12 / nb_sites * 100),
+            "nb_maf_nan":           "0",
         }
 
         # Creating the files for the test
         filename_template = os.path.join(self.output_dir.name, "chr{chrom}",
                                          "final_impute2",
-                                         "chr{chrom}.imputed.maf")
+                                         "chr{chrom}.imputed.{suffix}")
         for chrom in chromosomes:
             # Getting the name of the file
-            filename = filename_template.format(chrom=chrom)
+            maf_filename = filename_template.format(chrom=chrom, suffix="maf")
+            good_sites_filename = filename_template.format(chrom=chrom,
+                                                           suffix="good_sites")
 
             # Getting the directory and create it
-            dirname = os.path.dirname(filename)
+            dirname = os.path.dirname(maf_filename)
             if not os.path.isdir(dirname):
                 os.makedirs(dirname)
             self.assertTrue(os.path.isdir(dirname))
 
-            # Creating the content
-            with open(filename, "w") as o_file:
+            # Creating the content of the maf file
+            with open(maf_filename, "w") as o_file:
                 print(*header, sep="\t", file=o_file)
                 for i in range(2):
                     print(*content.pop(), sep="\t", file=o_file)
-            self.assertTrue(os.path.isfile(filename))
+
+            # Creating the content of the good sites file
+            with open(good_sites_filename, "w") as o_file:
+                print(*good_sites, sep="\n", file=o_file)
+
+            # Checking the files were created
+            self.assertTrue(os.path.isfile(maf_filename))
+            self.assertTrue(os.path.isfile(good_sites_filename))
+
+        # Checking we passed all the content (MAF)
         self.assertEqual(0, len(content))
 
         # Executing the command (getting the observed data)
@@ -204,32 +231,73 @@ class TestMainPipeline(unittest.TestCase):
             self.assertEqual(expected_value, observed[expected_key])
 
         # Testing an invalid entry
-        with open(filename_template.format(chrom=1), "w") as o_file:
+        changed_filename = filename_template.format(chrom=1, suffix="maf")
+        with open(changed_filename, "w") as o_file:
             print(*header, sep="\t", file=o_file)
-            print("bad_marker", "0.6", sep="\t", file=o_file)
+            print("marker_1", "0.6", sep="\t", file=o_file)
 
         # This should raise an exception
         with self.assertRaises(ProgramError) as cm:
             gather_maf_stats(self.output_dir.name)
-        self.assertEqual("{}: {}: invalid MAF".format("bad_marker",
+        self.assertEqual("{}: {}: invalid MAF".format("marker_1",
                                                       round(0.6, 3)),
                          str(cm.exception))
 
         # Testing an invalid entry
-        with open(filename_template.format(chrom=1), "w") as o_file:
+        changed_filename = filename_template.format(chrom=1, suffix="maf")
+        with open(changed_filename, "w") as o_file:
             print(*header, sep="\t", file=o_file)
-            print("bad_marker", "-0.01", sep="\t", file=o_file)
+            print("marker_1", "-0.01", sep="\t", file=o_file)
 
         # This should raise an exception
         with self.assertRaises(ProgramError) as cm:
-            print("THIS ONE")
             gather_maf_stats(self.output_dir.name)
-        self.assertEqual("{}: {}: invalid MAF".format("bad_marker",
+        self.assertEqual("{}: {}: invalid MAF".format("marker_1",
                                                       round(-0.01, 3)),
                          str(cm.exception))
 
-        # Deleting the first file, and checking we have an error
-        removed_filename = filename_template.format(chrom=1)
+        # Testing a good site with NA MAF
+        changed_filename = filename_template.format(chrom=1, suffix="maf")
+        with open(changed_filename, "w") as o_file:
+            print(*header, sep="\t", file=o_file)
+            print("marker_1", "NA", sep="\t", file=o_file)
+
+        # This should issue a warning
+        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+            gather_maf_stats(self.output_dir.name)
+        log_m = "WARNING:root:chr1: good sites with invalid MAF (NaN)"
+        self.assertEqual(1, len(cm.output))
+        self.assertEqual(log_m, cm.output[0])
+
+        # Clearing the good sites file to see if we have a warning
+        for chrom in chromosomes:
+            filename = filename_template.format(chrom=chrom,
+                                                suffix="good_sites")
+            with open(filename, "w") as o_file:
+                pass
+
+        # This should issue a warning
+        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+            gather_maf_stats(self.output_dir.name)
+        log_m = ("WARNING:root:There were no marker with MAF (something went "
+                 "wrong)")
+        self.assertEqual(1, len(cm.output))
+        self.assertEqual(log_m, cm.output[0])
+
+        # Deleting a good sites file, and checking we have an error
+        removed_filename = filename_template.format(chrom=1,
+                                                    suffix="good_sites")
+        os.remove(removed_filename)
+        self.assertFalse(os.path.isfile(removed_filename))
+
+        # This should raise an exception
+        with self.assertRaises(ProgramError) as cm:
+            gather_maf_stats(self.output_dir.name)
+        self.assertEqual("{}: no such file".format(removed_filename),
+                         str(cm.exception))
+
+        # Deleting a MAF sites file, and checking we have an error
+        removed_filename = filename_template.format(chrom=1, suffix="maf")
         os.remove(removed_filename)
         self.assertFalse(os.path.isfile(removed_filename))
 
