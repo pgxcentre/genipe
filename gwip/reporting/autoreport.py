@@ -243,6 +243,7 @@ def _generate_results(templates, run_options, run_information):
     float_template = templates.get_template("float_template.tex")
     cross_validation = templates.get_template("parts/cross_validation.tex")
     completion_rate = templates.get_template("parts/completion_rate.tex")
+    frequencies = templates.get_template("parts/frequencies.tex")
 
     # The header of the two kind of tables
     header_table_1 = [
@@ -343,6 +344,14 @@ def _generate_results(templates, run_options, run_information):
         section_label="subsec:cross_validation",
     )
 
+    # Creating the completion rate subsection
+    completion_rate_content = section_template.render(
+        section_name="Completion rate",
+        section_type="subsection",
+        section_content=completion_rate.render(**run_information),
+        section_label="subsec:completion_rate",
+    )
+
     # Do we have a frequency pie?
     frequency_float = ""
     if run_information["frequency_pie"] != "":
@@ -363,18 +372,19 @@ def _generate_results(templates, run_options, run_information):
                 path=run_information["frequency_pie"],
             ),
         )
+    run_information["frequency_float"] = frequency_float
 
-    # Creating the completion rate subsection
-    completion_rate_content = section_template.render(
-        section_name="Completion rate",
+    # Creating the frequency subsection
+    frequencies_content = section_template.render(
+        section_name="Minor allele frequencies",
         section_type="subsection",
-        section_content=completion_rate.render(frequency_float=frequency_float,
-                                               **run_information),
-        section_label="subsec:completion_rate",
+        section_content=frequencies.render(**run_information),
+        section_label="subsec:maf",
     )
 
     # The final content
-    content = cross_validation_content + completion_rate_content
+    content = (cross_validation_content + completion_rate_content +
+               frequencies_content)
 
     return section_template.render(section_name="Results",
                                    section_type="section",

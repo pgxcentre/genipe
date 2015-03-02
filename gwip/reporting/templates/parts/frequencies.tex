@@ -1,0 +1,14 @@
+
+Out of the \VAR{ nb_good_sites } imputed variants with a completion rate
+$\geq \VAR{ rate_threshold }\%$, there were \VAR{ nb_maf_geq_01 }
+(\VAR{ pct_maf_geq_01 }\%) variants with a minor
+allele frequency (MAF) $\geq 1\%$, \VAR{ nb_maf_geq_05 }
+(\VAR{ pct_maf_geq_05 }\%) variants with a MAF $\geq 5\%$, and
+\VAR{ nb_maf_lt_05 } (\VAR{ pct_maf_lt_05 }\%) variants with a MAF
+$<5\%$.\BLOCK{ if frequency_pie == "" }\\\BLOCK{ else }
+ Figure~\ref{fig:frequency_pie} shows the proportions of ultra rare
+($MAF<1\%$), rare ($1\%\leq MAF < 5\%$) and common ($MAF\geq 5\%$) variants.\\
+
+\VAR{ frequency_float }
+\BLOCK{ endif }
+
