@@ -571,15 +571,20 @@ class TestMainPipeline(unittest.TestCase):
         self.assertEqual("{}: no such file".format(args.drmaa_config),
                          str(cm.exception))
 
-        # Setting to None should do the tick
+        # Setting to None should raise another exception
         original_value = args.drmaa_config
         args.drmaa_config = None
-        self.assertTrue(
-            check_args(args) and not os.path.isfile(original_value)
+        self.assertFalse(os.path.isfile(original_value))
+        with self.assertRaises(ProgramError) as cm:
+            check_args(args)
+        self.assertEqual(
+            "DRMAA configuration file was not provided (--drmaa-config), but "
+            "DRMAA is used (--use-drmaa)",
+            str(cm.exception)
         )
         args.drmaa_config = original_value
 
-        # Or, setting use_drmaa to false
+        # Setting use_drmaa to false should do the trick
         args.use_drmaa = False
         self.assertTrue(
             check_args(args) and not os.path.isfile(args.drmaa_config)

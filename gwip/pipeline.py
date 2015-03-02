@@ -1546,10 +1546,12 @@ def check_args(args):
 
     # Checking the DRMAA configuration file
     if args.use_drmaa:
-        if args.drmaa_config is not None:
-            if not os.path.isfile(args.drmaa_config):
-                raise ProgramError("{}: no such "
-                                   "file".format(args.drmaa_config))
+        if args.drmaa_config is None:
+            raise ProgramError("DRMAA configuration file was not provided "
+                               "(--drmaa-config), but DRMAA is used "
+                               "(--use-drmaa)")
+        if not os.path.isfile(args.drmaa_config):
+            raise ProgramError("{}: no such file".format(args.drmaa_config))
 
     return True
 

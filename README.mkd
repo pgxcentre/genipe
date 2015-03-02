@@ -250,13 +250,13 @@ source $HOME/softwares/python_env/bin/activate
 
 The configuration file (`.ini`) describes the DRMAA task options. It is
 required to specify execution time and number of nodes to be used on a HPC. By
-default, the `walltime` is 15 minutes, and 1 node with 1 processor is used. If
-changes are required (*e.g.* longer execution time is required), this is
-specified in the `.ini` file. Each task corresponds to a section where a
-general execution time can be set (`walltime` variable) along with the number
-of nodes (`nodes` variable) and process per node (`ppn` variable). If a
-specific chromosome require more time, this can be set using the
-`chrN_walltime` variable (where `N` is the required chromosome). Finally,
+default (*i.e.* if the file is empty), the `walltime` is 15 minutes, and 1 node
+with 1 processor is used. If changes are required (*e.g.* longer execution time
+is required), this is specified in the `.ini` file. Each task corresponds to a
+section where a general execution time can be set (`walltime` variable) along
+with the number of nodes (`nodes` variable) and process per node (`ppn`
+variable). If a specific chromosome require more time, this can be set using
+the `chrN_walltime` variable (where `N` is the required chromosome). Finally,
 segment specific execution time can be set for the imputation task (`impute2`
 section). For more example, see the `.ini` file below.
 
