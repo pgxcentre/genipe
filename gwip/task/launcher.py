@@ -53,6 +53,11 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
                              "seconds".format(task_name, run_time))
                 continue
 
+            else:
+                # The DB said the task was completed, but there is a missing
+                # output files. Setting this task completion to '0'
+                mark_task_incomplete(task_id, db_name)
+
         # The name of the task
         task_id = to_process[i]["task_id"]
 
@@ -164,6 +169,7 @@ def _execute_command(command_info):
             return True, name, "already performed", runtime
         else:
             logging.debug("'{}' problem with output files".format(task_id))
+            mark_task_incomplete(task_id, db_name)
     logging.debug("'{}' to run".format(task_id))
 
     # Creating a new entry in the database
@@ -223,6 +229,7 @@ def _execute_command_drmaa(command_info):
             return True, name, "already performed", runtime
         else:
             logging.debug("'{}' problem with output files".format(task_id))
+            mark_task_incomplete(task_id, db_name)
     else:
         logging.debug("'{}' to run because not completed".format(task_id))
     logging.debug("'{}' to run".format(task_id))

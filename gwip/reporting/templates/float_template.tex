@@ -1,9 +1,14 @@
 
 \begin{\VAR{ float_type }}[\VAR{ float_placement }]
+\BLOCK{ if float_type == "table" }
 \protect\caption{\VAR{ float_caption }\label{\VAR{ float_label }}}
+\BLOCK{ endif }
 
 \centering
-\VAR{ table_content }
+\VAR{ float_content }
 
+\BLOCK{ if float_type == "figure" }
+\protect\caption{\VAR{ float_caption }\label{\VAR{ float_label }}}
+\BLOCK{ endif }
 \end{\VAR{ float_type }}
 

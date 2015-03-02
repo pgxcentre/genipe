@@ -15,7 +15,7 @@ import logging
 import argparse
 from glob import glob
 from math import floor
-from shutil import which
+from shutil import which, copyfile
 from urllib.request import urlopen
 from subprocess import Popen, PIPE
 from collections import defaultdict
@@ -29,6 +29,16 @@ from .task import launcher
 from .error import ProgramError
 from .config import parse_drmaa_config
 from .reporting import generate_report
+
+
+try:
+    import matplotlib as mpl
+    mpl.use("Agg")
+    import matplotlib.pyplot as plt
+    import matplotlib.patches as mpatches
+    HAS_MATPLOTLIB = True
+except ImportError:
+    HAS_MATPLOTLIB = False
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -198,16 +208,30 @@ def main():
                                           args.out_dir)
         run_information.update(numbers)
 
+        # Gathering the MAF statistics
+        numbers = gather_maf_stats(args.out_dir)
+        run_information.update(numbers)
+
+        # Checking that the number of good sites equals the number of sites
+        # with MAF (for internal validation)
+        nb_good_sites = run_information["nb_good_sites"]
+        nb_sites_with_maf = run_information["nb_marker_with_maf"]
+        if nb_good_sites != nb_sites_with_maf:
+            logging.warning("All {} (good) imputed sites should have a MAF, "
+                            "but only {} with MAF".format(nb_good_sites,
+                                                          nb_sites_with_maf))
+
         # Gathering the execution time
         exec_time = gather_execution_time(db_name)
         run_information.update(exec_time)
 
-        # Creating the output directory (if it doesn't exits)
+        # Creating the output directory for the report (if it doesn't exits)
         report_dir = os.path.join(args.out_dir, "report")
         if not os.path.isdir(report_dir):
             os.mkdir(report_dir)
 
         # Generating the report
+        logging.info("Generating automatic report")
         generate_report(report_dir, args, run_information)
 
     # Catching the Ctrl^C
@@ -382,6 +406,19 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
                                                    ".maf")],
         })
 
+        # Getting the name of the sample file
+        sample_file = os.path.join(
+            os.path.dirname(in_glob),
+            "chr{chrom}.final.phased.sample",
+        ).format(chrom=chrom)
+
+        # Checking if the file exists
+        if not os.path.isfile(sample_file):
+            raise ProgramError("{}: no such file".format(sample_file))
+
+        # Copying the file
+        copyfile(sample_file, c_prefix + ".sample")
+
     # Executing command
     logging.info("Merging impute2 files")
     launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
@@ -392,8 +429,8 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
 
 def file_sorter(filename):
     """Helps in filename sorting."""
-    r = re.search(r"chr\d+\.(\d+)_(\d+)\.impute2", filename)
-    return (int(r.group(1)), int(r.group(2)))
+    r = re.search(r"chr(\d+)\.(\d+)_(\d+)\.impute2", filename)
+    return (int(r.group(1)), int(r.group(2)), int(r.group(3)))
 
 
 def get_chromosome_length(out_dir):
@@ -421,10 +458,6 @@ def get_chromosome_length(out_dir):
             if region["name"] in req_chrom:
                 chrom_length[region["name"]] = region["length"]
 
-        # Checking we have all the required data
-        if len(chrom_length) != 23:
-            raise ProgramError("missing chromosomes")
-
         # Saving to file
         with open(filename, "w") as o_file:
             for chrom in sorted(chrom_length.keys()):
@@ -438,6 +471,12 @@ def get_chromosome_length(out_dir):
             for line in i_file:
                 row = line.rstrip("\n").split("\t")
                 chrom_length[row[0]] = int(row[1])
+
+    # Checking we have all the required data
+    required_chrom = {str(i) for i in chromosomes}
+    if (set(chrom_length) & required_chrom) != required_chrom:
+        missing = ", ".join(sorted(required_chrom - set(chrom_length)))
+        raise ProgramError("missing chromosomes: {}".format(missing))
 
     return chrom_length
 
@@ -1095,6 +1134,191 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
     }
 
 
+def gather_maf_stats(o_dir):
+    """Gather minor allele frequencies from imputation."""
+    logging.info("Gathering frequency statistics")
+
+    # The statistics we want to gather
+    nb_marker_with_maf = 0   # The number of markers for which we have a MAF
+    nb_maf_geq_01 = 0        # The number of markers with MAF >= 0.01
+    nb_maf_geq_05 = 0        # The number of markers with MAF >= 0.05
+    nb_maf_lt_05 = 0         # The number of markers with MAF < 0.05
+    nb_maf_lt_01 = 0         # The number of markers with MAF < 0.01
+    nb_maf_geq_01_lt_05 = 0  # The number of markers with 0.01 <= MAF < 0.05
+    nb_maf_nan = 0           # The number of markers without MAF
+
+    # For each chromosome, get the MAF statistics
+    filename_template = os.path.join(o_dir, "chr{chrom}", "final_impute2",
+                                     "chr{chrom}.imputed.{suffix}")
+    for chrom in chromosomes:
+        logging.info("  - chromosome {}".format(chrom))
+
+        # The name of the file
+        maf_filename = filename_template.format(chrom=chrom, suffix="maf")
+        good_sites_filename = filename_template.format(chrom=chrom,
+                                                       suffix="good_sites")
+
+        # Checking the file exists
+        for filename in [maf_filename, good_sites_filename]:
+            if not os.path.isfile(filename):
+                raise ProgramError("{}: no such file".format(filename))
+
+        # Reading the list of good sites
+        good_sites = None
+        with open(good_sites_filename, "r") as i_file:
+            good_sites = set(i_file.read().splitlines())
+
+        # Reading the file using pandas
+        maf = pd.read_csv(maf_filename, sep="\t")
+
+        # Keeping only the good sites
+        maf = maf[maf.name.isin(good_sites)]
+
+        # Excluding sites with no MAF (NaN values)
+        null_maf = maf.maf.isnull()
+        nb_nan = null_maf.sum()
+        maf = maf[~null_maf]
+
+        # There should not be any NaN sites...
+        if nb_nan > 0:
+            logging.warning("chr{}: good sites with invalid MAF "
+                            "(NaN)".format(chrom))
+
+        # Checking we have MAF (and not just frequencies)
+        maf_description = maf.maf.describe()
+        if maf_description["max"] > 0.5:
+            bad = maf.loc[maf.maf.idxmax(), ["name", "maf"]]
+            raise ProgramError("{}: {}: invalid MAF".format(str(bad["name"]),
+                                                            round(bad.maf, 3)))
+        if maf_description["max"] < 0:
+            bad = maf.loc[maf.maf.idxmin(), ["name", "maf"]]
+            raise ProgramError("{}: {}: invalid MAF".format(str(bad["name"]),
+                                                            round(bad.maf, 3)))
+
+        # Some of the true/false we need to keep (to not compute multiple time)
+        maf_geq_01 = maf.maf >= 0.01
+        maf_lt_05 = maf.maf < 0.05
+
+        # Updating the statistics
+        nb_marker_with_maf += maf.shape[0]
+        nb_maf_nan += nb_nan
+        nb_maf_geq_01 += maf_geq_01.sum()
+        nb_maf_geq_05 += (maf.maf >= 0.05).sum()
+        nb_maf_lt_05 += maf_lt_05.sum()
+        nb_maf_lt_01 += (maf.maf < 0.01).sum()
+        nb_maf_geq_01_lt_05 += (maf_geq_01 & maf_lt_05).sum()
+
+    # Checking
+    nb_total = nb_maf_lt_01 + nb_maf_geq_01_lt_05 + nb_maf_geq_05
+    if nb_total != nb_marker_with_maf:
+        raise ProgramError("something went wrong")
+
+    # Computing the percentages
+    pct_maf_geq_01 = 0
+    pct_maf_geq_05 = 0
+    pct_maf_lt_05 = 0
+    pct_maf_lt_01 = 0
+    pct_maf_geq_01_lt_05 = 0
+
+    if nb_marker_with_maf > 0:
+        pct_maf_geq_01 = nb_maf_geq_01 / nb_marker_with_maf * 100
+        pct_maf_geq_05 = nb_maf_geq_05 / nb_marker_with_maf * 100
+        pct_maf_lt_05 = nb_maf_lt_05 / nb_marker_with_maf * 100
+        pct_maf_lt_01 = nb_maf_lt_01 / nb_marker_with_maf * 100
+        pct_maf_geq_01_lt_05 = nb_maf_geq_01_lt_05 / nb_marker_with_maf * 100
+
+    else:
+        logging.warning("There were no marker with MAF (something went wrong)")
+
+    # Generating a pie chart if matplotlib is installed
+    frequency_pie = ""
+    if (nb_marker_with_maf > 0) and HAS_MATPLOTLIB:
+        # Creating a figure and axe
+        figure, axe = plt.subplots(1, 1, figsize=(6, 9))
+
+        # The colors
+        colors = ["#0099CC", "#669900", "#FF8800"]
+
+        # The data for the pie chart
+        labels = [
+            "{:.1f}%".format(nb_maf_lt_01 / nb_marker_with_maf * 100),
+            "{:.1f}%".format(nb_maf_geq_01_lt_05 / nb_marker_with_maf * 100),
+            "{:.1f}%".format(nb_maf_geq_05 / nb_marker_with_maf * 100),
+        ]
+        sizes = [nb_maf_lt_01, nb_maf_geq_01_lt_05, nb_maf_geq_05]
+        explode = (0.05, 0.05, 0.05)
+        wedges, texts = axe.pie(sizes, explode=explode, labels=labels,
+                                colors=colors, startangle=90,
+                                wedgeprops={"linewidth": 0},
+                                textprops={"fontsize": 12, "weight": "bold"})
+
+        # Changing the label parameters
+        for text in texts:
+            text.set_bbox({"boxstyle": "round", "fc": "#C0C0C0",
+                           "ec": "#C0C0C0"})
+
+        # Shrink current axis by 50%
+        bbox = axe.get_position()
+        axe.set_position([bbox.x0, bbox.y0, bbox.width * 0.5,
+                         bbox.height * 0.5])
+
+        # If no restriction was performed while imputing, there will be a high
+        # majority of ultra rare variants... We need to move the text box if
+        # they touch
+        # Getting the renderer and the bboxes
+        renderer = figure.canvas.get_renderer()
+        bbox_1 = texts[1].get_window_extent(renderer=renderer)
+        bbox_2 = texts[2].get_window_extent(renderer=renderer)
+        while bbox_1.overlaps(bbox_2):
+            # Moving the first label a bit
+            x, y = texts[1].get_position()
+            texts[1].set_x(x + 0.006)
+            bbox_1 = texts[1].get_window_extent(renderer=renderer)
+
+            # Moving the second label (MAF >= 0.05)
+            x, y = texts[2].get_position()
+            texts[2].set_x(x - 0.036)
+            bbox_2 = texts[2].get_window_extent(renderer=renderer)
+
+        # Adding a legend in the margin with custom patches
+        ultra_rare = mpatches.Patch(color=colors[0], linewidth=3)
+        rare = mpatches.Patch(color=colors[1], linewidth=3)
+        common = mpatches.Patch(color=colors[2], linewidth=3)
+        axe.legend(
+            [ultra_rare, rare, common],
+            [r"$MAF < 1\%$", r"$1\% \leq MAF < 5\%$", r"$MAF \geq 5\%$"],
+            bbox_to_anchor=(1.3, 1),
+            loc="upper left",
+            ncol=1,
+            frameon=False,
+            fontsize=21,
+        )
+
+        # Setting the axis to equal size
+        axe.axis("equal")
+
+        # Saving and closing the figure
+        frequency_pie = os.path.join(o_dir, "frequency_pie.pdf")
+        plt.savefig(frequency_pie, bbox_inches="tight", figure=figure)
+        plt.close(figure)
+
+    return {
+        "nb_maf_nan":           "{:,d}".format(nb_maf_nan),
+        "nb_marker_with_maf":   "{:,d}".format(nb_marker_with_maf),
+        "nb_maf_geq_01":        "{:,d}".format(nb_maf_geq_01),
+        "nb_maf_geq_05":        "{:,d}".format(nb_maf_geq_05),
+        "nb_maf_lt_05":         "{:,d}".format(nb_maf_lt_05),
+        "nb_maf_lt_01":         "{:,d}".format(nb_maf_lt_01),
+        "nb_maf_geq_01_lt_05":  "{:,d}".format(nb_maf_geq_01_lt_05),
+        "pct_maf_geq_01":       "{:.1f}".format(pct_maf_geq_01),
+        "pct_maf_geq_05":       "{:.1f}".format(pct_maf_geq_05),
+        "pct_maf_lt_05":        "{:.1f}".format(pct_maf_lt_05),
+        "pct_maf_lt_01":        "{:.1f}".format(pct_maf_lt_01),
+        "pct_maf_geq_01_lt_05": "{:.1f}".format(pct_maf_geq_01_lt_05),
+        "frequency_pie":        frequency_pie,
+    }
+
+
 def gather_execution_time(db_name):
     """Gather all the execution times."""
     # Getting all the execution time from the DB
@@ -1276,7 +1500,7 @@ def check_args(args):
             if not os.path.isfile(filename):
                 raise ProgramError("{}: no such file".format(filename))
     if not os.path.isfile(args.sample_file):
-        raise ProgramError("{}: no such file".format(filename))
+        raise ProgramError("{}: no such file".format(args.sample_file))
 
     # Checking the SHAPEIT binary if required
     if args.shapeit_bin is not None:
@@ -1300,12 +1524,16 @@ def check_args(args):
             raise ProgramError("{}: no such file".format(args.plink_bin))
     else:
         if which("plink") is None:
-            raise ProgramError("plink: not in the path")
+            raise ProgramError("plink: not in the path (use --plink-bin)")
 
     # Checking the segment length
-    if args.segment_length < 0:
+    if args.segment_length <= 0:
         raise ProgramError("{}: invalid segment "
                            "length".format(args.segment_length))
+    if args.segment_length < 1e3:
+        # This is too small.. We continue with a warning
+        logging.warning("segment length ({:g} bp) is too "
+                        "small".format(args.segment_length))
     if args.segment_length > 5e6:
         # This is too big... We continue with a warning
         logging.warning("segment length ({:g} bp) is more than "
@@ -1318,10 +1546,12 @@ def check_args(args):
 
     # Checking the DRMAA configuration file
     if args.use_drmaa:
-        if args.drmaa_config is not None:
-            if not os.path.isfile(args.drmaa_config):
-                raise ProgramError("{}: no such "
-                                   "file".format(args.drmaa_config))
+        if args.drmaa_config is None:
+            raise ProgramError("DRMAA configuration file was not provided "
+                               "(--drmaa-config), but DRMAA is used "
+                               "(--use-drmaa)")
+        if not os.path.isfile(args.drmaa_config):
+            raise ProgramError("{}: no such file".format(args.drmaa_config))
 
     return True
 

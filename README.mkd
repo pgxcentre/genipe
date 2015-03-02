@@ -27,11 +27,32 @@ Finally, the tool also requires a LaTeX installation to compile the automaticall
 generated report in PDF format.
 
 
+## Installation
+
+We recommend installing the package in a Python (version 3) virtual
+environment.
+
+```console
+$ pyvenv ~/python3_gwip_virt
+$ source ~/python3_gwip_virt/bin/activate
+```
+
+Download (or clone) the package from
+[GitHub](https://github.com/pgxcentre/gwip) and install it using `pip` (in the
+virtual python 3 environment, once activated).
+
+```console
+$ pip install gwip-0.1.tar.gz
+```
+
+The installation process should install all required dependencies.
+
 ## Testing
 
 Basic testing was implemented for the script to merge *impute2* files resulting
-from different segment (on the same chromosome). To test (after installation),
-launch Python and execute the following command:
+from different segments of the same chromosome along with some utility
+functions of the main package. To test the package (once installed), launch
+Python and execute the following command:
 
 ```python
 >>> import gwip
@@ -229,13 +250,13 @@ source $HOME/softwares/python_env/bin/activate
 
 The configuration file (`.ini`) describes the DRMAA task options. It is
 required to specify execution time and number of nodes to be used on a HPC. By
-default, the `walltime` is 15 minutes, and 1 node with 1 processor is used. If
-changes are required (*e.g.* longer execution time is required), this is
-specified in the `.ini` file. Each task corresponds to a section where a
-general execution time can be set (`walltime` variable) along with the number
-of nodes (`nodes` variable) and process per node (`ppn` variable). If a
-specific chromosome require more time, this can be set using the
-`chrN_walltime` variable (where `N` is the required chromosome). Finally,
+default (*i.e.* if the file is empty), the `walltime` is 15 minutes, and 1 node
+with 1 processor is used. If changes are required (*e.g.* longer execution time
+is required), this is specified in the `.ini` file. Each task corresponds to a
+section where a general execution time can be set (`walltime` variable) along
+with the number of nodes (`nodes` variable) and process per node (`ppn`
+variable). If a specific chromosome require more time, this can be set using
+the `chrN_walltime` variable (where `N` is the required chromosome). Finally,
 segment specific execution time can be set for the imputation task (`impute2`
 section). For more example, see the `.ini` file below.
 

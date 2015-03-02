@@ -42,6 +42,13 @@ def generate_report(out_dir, run_opts, run_info):
         "package_version": sanitize_tex(__version__),
     }
 
+    # We want to copy the figures to the right place
+    figures = ["frequency_pie"]
+    for figure in figures:
+        if run_info[figure] != "":
+            shutil.copy(run_info[figure], out_dir)
+            run_info[figure] = os.path.basename(run_info[figure])
+
     # Gathering the report content
     report_content = ""
     report_content += _generate_background(jinja2_env, run_opts, run_info)
@@ -219,16 +226,24 @@ def _generate_results(templates, run_options, run_information):
                           "nb_genotyped_not_complete",
                           "pct_genotyped_not_complete", "nb_geno_now_complete",
                           "pct_geno_now_complete", "nb_site_now_complete",
-                          "pct_good_sites", "nb_missing_geno"]
+                          "pct_good_sites", "nb_missing_geno", "nb_maf_nan",
+                          "nb_marker_with_maf", "nb_maf_geq_01",
+                          "nb_maf_geq_05", "nb_maf_lt_05", "nb_maf_lt_01",
+                          "nb_maf_geq_01_lt_05", "pct_maf_geq_01",
+                          "pct_maf_geq_05", "pct_maf_lt_05", "pct_maf_lt_01",
+                          "pct_maf_geq_01_lt_05", "frequency_pie"]
+
     for required_variable in required_variables:
         assert required_variable in run_information
 
     # Loading the templates
     section_template = templates.get_template("section_template.tex")
     tabular_template = templates.get_template("tabular_template.tex")
+    graphics_template = templates.get_template("graphics_template.tex")
     float_template = templates.get_template("float_template.tex")
     cross_validation = templates.get_template("parts/cross_validation.tex")
     completion_rate = templates.get_template("parts/completion_rate.tex")
+    frequencies = templates.get_template("parts/frequencies.tex")
 
     # The header of the two kind of tables
     header_table_1 = [
@@ -329,6 +344,7 @@ def _generate_results(templates, run_options, run_information):
         section_label="subsec:cross_validation",
     )
 
+    # Creating the completion rate subsection
     completion_rate_content = section_template.render(
         section_name="Completion rate",
         section_type="subsection",
@@ -336,8 +352,39 @@ def _generate_results(templates, run_options, run_information):
         section_label="subsec:completion_rate",
     )
 
+    # Do we have a frequency pie?
+    frequency_float = ""
+    if run_information["frequency_pie"] != "":
+        frequency_float = create_float(
+            template=float_template,
+            float_type="figure",
+            caption=wrap_tex(sanitize_tex(
+                "Proportions of minor allele frequencies for imputed "
+                "sites with a completion rate of {}% or "
+                "more at a probability of {}% or "
+                "more.".format(run_information["rate_threshold"],
+                               run_information["prob_threshold"])
+            )),
+            label="fig:frequency_pie",
+            placement="H",
+            content=graphics_template.render(
+                width=r"0.5\textwidth",
+                path=run_information["frequency_pie"],
+            ),
+        )
+    run_information["frequency_float"] = frequency_float
+
+    # Creating the frequency subsection
+    frequencies_content = section_template.render(
+        section_name="Minor allele frequencies",
+        section_type="subsection",
+        section_content=frequencies.render(**run_information),
+        section_label="subsec:maf",
+    )
+
     # The final content
-    content = cross_validation_content + completion_rate_content
+    content = (cross_validation_content + completion_rate_content +
+               frequencies_content)
 
     return section_template.render(section_name="Results",
                                    section_type="section",
@@ -356,6 +403,82 @@ def _generate_conclusions(templates, run_options, run_information):
     # Loading the template
     section_template = templates.get_template("section_template.tex")
     conclusions = templates.get_template("parts/conclusions.tex")
+    itemize_template = templates.get_template("iterate_template.tex")
+
+    # Adding the required information (output directories)
+    run_information["output_dir"] = sanitize_tex(run_options.out_dir)
+    run_information["output_dir_chrom"] = sanitize_tex(
+        os.path.join(run_options.out_dir, "chr*")
+    )
+    run_information["output_final_impute2"] = sanitize_tex(
+        os.path.join(run_options.out_dir, "chr*", "final_impute2")
+    )
+
+    # Output files
+    output_files = [
+        wrap_tex(
+            format_tex(sanitize_tex("chr*.imputed.alleles"), "texttt") +
+            sanitize_tex(": description of the reference and alternative "
+                         "allele at each site.")
+        ),
+        wrap_tex(
+            format_tex(sanitize_tex("chr*.imputed.completion_rates"),
+                       "texttt") +
+            sanitize_tex(": number of missing values and completion rate for "
+                         "all site (using a probability threshold ") +
+            tex_inline_math(
+                r"\geq {}\%".format(run_information["prob_threshold"])
+            ) + ")."
+        ),
+        wrap_tex(
+            format_tex(sanitize_tex("chr*.imputed.good_sites"), "texttt") +
+            sanitize_tex(": list of sites which pass the completion rate "
+                         "threshold (") +
+            tex_inline_math(
+                r"\geq {}\%".format(run_information["rate_threshold"])
+            ) + sanitize_tex(") using the probability threshold ") +
+            tex_inline_math(
+                r"\geq {}\%".format(run_information["prob_threshold"])
+            ) + "."
+        ),
+        wrap_tex(
+            format_tex(sanitize_tex("chr*.imputed.impute2"), "texttt") +
+            sanitize_tex(": imputation results (merged from all segments.")
+        ),
+        wrap_tex(
+            format_tex(sanitize_tex("chr*.imputed.imputed_sites"), "texttt") +
+            sanitize_tex(": list of imputed sites (excluding sites that were "
+                         "previously genotyped in the study cohort).")
+        ),
+        wrap_tex(
+            format_tex(sanitize_tex("chr*.imputed.log"), "texttt") +
+            sanitize_tex(": log file of the merging procedure.")
+        ),
+        wrap_tex(
+            format_tex(sanitize_tex("chr*.imputed.maf"), "texttt") +
+            sanitize_tex(": minor allele frequency (along with minor allele "
+                         "identification) for all sites using the probability "
+                         "threshold ") +
+            tex_inline_math(
+                r"\geq {}\%".format(run_information["prob_threshold"])
+            ) + "."
+        ),
+        wrap_tex(
+            format_tex(sanitize_tex("chr*.imputed.map"), "texttt") +
+            sanitize_tex(": a map file describing the genomic location of "
+                         "all sites.")
+        ),
+        wrap_tex(
+            format_tex(sanitize_tex("chr*.imputed.sample"), "texttt") +
+            sanitize_tex(": the sample file generated by the phasing step.")
+        ),
+    ]
+
+    # Formating the enumeration of files
+    run_information["output_files"] = itemize_template.render(
+        iteration_type="itemize",
+        iteration_list=output_files,
+    )
 
     # Returning the section
     return section_template.render(

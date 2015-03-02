@@ -27,7 +27,14 @@ chromosomes = range(1, 23)
 
 def test():
     """The test functions of gwip."""
+    import logging
     import unittest
     from .tests import test_suite
 
-    unittest.TextTestRunner(verbosity=2).run(test_suite)
+    # Disabling the INFO logging
+    logging.disable(logging.INFO)
+
+    unittest.TextTestRunner().run(test_suite)
+
+    # Enabling back the logging
+    logging.disable(logging.NOTSET)

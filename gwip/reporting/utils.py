@@ -49,13 +49,16 @@ def config_jinja2():
 
 def sanitize_tex(original_text):
     """Sanitize TeX text."""
+    # The backslashes
+    sanitized_tex = original_text.replace("\\", r"\textbackslash ")
+
     # Escaping
     sanitized_tex = re.sub(r"([{}])".format("".join(_escaped_char)),
-                           r"\\\g<1>", original_text)
+                           r"\\\g<1>", sanitized_tex)
 
     # Replacing
-    for char, mod in _char_mod.items():
-        sanitized_tex = sanitized_tex.replace(char, mod)
+    for character, mod in _char_mod.items():
+        sanitized_tex = sanitized_tex.replace(character, mod)
 
     return sanitized_tex
 
@@ -67,8 +70,8 @@ def wrap_tex(original_text):
 
 def format_tex(text, tex_format):
     """Change the TeX text format."""
-    assert tex_format in _valid_tex_formats
-    assert _is_sanitized(text)
+    assert tex_format in _valid_tex_formats, "invalid format"
+    assert _is_sanitized(text), "text not sanitized"
 
     return r"\%s{%s}" % (tex_format, text)
 
@@ -80,7 +83,15 @@ def tex_inline_math(content):
 
 def _is_sanitized(text):
     """Check if text is sanitized."""
-    return re.search(r"[^\\][{}]".format("".join(_escaped_char)), text) is None
+    # Checking the escaped characters
+    sanitized = re.search(r"[^\\][{}]".format("".join(_escaped_char)), text)
+    sanitized = sanitized is None
+
+    # Checking the characters to replace
+    for character in _char_mod.keys():
+        sanitized = sanitized and (character not in text)
+
+    return sanitized
 
 
 def create_tabular(template, header, data, header_multicol=None,
@@ -96,8 +107,8 @@ def create_tabular(template, header, data, header_multicol=None,
         col_align = ["c"] * nb_col
 
     # Checking that the number of columns holds
-    assert len(header) == nb_col
-    assert len(col_align) == nb_col
+    assert len(header) == len(header_multicol), "len(header) != len(multicol)"
+    assert len(col_align) == nb_col, "len(align) != number of columns"
 
     # Generating the tabular data
     tabular_data = {
@@ -113,7 +124,11 @@ def create_tabular(template, header, data, header_multicol=None,
 def create_float(template, float_type, caption, label, content, placement="H"):
     """Creates a TeX float."""
     # Some assertions
-    assert float_type in ["figure", "table"]
+    assert float_type in ["figure", "table"], "invalid float type"
+    for character in placement:
+        assert character in "htbp!H", "invalid placement"
+    if "H" in placement:
+        assert placement == "H", "placement 'H' should be alone"
 
     # Generating the float data
     float_data = {
@@ -121,7 +136,7 @@ def create_float(template, float_type, caption, label, content, placement="H"):
         "float_placement": placement,
         "float_caption":   caption,
         "float_label":     label,
-        "table_content":   content,
+        "float_content":   content,
     }
 
     # Rendering
