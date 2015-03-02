@@ -55,7 +55,27 @@ def main(args=None):
 
         # Reading the phenotype file
         logging.info("Reading phenotype file")
-        phenotype, remove_gender = read_phenotype(args.pheno, args)
+        phenotypes, remove_gender = read_phenotype(args.pheno, args)
+
+        # Reading the sample file
+        logging.info("Reading the sample file")
+        samples = read_samples(args.sample)
+
+        # Reading the sites to extract (if required)
+        sites_to_extract = None
+        if args.extract_sites is not None:
+            sites_to_extract = read_sites_to_extract(args.extract_sites)
+
+        # Computing the statistics
+        compute_statistics(
+            impute2_filename=args.impute2,
+            samples=samples,
+            markers_to_extract=sites_to_extract,
+            phenotypes=phenotypes,
+            remove_gender=remove_gender,
+            out_prefix=args.out,
+            other_opts=args,
+        )
 
     # Catching the Ctrl^C
     except KeyboardInterrupt:
@@ -113,6 +133,77 @@ def read_phenotype(i_filename, opts):
     # Returning the phenotypes
     return pheno.dropna(), remove_gender_column
 
+
+def read_samples(i_filename):
+    """Reads the sample file (produced by SHAPEIT)."""
+    samples = pd.read_csv(i_filename, sep=" ", usecols=[0, 1])
+    samples = samples.drop(samples.index[0])
+    return samples.set_index("ID_2", verify_integrity=True)
+
+
+def read_sites_to_extract(i_filename):
+    """Reads the list of sites to extract."""
+    markers_to_extract = None
+    with open(i_filename, "r") as i_file:
+        markers_to_extract = set(i_file.read().splitlines())
+    return markers_to_extract
+
+
+def compute_statistics(impute2_filename, samples, markers_to_extract,
+                       phenotypes, remove_gender, out_prefix, other_opts):
+    """Parses IMPUTE2 file while computing statistics."""
+    # The name of the output file
+    o_name = "{}.{}.dosage".format(out_prefix, other_opts.analysis_type)
+
+    # Reading the IMPUTE2 file one line (site) at a time, creating a subprocess
+    # if required
+    proc = None
+    i_file = None
+    o_file = open(o_name, "w")
+    sites_to_process = []
+    pool = None
+
+    # Multiprocessing?
+    if other_opts.nb_process > 1:
+        pool = Pool(processes=other_opts.nb_process)
+
+    try:
+        if impute2_filename.endswith(".gz"):
+            proc = Popen(["gzip", "-d", "-c", impute2_filename], stdout=PIPE)
+            i_file = proc.stdout
+
+        else:
+            i_file = open(impute2_filename, "rb")
+
+        # Printing the header of the output file
+        print("chr", "pos", "snp", "major", "minor", "maf", "n", "coef", "se",
+              "lower", "upper",
+              "z" if other_opts.analysis_type == "cox" else "t", "p", sep="\t",
+              file=o_file)
+
+    except Exception as e:
+        if pool is not None:
+            pool.terminate()
+        raise
+
+    finally:
+        # Closing the input file
+        i_file.close()
+
+        # Finishing the rows if required
+        if other_opts.nb_process > 1:
+            if len(sites_to_process) > 0:
+                pass
+            pool.close()
+
+        # Closing the output file
+        o_file.close()
+
+        # Closing the proc
+        if proc is not None:
+            if proc.wait() != 0:
+                raise ProgramError("{}: problem while reading the GZ "
+                                   "file".format(impute2_filename))
 
 def check_args(args):
     """Checks the arguments and options."""
