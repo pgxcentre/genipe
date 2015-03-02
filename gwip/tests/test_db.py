@@ -421,8 +421,11 @@ class TestDB(unittest.TestCase):
 
     def test_get_all_runtimes(self):
         """Tests the 'get_all_runtimes' function."""
-        # Waiting one second for each task
+        # The time that the task started
         start = self.creation_times[-1].timestamp()
+
+        # Waiting one second for each task
+        end_times = []
         for task_name in self.task_names:
             time.sleep(1)
             if task_name != self.task_names[-1]:
@@ -432,10 +435,12 @@ class TestDB(unittest.TestCase):
                 now = datetime.now().timestamp()
                 mark_drmaa_task_completed(task_name, start, start, now,
                                           self.db_name)
+            end_times.append(time.time())
 
         # The expected time
         expected_time = {
-            task_name: i + 1 for i, task_name in enumerate(self.task_names)
+            task_name: int(round(elapsed - start, 0))
+            for task_name, elapsed in zip(self.task_names, end_times)
         }
 
         # Getting the time for all tasks
