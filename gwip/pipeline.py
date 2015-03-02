@@ -15,7 +15,7 @@ import logging
 import argparse
 from glob import glob
 from math import floor
-from shutil import which
+from shutil import which, copyfile
 from urllib.request import urlopen
 from subprocess import Popen, PIPE
 from collections import defaultdict
@@ -225,7 +225,7 @@ def main():
         exec_time = gather_execution_time(db_name)
         run_information.update(exec_time)
 
-        # Creating the output directory (if it doesn't exits)
+        # Creating the output directory for the report (if it doesn't exits)
         report_dir = os.path.join(args.out_dir, "report")
         if not os.path.isdir(report_dir):
             os.mkdir(report_dir)
@@ -404,6 +404,19 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
                                                    ".map",
                                                    ".maf")],
         })
+
+        # Getting the name of the sample file
+        sample_file = os.path.join(
+            os.path.dirname(in_glob),
+            "chr{chrom}.final.phased.sample",
+        ).format(chrom=chrom)
+
+        # Checking if the file exists
+        if not os.path.isfile(sample_file):
+            raise ProgramError("{}: no such file".format(sample_file))
+
+        # Copying the file
+        copyfile(sample_file, c_prefix + ".sample")
 
     # Executing command
     logging.info("Merging impute2 files")
