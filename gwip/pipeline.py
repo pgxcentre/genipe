@@ -231,6 +231,7 @@ def main():
             os.mkdir(report_dir)
 
         # Generating the report
+        logging.info("Generating automatic report")
         generate_report(report_dir, args, run_information)
 
     # Catching the Ctrl^C
@@ -1135,7 +1136,7 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
 
 def gather_maf_stats(o_dir):
     """Gather minor allele frequencies from imputation."""
-    logging.info("Gathering imputation statistics")
+    logging.info("Gathering frequency statistics")
 
     # The statistics we want to gather
     nb_marker_with_maf = 0   # The number of markers for which we have a MAF
