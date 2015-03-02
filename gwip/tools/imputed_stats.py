@@ -10,8 +10,13 @@
 import os
 import logging
 import argparse
+from multiprocessing import Pool
+from subprocess import Popen, PIPE
+from collections import Counter, namedtuple
 
+import numpy as np
 import pandas as pd
+import statsmodels.formula.api as sm
 
 from .. import __version__
 from ..error import ProgramError
