@@ -9,8 +9,6 @@
 import os
 from setuptools import setup
 
-from gwip import __version__
-
 
 MAJOR = 0
 MINOR = 1
