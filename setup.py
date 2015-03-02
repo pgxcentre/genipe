@@ -43,6 +43,7 @@ def setup_package():
             "console_scripts": [
                 "gwip-launcher=gwip.pipeline:main",
                 "impute2-merger=gwip.tools.impute2_merger:main",
+                "imputed-stats=gwip.tools.imputed_stats:main",
             ],
         },
         install_requires=["numpy >= 1.8.2", "jinja2 >= 2.7.3",
