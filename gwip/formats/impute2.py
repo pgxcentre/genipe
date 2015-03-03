@@ -25,16 +25,9 @@ __all__ = ["matrix_from_line", "get_good_probs", "maf_from_probs",
 
 def matrix_from_line(impute2_line):
     """Generates the probability matrix from an IMPUTE2 line."""
-    # Creating the array
+    # Creating the array and changing it's shape
     probabilities = np.array(impute2_line[5:], dtype=float)
-
-    # Changing it's shape
-    try:
-        probabilities.shape = (len(probabilities) // 3, 3)
-    except ValueError:
-        raise ProgramError("{}: invalid number of "
-                           "entries".format(len(probabilities)))
-
+    probabilities.shape = (len(probabilities) // 3, 3)
     return impute2_line[:5], probabilities
 
 
