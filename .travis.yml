@@ -7,4 +7,5 @@ install:
   - "pip install jinja2"
   - "pip install numpy"
   - "pip install pandas"
+  - "pip install statsmodels"
 script: "python setup.py test"
