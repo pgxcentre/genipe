@@ -37,16 +37,23 @@ def get_good_probs(prob_matrix, min_prob=0.9):
 
 
 def maf_from_probs(prob_matrix, a1, a2, gender=None, site_name=None):
-    """Computes MAF from a probability matrix (and gender if chromosome X)."""
+    """Computes MAF from a probability matrix (and gender if chromosome X).
+
+    When 'gender' is not None, we assume that the MAF on chromosome X is
+    required (hence, males count as 1, and females as 2 alleles). There is also
+    an Exception raised if there are any heterozygous males.
+    """
     # By default, the MAF is NA, and a1=major, a2=minor
     maf = "NA"
     major, minor = a1, a2
 
+    if prob_matrix.shape[0] == 0:
+        return maf, minor, major
+
     if gender is None:
         # Not checking gender (this isn't chromosome X)
-        if prob_matrix.shape[0] != 0:
-            nb_geno = np.bincount(np.argmax(prob_matrix, axis=1), minlength=3)
-            maf = ((nb_geno[2] * 2) + nb_geno[1]) / (np.sum(nb_geno) * 2)
+        nb_geno = np.bincount(np.argmax(prob_matrix, axis=1), minlength=3)
+        maf = ((nb_geno[2] * 2) + nb_geno[1]) / (np.sum(nb_geno) * 2)
 
     else:
         # Getting the males
