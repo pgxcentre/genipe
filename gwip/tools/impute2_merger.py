@@ -17,6 +17,7 @@ from collections import defaultdict
 import numpy as np
 
 from .. import __version__
+from ..formats.impute2 import *
 from ..error import ProgramError
 
 
@@ -127,12 +128,8 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
             # Splitting the line
             row = line.rstrip("\r\n").split(" ")
 
-            # Gathering site information
-            chrom, name, pos, a1, a2 = row[:5]
-
             # Gathering genotypes
-            geno = np.array(row[5:], dtype=float)
-            geno.shape = (len(geno) // 3, 3)
+            chrom, name, pos, a1, a2, geno = matrix_from_line(row)
 
             # Checking the name of the marker
             if name == ".":
@@ -174,7 +171,7 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
             print(name, a1, a2, sep="\t", file=alleles_o_file)
 
             # Checking the completion rate and saving it
-            good_calls = np.amax(geno, axis=1) >= options.probability
+            good_calls = get_good_probs(geno, options.probability)
             nb = np.sum(good_calls)
             comp = 0
             if geno.shape[0] != 0:
@@ -183,15 +180,7 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
                   file=completion_o_file)
 
             # Computing the MAF and saving it
-            good_calls = geno[good_calls]
-            nb_geno = np.bincount(np.argmax(good_calls, axis=1), minlength=3)
-            maf = "NA"
-            if good_calls.shape[0] != 0:
-                maf = ((nb_geno[2]*2) + nb_geno[1]) / (good_calls.shape[0]*2)
-            major, minor = a1, a2
-            if maf != "NA" and maf > 0.5:
-                minor, major = a1, a2
-                maf = 1 - maf
+            maf, minor, major = maf_from_probs(geno[good_calls], a1, a2)
             print(name, major, minor, maf, sep="\t", file=maf_o_file)
 
             if comp >= options.completion:
