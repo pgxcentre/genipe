@@ -10,21 +10,31 @@
 import os
 import logging
 import argparse
+import traceback
 from multiprocessing import Pool
 from subprocess import Popen, PIPE
 from collections import Counter, namedtuple
 
 import numpy as np
 import pandas as pd
+from lifelines import CoxPHFitter
 import statsmodels.formula.api as sm
 
 from .. import __version__
+from ..formats.impute2 import *
 from ..error import ProgramError
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
 __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
 __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
+
+
+# An IMPUTE2 row to process
+_Row = namedtuple("_Row", ("row", "samples", "pheno", "pheno_name", "formula",
+                           "time_to_event", "censure", "inter_c", "is_chrx",
+                           "gender_c", "del_g", "scale", "maf_t", "prob_t",
+                           "analysis_type", "number_to_print"))
 
 
 def main(args=None):
@@ -79,7 +89,7 @@ def main(args=None):
             phenotypes=phenotypes,
             remove_gender=remove_gender,
             out_prefix=args.out,
-            other_opts=args,
+            options=args,
         )
 
     # Catching the Ctrl^C
@@ -155,10 +165,20 @@ def read_sites_to_extract(i_filename):
 
 
 def compute_statistics(impute2_filename, samples, markers_to_extract,
-                       phenotypes, remove_gender, out_prefix, other_opts):
+                       phenotypes, remove_gender, out_prefix, options):
     """Parses IMPUTE2 file while computing statistics."""
     # The name of the output file
-    o_name = "{}.{}.dosage".format(out_prefix, other_opts.analysis_type)
+    o_name = "{}.{}.dosage".format(out_prefix, options.analysis_type)
+
+    # Do we need to create a formula?
+    formula = None
+    if options.analysis_type != "cox":
+        formula = get_formula(
+            phenotype=options.pheno_name,
+            covars=options.covar,
+            interaction=options.interaction,
+        )
+        logging.info("Using: {}".format(formula))
 
     # Reading the IMPUTE2 file one line (site) at a time, creating a subprocess
     # if required
@@ -169,8 +189,8 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
     pool = None
 
     # Multiprocessing?
-    if other_opts.nb_process > 1:
-        pool = Pool(processes=other_opts.nb_process)
+    if options.nb_process > 1:
+        pool = Pool(processes=options.nb_process)
 
     try:
         if impute2_filename.endswith(".gz"):
@@ -181,14 +201,59 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
             i_file = open(impute2_filename, "rb")
 
         # Printing the header of the output file
-        print("chr", "pos", "snp", "major", "minor", "maf", "n", "coef", "se",
-              "lower", "upper",
-              "z" if other_opts.analysis_type == "cox" else "t", "p", sep="\t",
-              file=o_file)
+        header = ("chr", "pos", "snp", "major", "minor", "maf", "n", "coef",
+                  "se", "lower", "upper",
+                  "z" if options.analysis_type == "cox" else "t", "p")
+        print(*header, sep="\t", file=o_file)
+
+        # Reading the file
+        for line in i_file:
+            row = line.decode().rstrip("\r\n").split(" ")
+
+            # Is this site required?
+            if markers_to_extract and (row[1] not in markers_to_extract):
+                continue
+
+            # Constructing the row object
+            site = _Row(
+                row=row,
+                samples=samples,
+                pheno=phenotypes,
+                pheno_name=vars(options).get("pheno_name", None),
+                formula=formula,
+                time_to_event=vars(options).get("tte", None),
+                censure=vars(options).get("censure", None),
+                inter_c=options.interaction,
+                is_chrx=options.chrx,
+                gender_c=options.gender_column,
+                del_g=remove_gender,
+                scale=options.scale,
+                maf_t=options.maf,
+                prob_t=options.prob,
+                analysis_type=options.analysis_type,
+                number_to_print=len(header),
+            )
+
+            # Is there more than one process
+            if options.nb_process > 1:
+                # Saving this site to process later
+                sites_to_process.append(site)
+
+                # Is there enough sites to process?
+                if len(sites_to_process) >= options.nb_lines:
+                    for result in pool.map(process_impute2_site,
+                                           sites_to_process):
+                        print(*result, sep="\t", file=o_file)
+                    sites_to_process = []
+
+            else:
+                # Processing this row
+                print(*process_impute2_site(site), sep="\t", file=o_file)
 
     except Exception as e:
         if pool is not None:
             pool.terminate()
+        logging.error(traceback.format_exc())
         raise
 
     finally:
@@ -196,7 +261,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
         i_file.close()
 
         # Finishing the rows if required
-        if other_opts.nb_process > 1:
+        if options.nb_process > 1:
             if len(sites_to_process) > 0:
                 pass
             pool.close()
@@ -209,6 +274,189 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
             if proc.wait() != 0:
                 raise ProgramError("{}: problem while reading the GZ "
                                    "file".format(impute2_filename))
+
+
+def process_impute2_site(site_info):
+    """Process an IMPUTE2 site (a line in an IMPUTE2 file)."""
+    # Getting the probability matrix and site information
+    chrom, name, pos, a1, a2, geno = matrix_from_line(site_info.row)
+
+    # The name of the dosage column
+    dosage_columns = ["_D1", "_D2", "_D3"]
+
+    # Allele encoding
+    allele_encoding = {dosage_columns[0]: a1, dosage_columns[1]: a2}
+
+    # Creating the sample data frame
+    samples = site_info.samples
+    for i, col_name in enumerate(dosage_columns):
+        samples[col_name] = geno[:, i]
+
+    # Merging with phenotypes
+    data = pd.merge(
+        site_info.pheno,
+        samples,
+        how="inner",
+        left_index=True,
+        right_index=True
+    ).dropna()[list(site_info.pheno.columns) + dosage_columns]
+
+    # Keeping only good quality markers
+    data = data[
+        get_good_probs(data[dosage_columns].values, site_info.prob_t)
+    ]
+
+    # Checking gender if required
+    gender = None
+    if site_info.is_chrx:
+        # We want to exclude males with heterozygous calls for the rest of the
+        # analysis
+        invalid_rows = males_with_hetero_calls(
+            data.loc[data[site_info.gender_c] == 1, dosage_columns],
+            dosage_columns[1]
+        )
+        if len(invalid_rows) > 0:
+            logging.warning("There were {:,d} males with heterozygous "
+                            "calls for {}".format(len(invalid_rows), name))
+            logging.debug(data.shape)
+            data = data.drop(invalid_rows, axis=0)
+            logging.debug(data.shape)
+            logging.debug(invalid_rows.isin(data.index))
+
+        # Getting the genders
+        gender = data[site_info.gender_c].values
+
+    # Computing the frequency
+    maf, minor, major = maf_from_probs(data[dosage_columns].values,
+                                       dosage_columns[0], dosage_columns[1],
+                                       gender, name)
+
+    # What we want to print
+    to_return = [chrom, pos, name, allele_encoding[major],
+                 allele_encoding[minor], maf, data.shape[0]]
+
+    # If the marker is to rare, we continue with the rest
+    if maf < site_info.maf_t:
+        to_return.extend(["NA"] * (site_info.number_to_print - len(to_return)))
+        return to_return
+
+    # Computing the dosage on the minor allele
+    data["_GenoD"] = dosage_from_probs(
+        homo_probs=data[minor],
+        hetero_probs=data[dosage_columns[1]],
+        scale=site_info.scale,
+    )
+
+    # We might need to specifically add the interaction column (if Cox and if
+    # interaction)
+    if (site_info.inter_c is not None) and (site_info.analysis_type == "cox"):
+        data["_Inter"] = data._GenoD * data[site_info.inter_c]
+
+    # Removing the unwanted columns
+    unwanted_columns = dosage_columns
+    if site_info.del_g:
+        unwanted_columns.append(site_info.gender_c)
+    data = data.drop(unwanted_columns, axis=1)
+
+    # The column to get the result from
+    result_from_column = "_GenoD"
+    if site_info.inter_c is not None:
+        result_from_column = "_GenoD:" + site_info.inter_c
+        if site_info.analysis_type == "cox":
+            result_from_column = "_Inter"
+
+    # Fitting
+    results = _fit_map[site_info.analysis_type](
+        data=data,
+        time_to_event=site_info.time_to_event,
+        censure=site_info.censure,
+        formula=site_info.formula,
+        result_col=result_from_column,
+    )
+
+    # Extending the list to return
+    if len(results) == 0:
+        results = ["NA"] * (site_info.number_to_print - len(to_return))
+    to_return.extend(results)
+
+    return to_return
+
+
+def males_with_hetero_calls(data, hetero_c):
+    """Gets male and heterozygous calls."""
+    return data[data.idxmax(axis=1) == hetero_c].index
+
+
+def get_formula(phenotype, covars, interaction):
+    """Creates the linear/logistic regression formula (for statsmodel)."""
+    # The phenotype and genetics
+    formula = "{} ~ _GenoD".format(pheno)
+
+    # Are there any covars?
+    if len(covars) > 0:
+        formula += " + " + " + ".join(covars)
+
+    # Is there an interaction term?
+    if interaction is not None:
+        formula += " + _GenoD*{}".format(interaction)
+
+    return formula
+
+
+def fit_cox(data, time_to_event, censure, result_col, **kwargs):
+    """Fit a Cox' regression to the data."""
+    cf = CoxPHFitter(alpha=0.95, tie_method="Efron", normalize=False)
+
+    failed = False
+    try:
+        cf.fit(data, duration_col=time_to_event, event_col=censure)
+    except np.linalg.linalg.LinAlgError:
+        failed = True
+
+    # The results
+    result = []
+    if not failed:
+        result.extend([
+            float(cf.hazards_[result_col]),
+            float(cf._compute_standard_errors()[result_col]),
+            cf._compute_confidence_intervals().loc["lower-bound", result_col],
+            cf._compute_confidence_intervals().loc["upper-bound", result_col],
+            cf._compute_z_values()[result_col],
+            cf._compute_p_values()[cf.hazards_.columns == result_col][0]
+        ])
+
+    return result
+
+
+def fit_linear(data, formula, result_col, **kwargs):
+    """Fit a linear regression to the data."""
+    return _get_result_from_linear_logistic(
+        sm.ols(formula=formula, data=data).fit()
+        result_col=result_col,
+    )
+
+
+def fit_logistic(data, formula, result_col, **kwargs):
+    """Fit a logistic regression to the data."""
+    return _get_result_from_linear_logistic(
+        sm.logit(formula=formula, data=data).fit(),
+        result_col=result_col,
+    )
+
+
+def _get_result_from_linear_logistic(fit_result, result_col):
+    """Gets results from either a linear or logistic regression."""
+    return [
+        fit_result.params[result_col])
+        fit_result.bse[result_col])
+        fit_result.conf_int().loc[result_col, :].get_values())
+        fit_result.tvalues[result_col])
+        fit_result.pvalues[result_col])
+    ]
+
+
+_fit_map = {"cox": fit_cox, "linear": fit_linear, "logistic": fit_logistic}
+
 
 def check_args(args):
     """Checks the arguments and options."""
