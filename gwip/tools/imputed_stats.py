@@ -431,7 +431,7 @@ def fit_cox(data, time_to_event, censure, result_col, **kwargs):
 def fit_linear(data, formula, result_col, **kwargs):
     """Fit a linear regression to the data."""
     return _get_result_from_linear_logistic(
-        sm.ols(formula=formula, data=data).fit()
+        sm.ols(formula=formula, data=data).fit(),
         result_col=result_col,
     )
 
@@ -447,11 +447,11 @@ def fit_logistic(data, formula, result_col, **kwargs):
 def _get_result_from_linear_logistic(fit_result, result_col):
     """Gets results from either a linear or logistic regression."""
     return [
-        fit_result.params[result_col]
-        fit_result.bse[result_col]
-        fit_result.conf_int().loc[result_col, :].get_values()
-        fit_result.tvalues[result_col]
-        fit_result.pvalues[result_col]
+        fit_result.params[result_col],
+        fit_result.bse[result_col],
+        fit_result.conf_int().loc[result_col, :].get_values(),
+        fit_result.tvalues[result_col],
+        fit_result.pvalues[result_col],
     ]
 
 
