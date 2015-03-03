@@ -2,6 +2,8 @@ language: python
 python:
   - "3.3"
   - "3.4"
+before_install:
+  - "sudo apt-get install gfortran libblas-dev liblapack-dev"
 install:
   - "pip install setuptools"
   - "pip install jinja2"
