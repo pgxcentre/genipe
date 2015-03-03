@@ -279,7 +279,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
 def process_impute2_site(site_info):
     """Process an IMPUTE2 site (a line in an IMPUTE2 file)."""
     # Getting the probability matrix and site information
-    chrom, name, pos, a1, a2, geno = matrix_from_line(site_info.row)
+    (chrom, name, pos, a1, a2), geno = matrix_from_line(site_info.row)
 
     # The name of the dosage column
     dosage_columns = ["_D1", "_D2", "_D3"]

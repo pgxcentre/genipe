@@ -129,7 +129,7 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
             row = line.rstrip("\r\n").split(" ")
 
             # Gathering genotypes
-            chrom, name, pos, a1, a2, geno = matrix_from_line(row)
+            (chrom, name, pos, a1, a2), geno = matrix_from_line(row)
 
             # Checking the name of the marker
             if name == ".":
