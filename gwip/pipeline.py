@@ -790,8 +790,8 @@ def exclude_markers_before_phasing(prefix, db_name, options):
 
             # Checking strand if required
             if not is_special and (reference is not None):
-                if has_incorrect_strand(chrom, int(pos), a1, a2, reference,
-                                        chrom_encoding):
+                if is_reversed(chrom, int(pos), a1, a2, reference,
+                               chrom_encoding):
                     to_flip.add(name)
 
             # We keep this marker
@@ -907,8 +907,12 @@ def get_chrom_encoding(reference):
     return encoding
 
 
-def has_incorrect_strand(chrom, pos, a1, a2, reference, encoding):
+def is_reversed(chrom, pos, a1, a2, reference, encoding):
     """Checks the strand using a reference, returns False if problem."""
+    # Upper!
+    a1 = a1.upper()
+    a2 = a2.upper()
+
     # Some Illumina chip has I/D (so if not A/C/G/T, we cannot check)
     if a1 not in _complement or a2 not in _complement:
         return False
@@ -925,6 +929,10 @@ def has_incorrect_strand(chrom, pos, a1, a2, reference, encoding):
         return False
     ref = ref.upper()
 
+    # Is REF a valid nucleotide?
+    if ref not in _complement:
+        return False
+
     # If either a1 or a2 equals to ref, no strand problem
     if (a1 == ref) or (a2 == ref):
         return False
@@ -934,7 +942,8 @@ def has_incorrect_strand(chrom, pos, a1, a2, reference, encoding):
         return True
 
     # If nothing works, raising an exception
-    raise ProgramError("chr{}: {}: {}/{}: invalid".format(chrom, pos, a1, a2))
+    raise ProgramError("chr{}: {}: {}: {}/{}: "
+                       "invalid".format(chrom, pos, ref, a1, a2))
 
 
 def get_cross_validation_results(glob_pattern):
