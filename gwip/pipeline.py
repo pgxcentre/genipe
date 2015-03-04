@@ -736,7 +736,7 @@ def exclude_markers_before_phasing(prefix, db_name, options):
     reference = None
     chrom_encoding = None
     if options.reference is not None:
-        reference = Fasta(options.reference)
+        reference = Fasta(options.reference, as_raw=True)
         chrom_encoding = get_chrom_encoding(reference)
 
     # Logging
@@ -923,7 +923,7 @@ def has_incorrect_strand(chrom, pos, a1, a2, reference, encoding):
     # Is there one (if not, we suppose no strand problem)
     if ref is None:
         return False
-    ref = ref.seq.upper()
+    ref = ref.upper()
 
     # If either a1 or a2 equals to ref, no strand problem
     if (a1 == ref) or (a2 == ref):
