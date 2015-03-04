@@ -20,6 +20,7 @@ from urllib.request import urlopen
 from subprocess import Popen, PIPE
 from collections import defaultdict
 
+from pyfaidx import Fasta
 import pandas as pd
 
 from .db import *
@@ -44,6 +45,9 @@ except ImportError:
 __author__ = "Louis-Philippe Lemieux Perreault"
 __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
 __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
+
+
+_complement = {"A": "T", "T": "A", "C": "G", "G": "C"}
 
 
 def main():
@@ -125,7 +129,8 @@ def main():
         )
 
         # Excluding markers prior to phasing (ambiguous markers [A/T and [G/C]
-        # and duplicated markers
+        # and duplicated markers and finds markers to flip if there is a
+        # reference genome available
         numbers = exclude_markers_before_phasing(args.bfile, db_name, args)
         run_information.update(numbers)
 
@@ -585,7 +590,7 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
     logging.info("After strand check: {:,d} markers "
                  "to {}".format(nb_total, what))
 
-    return {"nb_{}".format(what): nb_total}
+    return {"nb_{}".format(what): "{:,d}".format(nb_total)}
 
 
 def flip_markers(prefix, to_flip, db_name, options):
@@ -726,9 +731,17 @@ def exclude_markers_before_phasing(prefix, db_name, options):
     nb_ambiguous = 0
     nb_kept = 0
     nb_dup = 0
+    to_flip = set()
+
+    reference = None
+    chrom_encoding = None
+    if options.reference is not None:
+        reference = Fasta(options.reference, as_raw=True)
+        chrom_encoding = get_chrom_encoding(reference)
 
     # Logging
-    logging.info("Finding markers to exclude")
+    logging.info("Finding markers to exclude" +
+                 (" and to flip" if reference else ""))
 
     # Counting the total number of markers and samples
     nb_markers = 0
@@ -746,38 +759,63 @@ def exclude_markers_before_phasing(prefix, db_name, options):
             nb_markers += 1
             row = line.rstrip("\r\n").split("\t")
 
+            # The marker information
+            chrom = row[0]
+            name = row[1]
+            pos = row[3]
+            a1 = row[4]
+            a2 = row[5]
+
             is_special = False
-            if row[0] in {"23", "24", "25", "26"}:
+            if chrom in {"23", "24", "25", "26"}:
                 nb_special_markers += 1
                 is_special = True
 
             # Checking the alleles
-            if row[4] + row[5] in ambiguous_genotypes:
+            if a1 + a2 in ambiguous_genotypes:
                 if not is_special:
                     nb_ambiguous += 1
-                print(row[1], file=o_file)
+                print(name, file=o_file)
                 logging.debug("  - {}: {}: "
-                              "ambiguous".format(row[1], row[4] + row[5]))
+                              "ambiguous".format(name, a1 + a2))
                 continue
 
             # Checking if we already have this marker
-            if (row[0], row[3]) in kept_positions:
+            if (chrom, pos) in kept_positions:
                 if not is_special:
                     nb_dup += 1
-                print(row[1], file=o_file)
-                logging.debug("  - {}: duplicated".format(row[1]))
+                print(name, file=o_file)
+                logging.debug("  - {}: duplicated".format(name))
                 continue
 
+            # Checking strand if required
+            if not is_special and (reference is not None):
+                if is_reversed(chrom, int(pos), a1, a2, reference,
+                               chrom_encoding):
+                    to_flip.add(name)
+
             # We keep this marker
-            kept_positions.add((row[0], row[3]))
+            kept_positions.add((chrom, pos))
             if not is_special:
                 nb_kept += 1
+
+    # Closing the reference
+    if reference is not None:
+        reference.close()
 
     # Logging
     logging.info("  - {:,d} special markers".format(nb_special_markers))
     logging.info("  - {:,d} ambiguous markers removed".format(nb_ambiguous))
     logging.info("  - {:,d} duplicated markers removed".format(nb_dup))
     logging.info("  - {:,d} markers kept".format(nb_kept))
+    if reference is not None:
+        logging.info("  - {:,d} markers to flip".format(len(to_flip)))
+
+    # Needs to flip?
+    o_filename = os.path.join(options.out_dir, "markers_to_flip.txt")
+    if len(to_flip) > 0:
+        with open(o_filename, "w") as o_file:
+            print(*to_flip, sep="\n", file=o_file)
 
     # The commands to run
     commands_info = []
@@ -787,6 +825,11 @@ def exclude_markers_before_phasing(prefix, db_name, options):
         "--exclude", os.path.join(options.out_dir, "markers_to_exclude.txt"),
         "--make-bed",
     ]
+
+    if len(to_flip) > 0:
+        base_command.extend([
+            "--flip", os.path.join(options.out_dir, "markers_to_flip.txt")
+        ])
 
     # The output prefix
     o_prefix = os.path.join(options.out_dir, "chr{chrom}", "chr{chrom}")
@@ -821,7 +864,86 @@ def exclude_markers_before_phasing(prefix, db_name, options):
         "nb_ambiguous":       "{:,d}".format(nb_ambiguous),
         "nb_duplicates":      "{:,d}".format(nb_dup),
         "nb_special_markers": "{:,d}".format(nb_special_markers),
+        "nb_flip_reference":  "{:,d}".format(len(to_flip)),
+        "reference_checked":  options.reference is not None
     }
+
+
+def get_chrom_encoding(reference):
+    """Gets the chromosome's encoding (e.g. 1 vs chr1, X vs 23, etc)."""
+    # The encoding
+    encoding = {}
+
+    # The autosomes
+    for chrom in range(1, 23):
+        if str(chrom) in reference:
+            encoding[str(chrom)] = str(chrom)
+        elif "chr{}".format(chrom) in reference:
+            encoding[str(chrom)] = "chr{}".format(chrom)
+
+    # The X and Y chromosome
+    for num_chrom, char_chrom in zip(["23", "24"], ["X", "Y"]):
+        if num_chrom in reference:
+            encoding[num_chrom] = num_chrom
+        elif char_chrom in reference:
+            encoding[num_chrom] = char_chrom
+        elif "chr" + char_chrom in reference:
+            encoding[num_chrom] = "chr" + char_chrom
+        elif "chr" + num_chrom in reference:
+            encoding[num_chrom] = "chr" + num_chrom
+
+    # The mitochondrial chromosome
+    possibilities = ["26", "M", "MT", "chrM", "chrMT", "chr26"]
+    for possibility in possibilities:
+        if possibility in reference:
+            encoding["26"] = possibility
+            break
+
+    # Checking if we have everything
+    for chrom in range(1, 27):
+        if chrom != 25 and str(chrom) not in encoding:
+            logging.warning("{}: chromosome not in reference".format(chrom))
+
+    return encoding
+
+
+def is_reversed(chrom, pos, a1, a2, reference, encoding):
+    """Checks the strand using a reference, returns False if problem."""
+    # Upper!
+    a1 = a1.upper()
+    a2 = a2.upper()
+
+    # Some Illumina chip has I/D (so if not A/C/G/T, we cannot check)
+    if a1 not in _complement or a2 not in _complement:
+        return False
+
+    # If the chromosome is not present, we suppose no strand problem
+    if chrom not in encoding:
+        return False
+
+    # Getting the nucleotide at this position
+    ref = reference[encoding[chrom]][pos - 1]
+
+    # Is there one (if not, we suppose no strand problem)
+    if ref is None:
+        return False
+    ref = ref.upper()
+
+    # Is REF a valid nucleotide?
+    if ref not in _complement:
+        return False
+
+    # If either a1 or a2 equals to ref, no strand problem
+    if (a1 == ref) or (a2 == ref):
+        return False
+
+    # If the complement equals, then incorrect strand
+    if (_complement[a1] == ref) or (_complement[a2] == ref):
+        return True
+
+    # If nothing works, raising an exception
+    raise ProgramError("chr{}: {}: {}: {}/{}: "
+                       "invalid".format(chrom, pos, ref, a1, a2))
 
 
 def get_cross_validation_results(glob_pattern):
@@ -1553,6 +1675,15 @@ def check_args(args):
         if not os.path.isfile(args.drmaa_config):
             raise ProgramError("{}: no such file".format(args.drmaa_config))
 
+    # Checking the reference file (if required)
+    if args.reference is not None:
+        if not os.path.isfile(args.reference):
+            raise ProgramError("{}: no such file".format(args.reference))
+
+        if not os.path.isfile(args.reference + ".fai"):
+            raise ProgramError("{}: should be indexed using "
+                               "FAIDX".format(args.reference))
+
     return True
 
 
@@ -1569,6 +1700,10 @@ def parse_args(parser):
     group = parser.add_argument_group("Input Options")
     group.add_argument("--bfile", type=str, metavar="PREFIX", required=True,
                        help="The prefix of the binary pedfiles (input data)")
+    group.add_argument("--reference", type=str, metavar="FILE",
+                       help=("The human reference to perform an initial "
+                             "strand check (useful for genotyped markers not "
+                             "in the IMPUTE2 reference files)."))
 
     # The output options
     group = parser.add_argument_group("Output Options")

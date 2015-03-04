@@ -11,6 +11,8 @@ import os
 import unittest
 from tempfile import TemporaryDirectory
 
+import pyfaidx
+
 from ..pipeline import *
 from .. import chromosomes
 from ..error import ProgramError
@@ -94,6 +96,217 @@ class TestMainPipeline(unittest.TestCase):
         with self.assertRaises(ProgramError) as e:
             get_chromosome_length(self.output_dir.name)
         self.assertEqual("missing chromosomes: 12, 9", e.exception.message)
+
+    def test_get_chrom_encoding(self):
+        """Tests the 'get_chrom_encoding' function."""
+        # Creating the reference file (fasta file) and index (using samtools)
+        fasta_content = [[">{}".format(i), "ACGT"] for i in range(1, 25)]
+        fasta_content.append([">26", "ACGT"])
+        fasta_content.append([">Unaligned", "ACGT"])
+        index_content = [
+            ["1", "4", "3", "4", "5"],
+            ["2", "4", "11", "4", "5"],
+            ["3", "4", "19", "4", "5"],
+            ["4", "4", "27", "4", "5"],
+            ["5", "4", "35", "4", "5"],
+            ["6", "4", "43", "4", "5"],
+            ["7", "4", "51", "4", "5"],
+            ["8", "4", "59", "4", "5"],
+            ["9", "4", "67", "4", "5"],
+            ["10", "4", "76", "4", "5"],
+            ["11", "4", "85", "4", "5"],
+            ["12", "4", "94", "4", "5"],
+            ["13", "4", "103", "4", "5"],
+            ["14", "4", "112", "4", "5"],
+            ["15", "4", "121", "4", "5"],
+            ["16", "4", "130", "4", "5"],
+            ["17", "4", "139", "4", "5"],
+            ["18", "4", "148", "4", "5"],
+            ["19", "4", "157", "4", "5"],
+            ["20", "4", "166", "4", "5"],
+            ["21", "4", "175", "4", "5"],
+            ["22", "4", "184", "4", "5"],
+            ["23", "4", "193", "4", "5"],
+            ["24", "4", "202", "4", "5"],
+            ["26", "4", "210", "4", "5"],
+            ["Unaligned", "4", "226", "4", "5"],
+        ]
+        reference_filename = os.path.join(self.output_dir.name, "ref.fasta")
+        with open(reference_filename, "w") as o_file:
+            for chromosome_fasta in fasta_content:
+                print(*chromosome_fasta, sep="\n", file=o_file)
+        with open(reference_filename + ".fai", "w") as o_file:
+            for line in index_content:
+                print(*line, sep="\t", file=o_file)
+
+        # Reading the reference using pyfaidx
+        reference = pyfaidx.Fasta(reference_filename, as_raw=True)
+
+        # The expected result
+        expected = {str(i): str(i) for i in range(1, 25)}
+        expected["26"] = "26"
+
+        # The observed result
+        observed = get_chrom_encoding(reference)
+        self.assertEqual(expected, observed)
+        reference.close()
+
+        # Replacing 23 and 24 to X and Y
+        fasta_content[22][0] = ">X"
+        fasta_content[23][0] = ">Y"
+        index_content[22][0] = "X"
+        index_content[23][0] = "Y"
+
+        # Writing to file
+        with open(reference_filename, "w") as o_file:
+            for chromosome_fasta in fasta_content:
+                print(*chromosome_fasta, sep="\n", file=o_file)
+        with open(reference_filename + ".fai", "w") as o_file:
+            for line in index_content:
+                print(*line, sep="\t", file=o_file)
+
+        # Reading the reference using pyfaidx
+        reference = pyfaidx.Fasta(reference_filename, as_raw=True)
+
+        # The expected result
+        expected["23"] = "X"
+        expected["24"] = "Y"
+
+        # The observed result
+        observed = get_chrom_encoding(reference)
+        self.assertEqual(expected, observed)
+        reference.close()
+
+        # Adding chr everywhere
+        for i in range(len(fasta_content)):
+            fasta_content[i][0] = ">chr" + fasta_content[i][0][1:]
+            index_content[i][0] = "chr" + index_content[i][0]
+
+        # Writing to file
+        with open(reference_filename, "w") as o_file:
+            for chromosome_fasta in fasta_content:
+                print(*chromosome_fasta, sep="\n", file=o_file)
+        with open(reference_filename + ".fai", "w") as o_file:
+            for line in index_content:
+                print(*line, sep="\t", file=o_file)
+
+        # Reading the reference using pyfaidx
+        reference = pyfaidx.Fasta(reference_filename, as_raw=True)
+
+        # The expected result
+        expected = {str(i): "chr{}".format(i) for i in range(1, 23)}
+        expected["23"] = "chrX"
+        expected["24"] = "chrY"
+        expected["26"] = "chr26"
+
+        # The observed result
+        observed = get_chrom_encoding(reference)
+        self.assertEqual(expected, observed)
+        reference.close()
+
+        # Replacing 23 and 24 to X and Y
+        fasta_content[22][0] = ">chr23"
+        fasta_content[23][0] = ">chr24"
+        index_content[22][0] = "chr23"
+        index_content[23][0] = "chr24"
+
+        # Writing to file
+        with open(reference_filename, "w") as o_file:
+            for chromosome_fasta in fasta_content:
+                print(*chromosome_fasta, sep="\n", file=o_file)
+        with open(reference_filename + ".fai", "w") as o_file:
+            for line in index_content:
+                print(*line, sep="\t", file=o_file)
+
+        # Reading the reference using pyfaidx
+        reference = pyfaidx.Fasta(reference_filename, as_raw=True)
+
+        # The expected result
+        expected["23"] = "chr23"
+        expected["24"] = "chr24"
+
+        # The observed result
+        observed = get_chrom_encoding(reference)
+        self.assertEqual(expected, observed)
+        reference.close()
+
+        # Finally, removing from chromosome 18 to trigger warnings
+        fasta_content = fasta_content[:18]
+        index_content = index_content[:18]
+
+        # Writing to file
+        with open(reference_filename, "w") as o_file:
+            for chromosome_fasta in fasta_content:
+                print(*chromosome_fasta, sep="\n", file=o_file)
+        with open(reference_filename + ".fai", "w") as o_file:
+            for line in index_content:
+                print(*line, sep="\t", file=o_file)
+
+        # Reading the reference using pyfaidx
+        reference = pyfaidx.Fasta(reference_filename, as_raw=True)
+
+        # The observed result
+        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+            get_chrom_encoding(reference)
+        log_m = [
+            "WARNING:root:{}: chromosome not in reference".format(i)
+            for i in range(19, 27) if i != 25
+        ]
+        self.assertEqual(log_m, cm.output)
+        reference.close()
+
+    def test_is_reversed(self):
+        """Tests the 'is_reversed' function."""
+        # Creating the reference file (fasta file) and index (using samtools)
+        fasta_content = (
+            ">1\n"
+            "ACGT\n"
+            ">2\n"
+            "ACGT\n"
+            ">3\n"
+            "acgt\n"
+        )
+        index_content = (
+            "1\t4\t3\t4\t5\n"
+            "2\t4\t11\t4\t5\n"
+            "3\t4\t19\t4\t5\n"
+        )
+        reference_filename = os.path.join(self.output_dir.name, "ref.fasta")
+        with open(reference_filename, "w") as o_file:
+            o_file.write(fasta_content)
+        with open(reference_filename + ".fai", "w") as o_file:
+            o_file.write(index_content)
+
+        # Reading the reference using pyfaidx
+        reference = pyfaidx.Fasta(reference_filename, as_raw=True)
+
+        # The chromosome encoding
+        encoding = {"1": "1", "2": "2", "3": "3"}
+
+        # Testing invalid allele (should return False)
+        self.assertFalse(is_reversed("1", 1, "I", "D", reference, encoding))
+        self.assertFalse(is_reversed("1", 1, "Z", "A", reference, encoding))
+        self.assertFalse(is_reversed("1", 1, "A", "K", reference, encoding))
+
+        # Testing invalid chromosome (should return False)
+        self.assertFalse(is_reversed("23", 1, "A", "C", reference, encoding))
+
+        # Testing invalid position (should return False)
+        self.assertFalse(is_reversed("1", 100, "A", "C", reference, encoding))
+
+        # Testing valid input, without strand problem (should return False)
+        self.assertFalse(is_reversed("1", 3, "G", "T", reference, encoding))
+        self.assertFalse(is_reversed("2", 4, "G", "T", reference, encoding))
+        self.assertFalse(is_reversed("3", 2, "g", "c", reference, encoding))
+
+        # Testing valid input, but strand problem (should return True)
+        self.assertTrue(is_reversed("1", 1, "T", "G", reference, encoding))
+        self.assertTrue(is_reversed("2", 2, "t", "g", reference, encoding))
+        self.assertTrue(is_reversed("3", 3, "T", "C", reference, encoding))
+        self.assertTrue(is_reversed("1", 4, "A", "C", reference, encoding))
+
+        # Closing the reference
+        reference.close()
 
     @unittest.skip("Test not implemented")
     def test_read_preamble(self):
@@ -394,11 +607,18 @@ class TestMainPipeline(unittest.TestCase):
         # use_drmaa
         args.use_drmaa = True
 
-        # args.drmaa_config
+        # drmaa_config
         drmaa_config = os.path.join(self.output_dir.name, "drmaa_config.txt")
         with open(drmaa_config, "w") as o_file:
             pass
         args.drmaa_config = drmaa_config
+
+        # reference
+        reference = os.path.join(self.output_dir.name, "h_ref.fasta")
+        for filename in [reference, reference + ".fai"]:
+            with open(filename, "w") as o_file:
+                pass
+        args.reference = reference
 
         # Testing begins
         # Everything should work
@@ -591,6 +811,27 @@ class TestMainPipeline(unittest.TestCase):
         )
         with open(args.drmaa_config, "w") as o_file:
             pass
+
+        # Removing the reference index file should raise an exception
+        os.remove(args.reference + ".fai")
+        self.assertFalse(os.path.isfile(args.reference + ".fai"))
+        with self.assertRaises(ProgramError) as cm:
+            check_args(args)
+        self.assertEqual(
+            "{}: should be indexed using FAIDX".format(args.reference),
+            str(cm.exception),
+        )
+
+        # Removing the reference file should raise an exception
+        os.remove(args.reference)
+        self.assertFalse(os.path.isfile(args.reference))
+        with self.assertRaises(ProgramError) as cm:
+            check_args(args)
+        self.assertEqual("{}: no such file".format(args.reference),
+                         str(cm.exception))
+
+        # Setting the reference to None should fix everything
+        args.reference = None
 
         # Final check
         self.assertTrue(check_args(args))
