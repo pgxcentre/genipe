@@ -893,7 +893,7 @@ def get_chrom_encoding(reference):
             encoding[num_chrom] = "chr" + num_chrom
 
     # The mitochondrial chromosome
-    possibilities = ["26", "M", "MT", "chrM", "chrMT"]
+    possibilities = ["26", "M", "MT", "chrM", "chrMT", "chr26"]
     for possibility in possibilities:
         if possibility in reference:
             encoding["26"] = possibility
