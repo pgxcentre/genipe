@@ -45,6 +45,7 @@ def generate_report(out_dir, run_opts, run_info):
     # We want to copy the figures to the right place
     figures = ["frequency_pie"]
     for figure in figures:
+        assert figure in run_info, figure
         if run_info[figure] != "":
             shutil.copy(run_info[figure], out_dir)
             run_info[figure] = os.path.basename(run_info[figure])
@@ -105,11 +106,13 @@ def _generate_methods(templates, run_options, run_information):
     """Generate the method section of the report."""
     # Some assertions
     required_variables = ["shapeit_version", "impute2_version",
-                          "initial_nb_markers", "initial_nb_samples",
-                          "nb_duplicates", "nb_ambiguous", "nb_flip",
-                          "nb_exclude", "nb_phasing_markers"]
+                          "plink_version", "initial_nb_markers",
+                          "initial_nb_samples", "nb_duplicates",
+                          "nb_ambiguous", "nb_flip", "nb_exclude",
+                          "nb_phasing_markers", "nb_flip_reference",
+                          "reference_checked"]
     for required_variable in required_variables:
-        assert required_variable in run_information
+        assert required_variable in run_information, required_variable
 
     # Loading the templates
     section_template = templates.get_template("section_template.tex")
@@ -145,15 +148,34 @@ def _generate_methods(templates, run_options, run_information):
     # The text for the different steps
     steps = []
 
+    # Was there an initial reference check?
+    to_add_1 = ""
+    to_add_2 = ""
+    if run_information["reference_checked"]:
+        to_add_1 = sanitize_tex(
+            "An initial strand check was also performed using the human "
+            "reference genome. "
+        )
+        to_add_2 = format_tex(
+            sanitize_tex(
+                " Also, {nb_flip} markers were flipped because of strand "
+                "issue.".format(
+                    nb_flip=run_information["nb_flip_reference"],
+                )
+            ),
+            "textbf",
+        )
+
     # The ambiguous and duplicated markers that were removed
     steps.append(wrap_tex(sanitize_tex(
         "Ambiguous markers with alleles "
     ) + format_tex("A", "texttt") + "/" + format_tex("T", "texttt") + " and " +
-        format_tex("C", "texttt") + "/" + format_tex("G", "texttt") + (
-        ", duplicated markers (same position), and markers located on special "
-        "chromosomes (sexual or mitochondrial chromosomes) were excluded from "
-        "the imputation. "
-    ) + format_tex(
+        format_tex("C", "texttt") + "/" + format_tex("G", "texttt") +
+        sanitize_tex(
+            ", duplicated markers (same position), and markers located on "
+            "special chromosomes (sexual or mitochondrial chromosomes) were "
+            "excluded from the imputation. "
+    ) + to_add_1 + format_tex(
         sanitize_tex(
             "In total, {ambiguous} ambiguous, {duplicated} duplicated and "
             "{special} special markers were excluded.".format(
@@ -162,8 +184,8 @@ def _generate_methods(templates, run_options, run_information):
                 special=run_information["nb_special_markers"],
             )
         ),
-        "textbf"
-    )))
+        "textbf",
+    ) + to_add_2))
 
     # The number of markers that were flipped
     steps.append(wrap_tex(sanitize_tex(
@@ -171,7 +193,7 @@ def _generate_methods(templates, run_options, run_information):
         "IMPUTE2's reference files. "
     ) + format_tex(
         sanitize_tex(
-            "In total, {nb_markers:,d} markers had an incorrect strand and "
+            "In total, {nb_markers} markers had an incorrect strand and "
             "were flipped using Plink.".format(
                 nb_markers=run_information["nb_flip"],
             )
@@ -185,7 +207,7 @@ def _generate_methods(templates, run_options, run_information):
         "IMPUTE2's reference files. "
     ) + format_tex(
         sanitize_tex(
-            "In total, {nb_markers:,d} markers were found to still be on the "
+            "In total, {nb_markers} markers were found to still be on the "
             "wrong strand, and were hence excluded from the final dataset "
             "using Plink.".format(
                 nb_markers=run_information["nb_exclude"],
@@ -234,7 +256,7 @@ def _generate_results(templates, run_options, run_information):
                           "pct_maf_geq_01_lt_05", "frequency_pie"]
 
     for required_variable in required_variables:
-        assert required_variable in run_information
+        assert required_variable in run_information, required_variable
 
     # Loading the templates
     section_template = templates.get_template("section_template.tex")
@@ -499,7 +521,7 @@ def _generate_annex(templates, run_options, run_information):
                           "plink_final_exec_time", "shapeit_phase_exec_time",
                           "merge_impute2_exec_time", "impute2_exec_time"]
     for required_variable in required_variables:
-        assert required_variable in run_information
+        assert required_variable in run_information, required_variable
 
     # Loading the templates
     tabular_template = templates.get_template("tabular_template.tex")

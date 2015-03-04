@@ -590,7 +590,7 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
     logging.info("After strand check: {:,d} markers "
                  "to {}".format(nb_total, what))
 
-    return {"nb_{}".format(what): nb_total}
+    return {"nb_{}".format(what): "{:,d}".format(nb_total)}
 
 
 def flip_markers(prefix, to_flip, db_name, options):
@@ -1673,7 +1673,7 @@ def check_args(args):
 
         if not os.path.isfile(args.reference + ".fai"):
             raise ProgramError("{}: should be indexed using "
-                               "FAIDX".format(args.refenrece + ".fai"))
+                               "FAIDX".format(args.reference))
 
     return True
 
