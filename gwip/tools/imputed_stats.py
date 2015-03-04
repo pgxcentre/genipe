@@ -311,7 +311,7 @@ def process_impute2_site(site_info):
     if site_info.is_chrx:
         # We want to exclude males with heterozygous calls for the rest of the
         # analysis
-        invalid_rows = males_with_hetero_calls(
+        invalid_rows = samples_with_hetero_calls(
             data.loc[data[site_info.gender_c] == 1, dosage_columns],
             dosage_columns[1]
         )
@@ -382,7 +382,7 @@ def process_impute2_site(site_info):
     return to_return
 
 
-def males_with_hetero_calls(data, hetero_c):
+def samples_with_hetero_calls(data, hetero_c):
     """Gets male and heterozygous calls."""
     return data[data.idxmax(axis=1) == hetero_c].index
 
@@ -390,7 +390,7 @@ def males_with_hetero_calls(data, hetero_c):
 def get_formula(phenotype, covars, interaction):
     """Creates the linear/logistic regression formula (for statsmodel)."""
     # The phenotype and genetics
-    formula = "{} ~ _GenoD".format(pheno)
+    formula = "{} ~ _GenoD".format(phenotype)
 
     # Are there any covars?
     if len(covars) > 0:
