@@ -118,7 +118,7 @@ def read_phenotype(i_filename, opts):
     pheno = pheno.set_index(opts.sample_column, verify_integrity=True)
 
     # Finding the required column
-    required_columns = opts.covar
+    required_columns = opts.covar.copy()
     if opts.analysis_type == "cox":
         required_columns.extend([opts.tte, opts.censure])
     else:
