@@ -137,22 +137,22 @@ def read_phenotype(i_filename, opts):
         required_columns.append(opts.gender_column)
         remove_gender_column = True
 
+    # We need to exclude unknown gender only if gender was required
+    if (opts.gender_column in required_columns) and (not remove_gender_column):
+        pheno = pheno[(pheno[opts.gender_column] == 1) |
+                      (pheno[opts.gender_column] == 2)]
+
     # Extracting the required column
     pheno = pheno.loc[:, required_columns]
 
-    # We need to exclude unknown gender if we are on chrX
-    if opts.chrx:
-        pheno = pheno[(pheno[opts.gender_column] != 1) |
-                      (pheno[opts.gender_column] != 2)]
-
-    # Returning the phenotypes
-    return pheno.dropna(), remove_gender_column
+    # Returning the phenotypes (dropping the nan values)
+    return pheno.dropna(axis=0), remove_gender_column
 
 
 def read_samples(i_filename):
     """Reads the sample file (produced by SHAPEIT)."""
     samples = pd.read_csv(i_filename, sep=" ", usecols=[0, 1])
-    samples = samples.drop(samples.index[0])
+    samples = samples.drop(samples.index[0], axis=0)
     return samples.set_index("ID_2", verify_integrity=True)
 
 
@@ -299,7 +299,7 @@ def process_impute2_site(site_info):
         how="inner",
         left_index=True,
         right_index=True
-    ).dropna()[list(site_info.pheno.columns) + dosage_columns]
+    ).dropna(axis=0)[list(site_info.pheno.columns) + dosage_columns]
 
     # Keeping only good quality markers
     data = data[
@@ -537,7 +537,7 @@ def check_args(args):
         ))
 
     # Checking the gender column (only if required)
-    if args.chrx:
+    if args.gender_column != "None":
         if args.gender_column not in header:
             raise ProgramError(
                 "{}: {}: no such column (--gender-column)".format(
@@ -651,9 +651,10 @@ def parse_args(parser, args=None):
                              "used)."))
     group.add_argument("--gender-column", type=str, metavar="NAME",
                        default="Gender",
-                       help=("The name of the gender column (use in "
-                             "conjunction with the '--chrx' option) "
-                             "[%(default)s]"))
+                       help=("The name of the gender column (use to exclude "
+                             "samples with unknown gender (i.e. not 1, male, "
+                             "or 2, female). If gender not available, use "
+                             "'None'. [%(default)s]"))
 
     # The output files
     group = parser.add_argument_group("Output Options")
