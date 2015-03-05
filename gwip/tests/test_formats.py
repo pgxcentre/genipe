@@ -81,12 +81,12 @@ class TestLauncher(unittest.TestCase):
         probs = np.array(
             [[0.9, 0.1, 0.0],   # AA, male   (A)
              [0.1, 0.9, 0.0],   # AB, female (AB)
-             [0.0, 0.1, 0.9],   # BB, male   (B)
+             [0.0, 0.1, 0.9],   # BB, male   (B)*
              [0.9, 0.1, 0.0],   # AA, female (AA)
              [0.0, 0.1, 0.9],   # BB, male   (B)
              [0.9, 0.1, 0.0],   # AA, male   (A)
              [0.9, 0.1, 0.0],   # AA, male   (A)
-             [0.1, 0.9, 0.0],   # AB, female (AB)
+             [0.1, 0.9, 0.0],   # AB, female (AB)*
              [0.1, 0.9, 0.0],   # AB, female (AB)
              [0.9, 0.1, 0.0]],  # AA, male   (A)
             dtype=float,
@@ -97,6 +97,7 @@ class TestLauncher(unittest.TestCase):
 
         # The gender array (10 samples, 6 males, 4 females)
         gender = np.array([1, 2, 1, 2, 1, 1, 1, 2, 2, 1], dtype=int)
+        unknown_gender = np.array([1, 2, 0, 2, 1, 1, 1, 0, 2, 1], dtype=int)
 
         # Checking without gender
         expected_maf = 7 / 20
@@ -108,8 +109,9 @@ class TestLauncher(unittest.TestCase):
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
-        # Switching the a1 and a2 should give the same maf, but different major
+        # Reversing the matrix should give the same maf, but different major
         # and minor allele
+        expected_maf = 7 / 20
         expected_minor = "A"
         expected_major = "B"
         observed_results = maf_from_probs(r_probs, "A", "B")
@@ -128,11 +130,33 @@ class TestLauncher(unittest.TestCase):
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
-        # Switching the a1 and a2 should give the same maf, but different major
+        # Reversing the matrix should give the same maf, but different major
         # and minor allele
+        expected_maf = 5 / 14
         expected_minor = "A"
         expected_major = "B"
         observed_results = maf_from_probs(r_probs, "A", "B", gender)
+        observed_maf, observed_minor, observed_major = observed_results
+        self.assertAlmostEqual(expected_maf, observed_maf)
+        self.assertEqual(expected_minor, observed_minor)
+        self.assertEqual(expected_major, observed_major)
+
+        # Checking with gender, unknown samples
+        expected_maf = 3 / 11
+        expected_minor = "B"
+        expected_major = "A"
+        observed_results = maf_from_probs(probs, "A", "B", unknown_gender)
+        observed_maf, observed_minor, observed_major = observed_results
+        self.assertAlmostEqual(expected_maf, observed_maf)
+        self.assertEqual(expected_minor, observed_minor)
+        self.assertEqual(expected_major, observed_major)
+
+        # Reversing the matrix should give the same maf, but different major
+        # and minor allele
+        expected_maf = 3 / 11
+        expected_minor = "A"
+        expected_major = "B"
+        observed_results = maf_from_probs(r_probs, "A", "B", unknown_gender)
         observed_maf, observed_minor, observed_major = observed_results
         self.assertAlmostEqual(expected_maf, observed_maf)
         self.assertEqual(expected_minor, observed_minor)
@@ -153,6 +177,7 @@ class TestLauncher(unittest.TestCase):
              [0.9, 0.1, 0.0]],  # AA, male   (A)
             dtype=float,
         )
+        tmp_r_probs = np.array([i[::-1] for i in tmp_probs], dtype=float)
         expected_maf = 3 / 10
         expected_minor = "B"
         expected_major = "A"
@@ -162,9 +187,9 @@ class TestLauncher(unittest.TestCase):
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
-        # Switching the a1 and a2 should give the same maf, but different major
+        # Reversing the matrix should give the same maf, but different major
         # and minor allele
-        tmp_r_probs = np.array([i[::-1] for i in tmp_probs], dtype=float)
+        expected_maf = 3 / 10
         expected_minor = "A"
         expected_major = "B"
         observed_results = maf_from_probs(tmp_r_probs, "A", "B", tmp_gender)
@@ -184,8 +209,9 @@ class TestLauncher(unittest.TestCase):
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
-        # Switching the a1 and a2 should give the same maf, but different major
+        # Reversing the matrix should give the same maf, but different major
         # and minor allele
+        expected_maf = 7 / 20
         expected_minor = "A"
         expected_major = "B"
         observed_results = maf_from_probs(r_probs, "A", "B", tmp_gender)
@@ -194,7 +220,7 @@ class TestLauncher(unittest.TestCase):
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
-        # Checking empty array (without gender)
+        # Checking empty probabilities (without gender)
         tmp_probs = np.array([], dtype=float)
         expected_maf = "NA"
         expected_minor = "B"
@@ -205,12 +231,22 @@ class TestLauncher(unittest.TestCase):
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
-        # Checking empty array (with gender)
-        tmp_gender = np.array([], dtype=int)
+        # Checking empty probabilities (with gender)
         expected_maf = "NA"
         expected_minor = "B"
         expected_major = "A"
-        observed_results = maf_from_probs(tmp_probs, "A", "B", tmp_gender)
+        observed_results = maf_from_probs(tmp_probs, "A", "B", gender)
+        observed_maf, observed_minor, observed_major = observed_results
+        self.assertEqual(expected_maf, observed_maf)
+        self.assertEqual(expected_minor, observed_minor)
+        self.assertEqual(expected_major, observed_major)
+
+        # Checking all unknown gender
+        all_unknown = np.zeros(10, dtype=int)
+        expected_maf = "NA"
+        expected_minor = "B"
+        expected_major = "A"
+        observed_results = maf_from_probs(probs, "A", "B", all_unknown)
         observed_maf, observed_minor, observed_major = observed_results
         self.assertEqual(expected_maf, observed_maf)
         self.assertEqual(expected_minor, observed_minor)

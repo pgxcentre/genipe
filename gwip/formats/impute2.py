@@ -47,6 +47,7 @@ def maf_from_probs(prob_matrix, a1, a2, gender=None, site_name=None):
     maf = "NA"
     major, minor = a1, a2
 
+    # If there are no data, we return default values
     if prob_matrix.shape[0] == 0:
         return maf, minor, major
 
@@ -56,16 +57,25 @@ def maf_from_probs(prob_matrix, a1, a2, gender=None, site_name=None):
         maf = ((nb_geno[2] * 2) + nb_geno[1]) / (np.sum(nb_geno) * 2)
 
     else:
-        # Getting the males
+        # Getting the males and females
         males = (gender == 1)
+        females = (gender == 2)
 
         # Male counts
         males_nb_geno = np.bincount(np.argmax(prob_matrix[males], axis=1),
                                     minlength=3)
 
         # Female counts
-        females_nb_geno = np.bincount(np.argmax(prob_matrix[~males], axis=1),
+        females_nb_geno = np.bincount(np.argmax(prob_matrix[females], axis=1),
                                       minlength=3)
+
+        # The total number of genotypes
+        total_geno_males = np.sum(males_nb_geno)
+        total_geno_females = np.sum(females_nb_geno)
+
+        # If there are no genotypes, we return default values
+        if (total_geno_males + total_geno_females) == 0:
+            return maf, minor, major
 
         # There shouldn't be heterozygous genotypes for males
         if males_nb_geno[1] > 0:
@@ -74,7 +84,7 @@ def maf_from_probs(prob_matrix, a1, a2, gender=None, site_name=None):
 
         # Computing the frequencies
         maf = males_nb_geno[2] + (females_nb_geno[2] * 2) + females_nb_geno[1]
-        maf /= (np.sum(males_nb_geno) + (np.sum(females_nb_geno) * 2))
+        maf /= (total_geno_males + (total_geno_females * 2))
 
     # Is this the MAF?
     if maf != "NA" and maf > 0.5:
