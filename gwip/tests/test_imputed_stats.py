@@ -162,7 +162,9 @@ class TestImputedStats(unittest.TestCase):
         self.assertTrue(np.allclose(expected_c2, observed_p.C2.values))
         self.assertTrue(np.allclose(expected_c3, observed_p.C3.values))
         self.assertTrue((expected_gender == observed_p.Gender.values).all())
-        self.assertTrue((expected_pheno == observed_p.Pheno_Logit.values).all())
+        self.assertTrue(
+            (expected_pheno == observed_p.Pheno_Logit.values).all()
+        )
         self.assertEqual(expected_remove_g, observed_remove_g)
 
         # Adding an interaction
@@ -183,7 +185,9 @@ class TestImputedStats(unittest.TestCase):
         self.assertTrue(np.allclose(expected_c2, observed_p.C2.values))
         self.assertTrue(np.allclose(expected_c3, observed_p.C3.values))
         self.assertTrue((expected_gender == observed_p.Gender.values).all())
-        self.assertTrue((expected_pheno == observed_p.Pheno_Logit.values).all())
+        self.assertTrue(
+            (expected_pheno == observed_p.Pheno_Logit.values).all()
+        )
         self.assertTrue(np.allclose(expected_inter, observed_p.Inter.values))
         self.assertEqual(expected_remove_g, observed_remove_g)
 
@@ -204,7 +208,9 @@ class TestImputedStats(unittest.TestCase):
         self.assertTrue(np.allclose(expected_c2, observed_p.C2.values))
         self.assertTrue(np.allclose(expected_c3, observed_p.C3.values))
         self.assertTrue((expected_gender == observed_p.Gender.values).all())
-        self.assertTrue((expected_pheno == observed_p.Pheno_Logit.values).all())
+        self.assertTrue(
+            (expected_pheno == observed_p.Pheno_Logit.values).all()
+        )
         self.assertTrue(np.allclose(expected_inter, observed_p.Inter.values))
         self.assertEqual(expected_remove_g, observed_remove_g)
 
@@ -236,13 +242,15 @@ class TestImputedStats(unittest.TestCase):
         self.assertTrue(np.allclose(expected_c2, observed_p.C2.values))
         self.assertTrue(np.allclose(expected_c3, observed_p.C3.values))
         self.assertTrue((expected_gender == observed_p.Gender.values).all())
-        self.assertTrue((expected_pheno == observed_p.Pheno_Logit.values).all())
+        self.assertTrue(
+            (expected_pheno == observed_p.Pheno_Logit.values).all()
+        )
         self.assertTrue(np.allclose(expected_inter, observed_p.Inter.values))
         self.assertEqual(expected_remove_g, observed_remove_g)
 
         # Sample shouldn't be included if chrx is False, but Gender in covars
         args.covar.append("Gender")
-        args.chrx=False
+        args.chrx = False
 
         # The expected values
         expected_shape = (3, 6)
@@ -257,9 +265,15 @@ class TestImputedStats(unittest.TestCase):
         self.assertTrue(np.allclose(expected_c1[:-1], observed_p.C1.values))
         self.assertTrue(np.allclose(expected_c2[:-1], observed_p.C2.values))
         self.assertTrue(np.allclose(expected_c3[:-1], observed_p.C3.values))
-        self.assertTrue((expected_gender[:-1] == observed_p.Gender.values).all())
-        self.assertTrue((expected_pheno[:-1] == observed_p.Pheno_Logit.values).all())
-        self.assertTrue(np.allclose(expected_inter[:-1], observed_p.Inter.values))
+        self.assertTrue(
+            (expected_gender[:-1] == observed_p.Gender.values).all()
+        )
+        self.assertTrue(
+            (expected_pheno[:-1] == observed_p.Pheno_Logit.values).all()
+        )
+        self.assertTrue(
+            np.allclose(expected_inter[:-1], observed_p.Inter.values)
+        )
         self.assertEqual(expected_remove_g, observed_remove_g)
 
         # Removing gender in the covar should add a sample
@@ -278,7 +292,9 @@ class TestImputedStats(unittest.TestCase):
         self.assertTrue(np.allclose(expected_c1, observed_p.C1.values))
         self.assertTrue(np.allclose(expected_c2, observed_p.C2.values))
         self.assertTrue(np.allclose(expected_c3, observed_p.C3.values))
-        self.assertTrue((expected_pheno == observed_p.Pheno_Logit.values).all())
+        self.assertTrue(
+            (expected_pheno == observed_p.Pheno_Logit.values).all()
+        )
         self.assertTrue(np.allclose(expected_inter, observed_p.Inter.values))
         self.assertEqual(expected_remove_g, observed_remove_g)
 
@@ -299,10 +315,11 @@ class TestImputedStats(unittest.TestCase):
         self.assertTrue(np.allclose(expected_c1, observed_p.C1.values))
         self.assertTrue(np.allclose(expected_c2, observed_p.C2.values))
         self.assertTrue(np.allclose(expected_c3, observed_p.C3.values))
-        self.assertTrue((expected_pheno == observed_p.Pheno_Logit.values).all())
+        self.assertTrue(
+            (expected_pheno == observed_p.Pheno_Logit.values).all()
+        )
         self.assertTrue(np.allclose(expected_inter, observed_p.Inter.values))
         self.assertEqual(expected_remove_g, observed_remove_g)
-
 
     def test_read_samples(self):
         """Tests the 'read_samples' function."""
