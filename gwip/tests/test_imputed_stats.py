@@ -10,8 +10,10 @@
 import unittest
 from tempfile import TemporaryDirectory
 
+import patsy
 import numpy as np
 import pandas as pd
+from pkg_resources import resource_filename
 
 from ..tools.imputed_stats import *
 from ..tools.imputed_stats import _get_result_from_linear_logistic
@@ -457,12 +459,110 @@ class TestImputedStats(unittest.TestCase):
         self.fail("Test not implemented")
 
     @unittest.skip("Test not implemented")
+    def test_fit_cox_interaction(self):
+        """Tests the 'fit_cox' function."""
+        self.fail("Test not implemented")
+
     def test_fit_linear(self):
         """Tests the 'fit_linear' function."""
+        # Reading the data
+        data_filename = resource_filename(
+            __name__,
+            "data/regression_sim.txt.bz2",
+        )
+
+        # This dataset contains 3 markers + 5 covariables
+        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
+        data = data.dropna(axis=0)
+
+        # The formula for the first marker
+        formula = "y ~ snp1 + C1 + C2 + C3 + age + gender"
+        columns_to_keep = ["y", "snp1", "C1", "C2", "C3", "age", "gender"]
+
+        # The expected results for the first marker (according to R)
+        # The data was simulated so that snp1 had a coefficient of 0.1
+        expected_coef = 0.09930262321654575
+        expected_se = 0.00302135517743109
+        expected_min_ci = 0.09337963040899197
+        expected_max_ci = 0.10522561602409949
+        expected_t = 32.866914806414108
+        expected_p = 2.7965174627917724e-217
+        expected = [expected_coef, expected_se, expected_min_ci,
+                    expected_max_ci, expected_t, expected_p]
+
+        # The observed results for the first marker
+        observed = fit_linear(data[columns_to_keep], formula, "snp1")
+        self.assertEqual(len(expected), len(observed))
+        for i in range(len(expected)):
+            self.assertAlmostEqual(expected[i], observed[i])
+
+        # The p is small, so we'll compare the log10(p) instead
+        self.assertAlmostEqual(np.log10(expected[-1]), np.log10(observed[-1]))
+
+        # The formula for the second marker
+        formula = "y ~ snp2 + C1 + C2 + C3 + age + gender"
+        columns_to_keep = ["y", "snp2", "C1", "C2", "C3", "age", "gender"]
+
+        # The expected results for the second marker (according to R)
+        # The data was simulated so that snp1 had a coefficient of 0
+        expected_coef = -0.00279702443754753
+        expected_se = 0.00240385609310785
+        expected_min_ci = -0.0075094867313642991
+        expected_max_ci = 0.0019154378562692411
+        expected_t = -1.1635573550209353
+        expected_p = 0.24465167231462448
+        expected = [expected_coef, expected_se, expected_min_ci,
+                    expected_max_ci, expected_t, expected_p]
+
+        # The observed results for the first marker
+        observed = fit_linear(data[columns_to_keep], formula, "snp2")
+        self.assertEqual(len(expected), len(observed))
+        for i in range(len(expected)):
+            self.assertAlmostEqual(expected[i], observed[i])
+
+        # The formula for the third (and last) marker
+        formula = "y ~ snp3 + C1 + C2 + C3 + age + gender"
+        columns_to_keep = ["y", "snp3", "C1", "C2", "C3", "age", "gender"]
+
+        # The expected results for the second marker (according to R)
+        # The data was simulated so that snp1 had a coefficient of -0.12
+        expected_coef = -0.11731595824657762
+        expected_se = 0.00327175651867383
+        expected_min_ci = -0.12372983188610413
+        expected_max_ci = -0.1109020846070511
+        expected_t = -35.857178728608552
+        expected_p = 2.4882495142044017e-254
+        expected = [expected_coef, expected_se, expected_min_ci,
+                    expected_max_ci, expected_t, expected_p]
+
+        # The observed results for the first marker
+        observed = fit_linear(data[columns_to_keep], formula, "snp3")
+        self.assertEqual(len(expected), len(observed))
+        for i in range(len(expected)):
+            self.assertAlmostEqual(expected[i], observed[i])
+
+        # The p is small, so we'll compare the log10(p) instead
+        self.assertAlmostEqual(np.log10(expected[-1]), np.log10(observed[-1]))
+
+        # Asking for an invalid column should raise a KeyError
+        with self.assertRaises(KeyError) as cm:
+            fit_linear(data[columns_to_keep], formula, "unknown")
+
+        with self.assertRaises(patsy.PatsyError) as cm:
+            fit_linear(data[columns_to_keep], formula + " + unknown", "snp4")
+
+    @unittest.skip("Test not implemented")
+    def test_fit_linear_interaction(self):
+        """Tests the 'fit_cox' function."""
         self.fail("Test not implemented")
 
     @unittest.skip("Test not implemented")
     def test_fit_logistic(self):
+        """Tests the 'fit_logistic' function."""
+        self.fail("Test not implemented")
+
+    @unittest.skip("Test not implemented")
+    def test_fit_interaction(self):
         """Tests the 'fit_logistic' function."""
         self.fail("Test not implemented")
 
