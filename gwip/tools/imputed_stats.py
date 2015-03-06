@@ -18,7 +18,7 @@ from collections import Counter, namedtuple
 import numpy as np
 import pandas as pd
 from lifelines import CoxPHFitter
-import statsmodels.formula.api as sm
+import statsmodels.formula.api as smf
 
 from .. import __version__
 from ..formats.impute2 import *
@@ -434,7 +434,7 @@ def fit_cox(data, time_to_event, censure, result_col, **kwargs):
 def fit_linear(data, formula, result_col, **kwargs):
     """Fit a linear regression to the data."""
     return _get_result_from_linear_logistic(
-        sm.ols(formula=formula, data=data).fit(),
+        smf.ols(formula=formula, data=data).fit(),
         result_col=result_col,
     )
 
@@ -442,7 +442,7 @@ def fit_linear(data, formula, result_col, **kwargs):
 def fit_logistic(data, formula, result_col, **kwargs):
     """Fit a logistic regression to the data."""
     return _get_result_from_linear_logistic(
-        sm.logit(formula=formula, data=data).fit(),
+        smf.logit(formula=formula, data=data).fit(),
         result_col=result_col,
     )
 
