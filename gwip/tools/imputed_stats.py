@@ -565,86 +565,161 @@ def check_args(args):
 def parse_args(parser, args=None):
     """Parses the command line options and arguments."""
     # Adding the version option for the main parser
-    parser.add_argument("-v", "--version", action="version",
-                        version="%(prog)s, part of GWIP version "
-                                "{}".format(__version__))
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version="%(prog)s, part of gwip version {}".format(__version__),
+    )
 
     # Creating a parent parser (for common options between analysis type)
     p_parser = argparse.ArgumentParser(add_help=False)
 
     # The parser object
-    p_parser.add_argument("-v", "--version", action="version",
-                          version="%(prog)s (part of GWIP "
-                                  "version {})".format(__version__))
-    p_parser.add_argument("--debug", action="store_true",
-                          help="Set the logging level to debug.")
+    p_parser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version="%(prog)s (part of gwip version {})".format(__version__),
+    )
+    p_parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="set the logging level to debug",
+    )
 
     # The input files
     group = p_parser.add_argument_group("Input Files")
-    group.add_argument("--impute2", type=str, metavar="FILE", required=True,
-                       help="The output from IMPUTE2.")
-    group.add_argument("--sample", type=str, metavar="FILE", required=True,
-                       help=("The sample file (the order should be the same "
-                             "as in the IMPUTE2 files)."))
-    group.add_argument("--pheno", type=str, metavar="FILE", required=True,
-                       help="The file containing phenotypes and co variables.")
-    group.add_argument("--extract-sites", type=str, metavar="FILE",
-                       help="The 'good' sites to extract for analysis.")
+    group.add_argument(
+        "--impute2",
+        type=str,
+        metavar="FILE",
+        required=True,
+        help="The output from IMPUTE2.",
+    )
+    group.add_argument(
+        "--sample",
+        type=str,
+        metavar="FILE",
+        required=True,
+        help="The sample file (the order should be the same as in the IMPUTE2 "
+             "files).",
+    )
+    group.add_argument(
+        "--pheno",
+        type=str,
+        metavar="FILE",
+        required=True,
+        help="The file containing phenotypes and co variables.",
+    )
+    group.add_argument(
+        "--extract-sites",
+        type=str,
+        metavar="FILE",
+        help="A list of sites to extract for analysis (optional).",
+    )
 
     # The output files
     group = p_parser.add_argument_group("Output Options")
-    group.add_argument("--out", metavar="FILE", default="imputed_stats",
-                       help="The prefix for the output files. [%(default)s]")
+    group.add_argument(
+        "--out",
+        metavar="FILE",
+        default="imputed_stats",
+        help="The prefix for the output files. [%(default)s]",
+    )
 
     # General options
     group = p_parser.add_argument_group("General Options")
-    group.add_argument("--nb-process", type=int, metavar="INT", default=1,
-                       help="The number of process to use. [%(default)d]")
-    group.add_argument("--nb-lines", type=int, metavar="INT", default=1000,
-                       help=("The number of line to read at a time."
-                             "[%(default)d]"))
-    group.add_argument("--chrx", action="store_true",
-                       help=("The analysis is performed for the non pseudo-"
-                             "autosomal region of the chromosome X (male "
-                             "dosage will be divided by 2 to get values "
-                             "[0, 0.5] instead of [0, 1]) (males are coded "
-                             "as 1 and option '--gender-column' should be "
-                             "used)."))
-    group.add_argument("--gender-column", type=str, metavar="NAME",
-                       default="Gender",
-                       help=("The name of the gender column (use to exclude "
-                             "samples with unknown gender (i.e. not 1, male, "
-                             "or 2, female). If gender not available, use "
-                             "'None'. [%(default)s]"))
+    group.add_argument(
+        "--nb-process",
+        type=int,
+        metavar="INT",
+        default=1,
+        help="The number of process to use. [%(default)d]",
+    )
+    group.add_argument(
+        "--nb-lines",
+        type=int,
+        metavar="INT",
+        default=1000,
+        help="The number of line to read at a time. [%(default)d]",
+    )
+    group.add_argument(
+        "--chrx",
+        action="store_true",
+        help="The analysis is performed for the non pseudo-autosomal region "
+             "of the chromosome X (male dosage will be divided by 2 to get "
+             "values [0, 0.5] instead of [0, 1]) (males are coded as 1 and "
+             "option '--gender-column' should be used).",
+    )
+    group.add_argument(
+        "--gender-column",
+        type=str,
+        metavar="NAME",
+        default="Gender",
+        help="The name of the gender column (use to exclude samples with "
+             "unknown gender (i.e. not 1, male, or 2, female). If gender not "
+             "available, use 'None'. [%(default)s]",
+    )
 
     # The dosage options
     group = p_parser.add_argument_group("Dosage Options")
-    group.add_argument("--scale", type=int, metavar="INT", default=2,
-                       choices=[1, 2],
-                       help=("Scale dosage so that values are in [0, n] "
-                             "(possible values are 1 (no scaling) or 2). "
-                             "[%(default)d]"))
-    group.add_argument("--prob", type=float, metavar="FLOAT", default=0.9,
-                       help=("The minimal probability for which a genotype "
-                             "should be considered. [>=%(default).1f]"))
-    group.add_argument("--maf", type=float, metavar="FLOAT", default=0.01,
-                       help=("Minor allele frequency threshold for which "
-                             "marker will be skipped. [<%(default).2f]"))
+    group.add_argument(
+        "--scale",
+        type=int,
+        metavar="INT",
+        default=2,
+        choices=[1, 2],
+        help="Scale dosage so that values are in [0, n] (possible values are "
+             "1 (no scaling) or 2). [%(default)d]",
+    )
+    group.add_argument(
+        "--prob",
+        type=float,
+        metavar="FLOAT",
+        default=0.9,
+        help="The minimal probability for which a genotype should be "
+             "considered. [>=%(default).1f]",
+    )
+    group.add_argument(
+        "--maf",
+        type=float,
+        metavar="FLOAT",
+        default=0.01,
+        help="Minor allele frequency threshold for which marker will be "
+             "skipped. [<%(default).2f]",
+    )
 
     # The general phenotype options
     group = p_parser.add_argument_group("Phenotype Options")
-    group.add_argument("--covar", type=str, metavar="NAME", default="",
-                       help=("The co variable names (in the pheno file), "
-                             "separated by coma."))
-    group.add_argument("--missing-value", type=str, metavar="NAME",
-                       help="The missing value.")
-    group.add_argument("--sample-column", type=str, metavar="NAME",
-                       default="sample_id",
-                       help=("The name of the sample ID column (in the pheno "
-                             "file). [%(default)s]"))
-    group.add_argument("--interaction", type=str, metavar="NAME",
-                       help=("Add an interaction between the genotype and "
-                             "this co-variable"))
+    group.add_argument(
+        "--covar",
+        type=str,
+        metavar="NAME",
+        default="",
+        help="The co variable names (in the phenotype file), separated by "
+             "coma.",
+    )
+    group.add_argument(
+        "--missing-value",
+        type=str,
+        metavar="NAME",
+        help="The missing value in the phenotype file.",
+    )
+    group.add_argument(
+        "--sample-column",
+        type=str,
+        metavar="NAME",
+        default="sample_id",
+        help="The name of the sample ID column (in the phenotype file). "
+             "[%(default)s]",
+    )
+    group.add_argument(
+        "--interaction",
+        type=str,
+        metavar="NAME",
+        help="Add an interaction between the genotype and this variable.",
+    )
 
     # Sub parsers
     subparsers = parser.add_subparsers(
@@ -665,12 +740,21 @@ def parse_args(parser, args=None):
     )
 
     group = cox_parser.add_argument_group("Cox's Regression Options")
-    group.add_argument("--time-to-event", type=str, metavar="NAME",
-                       required=True, dest="tte",
-                       help="The time to event variable (in the pheno file).")
-    group.add_argument("--censure", type=str, metavar="NAME", required=True,
-                       help=("The censure value (1 if observed, 0 if "
-                             "censored)"))
+    group.add_argument(
+        "--time-to-event",
+        type=str,
+        metavar="NAME",
+        required=True,
+        dest="tte",
+        help="The time to event variable (in the pheno file).",
+    )
+    group.add_argument(
+        "--censure",
+        type=str,
+        metavar="NAME",
+        required=True,
+        help="The censure value (1 if observed, 0 if censored)",
+    )
 
     # The linear parser
     lin_parser = subparsers.add_parser(
@@ -684,8 +768,13 @@ def parse_args(parser, args=None):
 
     # The phenotype options for linear regression
     group = lin_parser.add_argument_group("Linear Regression Options")
-    group.add_argument("--pheno-name", type=str, metavar="NAME", required=True,
-                       help="The phenotype.")
+    group.add_argument(
+        "--pheno-name",
+        type=str,
+        metavar="NAME",
+        required=True,
+        help="The phenotype.",
+    )
 
     # The logistic parser
     logit_parser = subparsers.add_parser(
@@ -694,13 +783,18 @@ def parse_args(parser, args=None):
         description="Performs a logistic regression on imputed data. "
                     "This script is part of the 'gwip' package, "
                     "version {}).".format(__version__),
-        parents=[p_parser]
+        parents=[p_parser],
     )
 
     # The phenotype options for logistic regression
     group = logit_parser.add_argument_group("Logistic Regression Options")
-    group.add_argument("--pheno-name", type=str, metavar="NAME", required=True,
-                       help="The phenotype.")
+    group.add_argument(
+        "--pheno-name",
+        type=str,
+        metavar="NAME",
+        required=True,
+        help="The phenotype.",
+    )
 
     if args is not None:
         return parser.parse_args(args)
