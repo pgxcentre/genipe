@@ -8,33 +8,15 @@ The `gwip` module includes a script (named `gwip-launcher`) that automatically
 runs a genome-wide imputation pipeline using *Plink*, *shapeit* and *impute2*.
 
 
-## Dependencies
-
-The tool requires a standard [Python](http://python.org/) 3 installation with
-the following modules:
-
-* `numpy` version 1.8.2 and latest
-* `jinja2` version 2.7.3 and latest
-* `pandas` version 0.15.2 and latest
-* `setuptools` version 12.0.5 and latest
-
-The tool requires the binaries for
-[Plink](http://pngu.mgh.harvard.edu/~purcell/plink/download.shtml),
-[shapeit](https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html#download)
-and [impute2](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#download).
-
-Finally, the tool also requires a LaTeX installation to compile the automatically
-generated report in PDF format.
-
-
 ## Installation
 
 We recommend installing the package in a Python (version 3) virtual
-environment.
+environment. To create such an environment and to activate it, perform the
+following commands:
 
 ```console
-$ pyvenv ~/python3_gwip_virt
-$ source ~/python3_gwip_virt/bin/activate
+$ pyvenv $HOME/python3_gwip_virt
+$ source $HOME/python3_gwip_virt/bin/activate
 ```
 
 Download (or clone) the package from
@@ -45,9 +27,38 @@ virtual python 3 environment, once activated).
 $ pip install gwip-0.1.tar.gz
 ```
 
-The installation process should install all required dependencies.
+The installation process should install all required dependencies, which are
+described below.
 
-## Testing
+
+### Dependencies
+
+The tool requires a standard [Python](http://python.org/) 3 installation with
+the following modules:
+
+* `numpy` version 1.8.2 and latest
+* `jinja2` version 2.7.3 and latest
+* `pandas` version 0.15.2 and latest
+* `setuptools` version 12.0.5 and latest
+* `pyfaidx` version 0.3.7 and latest
+
+The tool requires the binaries for
+[Plink](http://pngu.mgh.harvard.edu/~purcell/plink/download.shtml),
+[shapeit](https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html#download)
+and [impute2](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#download).
+
+A tool is provided to perform statistical analysis using the imputation results
+(linear, logistic and Cox's regressions). This tool requires the following
+Python modules:
+
+* `lifelines` version 0.7.0.0 and latest
+* `statsmodels` version 0.6.1 and latest
+
+Finally, the tool requires a LaTeX installation to compile the automatically
+generated report in PDF format.
+
+
+### Testing
 
 Basic testing was implemented for the script to merge *impute2* files resulting
 from different segments of the same chromosome along with some utility
@@ -65,40 +76,45 @@ is assumed that they were properly tested by their author.
 
 We will try to add further tests in the future.
 
+
 ## Basic usage
 
 The following options are available when launching a genome-wide imputation
 analysis.
 
 ```console
-$ gwip-launcher --help
-usage: gwip-launcher [-h] [-v] [--debug] [--thread THREAD] --bfile PREFIX
-                     [--output-dir DIR] [--use-drmaa] [--drmaa-config FILE]
-                     [--preamble FILE] [--shapeit-bin BINARY]
-                     [--shapeit-thread SHAPEIT_THREAD] [--plink-bin BINARY]
-                     [--impute2-bin BINARY] [--segment-length BP]
-                     --hap-template TEMPLATE --legend-template TEMPLATE
-                     --map-template TEMPLATE --sample-file FILE
-                     [--filtering-rules RULE [RULE ...]] [--probability FLOAT]
-                     [--completion FLOAT] [--report-number NB]
-                     [--report-title TITLE] [--report-author AUTHOR]
+$ gwip-launcher --helpusage: gwip-launcher [-h] [-v] [--debug] [--thread THREAD] --bfile PREFIX
+                     [--reference FILE] [--output-dir DIR] [--use-drmaa]
+                     [--drmaa-config FILE] [--preamble FILE]
+                     [--shapeit-bin BINARY] [--shapeit-thread INT]
+                     [--plink-bin BINARY] [--impute2-bin BINARY]
+                     [--segment-length BP] --hap-template TEMPLATE
+                     --legend-template TEMPLATE --map-template TEMPLATE
+                     --sample-file FILE [--filtering-rules RULE [RULE ...]]
+                     [--probability FLOAT] [--completion FLOAT]
+                     [--report-number NB] [--report-title TITLE]
+                     [--report-author AUTHOR]
 
-Execute the genome-wide imputation pipeline (gwip version 0.1).
+Execute the genome-wide imputation pipeline. This script is part of the 'gwip'
+package, version 0.1.
 
 optional arguments:
   -h, --help            show this help message and exit
   -v, --version         show program's version number and exit
-  --debug               Set the logging level to debug
-  --thread THREAD       The number of thread [1]
+  --debug               set the logging level to debug
+  --thread THREAD       number of threads [1]
 
 Input Options:
-  --bfile PREFIX        The prefix of the binary pedfiles (input data)
+  --bfile PREFIX        The prefix of the binary pedfiles (input data).
+  --reference FILE      The human reference to perform an initial strand check
+                        (useful for genotyped markers not in the IMPUTE2
+                        reference files) (optional).
 
 Output Options:
-  --output-dir DIR      The name of the output directory [gwip]
+  --output-dir DIR      The name of the output directory. [gwip]
 
 HPC Options:
-  --use-drmaa           Launch tasks using DRMAA
+  --use-drmaa           Launch tasks using DRMAA.
   --drmaa-config FILE   The configuration file for tasks (use this option when
                         launching tasks using DRMAA). This file should
                         describe the walltime and the number of
@@ -109,42 +125,44 @@ HPC Options:
                         'shebang' line and the tool command.
 
 SHAPEIT Options:
-  --shapeit-bin BINARY  The SHAPEIT binary if it's not in the path
-  --shapeit-thread SHAPEIT_THREAD
-                        The number of thread for phasing [1]
+  --shapeit-bin BINARY  The SHAPEIT binary if it's not in the path.
+  --shapeit-thread INT  The number of thread for phasing. [1]
 
 Plink Options:
-  --plink-bin BINARY    The Plink binary if it's not in the path
+  --plink-bin BINARY    The Plink binary if it's not in the path.
 
 IMPUTE2 Options:
-  --impute2-bin BINARY  The IMPUTE2 binary if it's not in the path
-  --segment-length BP   The length of a single segment for imputation [5e+06)]
+  --impute2-bin BINARY  The IMPUTE2 binary if it's not in the path.
+  --segment-length BP   The length of a single segment for imputation. [5e+06]
   --hap-template TEMPLATE
                         The template for IMPUTE2's haplotype files (replace
                         the chromosome number by '{chrom}', e.g.
-                        '1000GP_Phase3_chr{chrom}.hap.gz')
+                        '1000GP_Phase3_chr{chrom}.hap.gz').
   --legend-template TEMPLATE
                         The template for IMPUTE2's legend files (replace the
                         chromosome number by '{chrom}', e.g.
-                        '1000GP_Phase3_chr{chrom}.legend.gz')
+                        '1000GP_Phase3_chr{chrom}.legend.gz').
   --map-template TEMPLATE
                         The template for IMPUTE2's map files (replace the
                         chromosome number by '{chrom}', e.g.
-                        'genetic_map_chr{chrom}_combined_b37.txt')
-  --sample-file FILE    The name of IMPUTE2's sample file
+                        'genetic_map_chr{chrom}_combined_b37.txt').
+  --sample-file FILE    The name of IMPUTE2's sample file.
   --filtering-rules RULE [RULE ...]
-                        IMPUTE2 filtering rules (if required)
+                        IMPUTE2 filtering rules (optional).
 
 IMPUTE2 Merger Options:
-  --probability FLOAT   The probability threshold for no calls [0.9]
-  --completion FLOAT    The site completion rate threshold [0.98]
+  --probability FLOAT   The probability threshold for no calls. [<0.9]
+  --completion FLOAT    The completion rate threshold for site exclusion.
+                        [<0.98]
 
 Automatic Report Options:
-  --report-number NB    The report number
-  --report-title TITLE  The report title
+  --report-number NB    The report number. [GWIP automatic report]
+  --report-title TITLE  The report title. [GWIP: Automatic genome-wide
+                        imputation]
   --report-author AUTHOR
-                        The report author
+                        The report author. [Automatically generated by GWIP]
 ```
+
 
 ### Real life example
 
@@ -230,7 +248,8 @@ Since imputation is performed by segments, each output directory will contain a
 directory called `final_impute2`, containing merged output files and imputation
 statistics.
 
-## Input files
+
+### Input files
 
 Genotypes format are in Plink's binary pedfiles (*i.e.* three files with
 `.bed`, `.bim` and `.fam` extensions). Those files are generated by Plink.
@@ -350,7 +369,8 @@ chr21_walltime = 01:00:00
 chr22_walltime = 01:00:00
 ```
 
-## Output files
+
+### Output files
 
 There will be one directory for each chromosome in the output directory. This
 directory will contain the `*.impute2` files (one for each segment) and a
@@ -385,7 +405,8 @@ Here is the description of the output files in the `final_impute2` directory:
   imputed (their missing calls were imputed).
 * `*.map`: the mapping information for all sites on the chromosome.
 
-## Automatic report
+
+### Automatic report
 
 The pipeline provides a report containing relevant imputation statistics. This
 report is located in the `report` directory. It can be compile into a PDF file

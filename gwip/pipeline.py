@@ -67,8 +67,8 @@ def main():
 
     """
     # Creating the option parser
-    desc = ("Execute the genome-wide imputation pipeline "
-            "(gwip version {}).".format(__version__))
+    desc = ("Execute the genome-wide imputation pipeline. This script is part "
+            "of the 'gwip' package, version {}.".format(__version__))
     parser = argparse.ArgumentParser(description=desc)
 
     # We run the script
@@ -1689,104 +1689,202 @@ def check_args(args):
 
 def parse_args(parser):
     """Parses the command line options and arguments."""
-    parser.add_argument("-v", "--version", action="version",
-                        version="%(prog)s {}".format(__version__))
-    parser.add_argument("--debug", action="store_true",
-                        help="Set the logging level to debug")
-    parser.add_argument("--thread", type=int, default=1,
-                        help="The number of thread [%(default)d]")
+    parser.add_argument(
+        "-v",
+        "--version",
+        action="version",
+        version="%(prog)s {}".format(__version__),
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="set the logging level to debug",
+    )
+    parser.add_argument(
+        "--thread",
+        type=int,
+        default=1,
+        help="number of threads [%(default)d]",
+    )
 
     # The input files
     group = parser.add_argument_group("Input Options")
-    group.add_argument("--bfile", type=str, metavar="PREFIX", required=True,
-                       help="The prefix of the binary pedfiles (input data)")
-    group.add_argument("--reference", type=str, metavar="FILE",
-                       help=("The human reference to perform an initial "
-                             "strand check (useful for genotyped markers not "
-                             "in the IMPUTE2 reference files)."))
+    group.add_argument(
+        "--bfile",
+        type=str,
+        metavar="PREFIX",
+        required=True,
+        help="The prefix of the binary pedfiles (input data).",
+    )
+    group.add_argument(
+        "--reference",
+        type=str,
+        metavar="FILE",
+        help="The human reference to perform an initial strand check (useful "
+             "for genotyped markers not in the IMPUTE2 reference files) "
+             "(optional).",
+    )
 
     # The output options
     group = parser.add_argument_group("Output Options")
-    group.add_argument("--output-dir", type=str, metavar="DIR", default="gwip",
-                       dest="out_dir", help=("The name of the output "
-                                             "directory [%(default)s]"))
+    group.add_argument(
+        "--output-dir",
+        type=str,
+        metavar="DIR",
+        default="gwip",
+        dest="out_dir",
+        help="The name of the output directory. [%(default)s]",
+    )
 
     # The HPC options
     group = parser.add_argument_group("HPC Options")
-    group.add_argument("--use-drmaa", action="store_true",
-                       help="Launch tasks using DRMAA",)
-    group.add_argument("--drmaa-config", type=str, metavar="FILE",
-                       help=("The configuration file for tasks (use this "
-                             "option when launching tasks using DRMAA). This "
-                             "file should describe the walltime and the "
-                             "number of nodes/processors to use for each "
-                             "task."))
-    group.add_argument("--preamble", type=str, metavar="FILE",
-                       help=("This option should be used when using DRMAA on "
-                             "a HPC to load required module and set "
-                             "environment variables. The content of the file "
-                             "will be added between the 'shebang' line and "
-                             "the tool command."))
+    group.add_argument(
+        "--use-drmaa",
+        action="store_true",
+        help="Launch tasks using DRMAA.",
+    )
+    group.add_argument(
+        "--drmaa-config",
+        type=str,
+        metavar="FILE",
+        help="The configuration file for tasks (use this option when "
+             "launching tasks using DRMAA). This file should describe the "
+             "walltime and the number of nodes/processors to use for each "
+             "task.",
+    )
+    group.add_argument(
+        "--preamble",
+        type=str,
+        metavar="FILE",
+        help="This option should be used when using DRMAA on a HPC to load "
+             "required module and set environment variables. The content of "
+             "the file will be added between the 'shebang' line and the tool "
+             "command.",
+    )
 
     # The SHAPEIT software options
     group = parser.add_argument_group("SHAPEIT Options")
-    group.add_argument("--shapeit-bin", type=str, metavar="BINARY",
-                       help="The SHAPEIT binary if it's not in the path")
-    group.add_argument("--shapeit-thread", type=int, default=1,
-                       help="The number of thread for phasing [%(default)d]")
+    group.add_argument(
+        "--shapeit-bin",
+        type=str,
+        metavar="BINARY",
+        help="The SHAPEIT binary if it's not in the path.",
+    )
+    group.add_argument(
+        "--shapeit-thread",
+        type=int,
+        metavar="INT",
+        default=1,
+        help="The number of thread for phasing. [%(default)d]",
+    )
 
     # The Plink option
     group = parser.add_argument_group("Plink Options")
-    group.add_argument("--plink-bin", type=str, metavar="BINARY",
-                       help="The Plink binary if it's not in the path")
+    group.add_argument(
+        "--plink-bin",
+        type=str,
+        metavar="BINARY",
+        help="The Plink binary if it's not in the path.",
+    )
 
     # The IMPUTE2 software options
     group = parser.add_argument_group("IMPUTE2 Options")
-    group.add_argument("--impute2-bin", type=str, metavar="BINARY",
-                       help="The IMPUTE2 binary if it's not in the path")
-    group.add_argument("--segment-length", type=float, metavar="BP",
-                       default=5e6, help=("The length of a single segment for "
-                                          "imputation [%(default).1g)]"))
-    group.add_argument("--hap-template", type=str, metavar="TEMPLATE",
-                       required=True,
-                       help=("The template for IMPUTE2's haplotype files "
-                             "(replace the chromosome number by '{chrom}', "
-                             "e.g. '1000GP_Phase3_chr{chrom}.hap.gz')"))
-    group.add_argument("--legend-template", type=str, metavar="TEMPLATE",
-                       required=True,
-                       help=("The template for IMPUTE2's legend files "
-                             "(replace the chromosome number by '{chrom}', "
-                             "e.g. '1000GP_Phase3_chr{chrom}.legend.gz')"))
-    group.add_argument("--map-template", type=str, metavar="TEMPLATE",
-                       required=True,
-                       help=("The template for IMPUTE2's map files (replace "
-                             "the chromosome number by '{chrom}', e.g. "
-                             "'genetic_map_chr{chrom}_combined_b37.txt')"))
-    group.add_argument("--sample-file", type=str, metavar="FILE",
-                       required=True, help="The name of IMPUTE2's sample file")
-    group.add_argument("--filtering-rules", type=str, metavar="RULE",
-                       nargs="+", help="IMPUTE2 filtering rules (if required)")
+    group.add_argument(
+        "--impute2-bin",
+        type=str,
+        metavar="BINARY",
+        help="The IMPUTE2 binary if it's not in the path.",
+    )
+    group.add_argument(
+        "--segment-length",
+        type=float,
+        metavar="BP",
+        default=5e6,
+        help="The length of a single segment for imputation. [%(default).1g]",
+    )
+    group.add_argument(
+        "--hap-template",
+        type=str,
+        metavar="TEMPLATE",
+        required=True,
+        help="The template for IMPUTE2's haplotype files (replace the "
+             "chromosome number by '{chrom}', e.g. "
+             "'1000GP_Phase3_chr{chrom}.hap.gz').",
+    )
+    group.add_argument(
+        "--legend-template",
+        type=str,
+        metavar="TEMPLATE",
+        required=True,
+        help="The template for IMPUTE2's legend files (replace the chromosome "
+             "number by '{chrom}', e.g. "
+             "'1000GP_Phase3_chr{chrom}.legend.gz').",
+    )
+    group.add_argument(
+        "--map-template",
+        type=str,
+        metavar="TEMPLATE",
+        required=True,
+        help="The template for IMPUTE2's map files (replace the chromosome "
+             "number by '{chrom}', e.g. "
+             "'genetic_map_chr{chrom}_combined_b37.txt').",
+    )
+    group.add_argument(
+        "--sample-file",
+        type=str,
+        metavar="FILE",
+        required=True,
+        help="The name of IMPUTE2's sample file.",
+    )
+    group.add_argument(
+        "--filtering-rules",
+        type=str,
+        metavar="RULE",
+        nargs="+",
+        help="IMPUTE2 filtering rules (optional).",
+    )
 
     # The impute2 file merger options
     group = parser.add_argument_group("IMPUTE2 Merger Options")
-    group.add_argument("--probability", type=float, metavar="FLOAT",
-                       default=0.9, help=("The probability threshold for no "
-                                          "calls [%(default).1f]"))
-    group.add_argument("--completion", type=float, metavar="FLOAT",
-                       default=0.98, help=("The site completion rate "
-                                           "threshold [%(default).2f]"))
+    group.add_argument(
+        "--probability",
+        type=float,
+        metavar="FLOAT",
+        default=0.9,
+        help="The probability threshold for no calls. [<%(default).1f]",
+    )
+    group.add_argument(
+        "--completion",
+        type=float,
+        metavar="FLOAT",
+        default=0.98,
+        help="The completion rate threshold for site exclusion. "
+             "[<%(default).2f]",
+    )
 
     # The automatic report options
     group = parser.add_argument_group("Automatic Report Options")
-    group.add_argument("--report-number", type=str, metavar="NB",
-                       default="GWIP automatic report",
-                       help="The report number")
-    group.add_argument("--report-title", type=str, metavar="TITLE",
-                       default="GWIP: Automatic genome-wide imputation",
-                       help="The report title")
-    group.add_argument("--report-author", type=str, metavar="AUTHOR",
-                       default="Automatically generated by GWIP",
-                       help="The report author")
+    group.add_argument(
+        "--report-number",
+        type=str,
+        metavar="NB",
+        default="GWIP automatic report",
+        help="The report number. [%(default)s]",
+    )
+    group.add_argument(
+        "--report-title",
+        type=str,
+        metavar="TITLE",
+        default="GWIP: Automatic genome-wide imputation",
+        help="The report title. [%(default)s]",
+    )
+    group.add_argument(
+        "--report-author",
+        type=str,
+        metavar="AUTHOR",
+        default="Automatically generated by GWIP",
+        help="The report author. [%(default)s]",
+    )
 
     return parser.parse_args()
 

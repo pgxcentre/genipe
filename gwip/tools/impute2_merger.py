@@ -29,8 +29,9 @@ __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 def main(args=None):
     """The main function."""
     # Creating the option parser
-    desc = ("Concatenate IMPUTE2 files and retrieve some statistics "
-            "(gwip version {}).".format(__version__))
+    desc = ("Concatenate IMPUTE2 output files and retrieve some "
+            "statistics. This script is part of the 'gwip' package, "
+            "version {}.".format(__version__))
     parser = argparse.ArgumentParser(description=desc)
 
     # Files that need closing
@@ -237,33 +238,64 @@ def check_args(args):
 def parse_args(parser, args=None):
     """Parses the command line options and arguments."""
     # The parser object
-    parser.add_argument("--version", action="version",
-                        version="%(prog)s (part of GWIP "
-                                "version {})".format(__version__))
-    parser.add_argument("--debug", action="store_true",
-                        help="Set the logging level to debug")
+    parser.add_argument(
+        "--version",
+        action="version",
+        version="%(prog)s (part of GWIP version {})".format(__version__),
+    )
+    parser.add_argument(
+        "--debug",
+        action="store_true",
+        help="set the logging level to debug",
+    )
 
     # The input files
     group = parser.add_argument_group("Input Files")
-    group.add_argument("-i", "--impute2", type=str, metavar="GEN",
-                       required=True, nargs="+", help="IMPUTE2 file(s)")
+    group.add_argument(
+        "-i",
+        "--impute2",
+        type=str,
+        metavar="GEN",
+        required=True,
+        nargs="+",
+        help="IMPUTE2 file(s) to merge.",
+    )
 
     # The options
     group = parser.add_argument_group("Options")
-    group.add_argument("--chr", type=str, metavar="CHR", required=True,
-                       dest="chrom", help=("The chromosome on witch the "
-                                           "imputation was made"))
-    group.add_argument("--probability", type=float, metavar="FLOAT",
-                       default=0.9, help=("The probability threshold for no "
-                                          "calls [%(default).1f]"))
-    group.add_argument("--completion", type=float, metavar="FLOAT",
-                       default=0.98, help=("The site completion rate "
-                                           "threshold [%(default).2f]"))
+    group.add_argument(
+        "--chr",
+        type=str,
+        metavar="CHR",
+        required=True,
+        dest="chrom",
+        help="The chromosome on witch the imputation was made.",
+    )
+    group.add_argument(
+        "--probability",
+        type=float,
+        metavar="FLOAT",
+        default=0.9,
+        help="The probability threshold for no calls. [<%(default).1f]",
+    )
+    group.add_argument(
+        "--completion",
+        type=float,
+        metavar="FLOAT",
+        default=0.98,
+        help="The completion rate threshold for site exclusion. "
+             "[<%(default).2f]",
+    )
 
     # The output files
     group = parser.add_argument_group("Output Files")
-    group.add_argument("--prefix", type=str, metavar="FILE", default="imputed",
-                       help="The prefix for the output files [%(default)s]")
+    group.add_argument(
+        "--prefix",
+        type=str,
+        metavar="FILE",
+        default="imputed",
+        help="The prefix for the output files. [%(default)s]",
+    )
 
     if args is not None:
         return parser.parse_args(args)
