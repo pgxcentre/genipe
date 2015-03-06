@@ -41,8 +41,8 @@ def main(args=None):
     """The main function."""
     # Creating the option parser
     desc = ("Performs statistical analysis on imputed data (either linear, "
-            "logistic or Cox's regressions [survival analysis]). This script "
-            "is part of gwip version {}).".format(__version__))
+            "logistic or Cox's regressions). This script is part of the "
+            "'gwip' package, version {}).".format(__version__))
     parser = argparse.ArgumentParser(description=desc)
 
     # Files that need closing
@@ -647,16 +647,23 @@ def parse_args(parser, args=None):
                              "this co-variable"))
 
     # Sub parsers
-    subparsers = parser.add_subparsers(help="Analysis type",
-                                       dest="analysis_type")
-    cox_parser = subparsers.add_parser("cox", help="Cox (survival regression)",
-                                       parents=[p_parser])
-    lin_parser = subparsers.add_parser("linear", help="Linear regression",
-                                       parents=[p_parser])
-    logit_parser = subparsers.add_parser("logistic", help="Logistic regrssion",
-                                         parents=[p_parser])
+    subparsers = parser.add_subparsers(
+        title="Statistical Analysis Type",
+        description="The type of statistical analysis to be performed on the "
+                    "imputed data.",
+        dest="analysis_type",
+    )
 
-    # The phenotype options for cox
+    # The Cox parser
+    cox_parser = subparsers.add_parser(
+        "cox",
+        help="Cox's regression (survival analysis).",
+        description="Performs a Cox's regression (survival analysis) on "
+                    "imputed data. This script is part of the 'gwip' "
+                    "package, version {}).".format(__version__),
+        parents=[p_parser],
+    )
+
     group = cox_parser.add_argument_group("Cox's Regression Options")
     group.add_argument("--time-to-event", type=str, metavar="NAME",
                        required=True, dest="tte",
@@ -665,10 +672,30 @@ def parse_args(parser, args=None):
                        help=("The censure value (1 if observed, 0 if "
                              "censored)"))
 
+    # The linear parser
+    lin_parser = subparsers.add_parser(
+        "linear",
+        help="Linear regression (ordinary least squares).",
+        description="Performs a linear regression (ordinary least squares) on "
+                    "imputed data. This script is part of the 'gwip' "
+                    "package, version {}).".format(__version__),
+        parents=[p_parser],
+    )
+
     # The phenotype options for linear regression
     group = lin_parser.add_argument_group("Linear Regression Options")
     group.add_argument("--pheno-name", type=str, metavar="NAME", required=True,
                        help="The phenotype.")
+
+    # The logistic parser
+    logit_parser = subparsers.add_parser(
+        "logistic",
+        help="Logistic regression.",
+        description="Performs a logistic regression on imputed data. "
+                    "This script is part of the 'gwip' package, "
+                    "version {}).".format(__version__),
+        parents=[p_parser]
+    )
 
     # The phenotype options for logistic regression
     group = logit_parser.add_argument_group("Logistic Regression Options")
