@@ -551,10 +551,41 @@ class TestImputedStats(unittest.TestCase):
         with self.assertRaises(patsy.PatsyError) as cm:
             fit_linear(data[columns_to_keep], formula + " + unknown", "snp4")
 
-    @unittest.skip("Test not implemented")
     def test_fit_linear_interaction(self):
         """Tests the 'fit_cox' function."""
-        self.fail("Test not implemented")
+        # Reading the data
+        data_filename = resource_filename(
+            __name__,
+            "data/regression_sim_inter.txt.bz2",
+        )
+
+        # This dataset contains 3 markers + 5 covariables
+        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
+        data = data.dropna(axis=0)
+
+        # The formula for the first marker
+        formula = "y ~ snp1 + C1 + C2 + C3 + age + gender + snp1*gender"
+        columns_to_keep = ["y", "snp1", "C1", "C2", "C3", "age", "gender"]
+
+        # The expected results for the first marker (according to R)
+        # The data was simulated so that snp1 had a coefficient of 0.1
+        expected_coef = 0.101959570845217173
+        expected_se = 0.00588764130382715949
+        expected_min_ci = 0.090417578486636035
+        expected_max_ci = 0.11350156320379831
+        expected_t = 17.3175581839437314
+        expected_p = 1.5527088106478929e-65
+        expected = [expected_coef, expected_se, expected_min_ci,
+                    expected_max_ci, expected_t, expected_p]
+
+        # The observed results for the first marker
+        observed = fit_linear(data[columns_to_keep], formula, "snp1:gender")
+        self.assertEqual(len(expected), len(observed))
+        for i in range(len(expected)):
+            self.assertAlmostEqual(expected[i], observed[i])
+
+        # The p is small, so we'll compare the log10(p) instead
+        self.assertAlmostEqual(np.log10(expected[-1]), np.log10(observed[-1]))
 
     @unittest.skip("Test not implemented")
     def test_fit_logistic(self):
