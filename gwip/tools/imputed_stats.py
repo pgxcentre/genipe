@@ -287,7 +287,7 @@ def process_impute2_site(site_info):
     dosage_columns = ["_D1", "_D2", "_D3"]
 
     # Allele encoding
-    allele_encoding = {dosage_columns[0]: a1, dosage_columns[1]: a2}
+    allele_encoding = {dosage_columns[0]: a1, dosage_columns[-1]: a2}
 
     # Creating the sample data frame
     samples = site_info.samples
@@ -330,7 +330,7 @@ def process_impute2_site(site_info):
 
     # Computing the frequency
     maf, minor, major = maf_from_probs(data[dosage_columns].values,
-                                       dosage_columns[0], dosage_columns[1],
+                                       dosage_columns[0], dosage_columns[-1],
                                        gender, name)
 
     # What we want to print
