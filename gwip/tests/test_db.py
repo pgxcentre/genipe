@@ -22,6 +22,9 @@ __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
 __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
+__all__ = ["TestDB"]
+
+
 class TestDB(unittest.TestCase):
 
     def setUp(self):

@@ -21,7 +21,10 @@ __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
 __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
-class TestLauncher(unittest.TestCase):
+__all__ = ["TestFormats"]
+
+
+class TestFormats(unittest.TestCase):
 
     def test_matrix_from_line(self):
         """Tests the 'matrix_from_line' function."""
