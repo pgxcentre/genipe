@@ -265,7 +265,10 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
         # Finishing the rows if required
         if options.nb_process > 1:
             if len(sites_to_process) > 0:
-                pass
+                for result in pool.map(process_impute2_site,
+                                       sites_to_process):
+                    print(*result, sep="\t", file=o_file)
+                
             pool.close()
 
         # Closing the output file
