@@ -8,6 +8,7 @@
 
 
 import os
+import sys
 import logging
 import argparse
 import traceback
@@ -51,8 +52,6 @@ def main(args=None):
     try:
         # Parsing the options
         args = parse_args(parser, args)
-        print(args)
-        sys.exit(0)
 
         # Getting the output directory (dirname of the output prefix
         out_dir = os.path.dirname(args.out)
