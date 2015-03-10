@@ -187,7 +187,6 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
     proc = None
     i_file = None
     o_file = open(o_name, "w")
-    sites_to_process = []
     pool = None
 
     # Multiprocessing?
@@ -207,6 +206,9 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
                   "se", "lower", "upper",
                   "z" if options.analysis_type == "cox" else "t", "p")
         print(*header, sep="\t", file=o_file)
+
+        # The sites to process (if multiprocessing)
+        sites_to_process = []
 
         # Reading the file
         for line in i_file:
@@ -252,6 +254,11 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
                 # Processing this row
                 print(*process_impute2_site(site), sep="\t", file=o_file)
 
+        if len(sites_to_process) > 0:
+            for result in pool.map(process_impute2_site,
+                                    sites_to_process):
+                print(*result, sep="\t", file=o_file)
+
     except Exception as e:
         if pool is not None:
             pool.terminate()
@@ -263,12 +270,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
         i_file.close()
 
         # Finishing the rows if required
-        if options.nb_process > 1:
-            if len(sites_to_process) > 0:
-                for result in pool.map(process_impute2_site,
-                                       sites_to_process):
-                    print(*result, sep="\t", file=o_file)
-                
+        if (options.nb_process > 1) and (pool is not None):
             pool.close()
 
         # Closing the output file
