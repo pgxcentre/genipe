@@ -59,8 +59,8 @@ def reverse_dosage(dosage):
     return d1, d2, d3
 
 
-def create_input_files(i_filename, output_dirname, interaction=None,
-                       nb_process=None):
+def create_input_files(i_filename, output_dirname, analysis_type,
+                       interaction=None, nb_process=None):
     """Creates input files for the imputed_stats script."""
     # Reading the data
     data = pd.read_csv(i_filename, sep="\t", compression="bz2")
@@ -107,7 +107,7 @@ def create_input_files(i_filename, output_dirname, interaction=None,
 
     # The tool's options
     options = [
-        "linear",
+        analysis_type,
         "--impute2", impute2_filename,
         "--sample", sample_filename,
         "--pheno", pheno_filename,
@@ -711,8 +711,11 @@ class TestImputedStats(unittest.TestCase):
         )
 
         # Creating the input files
-        o_prefix, options = create_input_files(data_filename,
-                                               self.output_dir.name)
+        o_prefix, options = create_input_files(
+            i_filename=data_filename,
+            output_dirname=self.output_dir.name,
+            analysis_type="linear",
+        )
 
         # Executing the tool
         main(args=options)
@@ -803,9 +806,12 @@ class TestImputedStats(unittest.TestCase):
         )
 
         # Creating the input files
-        o_prefix, options = create_input_files(data_filename,
-                                               self.output_dir.name,
-                                               nb_process=2)
+        o_prefix, options = create_input_files(
+            i_filename=data_filename,
+            output_dirname=self.output_dir.name,
+            analysis_type="linear",
+            nb_process=2,
+        )
 
         # Executing the tool
         main(args=options)
@@ -896,9 +902,12 @@ class TestImputedStats(unittest.TestCase):
         )
 
         # Creating the input files
-        o_prefix, options = create_input_files(data_filename,
-                                               self.output_dir.name,
-                                               interaction="gender")
+        o_prefix, options = create_input_files(
+            i_filename=data_filename,
+            output_dirname=self.output_dir.name,
+            analysis_type="linear",
+            interaction="gender",
+        )
 
         # Executing the tool
         main(args=options)
@@ -980,10 +989,121 @@ class TestImputedStats(unittest.TestCase):
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                    places=10)
 
-    @unittest.skip("Test not implemented")
     def test_fit_logistic(self):
         """Tests the 'fit_logistic' function."""
-        self.fail("Test not implemented")
+        # Reading the data
+        data_filename = resource_filename(
+            __name__,
+            "data/regression_sim.txt.bz2",
+        )
+
+        # This dataset contains 3 markers + 5 covariables
+        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
+
+        # The formula for the first marker
+        formula = "y_d ~ snp1 + C1 + C2 + C3 + age + gender"
+        columns_to_keep = ["y_d", "snp1", "C1", "C2", "C3", "age", "gender"]
+
+        # The expected results for the first marker (according to R)
+        expected_coef = -0.514309712761157334
+        expected_se = 0.1148545370213162609
+        expected_min_ci = -0.741288870474147710
+        expected_max_ci = -0.290848443930784406
+        expected_z = -4.477922475676383129
+        expected_p = 7.53729612963228856e-06
+
+        # The observed results for the first marker
+        observed = fit_logistic(
+            data=data[columns_to_keep].dropna(axis=0),
+            formula=formula,
+            result_col="snp1",
+        )
+        observed_coef, observed_se, observed_min_ci, observed_max_ci, \
+            observed_z, observed_p, = observed
+
+        # Comparing
+        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_se, observed_se, places=7)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=2)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=2)
+        self.assertAlmostEqual(expected_z, observed_z, places=6)
+
+        # The p is small, so we'll compare the log10(p) instead
+        self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                               places=5)
+
+        # The formula for the second marker
+        formula = "y_d ~ snp2 + C1 + C2 + C3 + age + gender"
+        columns_to_keep = ["y_d", "snp2", "C1", "C2", "C3", "age", "gender"]
+
+        # The expected results for the second marker (according to R)
+        expected_coef = -0.0409615621727592721
+        expected_se = 0.0898086129043482589
+        expected_min_ci = -0.217201661656268197
+        expected_max_ci = 0.135039323830941221
+        expected_z = -0.456098372395372320
+        expected_p = 6.48319240531225471e-01
+
+        # The observed results for the first marker
+        observed = fit_logistic(
+            data=data[columns_to_keep].dropna(axis=0),
+            formula=formula,
+            result_col="snp2",
+        )
+        observed_coef, observed_se, observed_min_ci, observed_max_ci, \
+            observed_z, observed_p, = observed
+
+        # Comparing
+        self.assertAlmostEqual(expected_coef, observed_coef, places=9)
+        self.assertAlmostEqual(expected_se, observed_se, places=5)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=3)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=3)
+        self.assertAlmostEqual(expected_z, observed_z, places=4)
+
+        # The p is small, so we'll compare the log10(p) instead
+        self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                               places=5)
+
+        # The formula for the third (and last) marker
+        formula = "y_d ~ snp3 + C1 + C2 + C3 + age + gender"
+        columns_to_keep = ["y_d", "snp3", "C1", "C2", "C3", "age", "gender"]
+
+        # The expected results for the second marker (according to R)
+        expected_coef = 0.6806154974808061864
+        expected_se = 0.1216909125194588076
+        expected_min_ci = 0.442504664626330035
+        expected_max_ci = 0.919770526738653338
+        expected_z = 5.5929854036715633825
+        expected_p = 2.23198061422542684e-08
+
+        # The observed results for the first marker
+        observed = fit_logistic(
+            data=data[columns_to_keep].dropna(axis=0),
+            formula=formula,
+            result_col="snp3",
+        )
+        observed_coef, observed_se, observed_min_ci, observed_max_ci, \
+            observed_z, observed_p, = observed
+
+        # Comparing
+        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_se, observed_se, places=7)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=3)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=2)
+        self.assertAlmostEqual(expected_z, observed_z, places=5)
+
+        # The p is small, so we'll compare the log10(p) instead
+        self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                               places=5)
+
+        # Asking for an invalid column should raise a KeyError
+        with self.assertRaises(KeyError) as cm:
+            fit_logistic(data[columns_to_keep].dropna(axis=0), formula,
+                         "unknown")
+
+        with self.assertRaises(patsy.PatsyError) as cm:
+            fit_logistic(data[columns_to_keep].dropna(axis=0),
+                         formula + " + unknown", "snp4")
 
     @unittest.skip("Test not implemented")
     def test_fit_interaction(self):
