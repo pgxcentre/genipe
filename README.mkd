@@ -21,10 +21,12 @@ $ source $HOME/python3_gwip_virt/bin/activate
 
 Download (or clone) the package from
 [GitHub](https://github.com/pgxcentre/gwip) and install it using `pip` (in the
-virtual python 3 environment, once activated).
+virtual python 3 environment, once activated). For example, when cloning the
+package directly from GitHub:
 
 ```console
-$ pip install gwip-0.1.tar.gz
+$ git clone https://github.com/pgxcentre/gwip.git
+$ pip install ./gwip
 ```
 
 The installation process should install all required dependencies, which are
