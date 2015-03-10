@@ -19,6 +19,8 @@ from collections import Counter, namedtuple
 import numpy as np
 import pandas as pd
 from lifelines import CoxPHFitter
+
+import statsmodels.api as sm
 import statsmodels.formula.api as smf
 
 from .. import __version__
@@ -204,7 +206,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
         # Printing the header of the output file
         header = ("chr", "pos", "snp", "major", "minor", "maf", "n", "coef",
                   "se", "lower", "upper",
-                  "z" if options.analysis_type == "cox" else "t", "p")
+                  "t" if options.analysis_type == "linear" else "z", "p")
         print(*header, sep="\t", file=o_file)
 
         # The sites to process (if multiprocessing)
@@ -445,7 +447,8 @@ def fit_linear(data, formula, result_col, **kwargs):
 def fit_logistic(data, formula, result_col, **kwargs):
     """Fit a logistic regression to the data."""
     return _get_result_from_linear_logistic(
-        smf.logit(formula=formula, data=data).fit(),
+        smf.glm(formula=formula, data=data,
+                family=sm.families.Binomial()).fit(),
         result_col=result_col,
     )
 
