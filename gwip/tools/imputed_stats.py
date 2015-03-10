@@ -255,8 +255,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
                 print(*process_impute2_site(site), sep="\t", file=o_file)
 
         if len(sites_to_process) > 0:
-            for result in pool.map(process_impute2_site,
-                                    sites_to_process):
+            for result in pool.map(process_impute2_site, sites_to_process):
                 print(*result, sep="\t", file=o_file)
 
     except Exception as e:
