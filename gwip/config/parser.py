@@ -7,7 +7,6 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 
-import logging
 import configparser
 
 from .. import chromosomes

@@ -14,7 +14,7 @@ import argparse
 import traceback
 from multiprocessing import Pool
 from subprocess import Popen, PIPE
-from collections import Counter, namedtuple
+from collections import namedtuple
 
 import numpy as np
 import pandas as pd
