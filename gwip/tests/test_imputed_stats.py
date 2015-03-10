@@ -59,7 +59,8 @@ def reverse_dosage(dosage):
     return d1, d2, d3
 
 
-def create_input_files(i_filename, output_dirname, interaction=None):
+def create_input_files(i_filename, output_dirname, interaction=None,
+                       nb_process=None):
     """Creates input files for the imputed_stats script."""
     # Reading the data
     data = pd.read_csv(i_filename, sep="\t", compression="bz2")
@@ -121,6 +122,10 @@ def create_input_files(i_filename, output_dirname, interaction=None):
     # Is there interaction?
     if interaction is not None:
         options.extend(["--interaction", interaction])
+
+    # Multi processes are required?
+    if nb_process is not None:
+        options.extend(["--nb-process", str(nb_process)])
 
     return o_prefix, options
 
@@ -708,6 +713,99 @@ class TestImputedStats(unittest.TestCase):
         # Creating the input files
         o_prefix, options = create_input_files(data_filename,
                                                self.output_dir.name)
+
+        # Executing the tool
+        main(args=options)
+
+        # Cleaning the handlers
+        TestImputedStats.clean_logging_handlers()
+
+        # Making sure the output file exists
+        self.assertTrue(os.path.isfile(o_prefix + ".linear.dosage"))
+
+        # Reading the data
+        observed = pd.read_csv(o_prefix + ".linear.dosage", sep="\t")
+
+        # Checking all columns are present
+        self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
+                          "coef", "se", "lower", "upper", "t", "p"],
+                         list(observed.columns))
+
+        # Chromosomes
+        self.assertEqual([22], observed.chr.unique())
+
+        # Positions
+        self.assertEqual([1, 2, 3], list(observed.pos))
+
+        # Marker names
+        self.assertEqual(["marker_1", "marker_2", "marker_3"],
+                         list(observed.snp))
+
+        # Major alleles
+        self.assertEqual(["T", "G", "AT"], list(observed.major))
+
+        # Minor alleles
+        self.assertEqual(["C", "A", "A"], list(observed.minor))
+
+        # Minor allele frequency
+        expected = [1724 / 11526, 4604 / 11526, 1379 / 11526]
+        for expected_maf, observed_maf in zip(expected, observed.maf):
+            self.assertAlmostEqual(expected_maf, observed_maf, places=10)
+
+        # The number of samples
+        expected = [5763, 5763, 5763]
+        for expected_n, observed_n in zip(expected, observed.n):
+            self.assertEqual(expected_n, observed_n)
+
+        # The coefficients
+        expected = [0.09930262321654575, -0.00279702443754753,
+                    -0.11731595824657762]
+        for expected_coef, observed_coef in zip(expected, observed.coef):
+            self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+
+        # The standard error
+        expected = [0.00302135517743109, 0.00240385609310785,
+                    0.00327175651867383]
+        for expected_se, observed_se in zip(expected, observed.se):
+            self.assertAlmostEqual(expected_se, observed_se, places=10)
+
+        # The lower CI
+        expected = [0.09337963040899197, -0.0075094867313642991,
+                    -0.12372983188610413]
+        for expected_ci_low, observed_ci_low in zip(expected, observed.lower):
+            self.assertAlmostEqual(expected_ci_low, observed_ci_low, places=10)
+
+        # The upper CI
+        expected = [0.10522561602409949, 0.0019154378562692411,
+                    -0.1109020846070511]
+        for expected_ci_hi, observed_ci_hi in zip(expected, observed.upper):
+            self.assertAlmostEqual(expected_ci_hi, observed_ci_hi, places=10)
+
+        # The T statistics
+        expected = [32.866914806414108, -1.1635573550209353,
+                    -35.857178728608552]
+        for expected_t, observed_t in zip(expected, observed.t):
+            self.assertAlmostEqual(expected_t, observed_t, places=10)
+
+        # The p values
+        expected = [2.7965174627917724e-217, 0.24465167231462448,
+                    2.4882495142044017e-254]
+        for expected_p, observed_p in zip(expected, observed.p):
+            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                                   places=10)
+
+    def test_full_fit_linear_multiprocess(self):
+        """Tests the full pipeline for linear regression."""
+        # Reading the data
+        data_filename = resource_filename(
+            __name__,
+            "data/regression_sim.txt.bz2",
+        )
+
+        # Creating the input files
+        o_prefix, options = create_input_files(data_filename,
+                                               self.output_dir.name,
+                                               nb_process=2)
 
         # Executing the tool
         main(args=options)
