@@ -42,7 +42,7 @@ def main(args=None):
     """The main function."""
     # Creating the option parser
     desc = ("Performs statistical analysis on imputed data (either linear, "
-            "logistic or Cox's regressions). This script is part of the "
+            "logistic, SKAT or Cox's regressions). This script is part of the "
             "'gwip' package, version {}).".format(__version__))
     parser = argparse.ArgumentParser(description=desc)
 
@@ -114,7 +114,17 @@ def main(args=None):
 
 
 def read_phenotype(i_filename, opts):
-    """Reads the phenotype file."""
+    """Reads the phenotype file.
+
+    This file is expected to be a tab separated file of phenotypes and
+    covariates. The columns to use will be determined by the `--sample-column`
+    and the `--covar` options.
+
+    For analysis including the X chromosome, the gender is automatically
+    added as a covariate. The results are not shown to the user unless asked
+    for.
+
+    """
     # Reading the data (and setting the index)
     pheno = pd.read_csv(i_filename, sep="\t", na_values=opts.missing_value)
     pheno = pheno.set_index(opts.sample_column, verify_integrity=True)
@@ -152,14 +162,45 @@ def read_phenotype(i_filename, opts):
 
 
 def read_samples(i_filename):
-    """Reads the sample file (produced by SHAPEIT)."""
+    """Reads the sample file (produced by SHAPEIT).
+
+    The expected format for this file is a tab separated file with a first
+    row containing the following columns: ::
+
+        ID_1	ID_2	missing	father	mother	sex	plink_pheno
+
+    The subsequent row will be discarded and should contain: ::
+
+        0	0	0 D	D	D	B
+
+    We are mostly interested in the sample IDs corresponding to the `ID_2`
+    column.
+
+    Their uniqueness is verified by pandas.
+
+    """
     samples = pd.read_csv(i_filename, sep=" ", usecols=[0, 1])
     samples = samples.drop(samples.index[0], axis=0)
     return samples.set_index("ID_2", verify_integrity=True)
 
 
 def read_sites_to_extract(i_filename):
-    """Reads the list of sites to extract."""
+    """Reads the list of sites to extract.
+
+    The expected file format is simply a list of variants. Every row should
+    correspond to a single variant identifier.
+
+    e.g. ::
+
+        3:60069:t
+        rs123456:A
+        3:60322:A
+
+    Typically, this is used to analyze only variants that passed some QC
+    threshold. The _gwip_ pipeline generates this file at the 'merge_impute2'
+    step.
+
+    """
     markers_to_extract = None
     with open(i_filename, "r") as i_file:
         markers_to_extract = set(i_file.read().splitlines())
@@ -168,7 +209,15 @@ def read_sites_to_extract(i_filename):
 
 def compute_statistics(impute2_filename, samples, markers_to_extract,
                        phenotypes, remove_gender, out_prefix, options):
-    """Parses IMPUTE2 file while computing statistics."""
+    """Parses IMPUTE2 file while computing statistics.
+
+    This function takes care of parallelism. It reads the Impute2 file and
+    fills a queue that will trigger the analysis when full.
+
+    If the number of process to launch is 1, the rows are analyzed as they
+    come.
+
+    """
     # The name of the output file
     o_name = "{}.{}.dosage".format(out_prefix, options.analysis_type)
 
