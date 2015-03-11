@@ -184,6 +184,31 @@ def read_samples(i_filename):
     return samples.set_index("ID_2", verify_integrity=True)
 
 
+def read_snp_set(i_filename):
+    """Reads the SKAT SNP set file.
+
+    This file has to be supplied by the user. The recognized columns are:
+    `variant, snp_set, weight`. The `weight` column is optional and can
+    be used to specify a custom weighting scheme for SKAT. If nothing is 
+    specified, the default Beta weights are used.
+
+    The file has to be tab delimited.
+
+    """
+    skat_info = pd.read_csv(i_filename, sep="\t", header=0)
+    if "variant" not in skat_info.columns:
+        raise ProgramError("The SKAT SNP set file needs to have a 'variant' "
+                           "column containing the ID of every variant of "
+                           "interest.")
+
+    if "snp_set" not in skat_info.columns:
+        raise ProgramError("The SKAT SNP set file needs to have a 'snp_set' "
+                           "column containing the SNP set ID for every "
+                           "variant. The user is free to choose the SNP ID")
+
+    return skat_info
+
+
 def read_sites_to_extract(i_filename):
     """Reads the list of sites to extract.
 
@@ -868,7 +893,7 @@ def parse_args(parser, args=None):
 
     # The gene set file.
     group.add_argument(
-        "--gene-sets",
+        "--snp-sets",
         type=str,
         metavar="FILE",
         required=True,
