@@ -455,7 +455,7 @@ def fit_logistic(data, formula, result_col, **kwargs):
 
 def _get_result_from_linear_logistic(fit_result, result_col):
     """Gets results from either a linear or logistic regression."""
-    conf_int = fit_result.conf_int().loc[result_col, :].get_values()
+    conf_int = fit_result.conf_int().loc[result_col, :].values
     assert len(conf_int) == 2
     return [
         fit_result.params[result_col],
