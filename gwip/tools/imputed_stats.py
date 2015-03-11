@@ -735,6 +735,8 @@ def parse_args(parser, args=None):
         dest="analysis_type",
     )
 
+    subparsers.required = True
+
     # The Cox parser
     cox_parser = subparsers.add_parser(
         "cox",
@@ -800,6 +802,38 @@ def parse_args(parser, args=None):
         metavar="NAME",
         required=True,
         help="The phenotype.",
+    )
+
+    # The SKAT parser.
+    skat_parser = subparsers.add_parser(
+        "skat",
+        help="SKAT analysis.",
+        description="Uses the SKAT R package to analyze user defined gene "
+                    "sets. This script is part of the 'gwip' package, "
+                    "version {}).".format(__version__),
+        parents=[p_parser],
+    )
+
+    # Additional options for SKAT analysis.
+    group = skat_parser.add_argument_group("SKAT Options")
+
+    # The gene set file.
+    group.add_argument(
+        "--gene-sets",
+        type=str,
+        metavar="FILE",
+        required=True,
+        help="A file indicating a snp_set and an optional weight for every "
+             "variant."
+    )
+
+    # The outcome type: discrete or continuous.
+    group.add_argument(
+        "--outcome-type",
+        type=str,
+        choices=("continuous", "discrete"),
+        required=True,
+        help="The variable type for the outcome. This will be passed to SKAT."
     )
 
     if args is not None:
