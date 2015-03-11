@@ -885,6 +885,14 @@ def parse_args(parser, args=None):
         help="The variable type for the outcome. This will be passed to SKAT."
     )
 
+    # SKAT-O flag.
+    group.add_argument(
+        "--skat-o",
+        action="store_true",
+        help="By default, the regular SKAT is used. Setting this flag will "
+             "use the SKAT-O algorithm instead."
+    )
+
     if args is not None:
         return parser.parse_args(args)
 
