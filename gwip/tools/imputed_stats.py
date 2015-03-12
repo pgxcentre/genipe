@@ -415,7 +415,7 @@ def process_impute2_site(site_info):
     to_return = [chrom, pos, name, allele_encoding[major],
                  allele_encoding[minor], maf, data.shape[0]]
 
-    # If the marker is to rare, we continue with the rest
+    # If the marker is too rare, we continue with the rest
     if (maf == "NA") or (maf < site_info.maf_t):
         to_return.extend(["NA"] * (site_info.number_to_print - len(to_return)))
         return to_return
