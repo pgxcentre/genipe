@@ -711,10 +711,10 @@ class TestMainPipeline(unittest.TestCase):
         with open(args.impute2_bin, "w") as o_file:
             pass
 
-        # Setting the shapeit binary to None (if not in the path)
+        # Setting the impute2 binary to None (if not in the path)
         original_value = args.impute2_bin
         args.impute2_bin = None
-        if which("shapeit") is None:
+        if which("impute2") is None:
             with self.assertRaises(ProgramError) as cm:
                 check_args(args)
             self.assertEqual("impute2: not in the path (use --impute2-bin)",
@@ -733,10 +733,10 @@ class TestMainPipeline(unittest.TestCase):
         with open(args.plink_bin, "w") as o_file:
             pass
 
-        # Setting the shapeit binary to None (if not in the path)
+        # Setting the plink binary to None (if not in the path)
         original_value = args.plink_bin
         args.plink_bin = None
-        if which("shapeit") is None:
+        if which("plink") is None:
             with self.assertRaises(ProgramError) as cm:
                 check_args(args)
             self.assertEqual("plink: not in the path (use --plink-bin)",

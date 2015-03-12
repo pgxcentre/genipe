@@ -11,14 +11,17 @@ import os
 import sys
 import logging
 import argparse
+import platform
 import traceback
 from multiprocessing import Pool
 from subprocess import Popen, PIPE
-from collections import Counter, namedtuple
+from collections import namedtuple
 
 import numpy as np
 import pandas as pd
 from lifelines import CoxPHFitter
+
+import statsmodels.api as sm
 import statsmodels.formula.api as smf
 
 from .. import __version__
@@ -278,7 +281,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
         # Printing the header of the output file
         header = ("chr", "pos", "snp", "major", "minor", "maf", "n", "coef",
                   "se", "lower", "upper",
-                  "z" if options.analysis_type == "cox" else "t", "p")
+                  "t" if options.analysis_type == "linear" else "z", "p")
         print(*header, sep="\t", file=o_file)
 
         # The sites to process (if multiprocessing)
@@ -519,14 +522,15 @@ def fit_linear(data, formula, result_col, **kwargs):
 def fit_logistic(data, formula, result_col, **kwargs):
     """Fit a logistic regression to the data."""
     return _get_result_from_linear_logistic(
-        smf.logit(formula=formula, data=data).fit(),
+        smf.glm(formula=formula, data=data,
+                family=sm.families.Binomial()).fit(),
         result_col=result_col,
     )
 
 
 def _get_result_from_linear_logistic(fit_result, result_col):
     """Gets results from either a linear or logistic regression."""
-    conf_int = fit_result.conf_int().loc[result_col, :].get_values()
+    conf_int = fit_result.conf_int().loc[result_col, :].values
     assert len(conf_int) == 2
     return [
         fit_result.params[result_col],
@@ -558,6 +562,8 @@ def check_args(args):
     if args.nb_process < 1:
         raise ProgramError("{}: invalid number of "
                            "processes".format(args.nb_process))
+    if args.nb_process > 1 and platform.system() == "Darwin":
+        raise ProgramError("multiprocessing is not supported on Mac OS")
 
     # Checking the number of lines to read
     if args.nb_lines < 1:
