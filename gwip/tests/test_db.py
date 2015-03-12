@@ -453,4 +453,10 @@ class TestDB(unittest.TestCase):
 
         # Getting the time for all tasks
         observed_time = get_all_runtimes(self.db_name)
-        self.assertEqual(expected_time, observed_time)
+
+        # Comparing the results
+        self.assertEqual(set(expected_time.keys()), set(observed_time.keys()))
+
+        for task_name in expected_time.keys():
+            t_delta = abs(expected_time[task_name] - observed_time[task_name])
+            self.assertTrue(t_delta >= 0 and t_delta <= 1)
