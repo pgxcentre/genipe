@@ -24,7 +24,12 @@ __all__ = ["matrix_from_line", "get_good_probs", "maf_from_probs",
 
 
 def matrix_from_line(impute2_line):
-    """Generates the probability matrix from an IMPUTE2 line."""
+    """Generates the probability matrix from an IMPUTE2 line.
+
+    The shape of the matrix is n x 3 where n is the number of samples.
+    The columns represent the probability for AA, AB and BB.
+
+    """
     # Creating the array and changing it's shape
     probabilities = np.array(impute2_line[5:], dtype=float)
     probabilities.shape = (len(probabilities) // 3, 3)
