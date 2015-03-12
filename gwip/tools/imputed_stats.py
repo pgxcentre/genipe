@@ -6,9 +6,9 @@
 # http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
-
 import os
 import sys
+import datetime
 import logging
 import argparse
 import platform
@@ -87,15 +87,26 @@ def main(args=None):
             sites_to_extract = read_sites_to_extract(args.extract_sites)
 
         # Computing the statistics
-        compute_statistics(
-            impute2_filename=args.impute2,
-            samples=samples,
-            markers_to_extract=sites_to_extract,
-            phenotypes=phenotypes,
-            remove_gender=remove_gender,
-            out_prefix=args.out,
-            options=args,
-        )
+        if args.analysis_type != "skat":
+            compute_statistics(
+                impute2_filename=args.impute2,
+                samples=samples,
+                markers_to_extract=sites_to_extract,
+                phenotypes=phenotypes,
+                remove_gender=remove_gender,
+                out_prefix=args.out,
+                options=args,
+            )
+        else:
+            skat_parse_impute2(
+                impute2_filename=args.impute2,
+                samples=samples,
+                markers_to_extract=sites_to_extract,
+                phenotypes=phenotypes,
+                remove_gender=remove_gender,
+                out_prefix=args.out,
+                args=args,
+            )
 
     # Catching the Ctrl^C
     except KeyboardInterrupt:
@@ -187,7 +198,7 @@ def read_samples(i_filename):
     return samples.set_index("ID_2", verify_integrity=True)
 
 
-def read_snp_set(i_filename):
+def skat_read_snp_set(i_filename):
     """Reads the SKAT SNP set file.
 
     This file has to be supplied by the user. The recognized columns are:
@@ -215,6 +226,13 @@ def read_snp_set(i_filename):
 def read_sites_to_extract(i_filename):
     """Reads the list of sites to extract.
 
+    :param i_filename: The input filename containing the IDs of the variants
+                       to consider for the analysis.
+    :type i_filename: str
+
+    :returns: A set containing the variants.
+    :rtype: set
+
     The expected file format is simply a list of variants. Every row should
     correspond to a single variant identifier.
 
@@ -233,6 +251,115 @@ def read_sites_to_extract(i_filename):
     with open(i_filename, "r") as i_file:
         markers_to_extract = set(i_file.read().splitlines())
     return markers_to_extract
+
+
+def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
+                       phenotypes, remove_gender, out_prefix, args):
+    """Read the impute2 file and generate the files required by SKAT."""
+
+    # Read the SNP set and create the output files.
+    snp_set = skat_read_snp_set(args.snp_sets)
+
+    # We will use a temporary directory for our analysis.
+    dir_name = os.path.abspath(
+        datetime.datetime.today().strftime("%Y-%m-%d_%H.%M.%S.skat")
+    )
+
+    if not os.path.isdir(dir_name):
+        os.makedirs(dir_name)
+    else:
+        # This should not happen because the folder name contains a timestamp
+        raise ProgramError("A folder named '{}' already exists.".format(
+            dir_name 
+        ))
+
+    # Open genotype CSV files for every SNP set. Those CSV files will be
+    # read in R and used by SKAT.
+    genotype_files = {}
+    for set_id in snp_set["snp_set"].unique():
+        filename = os.path.join(dir_name, "{}.genotypes.csv".format(set_id))
+        genotype_files[set_id] = open(filename, "w")
+        # We write the column headers for every file.
+        genotype_files[set_id].write(
+            "," + ",".join(samples.index)
+        )
+
+    # The markers of interest are the markers we want to include in the
+    # analysis. Concretly they are the markers that were included in the snp
+    # sets. If a list of markers to extract is provided by the user, we also
+    # look at this to filter ou undesired markers.
+    markers_of_interest = set(snp_set["variant"])
+    if markers_to_extract is not None:
+        markers_of_interest = markers_of_interest & markers_to_extract
+
+    # Open the file. We use subprocess if it's gunzipped because it's faster.
+    # We use gzip -d -c instead of zcat because the default Mac OS zcat has
+    # weird behavior.
+    if impute2_filename.endswith(".gz"):
+        proc = Popen(["gzip", "-d", "-c", impute2_filename], stdout=PIPE)
+        i_file = proc.stdout
+    else:
+        i_file = open(impute2_filename, "rb")
+
+    for line in i_file:
+        line = _skat_parse_line(line, markers_of_interest, samples)
+        if line is not None:
+            name, dosage = line
+            _skat_write_marker(name, dosage, snp_set, genotype_files)
+
+    # Close the genotype files.
+    for file_handle in genotype_files.values():
+        file_handle.close()
+
+
+def _skat_parse_line(line, markers_of_interest, samples):
+    """Parses a single line of the Impute2 file.
+
+    :param line: A line from the Impute2 file.
+    :type line: str
+
+    :param markers_of_interest: A set of markers that are required for the
+                                analysis.
+    :type markers_of_interest: set
+
+    :param samples: A DataFrame containing the samples IDs. This is useful
+                    to make sure we return a dosage vector with the appropriate
+                    data.
+    :type samples: :py:class:`pandas.DataFrame`
+
+    :returns: Either None if the marker is not of interest or a tuple of `(name
+              , dosage_vector)` where `name` is a `str` representing the
+              variant ID and `dosage_vector` is a numpy array containing the
+              dosage values for every sample in the `samples` dataframe.
+    :rtype: tuple or None
+
+    """
+    pass
+
+
+def _skat_write_marker(name, dosage, snp_set, genotype_files):
+    """Write the dosage information to the appropriate genotype file.
+
+    :param name: The name of the marker.
+    :type name: str
+
+    :param dosage: The dosage vector.
+    :type dosage: :py:class:`numpy.ndarray`
+
+    :param snp_set: The dataframe that allows us to identify the correct SNP
+                    set for the specified variant.
+    :type snp_set: :py:class:`pandas.DataFrame`
+
+    :param genotype_files: The dict containing the opened CSV files for the
+                           genotypes.
+    :type genotype_files: dict
+
+    """
+    # Identify the correct SNP set.
+    this_snp_set = snp_set.loc[snp_set["variant"] == name, "snp_set"].unique()
+    for set_id in this_snp_set:
+        file_object = genotype_files[set_id]
+        # file_object.write()
 
 
 def compute_statistics(impute2_filename, samples, markers_to_extract,
@@ -922,6 +1049,14 @@ def parse_args(parser, args=None):
         action="store_true",
         help="By default, the regular SKAT is used. Setting this flag will "
              "use the SKAT-O algorithm instead."
+    )
+
+    group.add_argument(
+        "--pheno-name",
+        type=str,
+        metavar="NAME",
+        required=True,
+        help="The phenotype.",
     )
 
     if args is not None:
