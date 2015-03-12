@@ -40,6 +40,9 @@ _Row = namedtuple("_Row", ("row", "samples", "pheno", "pheno_name", "formula",
                            "gender_c", "del_g", "scale", "maf_t", "prob_t",
                            "analysis_type", "number_to_print"))
 
+# The Cox's regression required values
+_COX_REQ_COLS = ["coef", "se(coef)", "lower 0.95", "upper 0.95", "z", "p"]
+
 
 def main(args=None):
     """The main function."""
@@ -415,26 +418,8 @@ def get_formula(phenotype, covars, interaction):
 def fit_cox(data, time_to_event, censure, result_col, **kwargs):
     """Fit a Cox' regression to the data."""
     cf = CoxPHFitter(alpha=0.95, tie_method="Efron", normalize=False)
-
-    failed = False
-    try:
-        cf.fit(data, duration_col=time_to_event, event_col=censure)
-    except np.linalg.linalg.LinAlgError:
-        failed = True
-
-    # The results
-    result = []
-    if not failed:
-        result.extend([
-            float(cf.hazards_[result_col]),
-            float(cf._compute_standard_errors()[result_col]),
-            cf._compute_confidence_intervals().loc["lower-bound", result_col],
-            cf._compute_confidence_intervals().loc["upper-bound", result_col],
-            cf._compute_z_values()[result_col],
-            cf._compute_p_values()[cf.hazards_.columns == result_col][0]
-        ])
-
-    return result
+    res = cf.fit(data, duration_col=time_to_event, event_col=censure)
+    return cf.summary.loc[result_col, _COX_REQ_COLS].values
 
 
 def fit_linear(data, formula, result_col, **kwargs):

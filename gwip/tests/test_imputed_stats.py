@@ -565,15 +565,111 @@ class TestImputedStats(unittest.TestCase):
         observed = get_formula("pheno", ["C1", "C2", "C3", "inter"], "inter")
         self.assertEqual(expected, observed)
 
-    @unittest.skip("Test not implemented")
     def test_fit_cox(self):
         """Tests the 'fit_cox' function."""
-        self.fail("Test not implemented")
+        # Reading the data
+        data_filename = resource_filename(
+            __name__,
+            "data/regression_sim.txt.bz2",
+        )
 
-    @unittest.skip("Test not implemented")
-    def test_fit_cox_interaction(self):
-        """Tests the 'fit_cox' function."""
-        self.fail("Test not implemented")
+        # This dataset contains 3 markers + 5 covariables
+        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
+        columns_to_keep = ["y", "y_d", "snp1", "C1", "C2", "C3", "age",
+                           "gender"]
+
+        # The expected results for the first marker (according to R)
+        # P value was given by 2*pnorm(z) according to this site
+        # https://stat.ethz.ch/pipermail/r-help/2008-October/178439.html
+        expected_coef = -0.9892699611323815256
+        expected_se = 0.0645633075569013448
+        expected_min_ci = -1.11581171866669093
+        expected_max_ci = -0.86272820359807223
+        expected_z = -15.32247957186071652
+        expected_p = 5.41131727236088009e-53
+
+        # The observed results for the first marker
+        observed = fit_cox(
+            data=data[columns_to_keep].dropna(axis=0),
+            time_to_event="y",
+            censure="y_d",
+            result_col="snp1",
+        )
+        self.assertEqual(6, len(observed))
+        observed_coef, observed_se, observed_min_ci, observed_max_ci, \
+            observed_z, observed_p = observed
+
+        # Comparing the results (P is not that similar though...)
+        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_se, observed_se, places=6)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
+        self.assertAlmostEqual(expected_z, observed_z, places=4)
+        self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                               places=3)
+
+        # The second marker
+        columns_to_keep = ["y", "y_d", "snp2", "C1", "C2", "C3", "age",
+                           "gender"]
+
+        # The expected results for the first marker (according to R)
+        expected_coef = 0.0499084338021939383
+        expected_se = 0.0401904025600694215
+        expected_min_ci = -0.0288633077397084936
+        expected_max_ci = 0.12868017534409637
+        expected_z = 1.241799798536472599
+        expected_p = 0.21431043709814412423
+
+        # The observed results for the first marker
+        observed = fit_cox(
+            data=data[columns_to_keep].dropna(axis=0),
+            time_to_event="y",
+            censure="y_d",
+            result_col="snp2",
+        )
+        self.assertEqual(6, len(observed))
+        observed_coef, observed_se, observed_min_ci, observed_max_ci, \
+            observed_z, observed_p = observed
+
+        # Comparing the results (P is not that similar though...)
+        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_se, observed_se, places=9)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
+        self.assertAlmostEqual(expected_z, observed_z, places=8)
+        self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                               places=8)
+
+        # The third marker
+        columns_to_keep = ["y", "y_d", "snp3", "C1", "C2", "C3", "age",
+                           "gender"]
+
+        # The expected results for the first marker (according to R)
+        expected_coef = 1.114732193640146418
+        expected_se = 0.0631205046371715733
+        expected_min_ci = 0.991018277865296726
+        expected_max_ci = 1.23844610941499611
+        expected_z = 17.660381520202268035
+        expected_p = 0
+
+        # The observed results for the first marker
+        observed = fit_cox(
+            data=data[columns_to_keep].dropna(axis=0),
+            time_to_event="y",
+            censure="y_d",
+            result_col="snp3",
+        )
+        self.assertEqual(6, len(observed))
+        observed_coef, observed_se, observed_min_ci, observed_max_ci, \
+            observed_z, observed_p = observed
+
+        # Comparing the results (P is not that similar though...)
+        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_se, observed_se, places=7)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
+        self.assertAlmostEqual(expected_z, observed_z, places=5)
+        self.assertAlmostEqual(expected_p, observed_p, places=10)
 
     def test_fit_linear(self):
         """Tests the 'fit_linear' function."""
@@ -813,8 +909,13 @@ class TestImputedStats(unittest.TestCase):
                 result_col="snp4",
             )
 
+    @unittest.skip("Test not implemented")
+    def test_fit_cox_interaction(self):
+        """Tests the 'fit_cox' function with interaction."""
+        self.fail("Test not implemented")
+
     def test_fit_linear_interaction(self):
-        """Tests the 'fit_cox' function."""
+        """Tests the 'fit_linear' function with interaction."""
         # Reading the data
         data_filename = resource_filename(
             __name__,
@@ -857,7 +958,7 @@ class TestImputedStats(unittest.TestCase):
                                places=10)
 
     def test_fit_logistic_interaction(self):
-        """Tests the 'fit_cox' function."""
+        """Tests the 'fit_logistic' function with interaction."""
         # Reading the data
         data_filename = resource_filename(
             __name__,
@@ -897,6 +998,11 @@ class TestImputedStats(unittest.TestCase):
         self.assertAlmostEqual(expected_z, observed_z, places=6)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=6)
+
+    @unittest.skip("Test not implemented")
+    def test_full_fit_cox(self):
+        """Tests the full pipeline for Cox's regression."""
+        self.fail("Test not implemented")
 
     def test_full_fit_linear(self):
         """Tests the full pipeline for linear regression."""
@@ -1102,6 +1208,11 @@ class TestImputedStats(unittest.TestCase):
         for expected_p, observed_p, place in zipped:
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                    places=place)
+
+    @unittest.skip("Test not implemented")
+    def test_full_fit_cox_multiprocess(self):
+        """Tests the full pipeline for Cox's regression with >1 processes."""
+        self.fail("Test not implemented")
 
     @unittest.skipIf(platform.system() == "Darwin",
                      "multiprocessing not supported with Mac OS")
@@ -1313,6 +1424,11 @@ class TestImputedStats(unittest.TestCase):
         for expected_p, observed_p, place in zipped:
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                    places=place)
+
+    @unittest.skip("Test not implemented")
+    def test_full_fit_cox_interaction(self):
+        """Tests the full pipeline for Cox's regression with interaction."""
+        self.fail("Test not implemented")
 
     def test_full_fit_linear_interaction(self):
         """Tests the full pipeline for linear regression with interaction."""
