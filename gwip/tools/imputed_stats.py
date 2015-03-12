@@ -11,6 +11,7 @@ import os
 import sys
 import logging
 import argparse
+import platform
 import traceback
 from multiprocessing import Pool
 from subprocess import Popen, PIPE
@@ -487,6 +488,8 @@ def check_args(args):
     if args.nb_process < 1:
         raise ProgramError("{}: invalid number of "
                            "processes".format(args.nb_process))
+    if args.nb_process > 1 and platform.system() == "Darwin":
+        raise ProgramError("multiprocessing is not supported on Mac OS")
 
     # Checking the number of lines to read
     if args.nb_lines < 1:

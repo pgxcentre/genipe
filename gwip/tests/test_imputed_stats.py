@@ -8,6 +8,7 @@
 
 
 import random
+import platform
 import unittest
 from tempfile import TemporaryDirectory
 
@@ -1102,6 +1103,8 @@ class TestImputedStats(unittest.TestCase):
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                    places=place)
 
+    @unittest.skipIf(platform.system() == "Darwin",
+                     "multiprocessing not supported with Mac OS")
     def test_full_fit_linear_multiprocess(self):
         """Tests the full pipeline for linear regression with >1 processes."""
         # Reading the data
@@ -1198,6 +1201,8 @@ class TestImputedStats(unittest.TestCase):
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                    places=10)
 
+    @unittest.skipIf(platform.platform() == "Darwin",
+                     "multiprocessing not supported with Mac OS")
     def test_full_fit_logistic_multiprocess(self):
         """Tests the full pipeline, logistic regression with >1 processes."""
         # Reading the data
