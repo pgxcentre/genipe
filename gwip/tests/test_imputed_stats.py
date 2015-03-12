@@ -1103,7 +1103,7 @@ class TestImputedStats(unittest.TestCase):
                                    places=place)
 
     def test_full_fit_linear_multiprocess(self):
-        """Tests the full pipeline for linear regression."""
+        """Tests the full pipeline for linear regression with >1 processes."""
         # Reading the data
         data_filename = resource_filename(
             __name__,
@@ -1199,7 +1199,7 @@ class TestImputedStats(unittest.TestCase):
                                    places=10)
 
     def test_full_fit_logistic_multiprocess(self):
-        """Tests the full pipeline for logistic regression."""
+        """Tests the full pipeline, logistic regression with >1 processes."""
         # Reading the data
         data_filename = resource_filename(
             __name__,
@@ -1310,7 +1310,7 @@ class TestImputedStats(unittest.TestCase):
                                    places=place)
 
     def test_full_fit_linear_interaction(self):
-        """Tests the full pipeline for linear regression."""
+        """Tests the full pipeline for linear regression with interaction."""
         # Reading the data
         data_filename = resource_filename(
             __name__,
@@ -1405,10 +1405,116 @@ class TestImputedStats(unittest.TestCase):
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                    places=10)
 
-    @unittest.skip("Test not implemented")
-    def test_fit_interaction(self):
-        """Tests the 'fit_logistic' function."""
-        self.fail("Test not implemented")
+    def test_full_fit_logistic_interaction(self):
+        """Tests the full pipeline for logistic regression with interaction."""
+        # Reading the data
+        data_filename = resource_filename(
+            __name__,
+            "data/regression_sim_inter.txt.bz2",
+        )
+
+        # Creating the input files
+        o_prefix, options = create_input_files(
+            i_filename=data_filename,
+            output_dirname=self.output_dir.name,
+            analysis_type="logistic",
+            pheno_name="y_d",
+            interaction="gender",
+        )
+
+        # Executing the tool
+        main(args=options)
+
+        # Cleaning the handlers
+        TestImputedStats.clean_logging_handlers()
+
+        # Making sure the output file exists
+        self.assertTrue(os.path.isfile(o_prefix + ".logistic.dosage"))
+
+        # Reading the data
+        observed = pd.read_csv(o_prefix + ".logistic.dosage", sep="\t")
+
+        # Checking all columns are present
+        self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
+                          "coef", "se", "lower", "upper", "z", "p"],
+                         list(observed.columns))
+
+        # Chromosomes
+        self.assertEqual([22], observed.chr.unique())
+
+        # Positions
+        self.assertEqual([1, 2, 3], list(observed.pos))
+
+        # Marker names
+        self.assertEqual(["marker_1", "marker_2", "marker_3"],
+                         list(observed.snp))
+
+        # Major alleles
+        self.assertEqual(["T", "G", "AT"], list(observed.major))
+
+        # Minor alleles
+        self.assertEqual(["C", "A", "A"], list(observed.minor))
+
+        # Minor allele frequency
+        expected = [1778 / 11880, 4703 / 11760, 1427 / 11880]
+        for expected_maf, observed_maf in zip(expected, observed.maf):
+            self.assertAlmostEqual(expected_maf, observed_maf, places=10)
+
+        # The number of samples
+        expected = [5940, 5880, 5940]
+        for expected_n, observed_n in zip(expected, observed.n):
+            self.assertEqual(expected_n, observed_n)
+
+        # The coefficients
+        expected = [-0.4998229445983128905, 0.479196060192496665,
+                    -0.081500925621293116]
+        places = [10, 9, 10]
+        zipped = zip(expected, observed.coef, places)
+        for expected_coef, observed_coef, place in zipped:
+            self.assertAlmostEqual(expected_coef, observed_coef, places=place)
+
+        # The standard error
+        expected = [0.2425924038476814093, 0.1732540442374335965,
+                    0.236081283702105793]
+        places = [7, 6, 7]
+        zipped = zip(expected, observed.se, places)
+        for expected_se, observed_se, place in zipped:
+            self.assertAlmostEqual(expected_se, observed_se, places=place)
+
+        # The lower CI
+        expected = [-0.9779101205637230620, 0.140220059149237547,
+                    -0.544942749175234886]
+        places = [2, 2, 2]
+        zipped = zip(expected, observed.lower, places)
+        for expected_min_ci, observed_min_ci, place in zipped:
+            self.assertAlmostEqual(expected_min_ci, observed_min_ci,
+                                   places=place)
+
+        # The upper CI
+        expected = [-0.0263169240328645603, 0.819710161131259829,
+                    0.380931176186822595]
+        places = [2, 2, 3]
+        zipped = zip(expected, observed.upper, places)
+        for expected_max_ci, observed_max_ci, place in zipped:
+            self.assertAlmostEqual(expected_max_ci, observed_max_ci,
+                                   places=place)
+
+        # The Z statistics
+        expected = [-2.0603404586078508665, 2.765857860932753098,
+                    -0.345224002272595865]
+        places = [6, 4, 7]
+        zipped = zip(expected, observed.z, places)
+        for expected_z, observed_z, place in zipped:
+            self.assertAlmostEqual(expected_z, observed_z, places=place)
+
+        # The p values
+        expected = [3.93660046768015970e-02, 5.67732747277691768e-03,
+                    7.29925975515044678e-01]
+        places = [6, 4, 7]
+        zipped = zip(expected, observed.p, places)
+        for expected_p, observed_p, place in zipped:
+            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                                   places=place)
 
     @unittest.skip("Test not implemented")
     def test_get_result_from_linear_logistic(self):
