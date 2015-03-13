@@ -24,6 +24,8 @@ from lifelines import CoxPHFitter
 import statsmodels.api as sm
 import statsmodels.formula.api as smf
 
+import jinja2
+
 from .. import __version__
 from ..formats.impute2 import *
 from ..error import ProgramError
@@ -257,6 +259,10 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
                        phenotypes, remove_gender, out_prefix, args):
     """Read the impute2 file and generate the files required by SKAT."""
 
+    # We keep track of the files that are generated because we will need the
+    # paths to generate the R script correctly.
+    r_files = {"snp_sets": [], "covariates": None, "outcome": None}
+
     # Read the SNP set and create the output files.
     snp_set = skat_read_snp_set(args.snp_sets)
 
@@ -278,6 +284,7 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
     genotype_files = {}
     for set_id in snp_set["snp_set"].unique():
         filename = os.path.join(dir_name, "{}.genotypes.csv".format(set_id))
+        r_files["snp_sets"].append(filename)  # Track the filenames.
         genotype_files[set_id] = open(filename, "w")
         # We write the column headers for every file.
         print("", *samples.index, sep=",", file=genotype_files[set_id])
@@ -331,19 +338,62 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
     if args.covar:
         # Make sure the samples are consistent by merging phenotype and
         # samples.
+        filename = os.path.join(dir_name, "covariates.csv")
         phenotype_df[args.covar].to_csv(
-            os.path.join(dir_name, "covariates.csv"),
+            filename,
             sep=",",
         )
+        r_files["covariates"] = filename
 
     # Write the phenotype file.
+    filename = os.path.join(
+        dir_name,
+        "{}.{}.csv".format(args.pheno_name, args.outcome_type)
+    )
     phenotype_df[[args.pheno_name]].to_csv(
-        os.path.join(
-            dir_name,
-            "{}.{}.csv".format(args.pheno_name, args.outcome_type)
-        ),
+        filename,
         sep=",",
     )
+    r_files["outcome"] = filename
+
+    r_scripts = _skat_generate_r_script(dir_name, r_files, args)
+
+    for script in r_scripts:
+        pass
+
+def _skat_generate_r_script(dir_name, r_files, args):
+    jinja_env = jinja2.Environment(
+        loader=jinja2.PackageLoader("gwip", "script_templates")
+    )
+    template = jinja_env.get_template("run_skat.R")
+
+    scripts = []
+
+    # Create one file per SNP set for parallelism.
+    for snp_set_file in r_files["snp_sets"]:
+        rendered_script = template.render(
+            version=__version__,
+
+            snp_set_file=snp_set_file,
+            covariate_file=r_files["covariates"],
+            outcome_file=r_files["outcome"],
+
+            outcome_type="C" if args.outcome_type == "continuous" else "D",
+            skat_o=args.skat_o,
+        )
+        # Write the rendered script to disk.
+        script_filename = "run_skat_{}R".format(
+            # We parse the set id name.
+            os.path.basename(snp_set_file)[:-len(".genotype.csv")]
+        )
+        script_filename = os.path.join(dir_name, script_filename)
+
+        with open(script_filename, "w") as f:
+            f.write(rendered_script)
+
+        scripts.append(script_filename)
+
+    return scripts
 
 
 def _skat_parse_line(line, markers_of_interest, samples, gender=None):
