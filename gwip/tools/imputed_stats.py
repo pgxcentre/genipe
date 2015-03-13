@@ -6,6 +6,7 @@
 # http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
+import re
 import os
 import sys
 import datetime
@@ -282,7 +283,8 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
     # Open genotype CSV files for every SNP set. Those CSV files will be
     # read in R and used by SKAT.
     genotype_files = {}
-    for set_id in snp_set["snp_set"].unique():
+    snp_sets = snp_set["snp_set"].unique()
+    for set_id in snp_sets:
         filename = os.path.join(dir_name, "{}.genotypes.csv".format(set_id))
         r_files["snp_sets"].append(filename)  # Track the filenames.
         genotype_files[set_id] = open(filename, "w")
@@ -358,8 +360,48 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
 
     r_scripts = _skat_generate_r_script(dir_name, r_files, args)
 
-    for script in r_scripts:
-        pass
+    # Run the SKAT analysis by calling Rscript either in different subprocesses
+    # or linearly.
+    if args.nb_process > 1:
+        pool = Pool(processes=options.nb_process)
+        results = pool.map(_skat_run_job, r_scripts)
+    else:
+        results = []
+        for script in r_scripts:
+            results.append(_skat_run_job(script))
+
+    # Finally, write the SKAT output to disk.
+    output_filename = os.path.join(
+        dir_name,
+        "{}.skat.dosage".format(args.out)
+    )
+
+    with open(output_filename, "w") as f:
+        # Write the header.
+        print("snp_set_id", "p_value", sep="\t", file=f)
+        assert len(snp_sets) == len(results)
+        for i, p_value in enumerate(results):
+            set_id = snp_sets[i]
+            print(set_id, p_value, sep="\t", file=f)
+
+
+def _skat_run_job(script_filename):
+    # Parse the p-value.
+    proc = Popen(
+        ["Rscript", script_filename],
+        stdout=PIPE,
+        stderr=PIPE,
+    )
+    out, err = proc.communicate()
+
+    out = out.decode("utf-8")
+    match = re.search(r"_PYTHON_HOOK_PVAL:\[(.+)\]", out)
+    if match is None:
+        raise ProgramError("SKAT did not return properly. See script "
+                           "'{}' for details.".format(script_filename))
+
+    return float(match.group(1))
+
 
 def _skat_generate_r_script(dir_name, r_files, args):
     jinja_env = jinja2.Environment(

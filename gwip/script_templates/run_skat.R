@@ -69,3 +69,4 @@ results <- SKAT(
 )
 
 p <- results$p.value
+cat("_PYTHON_HOOK_PVAL:[", p,  "]\n", sep="")  # This will be parsed by gwip.
