@@ -909,10 +909,49 @@ class TestImputedStats(unittest.TestCase):
                 result_col="snp4",
             )
 
-    @unittest.skip("Test not implemented")
     def test_fit_cox_interaction(self):
         """Tests the 'fit_cox' function with interaction."""
-        self.fail("Test not implemented")
+        # Reading the data
+        data_filename = resource_filename(
+            __name__,
+            "data/regression_sim_inter.txt.bz2",
+        )
+
+        # This dataset contains 3 markers + 5 covariables
+        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
+
+        # Computing the interaction
+        data["interaction"] = data.snp1 * data.gender
+        columns_to_keep = ["y", "y_d", "snp1", "C1", "C2", "C3", "age",
+                           "gender", "interaction"]
+
+        # The expected results for the first marker (according to R)
+        expected_coef = -0.6446297920053343233
+        expected_se = 0.1430770156758568168
+        expected_min_ci = -0.925055589745486406
+        expected_max_ci = -0.364203994265182296
+        expected_z = -4.5054741249688419202
+        expected_p = 6.62249088800859198e-06
+
+        # The observed results
+        observed = fit_cox(
+            data=data[columns_to_keep].dropna(axis=0),
+            time_to_event="y",
+            censure="y_d",
+            result_col="interaction",
+        )
+        self.assertEqual(6, len(observed))
+        observed_coef, observed_se, observed_min_ci, observed_max_ci, \
+            observed_z, observed_p = observed
+
+        # Comparing the results
+        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_se, observed_se, places=7)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=3)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=3)
+        self.assertAlmostEqual(expected_z, observed_z, places=5)
+        self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                               places=5)
 
     def test_fit_linear_interaction(self):
         """Tests the 'fit_linear' function with interaction."""
