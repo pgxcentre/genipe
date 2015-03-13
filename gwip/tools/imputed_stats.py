@@ -302,6 +302,8 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
         i_file = open(impute2_filename, "rb")
 
     for line in i_file:
+        line = line.decode("ascii")
+        # TODO: Add the gender and do QC (men with hetero on chrX).
         line = _skat_parse_line(line, markers_of_interest, samples)
         if line is not None:
             name, dosage = line
@@ -312,7 +314,7 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
         file_handle.close()
 
 
-def _skat_parse_line(line, markers_of_interest, samples):
+def _skat_parse_line(line, markers_of_interest, samples, gender=None):
     """Parses a single line of the Impute2 file.
 
     :param line: A line from the Impute2 file.
@@ -334,7 +336,33 @@ def _skat_parse_line(line, markers_of_interest, samples):
     :rtype: tuple or None
 
     """
-    pass
+    line = line.split(" ")
+    # info_tuple contains: chrom, name, pos, a1, a2
+    # proba_matrix is a matrix of sample x (aa, ab, bb)
+    info_tuple, proba_matrix = matrix_from_line(line)    
+
+    chrom, name, pos, a1, a2 = info_tuple
+
+    # If this marker is not of interest, we don't bother continuing.
+    if name not in markers_of_interest:
+        return None
+
+    # We need to compute the dosage vector.
+    # This is given wrt to the minor and major alleles, so we need to get the
+    # MAF to identify those.
+    maf, minor, major = maf_from_probs(proba_matrix, a1, a2, gender, name)
+
+    # The minor allele columns could be either the first or the third.
+    # We identify it here.
+    minor_allele_col = 0 if a1 == minor else 2
+
+    # We don't pass a scale parameter, because we want additive coding.
+    dosage = dosage_from_probs(
+        homo_probs=proba_matrix[:, minor_allele_col],
+        hetero_probs=proba_matrix[:, 1],
+    )
+
+    return (name, dosage)
 
 
 def _skat_write_marker(name, dosage, snp_set, genotype_files):
@@ -359,8 +387,7 @@ def _skat_write_marker(name, dosage, snp_set, genotype_files):
     this_snp_set = snp_set.loc[snp_set["variant"] == name, "snp_set"].unique()
     for set_id in this_snp_set:
         file_object = genotype_files[set_id]
-        # file_object.write()
-
+        print(name, *dosage, sep=",", file=file_object)
 
 def compute_statistics(impute2_filename, samples, markers_to_extract,
                        phenotypes, remove_gender, out_prefix, options):
