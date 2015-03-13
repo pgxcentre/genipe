@@ -264,6 +264,10 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
     input files to the disk, runs the generated R scripts to do the actual
     analysis and then writes the results to disk.
 
+    .. todo::
+
+        Need to add support for variant weights!
+
     """
 
     # We keep track of the files that are generated because we will need the
