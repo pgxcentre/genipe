@@ -422,3 +422,73 @@ $ make && make clean
 This report uses LaTeX and the `*.tex` file can be modified to add project
 specific information.
 
+
+### Statistical analysis
+
+Once the genome-wide imputation analysis is performed and that quality metrics
+(provided by the automatic report) has been reviewed, it is possible to
+performed different statistical analysis (e.g. linear or logistic regression,
+or survival analysis using Cox's proportional hazard model) using the provided
+script named `imputed-stats`.
+
+```console
+$ imputed-stats --help
+usage: imputed-stats [-h] [-v] {cox,linear,logistic} ...
+
+Performs statistical analysis on imputed data (either linear, logistic or
+survival regression). This script is part of the 'gwip' package, version 0.1).
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -v, --version         show program's version number and exit
+
+Statistical Analysis Type:
+  The type of statistical analysis to be performed on the imputed data.
+
+  {cox,linear,logistic}
+    cox                 Cox's proportional hazard model (survival regression).
+    linear              Linear regression (ordinary least squares).
+    logistic            Logistic regression (GLM with binomial distribution).
+```
+
+The `--help` option provides information on each of the available statistical
+analysis:
+
+```console
+$ imputed-stats cox --help
+usage: imputed-stats cox [-h] [-v] [--debug] --impute2 FILE --sample FILE
+                         --pheno FILE [--extract-sites FILE] [--out FILE]
+                         [--nb-process INT] [--nb-lines INT] [--chrx]
+                         [--gender-column NAME] [--scale INT] [--prob FLOAT]
+                         [--maf FLOAT] [--covar NAME] [--missing-value NAME]
+                         [--sample-column NAME] [--interaction NAME]
+                         --time-to-event NAME --censure NAME
+
+Performs a survival regression on imputed data using Cox's proportional hazard
+model. This script is part of the 'gwip' package, version 0.1).
+...
+$ imputed-stats linear --help
+usage: imputed-stats linear [-h] [-v] [--debug] --impute2 FILE --sample FILE
+                            --pheno FILE [--extract-sites FILE] [--out FILE]
+                            [--nb-process INT] [--nb-lines INT] [--chrx]
+                            [--gender-column NAME] [--scale INT]
+                            [--prob FLOAT] [--maf FLOAT] [--covar NAME]
+                            [--missing-value NAME] [--sample-column NAME]
+                            [--interaction NAME] --pheno-name NAME
+
+Performs a linear regression (ordinary least squares) on imputed data. This
+script is part of the 'gwip' package, version 0.1).
+...
+$ imputed-stats logistic --help
+usage: imputed-stats logistic [-h] [-v] [--debug] --impute2 FILE --sample FILE
+                              --pheno FILE [--extract-sites FILE] [--out FILE]
+                              [--nb-process INT] [--nb-lines INT] [--chrx]
+                              [--gender-column NAME] [--scale INT]
+                              [--prob FLOAT] [--maf FLOAT] [--covar NAME]
+                              [--missing-value NAME] [--sample-column NAME]
+                              [--interaction NAME] --pheno-name NAME
+
+Performs a logistic regression on imputed data using a GLM with a binomial
+distribution. This script is part of the 'gwip' package, version 0.1).
+...
+```

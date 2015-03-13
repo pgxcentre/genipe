@@ -48,7 +48,7 @@ def main(args=None):
     """The main function."""
     # Creating the option parser
     desc = ("Performs statistical analysis on imputed data (either linear, "
-            "logistic or Cox's regressions). This script is part of the "
+            "logistic or survival regression). This script is part of the "
             "'gwip' package, version {}).".format(__version__))
     parser = argparse.ArgumentParser(description=desc)
 
@@ -416,7 +416,7 @@ def get_formula(phenotype, covars, interaction):
 
 
 def fit_cox(data, time_to_event, censure, result_col, **kwargs):
-    """Fit a Cox' regression to the data."""
+    """Fit a Cox' proportional hazard to the data."""
     cf = CoxPHFitter(alpha=0.95, tie_method="Efron", normalize=False)
     res = cf.fit(data, duration_col=time_to_event, event_col=censure)
     return cf.summary.loc[result_col, _COX_REQ_COLS].values
@@ -729,14 +729,15 @@ def parse_args(parser, args=None):
     # The Cox parser
     cox_parser = subparsers.add_parser(
         "cox",
-        help="Cox's regression (survival analysis).",
-        description="Performs a Cox's regression (survival analysis) on "
-                    "imputed data. This script is part of the 'gwip' "
-                    "package, version {}).".format(__version__),
+        help="Cox's proportional hazard model (survival regression).",
+        description="Performs a survival regression on imputed data using "
+                    "Cox's proportional hazard model. This script is part of "
+                    "the 'gwip' package, version {}).".format(__version__),
         parents=[p_parser],
     )
 
-    group = cox_parser.add_argument_group("Cox's Regression Options")
+    group = cox_parser.add_argument_group("Cox's Proportional Hazard Model "
+                                          "Options")
     group.add_argument(
         "--time-to-event",
         type=str,
@@ -776,10 +777,10 @@ def parse_args(parser, args=None):
     # The logistic parser
     logit_parser = subparsers.add_parser(
         "logistic",
-        help="Logistic regression.",
-        description="Performs a logistic regression on imputed data. "
-                    "This script is part of the 'gwip' package, "
-                    "version {}).".format(__version__),
+        help="Logistic regression (GLM with binomial distribution).",
+        description="Performs a logistic regression on imputed data using a "
+                    "GLM with a binomial distribution. This script is part of "
+                    "the 'gwip' package, version {}).".format(__version__),
         parents=[p_parser],
     )
 
