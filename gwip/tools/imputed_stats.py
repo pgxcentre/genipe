@@ -325,18 +325,25 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
         file_handle.close()
 
     # Write the covariate file.
+    phenotype_df = samples.join(phenotypes)
+    phenotype_df.index.name = "sample"
+
     if args.covar:
         # Make sure the samples are consistent by merging phenotype and
         # samples.
-        covar_df = samples.join(
-            phenotypes[args.covar],
-        )[args.covar]
-        covar_df.index.name = "sample"
-
-        covar_df.to_csv(
+        phenotype_df[args.covar].to_csv(
             os.path.join(dir_name, "covariates.csv"),
             sep=",",
         )
+
+    # Write the phenotype file.
+    phenotype_df[[args.pheno_name]].to_csv(
+        os.path.join(
+            dir_name,
+            "{}.{}.csv".format(args.pheno_name, args.outcome_type)
+        ),
+        sep=",",
+    )
 
 
 def _skat_parse_line(line, markers_of_interest, samples, gender=None):
