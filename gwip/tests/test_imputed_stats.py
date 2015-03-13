@@ -1154,7 +1154,6 @@ class TestImputedStats(unittest.TestCase):
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                    places=place)
 
-
     def test_full_fit_linear(self):
         """Tests the full pipeline for linear regression."""
         # Reading the data
@@ -1360,10 +1359,117 @@ class TestImputedStats(unittest.TestCase):
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                    places=place)
 
-    @unittest.skip("Test not implemented")
+    @unittest.skipIf(platform.system() == "Darwin",
+                     "multiprocessing not supported with Mac OS")
     def test_full_fit_cox_multiprocess(self):
         """Tests the full pipeline for Cox's regression with >1 processes."""
-        self.fail("Test not implemented")
+        # Reading the data
+        data_filename = resource_filename(
+            __name__,
+            "data/regression_sim.txt.bz2",
+        )
+
+        # Creating the input files
+        o_prefix, options = create_input_files(
+            i_filename=data_filename,
+            output_dirname=self.output_dir.name,
+            analysis_type="cox",
+            tte="y",
+            censure="y_d",
+            nb_process=2,
+        )
+
+        # Executing the tool
+        main(args=options)
+
+        # Cleaning the handlers
+        TestImputedStats.clean_logging_handlers()
+
+        # Making sure the output file exists
+        self.assertTrue(os.path.isfile(o_prefix + ".cox.dosage"))
+
+        # Reading the data
+        observed = pd.read_csv(o_prefix + ".cox.dosage", sep="\t")
+
+        # Checking all columns are present
+        self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
+                          "coef", "se", "lower", "upper", "z", "p"],
+                         list(observed.columns))
+
+        # Chromosomes
+        self.assertEqual([22], observed.chr.unique())
+
+        # Positions
+        self.assertEqual([1, 2, 3], list(observed.pos))
+
+        # Marker names
+        self.assertEqual(["marker_1", "marker_2", "marker_3"],
+                         list(observed.snp))
+
+        # Major alleles
+        self.assertEqual(["T", "G", "AT"], list(observed.major))
+
+        # Minor alleles
+        self.assertEqual(["C", "A", "A"], list(observed.minor))
+
+        # Minor allele frequency
+        expected = [1724 / 11526, 4604 / 11526, 1379 / 11526]
+        for expected_maf, observed_maf in zip(expected, observed.maf):
+            self.assertAlmostEqual(expected_maf, observed_maf, places=10)
+
+        # The number of samples
+        expected = [5763, 5763, 5763]
+        for expected_n, observed_n in zip(expected, observed.n):
+            self.assertEqual(expected_n, observed_n)
+
+        # The coefficients
+        expected = [-0.9892699611323815256, 0.0499084338021939383,
+                    1.114732193640146418]
+        for expected_coef, observed_coef in zip(expected, observed.coef):
+            self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+
+        # The standard error
+        expected = [0.0645633075569013448, 0.0401904025600694215,
+                    0.0631205046371715733]
+        places = [6, 9, 7]
+        zipped = zip(expected, observed.se, places)
+        for expected_se, observed_se, place in zipped:
+            self.assertAlmostEqual(expected_se, observed_se, places=place)
+
+        # The lower CI
+        expected = [-1.11581171866669093, -0.0288633077397084936,
+                    0.991018277865296726]
+        places = [4, 4, 4]
+        zipped = zip(expected, observed.lower, places)
+        for expected_min_ci, observed_min_ci, place in zipped:
+            self.assertAlmostEqual(expected_min_ci, observed_min_ci,
+                                   places=place)
+
+        # The upper CI
+        expected = [-0.86272820359807223, 0.12868017534409637,
+                    1.23844610941499611]
+        places = [4, 4, 4]
+        zipped = zip(expected, observed.upper, places)
+        for expected_max_ci, observed_max_ci, place in zipped:
+            self.assertAlmostEqual(expected_max_ci, observed_max_ci,
+                                   places=place)
+
+        # The Z statistics
+        expected = [-15.32247957186071652, 1.241799798536472599,
+                    17.660381520202268035]
+        places = [4, 8, 5]
+        zipped = zip(expected, observed.z, places)
+        for expected_z, observed_z, place in zipped:
+            self.assertAlmostEqual(expected_z, observed_z, places=place)
+
+        # The p values
+        expected = [5.41131727236088009e-53, 0.21431043709814412423,
+                    8.46654634146707403e-70]
+        places = [3, 8, 4]
+        zipped = zip(expected, observed.p, places)
+        for expected_p, observed_p, place in zipped:
+            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                                   places=place)
 
     @unittest.skipIf(platform.system() == "Darwin",
                      "multiprocessing not supported with Mac OS")
