@@ -258,7 +258,13 @@ def read_sites_to_extract(i_filename):
 
 def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
                        phenotypes, remove_gender, out_prefix, args):
-    """Read the impute2 file and generate the files required by SKAT."""
+    """Read the impute2 file and run the SKAT analysis.
+
+    This function does most of the "dispatching" to run SKAT. It writes the
+    input files to the disk, runs the generated R scripts to do the actual
+    analysis and then writes the results to disk.
+
+    """
 
     # We keep track of the files that are generated because we will need the
     # paths to generate the R script correctly.
@@ -363,7 +369,7 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
     # Run the SKAT analysis by calling Rscript either in different subprocesses
     # or linearly.
     logging.info("Launching SKAT using {} processes on {} gene sets.".format(
-        args.nb_process, len(snp_sets) 
+        args.nb_process, len(snp_sets)
     ))
 
     if args.nb_process > 1:
@@ -383,13 +389,33 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
     with open(output_filename, "w") as f:
         # Write the header.
         print("snp_set_id", "p_value", sep="\t", file=f)
+
+        # The order in the snp_sets list should have been consistent
+        # across the whole analysis. We just want to make sure that we
+        # actually have the right number of results.
         assert len(snp_sets) == len(results)
+
+        # Write a tab separated file containing the set and p-values.
         for i, p_value in enumerate(results):
             set_id = snp_sets[i]
             print(set_id, p_value, sep="\t", file=f)
 
 
 def _skat_run_job(script_filename):
+    """Calls Rscript with the generated script and parses the results.
+
+    The results should be somewhere in the standard output. The expected
+    format is: ::
+
+        _PYTHON_HOOK_PVAL:[0.123]
+
+    If the template script is modified, this format should still be respected.
+
+    It is also noteworthy that this function uses `Rscript` to run the
+    analysis. Hence, it should be in the path when using the imputed_stats
+    skat mode.
+
+    """
     # Parse the p-value.
     proc = Popen(
         ["Rscript", script_filename],
@@ -409,6 +435,19 @@ def _skat_run_job(script_filename):
 
 
 def _skat_generate_r_script(dir_name, r_files, args):
+    """Uses jinja2 to generate an R script to do the SKAT analysis.
+
+    :param dir_name: The output directory name to write the scripts in.
+    :type dir_name: str
+
+    :param r_files: A dict containing the different input files required by
+                    the R script.
+    :type r_files: dict
+
+    :param args: The parsed arguments.
+    :type args: Namespace
+
+    """
     jinja_env = jinja2.Environment(
         loader=jinja2.PackageLoader("gwip", "script_templates")
     )
@@ -517,6 +556,7 @@ def _skat_write_marker(name, dosage, snp_set, genotype_files):
     for set_id in this_snp_set:
         file_object = genotype_files[set_id]
         print(name, *dosage, sep=",", file=file_object)
+
 
 def compute_statistics(impute2_filename, samples, markers_to_extract,
                        phenotypes, remove_gender, out_prefix, options):
@@ -842,12 +882,11 @@ def check_args(args):
                 raise ProgramError("{}: no such file".format(filename))
 
     # Checking the number of process
+    on_mac_os = platform.system() == "Darwin"
     if args.nb_process < 1:
         raise ProgramError("{}: invalid number of "
                            "processes".format(args.nb_process))
-    if (args.nb_process > 1 and
-        platform.system() == "Darwin" and
-        args.analysis_type != "skat"):
+    if (args.nb_process > 1 and on_mac_os and args.analysis_type != "skat"):
         raise ProgramError("multiprocessing is not supported on Mac OS when "
                            "using linear regression, logistic regression or "
                            "Cox.")
