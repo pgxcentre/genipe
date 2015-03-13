@@ -362,8 +362,12 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
 
     # Run the SKAT analysis by calling Rscript either in different subprocesses
     # or linearly.
+    logging.info("Launching SKAT using {} processes on {} gene sets.".format(
+        args.nb_process, len(snp_sets) 
+    ))
+
     if args.nb_process > 1:
-        pool = Pool(processes=options.nb_process)
+        pool = Pool(processes=args.nb_process)
         results = pool.map(_skat_run_job, r_scripts)
     else:
         results = []
@@ -393,6 +397,7 @@ def _skat_run_job(script_filename):
         stderr=PIPE,
     )
     out, err = proc.communicate()
+    logging.info("SKAT Warning: " + err.decode("utf-8"))
 
     out = out.decode("utf-8")
     match = re.search(r"_PYTHON_HOOK_PVAL:\[(.+)\]", out)
@@ -840,8 +845,12 @@ def check_args(args):
     if args.nb_process < 1:
         raise ProgramError("{}: invalid number of "
                            "processes".format(args.nb_process))
-    if args.nb_process > 1 and platform.system() == "Darwin":
-        raise ProgramError("multiprocessing is not supported on Mac OS")
+    if (args.nb_process > 1 and
+        platform.system() == "Darwin" and
+        args.analysis_type != "skat"):
+        raise ProgramError("multiprocessing is not supported on Mac OS when "
+                           "using linear regression, logistic regression or "
+                           "Cox.")
 
     # Checking the number of lines to read
     if args.nb_lines < 1:
