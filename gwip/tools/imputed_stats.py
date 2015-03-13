@@ -203,7 +203,7 @@ def skat_read_snp_set(i_filename):
 
     This file has to be supplied by the user. The recognized columns are:
     `variant, snp_set, weight`. The `weight` column is optional and can
-    be used to specify a custom weighting scheme for SKAT. If nothing is 
+    be used to specify a custom weighting scheme for SKAT. If nothing is
     specified, the default Beta weights are used.
 
     The file has to be tab delimited.
@@ -270,7 +270,7 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
     else:
         # This should not happen because the folder name contains a timestamp
         raise ProgramError("A folder named '{}' already exists.".format(
-            dir_name 
+            dir_name
         ))
 
     # Open genotype CSV files for every SNP set. Those CSV files will be
@@ -324,6 +324,20 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
     for file_handle in genotype_files.values():
         file_handle.close()
 
+    # Write the covariate file.
+    if args.covar:
+        # Make sure the samples are consistent by merging phenotype and
+        # samples.
+        covar_df = samples.join(
+            phenotypes[args.covar],
+        )[args.covar]
+        covar_df.index.name = "sample"
+
+        covar_df.to_csv(
+            os.path.join(dir_name, "covariates.csv"),
+            sep=",",
+        )
+
 
 def _skat_parse_line(line, markers_of_interest, samples, gender=None):
     """Parses a single line of the Impute2 file.
@@ -350,7 +364,7 @@ def _skat_parse_line(line, markers_of_interest, samples, gender=None):
     line = line.split(" ")
     # info_tuple contains: chrom, name, pos, a1, a2
     # proba_matrix is a matrix of sample x (aa, ab, bb)
-    info_tuple, proba_matrix = matrix_from_line(line)    
+    info_tuple, proba_matrix = matrix_from_line(line)
 
     chrom, name, pos, a1, a2 = info_tuple
 
