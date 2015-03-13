@@ -280,15 +280,17 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
         filename = os.path.join(dir_name, "{}.genotypes.csv".format(set_id))
         genotype_files[set_id] = open(filename, "w")
         # We write the column headers for every file.
-        genotype_files[set_id].write(
-            "," + ",".join(samples.index)
-        )
+        print("", *samples.index, sep=",", file=genotype_files[set_id])
 
     # The markers of interest are the markers we want to include in the
     # analysis. Concretly they are the markers that were included in the snp
     # sets. If a list of markers to extract is provided by the user, we also
     # look at this to filter ou undesired markers.
+    #
+    # We also fill a set of written_markers to stop whenever all the markers
+    # were written to file.
     markers_of_interest = set(snp_set["variant"])
+    written_markers = set()
     if markers_to_extract is not None:
         markers_of_interest = markers_of_interest & markers_to_extract
 
@@ -302,11 +304,20 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
         i_file = open(impute2_filename, "rb")
 
     for line in i_file:
+        # If we already found everything, we will stop here.
+        if len(written_markers) == len(markers_of_interest):
+            if written_markers == markers_of_interest:
+                logging.info("Found all the necessary markers, skipping the "
+                             "rest of the file.")
+                break
+
         line = line.decode("ascii")
+
         # TODO: Add the gender and do QC (men with hetero on chrX).
         line = _skat_parse_line(line, markers_of_interest, samples)
         if line is not None:
             name, dosage = line
+            written_markers.add(name)
             _skat_write_marker(name, dosage, snp_set, genotype_files)
 
     # Close the genotype files.
