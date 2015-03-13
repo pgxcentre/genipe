@@ -9,8 +9,6 @@
 import os
 from setuptools import setup
 
-from gwip import __version__
-
 
 MAJOR = 0
 MINOR = 1
@@ -45,16 +43,19 @@ def setup_package():
             "console_scripts": [
                 "gwip-launcher=gwip.pipeline:main",
                 "impute2-merger=gwip.tools.impute2_merger:main",
+                "imputed-stats=gwip.tools.imputed_stats:main",
             ],
         },
         install_requires=["numpy >= 1.8.2", "jinja2 >= 2.7.3",
-                          "pandas >= 0.15.2", "setuptools >= 12.0.5"],
-        packages=["gwip", "gwip.task", "gwip.db", "gwip.tools",
+                          "pandas >= 0.15.2", "setuptools >= 12.0.5",
+                          "pyfaidx >= 0.3.7"],
+        packages=["gwip", "gwip.task", "gwip.db", "gwip.tools", "gwip.formats",
                   "gwip.reporting", "gwip.config", "gwip.tests"],
         package_data={"gwip.reporting": ["templates/*.tex",
                                          "templates/biblio/*",
                                          "templates/utils/*",
-                                         "templates/parts/*.tex"], },
+                                         "templates/parts/*.tex"],
+                      "gwip.tests": ["data/*"]},
         test_suite="gwip.tests.test_suite",
         classifiers=["Operating System :: Linux",
                      "Programming Language :: Python",
