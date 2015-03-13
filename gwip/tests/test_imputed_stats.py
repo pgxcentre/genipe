@@ -1682,10 +1682,117 @@ class TestImputedStats(unittest.TestCase):
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                    places=place)
 
-    @unittest.skip("Test not implemented")
     def test_full_fit_cox_interaction(self):
         """Tests the full pipeline for Cox's regression with interaction."""
-        self.fail("Test not implemented")
+        # Reading the data
+        data_filename = resource_filename(
+            __name__,
+            "data/regression_sim_inter.txt.bz2",
+        )
+
+        # Creating the input files
+        o_prefix, options = create_input_files(
+            i_filename=data_filename,
+            output_dirname=self.output_dir.name,
+            analysis_type="cox",
+            tte="y",
+            censure="y_d",
+            interaction="gender",
+        )
+
+        # Executing the tool
+        main(args=options)
+
+        # Cleaning the handlers
+        TestImputedStats.clean_logging_handlers()
+
+        # Making sure the output file exists
+        self.assertTrue(os.path.isfile(o_prefix + ".cox.dosage"))
+
+        # Reading the data
+        observed = pd.read_csv(o_prefix + ".cox.dosage", sep="\t")
+
+        # Checking all columns are present
+        self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
+                          "coef", "se", "lower", "upper", "z", "p"],
+                         list(observed.columns))
+
+        # Chromosomes
+        self.assertEqual([22], observed.chr.unique())
+
+        # Positions
+        self.assertEqual([1, 2, 3], list(observed.pos))
+
+        # Marker names
+        self.assertEqual(["marker_1", "marker_2", "marker_3"],
+                         list(observed.snp))
+
+        # Major alleles
+        self.assertEqual(["T", "G", "AT"], list(observed.major))
+
+        # Minor alleles
+        self.assertEqual(["C", "A", "A"], list(observed.minor))
+
+        # Minor allele frequency
+        expected = [1724 / 11526, 4604 / 11526, 1379 / 11526]
+        for expected_maf, observed_maf in zip(expected, observed.maf):
+            self.assertAlmostEqual(expected_maf, observed_maf, places=10)
+
+        # The number of samples
+        expected = [5763, 5763, 5763]
+        for expected_n, observed_n in zip(expected, observed.n):
+            self.assertEqual(expected_n, observed_n)
+
+        # The coefficients
+        expected = [-0.6446297920053343233, -0.00626679211298179859,
+                    -0.468685693217335109]
+        places = [10, 8, 8]
+        zipped = zip(expected, observed.coef, places)
+        for expected_coef, observed_coef, place in zipped:
+            self.assertAlmostEqual(expected_coef, observed_coef, places=place)
+
+        # The standard error
+        expected = [0.1430770156758568168, 0.0834709381328159472,
+                    0.1209229684191305970]
+        places = [7, 10, 10]
+        zipped = zip(expected, observed.se, places)
+        for expected_se, observed_se, place in zipped:
+            self.assertAlmostEqual(expected_se, observed_se, places=place)
+
+        # The lower CI
+        expected = [-0.925055589745486406, -0.16986682460907207,
+                    -0.705690356222505422]
+        places = [3, 4, 3]
+        zipped = zip(expected, observed.lower, places)
+        for expected_min_ci, observed_min_ci, place in zipped:
+            self.assertAlmostEqual(expected_min_ci, observed_min_ci,
+                                   places=place)
+
+        # The upper CI
+        expected = [-0.364203994265182296, 0.157333240383108447,
+                    -0.231681030212164824]
+        places = [3, 4, 3]
+        zipped = zip(expected, observed.upper, places)
+        for expected_max_ci, observed_max_ci, place in zipped:
+            self.assertAlmostEqual(expected_max_ci, observed_max_ci,
+                                   places=place)
+
+        # The Z statistics
+        expected = [-4.5054741249688419202, -0.0750775330092768867,
+                    -3.875902976453783122]
+        places = [5, 7, 7]
+        zipped = zip(expected, observed.z, places)
+        for expected_z, observed_z, place in zipped:
+            self.assertAlmostEqual(expected_z, observed_z, places=place)
+
+        # The p values
+        expected = [6.62249088800859198e-06, 9.40153023426109735e-01,
+                    1.06230010246344264e-04]
+        places = [5, 8, 7]
+        zipped = zip(expected, observed.p, places)
+        for expected_p, observed_p, place in zipped:
+            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                                   places=place)
 
     def test_full_fit_linear_interaction(self):
         """Tests the full pipeline for linear regression with interaction."""
