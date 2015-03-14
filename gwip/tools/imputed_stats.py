@@ -339,6 +339,8 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
             written_markers.add(name)
             _skat_write_marker(name, dosage, snp_set, genotype_files)
 
+    i_file.close()
+
     # Close the genotype files.
     for file_handle in genotype_files.values():
         file_handle.close()
@@ -389,6 +391,10 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
         dir_name,
         "{}.skat.dosage".format(args.out)
     )
+
+    logging.info("SKAT completed, writing the results to disk ({}).".format(
+        output_filename
+    ))
 
     with open(output_filename, "w") as f:
         # Write the header.
