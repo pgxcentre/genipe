@@ -278,9 +278,15 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
     snp_set = skat_read_snp_set(args.snp_sets)
 
     # We will use a temporary directory for our analysis.
-    dir_name = os.path.abspath(
-        datetime.datetime.today().strftime("%Y-%m-%d_%H.%M.%S.skat")
-    )
+    if args.out:
+        dir_name = os.path.join(
+            args.out,
+            datetime.datetime.today().strftime("%Y-%m-%d_%H.%M.%S.skat")
+        )
+    else:
+        dir_name = datetime.datetime.today().strftime("%Y-%m-%d_%H.%M.%S.skat")
+
+    dir_name = os.path.abspath(dir_name)
 
     if not os.path.isdir(dir_name):
         os.makedirs(dir_name)
