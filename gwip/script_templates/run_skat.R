@@ -37,6 +37,17 @@ for (col in names(covars)) covars[, col] <- as.numeric(covars[, col])
 covars <- as.matrix(covars)
 {% endif %}
 
+{% if weights %}
+# Read the weights for variants.
+weights <- read.table(
+    "{{ weights }}",
+    sep=",",
+    stringsAsFactors=FALSE,
+    header=FALSE,
+)
+weights <- as.numeric(weights[, 1])
+{% endif %}
+
 # Read the outcome file.
 outcome <- read.table(
     "{{ outcome_file }}",
@@ -65,6 +76,7 @@ results <- SKAT(
     dosage,
     obj, 
     {% if skat_o %}method="optimal.adj",{% endif %}
+    {% if weights %}weights=weights,{% endif %}
     is_dosage=TRUE
 )
 

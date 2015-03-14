@@ -264,15 +264,12 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
     input files to the disk, runs the generated R scripts to do the actual
     analysis and then writes the results to disk.
 
-    .. todo::
-
-        Need to add support for variant weights!
-
     """
 
     # We keep track of the files that are generated because we will need the
     # paths to generate the R script correctly.
-    r_files = {"snp_sets": [], "covariates": None, "outcome": None}
+    r_files = {"snp_sets": [], "covariates": None, "outcome": None,
+               "weights": None}
 
     # Read the SNP set and create the output files.
     snp_set = skat_read_snp_set(args.snp_sets)
@@ -295,6 +292,12 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
         raise ProgramError("A folder named '{}' already exists.".format(
             dir_name
         ))
+
+    # If weights were provided, we will write a weight vector to disk for R.
+    if "weight" in snp_set.columns:
+        weight_filename = os.path.join(dir_name, "weights.csv")
+        snp_set[["weight"]].to_csv(weight_filename, index=False, header=False)
+        r_files["weights"] = weight_filename
 
     # Open genotype CSV files for every SNP set. Those CSV files will be
     # read in R and used by SKAT.
@@ -479,6 +482,7 @@ def _skat_generate_r_script(dir_name, r_files, args):
             snp_set_file=snp_set_file,
             covariate_file=r_files["covariates"],
             outcome_file=r_files["outcome"],
+            weights=r_files["weights"],
 
             outcome_type="C" if args.outcome_type == "continuous" else "D",
             skat_o=args.skat_o,
