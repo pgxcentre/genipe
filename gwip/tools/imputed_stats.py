@@ -399,10 +399,7 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
             results.append(_skat_run_job(script))
 
     # Finally, write the SKAT output to disk.
-    output_filename = os.path.join(
-        dir_name,
-        "{}.skat.dosage".format(args.out)
-    )
+    output_filename = args.out + ".skat.dosage"
 
     logging.info("SKAT completed, writing the results to disk ({}).".format(
         output_filename

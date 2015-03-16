@@ -2087,10 +2087,8 @@ class TestImputedStatsSkat(unittest.TestCase):
         ]
         main(args=args)
 
-        results_filename = os.path.join(
-            self.output_dir.name,
-            "skat_test.skat.dosage"
-        )
+        results_filename = (os.path.join(self.output_dir.name, "skat_test") +
+                            ".skat.dosage")
 
         p = pd.read_csv(results_filename, header=0, sep="\t")["p_value"][0]
         self.assertAlmostEqual(np.log10(0.002877041), np.log10(p), places=10)
@@ -2103,10 +2101,8 @@ class TestImputedStatsSkat(unittest.TestCase):
         ]
         main(args=args)
 
-        results_filename = os.path.join(
-            self.output_dir.name,
-            "skat_test.skat.dosage"
-        )
+        results_filename = (os.path.join(self.output_dir.name, "skat_test") +
+                            ".skat.dosage")
 
         p = pd.read_csv(results_filename, header=0, sep="\t")["p_value"][0]
         self.assertAlmostEqual(np.log10(0.1401991), np.log10(p), places=10)
