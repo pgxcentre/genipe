@@ -35,6 +35,7 @@ def clean_logging_handlers():
     for handler in handlers:
         logging.root.removeHandler(handler)
 
+
 def reverse_dosage(dosage):
     """Finds values for d1, d2 and d3 from dosage."""
     d1, d2, d3 = 0, 0, 0
