@@ -30,7 +30,8 @@ if os.environ.get("READTHEDOCS", None) == "True":
         def __getattr__(cls, name):
                 return Mock()
 
-    MOCK_MODULES = ["numpy", "pandas", "matplotlib"]
+    MOCK_MODULES = ["numpy", "pandas", "matplotlib", "jinja2", "lifelines",
+                    "statsmodels", "pyfaidx"]
     sys.modules.update((mod_name, Mock()) for mod_name in MOCK_MODULES)
 
 # -- General configuration ------------------------------------------------
