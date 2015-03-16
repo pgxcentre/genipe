@@ -279,13 +279,10 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
     snp_set = skat_read_snp_set(args.snp_sets)
 
     # We will use a temporary directory for our analysis.
-    if args.out:
-        dir_name = os.path.join(
-            args.out,
-            datetime.datetime.today().strftime("%Y-%m-%d_%H.%M.%S.skat")
-        )
-    else:
-        dir_name = datetime.datetime.today().strftime("%Y-%m-%d_%H.%M.%S.skat")
+    dir_name = "{}.{}".format(
+        args.out,
+        datetime.datetime.today().strftime("skat.%Y.%m.%d")
+    )
 
     dir_name = os.path.abspath(dir_name)
 
@@ -299,6 +296,8 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
 
     # If weights were provided, we will write a weight vector to disk for R.
     if "weight" in snp_set.columns:
+        logging.info("SKAT will use the provided weights (from the SNP set "
+                     "file).")
         weight_filename = os.path.join(dir_name, "weights.csv")
         snp_set[["weight"]].to_csv(weight_filename, index=False, header=False)
         r_files["weights"] = weight_filename
@@ -387,7 +386,7 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
 
     # Run the SKAT analysis by calling Rscript either in different subprocesses
     # or linearly.
-    logging.info("Launching SKAT using {} processes on {} gene sets.".format(
+    logging.info("Launching SKAT using {} processes on {} SNP sets.".format(
         args.nb_process, len(snp_sets)
     ))
 
@@ -1230,7 +1229,7 @@ def parse_args(parser, args=None):
     # Additional options for SKAT analysis.
     group = skat_parser.add_argument_group("SKAT Options")
 
-    # The gene set file.
+    # The SNP set file.
     group.add_argument(
         "--snp-sets",
         type=str,
