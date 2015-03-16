@@ -593,6 +593,8 @@ class TestImputedStats(unittest.TestCase):
         self.fail("Test not implemented")
 
 
+@unittest.skipIf(not HAS_LIFELINES,
+                 "optional requirement (lifelines) not satisfied")
 class TestImputedStatsCox(unittest.TestCase):
 
     def setUp(self):
@@ -1090,6 +1092,8 @@ class TestImputedStatsCox(unittest.TestCase):
                                    places=place)
 
 
+@unittest.skipIf(not HAS_STATSMODELS,
+                 "optional requirement (statsmodels) not satisfied")
 class TestImputedStatsLinear(unittest.TestCase):
 
     def setUp(self):
@@ -1557,6 +1561,8 @@ class TestImputedStatsLinear(unittest.TestCase):
                                    places=10)
 
 
+@unittest.skipIf(not HAS_STATSMODELS,
+                 "optional requirement (statsmodels) not satisfied")
 class TestImputedStatsLogistic(unittest.TestCase):
 
     def setUp(self):
@@ -2062,6 +2068,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
                                    places=place)
 
 
+@unittest.skipIf(which("Rscript") is None, "R not installed")
 class TestImputedStatsSkat(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
@@ -2079,7 +2086,6 @@ class TestImputedStatsSkat(unittest.TestCase):
         for directory in skat_temp_directories:
             directory.cleanup()
 
-    @unittest.skipIf(which("Rscript") is None, "R not installed")
     def test_continuous(self):
         args = self.args + [
             "--pheno-name", "outcome_continuous",
@@ -2093,7 +2099,6 @@ class TestImputedStatsSkat(unittest.TestCase):
         p = pd.read_csv(results_filename, header=0, sep="\t")["p_value"][0]
         self.assertAlmostEqual(np.log10(0.002877041), np.log10(p), places=10)
 
-    @unittest.skipIf(which("Rscript") is None, "R not installed")
     def test_discrete(self):
         args = self.args + [
             "--pheno-name", "outcome_discrete",
