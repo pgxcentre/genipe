@@ -9,6 +9,7 @@
 
 import random
 import unittest
+from shutil import which
 from tempfile import TemporaryDirectory
 
 import numpy as np
@@ -47,6 +48,7 @@ class TestImputedStatsSkat(unittest.TestCase):
         for directory in temp_directories:
             directory.cleanup()
 
+    @unittest.skipIf(which("Rscript") is None, "R not installed")
     def test_continuous(self):
         args = self.args + [
             "--pheno-name", "outcome_continuous",
@@ -62,6 +64,7 @@ class TestImputedStatsSkat(unittest.TestCase):
         p = pd.read_csv(results_filename, header=0, sep="\t")["p_value"][0]
         self.assertAlmostEqual(np.log10(0.002877041), np.log10(p), places=10)
 
+    @unittest.skipIf(which("Rscript") is None, "R not installed")
     def test_discrete(self):
         args = self.args + [
             "--pheno-name", "outcome_discrete",
