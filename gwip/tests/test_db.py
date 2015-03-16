@@ -22,6 +22,9 @@ __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
 __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
+__all__ = ["TestDB"]
+
+
 class TestDB(unittest.TestCase):
 
     def setUp(self):
@@ -156,10 +159,10 @@ class TestDB(unittest.TestCase):
             # The name should be the same
             self.assertEqual(task_name, o_name)
 
-            # The launch and start times should be the same (to first decimal)
+            # The launch and start times should be the same (max 1 second diff)
             self.assertEqual(o_launch, o_start)
-            t_delta = (o_launch - expected_time).total_seconds()
-            self.assertAlmostEqual(0, t_delta, places=0)
+            t_delta = abs((o_launch - expected_time).total_seconds())
+            self.assertTrue(t_delta >= 0 and t_delta <= 1)
 
             # End and completed should be none
             self.assertTrue(o_end is None)
@@ -183,10 +186,10 @@ class TestDB(unittest.TestCase):
             if task_name == modified_task:
                 expected_time = now
 
-            # The launch and start times should be the same (to milliseconds)
+            # The launch and start times should be the same (max 1 second diff)
             self.assertEqual(o_launch, o_start)
-            t_delta = (o_launch - expected_time).total_seconds()
-            self.assertAlmostEqual(0, t_delta, places=0)
+            t_delta = abs((o_launch - expected_time).total_seconds())
+            self.assertTrue(t_delta >= 0 and t_delta <= 1)
 
             # End and completed should be none (except for first task)
             self.assertTrue(o_end is None)
@@ -223,10 +226,10 @@ class TestDB(unittest.TestCase):
             # The name should be the same
             self.assertEqual(task_name, o_name)
 
-            # The launch and start times should be the same (to first decimal)
+            # The launch and start times should be the same (max 1 second diff)
             self.assertEqual(o_launch, o_start)
-            t_delta = (o_launch - expected_time).total_seconds()
-            self.assertAlmostEqual(0, t_delta, places=0)
+            t_delta = abs((o_launch - expected_time).total_seconds())
+            self.assertTrue(t_delta >= 0 and t_delta <= 1)
 
             # End and completed should be none unless it's the first task
             if task_name != modified_task:
@@ -236,13 +239,14 @@ class TestDB(unittest.TestCase):
                 # The task should be completed
                 self.assertEqual(1, o_completed)
 
-                # Time difference between completion times
-                t_delta = (o_end - completion_time).total_seconds()
-                self.assertAlmostEqual(0, t_delta, places=0)
+                # Time difference between completion times (max 1 second diff)
+                t_delta = abs((o_end - completion_time).total_seconds())
+                self.assertTrue(t_delta >= 0 and t_delta <= 1)
 
-                # Time difference between start and end should be 3
-                t_delta = (o_end - o_start).total_seconds()
-                self.assertAlmostEqual(3, t_delta, places=0)
+                # Time difference between start and end should be 3 (max 1
+                # second diff)
+                t_delta = abs((o_end - o_start).total_seconds())
+                self.assertTrue(t_delta >= 3 and t_delta <= 4)
 
         conn.close()
 
@@ -267,10 +271,10 @@ class TestDB(unittest.TestCase):
             # The name should be the same
             self.assertEqual(task_name, o_name)
 
-            # The launch and start times should be the same (to first decimal)
+            # The launch and start times should be the same (max 1 second diff)
             self.assertEqual(o_launch, o_start)
-            t_delta = (o_launch - expected_time).total_seconds()
-            self.assertAlmostEqual(0, t_delta, places=0)
+            t_delta = abs((o_launch - expected_time).total_seconds())
+            self.assertTrue(t_delta >= 0 and t_delta <= 1)
 
             # End and completed should be none unless it's the first task
             self.assertTrue(o_end is None)
@@ -299,10 +303,10 @@ class TestDB(unittest.TestCase):
             # The name should be the same
             self.assertEqual(task_name, o_name)
 
-            # The launch and start times should be the same (to first decimal)
+            # The launch and start times should be the same (max 1 second diff)
             self.assertEqual(o_launch, o_start)
-            t_delta = (o_launch - expected_time).total_seconds()
-            self.assertAlmostEqual(0, t_delta, places=0)
+            t_delta = abs((o_launch - expected_time).total_seconds())
+            self.assertTrue(t_delta >= 0 and t_delta <= 1)
 
             # End and completed should be none unless it's the first task
             if task_name != modified_task:
@@ -312,9 +316,9 @@ class TestDB(unittest.TestCase):
                 # The task should be completed
                 self.assertEqual(0, o_completed)
 
-                # Time difference between completion times
-                t_delta = (o_end - completion_time).total_seconds()
-                self.assertAlmostEqual(0, t_delta, places=0)
+                # Time difference between completion times (max 1 second diff)
+                t_delta = abs((o_end - completion_time).total_seconds())
+                self.assertTrue(t_delta >= 0 and t_delta <= 1)
 
         # Closing the connection
         conn.close()
@@ -353,19 +357,21 @@ class TestDB(unittest.TestCase):
             # The name should be the same
             self.assertEqual(task_name, o_name)
 
-            # The launch and start times should be the same (to first decimal)
+            # The launch and start times should be the same (max 1 second diff)
             # for the other tasks
             if o_name != modified_task:
                 self.assertEqual(o_launch, o_start)
-                t_delta = (o_launch - expected_time).total_seconds()
-                self.assertAlmostEqual(0, t_delta, places=0)
+                t_delta = abs((o_launch - expected_time).total_seconds())
+                self.assertTrue(t_delta >= 0 and t_delta <= 1)
             else:
-                self.assertAlmostEqual(launch_time.timestamp(),
-                                       o_launch.timestamp(), places=0)
-                self.assertAlmostEqual(start_time.timestamp(),
-                                       o_start.timestamp(), places=0)
-                self.assertAlmostEqual(end_time.timestamp(), o_end.timestamp(),
-                                       places=0)
+                t_delta = abs(launch_time.timestamp() - o_launch.timestamp())
+                self.assertTrue(t_delta >= 0 and t_delta <= 1)
+
+                t_delta = abs(start_time.timestamp() - o_start.timestamp())
+                self.assertTrue(t_delta >= 0 and t_delta <= 1)
+
+                t_delta = abs(end_time.timestamp() - o_end.timestamp())
+                self.assertTrue(t_delta >= 0 and t_delta <= 1)
 
             # End and completed should be none unless it's the first task
             if task_name != modified_task:
@@ -375,17 +381,19 @@ class TestDB(unittest.TestCase):
                 # The task should be completed
                 self.assertEqual(1, o_completed)
 
-                # Time difference between completion times
-                t_delta = (o_end - end_time).total_seconds()
-                self.assertAlmostEqual(0, t_delta, places=0)
+                # Time difference between completion times (max 1 second diff)
+                t_delta = abs((end_time - o_end).total_seconds())
+                self.assertTrue(t_delta >= 0 and t_delta <= 1)
 
-                # Time difference between launch and start should be 1
-                t_delta = (o_start - o_launch).total_seconds()
-                self.assertAlmostEqual(1, t_delta, places=0)
+                # Time difference between launch and start should be 1 (max 1
+                # second diff)
+                t_delta = abs((o_start - o_launch).total_seconds())
+                self.assertTrue(t_delta >= 1 and t_delta <= 2)
 
-                # Time difference between start and end should be 3
-                t_delta = (o_end - o_start).total_seconds()
-                self.assertAlmostEqual(3, t_delta, places=0)
+                # Time difference between start and end should be 3 (max 1
+                # second diff)
+                t_delta = abs((o_end - o_start).total_seconds())
+                self.assertTrue(t_delta >= 3 and t_delta <= 4)
 
         conn.close()
 
@@ -445,4 +453,10 @@ class TestDB(unittest.TestCase):
 
         # Getting the time for all tasks
         observed_time = get_all_runtimes(self.db_name)
-        self.assertEqual(expected_time, observed_time)
+
+        # Comparing the results
+        self.assertEqual(set(expected_time.keys()), set(observed_time.keys()))
+
+        for task_name in expected_time.keys():
+            t_delta = abs(expected_time[task_name] - observed_time[task_name])
+            self.assertTrue(t_delta >= 0 and t_delta <= 1)
