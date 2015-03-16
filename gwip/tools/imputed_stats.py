@@ -18,18 +18,26 @@ from multiprocessing import Pool
 from subprocess import Popen, PIPE
 from collections import namedtuple
 
+import jinja2
 import numpy as np
 import pandas as pd
-from lifelines import CoxPHFitter
-
-import statsmodels.api as sm
-import statsmodels.formula.api as smf
-
-import jinja2
 
 from .. import __version__
 from ..formats.impute2 import *
 from ..error import ProgramError
+
+try:
+    from lifelines import CoxPHFitter
+    HAS_LIFELINES = True
+except ImportError:
+    HAS_LIFELINES = False
+
+try:
+    import statsmodels.api as sm
+    import statsmodels.formula.api as smf
+    HAS_STATSMODELS = True
+except ImportError:
+    HAS_STATSMODELS = False
 
 
 __author__ = ["Louis-Philippe Lemieux Perreault", "Marc-Andre Legault"]
@@ -872,6 +880,14 @@ _fit_map = {"cox": fit_cox, "linear": fit_linear, "logistic": fit_logistic}
 
 def check_args(args):
     """Checks the arguments and options."""
+    # Checking if we have the requirements
+    if args.analysis_type == "cox":
+        if not HAS_LIFELINES:
+            raise ProgramError("missing optional module: lifelines")
+    if args.analysis_type in {"linear", "logistic"}:
+        if not HAS_STATSMODELS:
+            raise ProgramError("missing optional module: statsmodels")
+
     # Checking the required input files
     for filename in [args.impute2, args.sample, args.pheno]:
         if not os.path.isfile(filename):
