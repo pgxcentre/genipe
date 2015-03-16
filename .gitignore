@@ -4,6 +4,6 @@
 dist
 *.egg-info
 test
-doc/_build
+docs/_build
 
 gwip/version.py
