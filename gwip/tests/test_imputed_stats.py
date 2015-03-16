@@ -49,6 +49,11 @@ def reverse_dosage(dosage):
         d2 = dosage
         d3 = 0
 
+    elif dosage == 2:
+        d1 = 0
+        d2 = 0
+        d3 = 1
+
     elif dosage < 1:
         d2 = dosage
         d1 = 1 - d2

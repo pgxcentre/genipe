@@ -57,7 +57,7 @@ def main():
         1- Exclude markers that have ambiguous alleles [A/T or C/G] (Plink)
         2- Exclude duplicated markers (only keep one) (Plink)
         3- Split the dataset by chromosome (Plink)
-        4- Find markers that need to be flip (strand problem) (SHAPEIT)
+        4- Find markers that need to be flipped (strand problem) (SHAPEIT)
         5- Flip those markers (Plink)
         6- Find markers with strand problem (SHAPEIT)
         7- Exclude markers with strand problem (Plink)
