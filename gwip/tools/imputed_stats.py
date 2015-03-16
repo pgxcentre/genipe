@@ -32,7 +32,7 @@ from ..formats.impute2 import *
 from ..error import ProgramError
 
 
-__author__ = "Louis-Philippe Lemieux Perreault"
+__author__ = ["Louis-Philippe Lemieux Perreault", "Marc-Andre Legault"]
 __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
 __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
