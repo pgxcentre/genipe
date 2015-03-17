@@ -9,7 +9,7 @@ The tools require a standard Python 3 installation with the following modules:
 * ``setuptools`` version 12.0.5 or latest
 * ``pyfaidx`` version 0.3.7 or latest
 
-The following modules are option (required for statistical analysis):
+The following modules are optional (required for statistical analysis):
 
 * ``lifelines`` version 0.7.0 or latest
 * ``statsmodels`` version 0.6.1 or latest
