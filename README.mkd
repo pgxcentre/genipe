@@ -7,6 +7,9 @@
 The `gwip` module includes a script (named `gwip-launcher`) that automatically
 runs a genome-wide imputation pipeline using *Plink*, *shapeit* and *impute2*.
 
+Full documentation is available at
+[http://pgxcentre.github.io/gwip/](http://pgxcentre.github.io/gwip/).
+
 
 ## Installation
 
