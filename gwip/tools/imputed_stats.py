@@ -14,6 +14,7 @@ import logging
 import argparse
 import platform
 import traceback
+from shutil import which
 from multiprocessing import Pool
 from subprocess import Popen, PIPE
 from collections import namedtuple
@@ -26,12 +27,20 @@ from .. import __version__
 from ..formats.impute2 import *
 from ..error import ProgramError
 
+
+__author__ = ["Louis-Philippe Lemieux Perreault", "Marc-Andre Legault"]
+__copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
+__license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
+
+
+# Check if lifelines is installed
 try:
     from lifelines import CoxPHFitter
     HAS_LIFELINES = True
 except ImportError:
     HAS_LIFELINES = False
 
+# Check if statsmodels is installed
 try:
     import statsmodels.api as sm
     import statsmodels.formula.api as smf
@@ -40,9 +49,25 @@ except ImportError:
     HAS_STATSMODELS = False
 
 
-__author__ = ["Louis-Philippe Lemieux Perreault", "Marc-Andre Legault"]
-__copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
-__license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
+def _has_skat():
+    """Checks if the SKAT R library is installed.
+
+    :returns: True if SKAT is installed, False otherwise.
+    :rtype: boolean
+
+    """
+    proc = Popen(
+        ["Rscript", "-e", 'is.element("SKAT", installed.packages()[,1])'],
+        stdout=PIPE,
+    )
+    out = proc.communicate()[0].decode().strip()
+
+    return out.endswith("TRUE")
+
+
+# Check if R and SKAT is installed
+HAS_R = which("Rscript") is not None
+HAS_SKAT = _has_skat() if HAS_R else False
 
 
 # An IMPUTE2 row to process
@@ -884,9 +909,16 @@ def check_args(args):
     if args.analysis_type == "cox":
         if not HAS_LIFELINES:
             raise ProgramError("missing optional module: lifelines")
-    if args.analysis_type in {"linear", "logistic"}:
+
+    elif args.analysis_type in {"linear", "logistic"}:
         if not HAS_STATSMODELS:
             raise ProgramError("missing optional module: statsmodels")
+
+    elif args.analysis_type == "skat":
+        if not HAS_R:
+            raise ProgramError("R is not installed")
+        if not HAS_SKAT:
+            raise ProgramError("R library missing: SKAT")
 
     # Checking the required input files
     for filename in [args.impute2, args.sample, args.pheno]:

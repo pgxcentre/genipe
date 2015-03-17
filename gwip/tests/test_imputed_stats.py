@@ -10,7 +10,6 @@
 import random
 import platform
 import unittest
-from shutil import which
 from tempfile import TemporaryDirectory
 
 import patsy
@@ -2068,7 +2067,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
                                    places=place)
 
 
-@unittest.skipIf(which("Rscript") is None, "R not installed")
+@unittest.skipIf(not HAS_SKAT, "SKAT is not installed")
 class TestImputedStatsSkat(unittest.TestCase):
 
     def __init__(self, *args, **kwargs):
