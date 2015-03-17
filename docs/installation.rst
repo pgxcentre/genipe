@@ -8,6 +8,9 @@ The tools require a standard Python 3 installation with the following modules:
 * ``pandas`` version 0.15.2 or latest
 * ``setuptools`` version 12.0.5 or latest
 * ``pyfaidx`` version 0.3.7 or latest
+
+The following modules are option (required for statistical analysis):
+
 * ``lifelines`` version 0.7.0 or latest
 * ``statsmodels`` version 0.6.1 or latest
 
