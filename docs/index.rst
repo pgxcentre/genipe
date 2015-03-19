@@ -4,10 +4,10 @@
    contain the root `toctree` directive.
 
 Genome-Wide Imputation Pipeline
-===============================
+================================
 
 Introduction
-------------
+-------------
 
 The :py:mod:`gwip` (Genome-Wide Imputation Pipeline) module provides an easy an
 efficient way of performing genome-wide imputation analysis using the three

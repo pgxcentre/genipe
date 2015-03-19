@@ -1,5 +1,5 @@
 Installation
-============
+=============
 
 The tools require a standard Python 3 installation with the following modules:
 
@@ -20,7 +20,7 @@ The following modules are optional (required for statistical analysis):
 
 
 Download
---------
+---------
 
 Since the module is still in development, it is recommended to simply clone the
 directory directly from `github <https://github.com/pgxcentre/gwip>`_. Once
@@ -39,7 +39,7 @@ use since it doesn't require any compilation.
 
 
 Using pyvenv
-------------
+-------------
 
 The following commands should successfully create a virtual environment and
 activate it, as long as Python 3 was previously installed on the machine.
@@ -59,7 +59,7 @@ command:
 
 
 Using Miniconda
----------------
+----------------
 
 The following commands should successfully download and install Miniconda,
 create and activate a new python virtual environment. This installation method
@@ -94,7 +94,7 @@ Finally, using ``pip``, install the missing dependencies and :py:mod:`gwip`:
 
 
 Testing the installation
-------------------------
+-------------------------
 
 To test the installation, make sure that the virtual environment is activated.
 
