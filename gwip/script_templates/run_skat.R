@@ -80,5 +80,10 @@ results <- SKAT(
     is_dosage=TRUE
 )
 
-p <- results$p.value
-cat("_PYTHON_HOOK_PVAL:[", p,  "]\n", sep="")  # This will be parsed by gwip.
+# The p value
+p.value <- results$p.value
+cat("_PYTHON_HOOK_PVAL:[", p.value,  "]\n", sep="")  # Parsed by gwip.
+
+# The Q value
+q.value <- as.numeric(results$Q)
+cat("_PYTHON_HOOK_QVAL:[", q.value,  "]\n", sep="")  # Parsed by gwip.

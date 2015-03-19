@@ -440,7 +440,7 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
 
     with open(output_filename, "w") as f:
         # Write the header.
-        print("snp_set_id", "p_value", sep="\t", file=f)
+        print("snp_set_id", "p_value", "q_value", sep="\t", file=f)
 
         # The order in the snp_sets list should have been consistent
         # across the whole analysis. We just want to make sure that we
@@ -448,9 +448,9 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
         assert len(snp_sets) == len(results)
 
         # Write a tab separated file containing the set and p-values.
-        for i, p_value in enumerate(results):
+        for i, (p_value, q_value) in enumerate(results):
             set_id = snp_sets[i]
-            print(set_id, p_value, sep="\t", file=f)
+            print(set_id, p_value, q_value, sep="\t", file=f)
 
 
 def _skat_run_job(script_filename):
@@ -475,15 +475,25 @@ def _skat_run_job(script_filename):
         stderr=PIPE,
     )
     out, err = proc.communicate()
-    logging.info("SKAT Warning: " + err.decode("utf-8"))
+    if err:
+        logging.info("SKAT Warning: " + err.decode("utf-8"))
 
+    # Decoding
     out = out.decode("utf-8")
-    match = re.search(r"_PYTHON_HOOK_PVAL:\[(.+)\]", out)
-    if match is None:
+
+    # Getting the p value
+    p_match = re.search(r"_PYTHON_HOOK_PVAL:\[(.+)\]", out)
+    if p_match is None:
         raise ProgramError("SKAT did not return properly. See script "
                            "'{}' for details.".format(script_filename))
 
-    return float(match.group(1))
+    # Getting the Q value
+    q_match = re.search(r"_PYTHON_HOOK_QVAL:\[(.+)\]", out)
+    if q_match is None:
+        raise ProgramError("SKAT did not return properly. See script "
+                           "'{}' for details.".format(script_filename))
+
+    return float(p_match.group(1)), float(q_match.group(1))
 
 
 def _skat_generate_r_script(dir_name, r_files, args):
@@ -571,15 +581,11 @@ def _skat_parse_line(line, markers_of_interest, samples, gender=None):
     # We need to compute the dosage vector.
     # This is given wrt to the minor and major alleles, so we need to get the
     # MAF to identify those.
-    maf, minor, major = maf_from_probs(proba_matrix, a1, a2, gender, name)
-
-    # The minor allele columns could be either the first or the third.
-    # We identify it here.
-    minor_allele_col = 0 if a1 == minor else 2
+    maf, minor_i, major_i = maf_from_probs(proba_matrix, 0, 2, gender, name)
 
     # We don't pass a scale parameter, because we want additive coding.
     dosage = dosage_from_probs(
-        homo_probs=proba_matrix[:, minor_allele_col],
+        homo_probs=proba_matrix[:, minor_i],
         hetero_probs=proba_matrix[:, 1],
     )
 

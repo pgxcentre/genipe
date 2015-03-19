@@ -2091,12 +2091,27 @@ class TestImputedStatsSkat(unittest.TestCase):
             "--outcome-type", "continuous"
         ]
         main(args=args)
-
         results_filename = (os.path.join(self.output_dir.name, "skat_test") +
                             ".skat.dosage")
+        # The observed values
+        observed = pd.read_csv(results_filename, header=0, sep="\t")
+        self.assertEqual((2, 3), observed.shape)
 
-        p = pd.read_csv(results_filename, header=0, sep="\t")["p_value"][0]
-        self.assertAlmostEqual(np.log10(0.002877041), np.log10(p), places=10)
+        # The SNP set ID
+        expected = ["set1", "set2"]
+        for expected_id, observed_id in zip(expected, observed.snp_set_id):
+            self.assertEqual(expected_id, observed_id)
+
+        # The p values
+        expected = [0.002877041, 0.002877041]
+        for expected_p, observed_p in zip(expected, observed.p_value):
+            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                                   places=10)
+
+        # The Q statistics
+        expected = [298041.5, 298041.5]
+        for expected_q, observed_q in zip(expected, observed.q_value):
+            self.assertAlmostEqual(expected_q, observed_q, places=10)
 
     def test_discrete(self):
         args = self.args + [
@@ -2104,12 +2119,28 @@ class TestImputedStatsSkat(unittest.TestCase):
             "--outcome-type", "discrete"
         ]
         main(args=args)
-
         results_filename = (os.path.join(self.output_dir.name, "skat_test") +
                             ".skat.dosage")
 
-        p = pd.read_csv(results_filename, header=0, sep="\t")["p_value"][0]
-        self.assertAlmostEqual(np.log10(0.1401991), np.log10(p), places=10)
+        # The observed values
+        observed = pd.read_csv(results_filename, header=0, sep="\t")
+        self.assertEqual((2, 3), observed.shape)
+
+        # The SNP set ID
+        expected = ["set1", "set2"]
+        for expected_id, observed_id in zip(expected, observed.snp_set_id):
+            self.assertEqual(expected_id, observed_id)
+
+        # The p values
+        expected = [0.1401991, 0.1401991]
+        for expected_p, observed_p in zip(expected, observed.p_value):
+            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                                   places=10)
+
+        # The Q statistics
+        expected = [34934.79, 34934.79]
+        for expected_q, observed_q in zip(expected, observed.q_value):
+            self.assertAlmostEqual(expected_q, observed_q, places=10)
 
     def setup_skat_files(self):
         """Parses the SKAT example files into the format expected by gwip."""
@@ -2167,7 +2198,7 @@ class TestImputedStatsSkat(unittest.TestCase):
 
                 chrom = random.randint(1, 22)
                 pos = random.randint(1000, 90000000)
-                a1, a2 = [random.choice("ATGC") for i in range(2)]
+                a1, a2 = random.sample("ATGC", 2)
 
                 variant_name = "{chrom}:{pos}:{a2}".format(
                     chrom=chrom, pos=pos, a2=a2
@@ -2196,11 +2227,16 @@ class TestImputedStatsSkat(unittest.TestCase):
                 print(row, *dosage_list, sep=" ", file=output_file)
 
         # Create the snp set file.
-        filename = os.path.join(out_directory, "snp_set.txt")
+        filename = os.path.join(out_directory, "snp_sets.txt")
         with open(filename, "w") as output_file:
             print("variant", "snp_set", sep="\t", file=output_file)
+            # The first SNP set
             for variant in variants:
                 print(variant, "set1", sep="\t", file=output_file)
+
+            # The second SNP set (which is the same as the first one)
+            for variant in variants:
+                print(variant, "set2", sep="\t", file=output_file)
 
         # Create a list of samples.
         samples = ["sample_{}".format(i + 1) for i in range(skat_z.shape[0])]
@@ -2238,7 +2274,7 @@ class TestImputedStatsSkat(unittest.TestCase):
             "--sample", os.path.join(out_directory, "samples.txt"),
             "--pheno", os.path.join(out_directory, "phenotypes.txt"),
             "--out", os.path.join(out_directory, "skat_test"),
-            "--snp-set", os.path.join(out_directory, "snp_set.txt"),
+            "--snp-set", os.path.join(out_directory, "snp_sets.txt"),
             "--covar", "covar_discrete,covar_continuous",
             "--sample-column", "sample",
             "--gender-column", "None",
