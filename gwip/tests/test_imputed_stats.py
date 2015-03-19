@@ -30,10 +30,6 @@ __all__ = ["TestImputedStats", "TestImputedStatsCox", "TestImputedStatsLinear",
            "TestImputedStatsLogistic"]
 
 
-# SKAT temporary directories
-skat_temp_directories = []
-
-
 def clean_logging_handlers():
     handlers = list(logging.root.handlers)
     for handler in handlers:
@@ -120,7 +116,7 @@ def create_input_files(i_filename, output_dirname, analysis_type,
         print(file=o_file)
 
     # The prefix of the output files
-    o_prefix = os.path.join(output_dirname, "test_imputed_stats_linear")
+    o_prefix = os.path.join(output_dirname, "test_imputed_stats")
 
     # The tool's options
     options = [
@@ -2070,30 +2066,35 @@ class TestImputedStatsLogistic(unittest.TestCase):
 @unittest.skipIf(not HAS_SKAT, "SKAT is not installed")
 class TestImputedStatsSkat(unittest.TestCase):
 
-    def __init__(self, *args, **kwargs):
-        global skat_temp_directories
+    tmp_dir = None
+    args = None
 
-        self.output_dir = TemporaryDirectory(prefix="gwip_test_")
-        skat_temp_directories.append(self.output_dir)
-        self.args = self.setup_skat_files()
-        super().__init__(*args, **kwargs)
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp_dir = TemporaryDirectory(prefix="gwip_test_")
+        cls.args = cls.setup_skat_files(cls.tmp_dir.name)
 
     @classmethod
     def tearDownClass(cls):
-        """Finishes the test."""
-        # Deleting the output directory
-        for directory in skat_temp_directories:
-            directory.cleanup()
+        # Cleaning the temporary directory
+        cls.tmp_dir.cleanup()
 
     def test_continuous(self):
+        o_prefix = os.path.join(self.tmp_dir.name, "skat_test_continuous")
         args = self.args + [
             "--pheno-name", "outcome_continuous",
             "--outcome-type", "continuous",
+            "--out", o_prefix,
         ]
+
+        # Executing the tool
         main(args=args)
-        results_filename = (os.path.join(self.output_dir.name, "skat_test") +
-                            ".skat.dosage")
+
+        # Cleaning the handlers
+        clean_logging_handlers()
+
         # The observed values
+        results_filename = o_prefix + ".skat.dosage"
         observed = pd.read_csv(results_filename, header=0, sep="\t")
         self.assertEqual((3, 3), observed.shape)
 
@@ -2114,15 +2115,21 @@ class TestImputedStatsSkat(unittest.TestCase):
             self.assertAlmostEqual(expected_q, observed_q, places=10)
 
     def test_discrete(self):
+        o_prefix = os.path.join(self.tmp_dir.name, "skat_test_discrete")
         args = self.args + [
             "--pheno-name", "outcome_discrete",
             "--outcome-type", "discrete",
+            "--out", o_prefix,
         ]
+
+        # Executing the tool
         main(args=args)
-        results_filename = (os.path.join(self.output_dir.name, "skat_test") +
-                            ".skat.dosage")
+
+        # Cleaning the handlers
+        clean_logging_handlers()
 
         # The observed values
+        results_filename = o_prefix + ".skat.dosage"
         observed = pd.read_csv(results_filename, header=0, sep="\t")
         self.assertEqual((3, 3), observed.shape)
 
@@ -2142,15 +2149,22 @@ class TestImputedStatsSkat(unittest.TestCase):
             self.assertAlmostEqual(expected_q, observed_q, places=10)
 
     def test_continuous_multiprocess(self):
+        o_prefix = os.path.join(self.tmp_dir.name, "skat_test_continuous_mp")
         args = self.args + [
             "--pheno-name", "outcome_continuous",
             "--outcome-type", "continuous",
             "--nb-process", "2",
+            "--out", o_prefix,
         ]
+
+        # Executing the tool
         main(args=args)
-        results_filename = (os.path.join(self.output_dir.name, "skat_test") +
-                            ".skat.dosage")
+
+        # Cleaning the handlers
+        clean_logging_handlers()
+
         # The observed values
+        results_filename = o_prefix + ".skat.dosage"
         observed = pd.read_csv(results_filename, header=0, sep="\t")
         self.assertEqual((3, 3), observed.shape)
 
@@ -2171,16 +2185,22 @@ class TestImputedStatsSkat(unittest.TestCase):
             self.assertAlmostEqual(expected_q, observed_q, places=10)
 
     def test_discrete_multiprocess(self):
+        o_prefix = os.path.join(self.tmp_dir.name, "skat_test_discrete_mp")
         args = self.args + [
             "--pheno-name", "outcome_discrete",
             "--outcome-type", "discrete",
             "--nb-process", "2",
+            "--out", o_prefix,
         ]
+
+        # Executing the tool
         main(args=args)
-        results_filename = (os.path.join(self.output_dir.name, "skat_test") +
-                            ".skat.dosage")
+
+        # Cleaning the handlers
+        clean_logging_handlers()
 
         # The observed values
+        results_filename = o_prefix + ".skat.dosage"
         observed = pd.read_csv(results_filename, header=0, sep="\t")
         self.assertEqual((3, 3), observed.shape)
 
@@ -2199,10 +2219,9 @@ class TestImputedStatsSkat(unittest.TestCase):
         for expected_q, observed_q in zip(expected, observed.q_value):
             self.assertAlmostEqual(expected_q, observed_q, places=10)
 
-    def setup_skat_files(self):
+    @staticmethod
+    def setup_skat_files(out_directory):
         """Parses the SKAT example files into the format expected by gwip."""
-        out_directory = self.output_dir.name
-
         # Read the SKAT example files.
         skat_x = pd.read_csv(  # Covariates
             resource_filename(
@@ -2335,7 +2354,6 @@ class TestImputedStatsSkat(unittest.TestCase):
             "--impute2", os.path.join(out_directory, "impute2.txt"),
             "--sample", os.path.join(out_directory, "samples.txt"),
             "--pheno", os.path.join(out_directory, "phenotypes.txt"),
-            "--out", os.path.join(out_directory, "skat_test"),
             "--snp-set", os.path.join(out_directory, "snp_sets.txt"),
             "--covar", "covar_discrete,covar_continuous",
             "--sample-column", "sample",
