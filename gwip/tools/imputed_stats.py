@@ -384,6 +384,13 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
             written_markers.add(name)
             _skat_write_marker(name, dosage, snp_set, genotype_files)
 
+    # We will warn the user if some variants were not found.
+    number_missing = len(markers_of_interest) - len(written_markers)
+
+    if number_missing > 0:
+        logging.warning("{} markers of interest were not found in the Impute2 "
+                        "file.".format(number_missing))
+
     i_file.close()
 
     # Close the genotype files.
