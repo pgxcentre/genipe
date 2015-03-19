@@ -7,6 +7,8 @@ Quick Navigation
 1. :ref:`skat-tut-1`
 2. :ref:`skat-tut-2`
 3. :ref:`skat-tut-3`
+4. :ref:`skat-tut-4`
+5. :ref:`skat-tut-5`
 
 SKAT analysis tutorial
 -----------------------
@@ -217,6 +219,8 @@ file, as well as covariates. The covariates are included in the analysis using
 the ``--covar`` argument and the variable type of the outcome is given using
 the ``--outcome-type`` argument which can be set to `discrete` or `continuous`.
 
+.. _skat-tut-4:
+
 Running the script
 ^^^^^^^^^^^^^^^^^^^
 
@@ -276,6 +280,8 @@ The line by line explanation of this command is as follows:
 
     Also note that the SKAT-O algorithm can be used by using the ``--skat-o``
     flag.
+
+.. _skat-tut-5:
 
 Results
 ^^^^^^^^
