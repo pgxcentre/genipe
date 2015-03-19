@@ -423,11 +423,11 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
         args.nb_process, len(snp_sets)
     ))
 
+    results = []
     if args.nb_process > 1:
-        pool = Pool(processes=args.nb_process)
-        results = pool.map(_skat_run_job, r_scripts)
+        with Pool(processes=args.nb_process) as pool:
+            results = pool.map(_skat_run_job, r_scripts)
     else:
-        results = []
         for script in r_scripts:
             results.append(_skat_run_job(script))
 
