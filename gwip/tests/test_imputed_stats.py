@@ -2088,35 +2088,35 @@ class TestImputedStatsSkat(unittest.TestCase):
     def test_continuous(self):
         args = self.args + [
             "--pheno-name", "outcome_continuous",
-            "--outcome-type", "continuous"
+            "--outcome-type", "continuous",
         ]
         main(args=args)
         results_filename = (os.path.join(self.output_dir.name, "skat_test") +
                             ".skat.dosage")
         # The observed values
         observed = pd.read_csv(results_filename, header=0, sep="\t")
-        self.assertEqual((2, 3), observed.shape)
+        self.assertEqual((3, 3), observed.shape)
 
         # The SNP set ID
-        expected = ["set1", "set2"]
+        expected = ["set1", "set2", "set3"]
         for expected_id, observed_id in zip(expected, observed.snp_set_id):
             self.assertEqual(expected_id, observed_id)
 
         # The p values
-        expected = [0.002877041, 0.002877041]
+        expected = [0.002877041, 0.09319144, 0.002877041]
         for expected_p, observed_p in zip(expected, observed.p_value):
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                    places=10)
 
         # The Q statistics
-        expected = [298041.5, 298041.5]
+        expected = [298041.5, 24870.14, 298041.5]
         for expected_q, observed_q in zip(expected, observed.q_value):
             self.assertAlmostEqual(expected_q, observed_q, places=10)
 
     def test_discrete(self):
         args = self.args + [
             "--pheno-name", "outcome_discrete",
-            "--outcome-type", "discrete"
+            "--outcome-type", "discrete",
         ]
         main(args=args)
         results_filename = (os.path.join(self.output_dir.name, "skat_test") +
@@ -2124,21 +2124,78 @@ class TestImputedStatsSkat(unittest.TestCase):
 
         # The observed values
         observed = pd.read_csv(results_filename, header=0, sep="\t")
-        self.assertEqual((2, 3), observed.shape)
+        self.assertEqual((3, 3), observed.shape)
 
         # The SNP set ID
-        expected = ["set1", "set2"]
+        expected = ["set1", "set2", "set3"]
         for expected_id, observed_id in zip(expected, observed.snp_set_id):
             self.assertEqual(expected_id, observed_id)
 
         # The p values
-        expected = [0.1401991, 0.1401991]
+        expected = [0.1401991, 0.5868036, 0.1401991]
+        for expected_p, observed_p in zip(expected, observed.p_value):
+            self.assertAlmostEqual(expected_p, observed_p, places=10)
+
+        # The Q statistics
+        expected = [34934.79, 2776.797, 34934.79]
+        for expected_q, observed_q in zip(expected, observed.q_value):
+            self.assertAlmostEqual(expected_q, observed_q, places=10)
+
+    def test_continuous_multiprocess(self):
+        args = self.args + [
+            "--pheno-name", "outcome_continuous",
+            "--outcome-type", "continuous",
+            "--nb-process", "2",
+        ]
+        main(args=args)
+        results_filename = (os.path.join(self.output_dir.name, "skat_test") +
+                            ".skat.dosage")
+        # The observed values
+        observed = pd.read_csv(results_filename, header=0, sep="\t")
+        self.assertEqual((3, 3), observed.shape)
+
+        # The SNP set ID
+        expected = ["set1", "set2", "set3"]
+        for expected_id, observed_id in zip(expected, observed.snp_set_id):
+            self.assertEqual(expected_id, observed_id)
+
+        # The p values
+        expected = [0.002877041, 0.09319144, 0.002877041]
         for expected_p, observed_p in zip(expected, observed.p_value):
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                    places=10)
 
         # The Q statistics
-        expected = [34934.79, 34934.79]
+        expected = [298041.5, 24870.14, 298041.5]
+        for expected_q, observed_q in zip(expected, observed.q_value):
+            self.assertAlmostEqual(expected_q, observed_q, places=10)
+
+    def test_discrete_multiprocess(self):
+        args = self.args + [
+            "--pheno-name", "outcome_discrete",
+            "--outcome-type", "discrete",
+            "--nb-process", "2",
+        ]
+        main(args=args)
+        results_filename = (os.path.join(self.output_dir.name, "skat_test") +
+                            ".skat.dosage")
+
+        # The observed values
+        observed = pd.read_csv(results_filename, header=0, sep="\t")
+        self.assertEqual((3, 3), observed.shape)
+
+        # The SNP set ID
+        expected = ["set1", "set2", "set3"]
+        for expected_id, observed_id in zip(expected, observed.snp_set_id):
+            self.assertEqual(expected_id, observed_id)
+
+        # The p values
+        expected = [0.1401991, 0.5868036, 0.1401991]
+        for expected_p, observed_p in zip(expected, observed.p_value):
+            self.assertAlmostEqual(expected_p, observed_p, places=10)
+
+        # The Q statistics
+        expected = [34934.79, 2776.797, 34934.79]
         for expected_q, observed_q in zip(expected, observed.q_value):
             self.assertAlmostEqual(expected_q, observed_q, places=10)
 
@@ -2234,9 +2291,14 @@ class TestImputedStatsSkat(unittest.TestCase):
             for variant in variants:
                 print(variant, "set1", sep="\t", file=output_file)
 
-            # The second SNP set (which is the same as the first one)
-            for variant in variants:
+            # The second SNP set (which contains only the first 10 markers, and
+            # the last 10)
+            for variant in variants[:10] + [variants[30]] + variants[-10:]:
                 print(variant, "set2", sep="\t", file=output_file)
+
+            # The last SNP set (which is the same as the first one)
+            for variant in variants:
+                print(variant, "set3", sep="\t", file=output_file)
 
         # Create a list of samples.
         samples = ["sample_{}".format(i + 1) for i in range(skat_z.shape[0])]
