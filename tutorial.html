@@ -27,7 +27,7 @@
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
     <link rel="top" title="gwip 0.1 documentation" href="index.html" />
-    <link rel="next" title="SKAT Tutorial" href="tutorial_SKAT.html" />
+    <link rel="next" title="Pipeline Tutorial" href="tutorials/tutorial_gwip.html" />
     <link rel="prev" title="Installation" href="installation.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -45,7 +45,7 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tutorial_SKAT.html" title="SKAT Tutorial"
+          <a href="tutorials/tutorial_gwip.html" title="Pipeline Tutorial"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="installation.html" title="Installation"
@@ -58,11 +58,11 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Short Tutorials</a><ul>
-<li><a class="reference internal" href="#genome-wide-imputation-pipeline">Genome-Wide Imputation Pipeline</a></li>
-<li><a class="reference internal" href="#cox-s-proportional-hazard-model">Cox&#8217;s Proportional Hazard Model</a></li>
-<li><a class="reference internal" href="#linear-regression">Linear Regression</a></li>
-<li><a class="reference internal" href="#logistic-regression">Logistic Regression</a></li>
-<li><a class="reference internal" href="#skat-tutorial">SKAT Tutorial</a></li>
+<li><a class="reference internal" href="#pipeline-tutorial">Pipeline tutorial</a></li>
+<li><a class="reference internal" href="#survival-tutorial">Survival tutorial</a></li>
+<li><a class="reference internal" href="#skat-tutorial">SKAT tutorial</a></li>
+<li><a class="reference internal" href="#linear-tutorial">Linear tutorial</a></li>
+<li><a class="reference internal" href="#logistic-tutorial">Logistic tutorial</a></li>
 </ul>
 </li>
 </ul>
@@ -71,8 +71,8 @@
   <p class="topless"><a href="installation.html"
                         title="previous chapter">Installation</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="tutorial_SKAT.html"
-                        title="next chapter">SKAT Tutorial</a></p>
+  <p class="topless"><a href="tutorials/tutorial_gwip.html"
+                        title="next chapter">Pipeline Tutorial</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -107,34 +107,85 @@
 <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> module. The first one describes the genome-wide imputation
 pipeline itself. The other tutorials describe provided tools to perform
 statistical analysis or data management.</p>
-<div class="section" id="genome-wide-imputation-pipeline">
-<h2>Genome-Wide Imputation Pipeline<a class="headerlink" href="#genome-wide-imputation-pipeline" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="cox-s-proportional-hazard-model">
-<h2>Cox&#8217;s Proportional Hazard Model<a class="headerlink" href="#cox-s-proportional-hazard-model" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="linear-regression">
-<h2>Linear Regression<a class="headerlink" href="#linear-regression" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="logistic-regression">
-<h2>Logistic Regression<a class="headerlink" href="#logistic-regression" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="skat-tutorial">
-<h2>SKAT Tutorial<a class="headerlink" href="#skat-tutorial" title="Permalink to this headline">¶</a></h2>
-<p>This tutorial walks through a full example of a typical SKAT analysis while
-describing the expected input and output file formats.</p>
+<ol class="arabic simple">
+<li><a class="reference internal" href="#gwip-tut"><span>Pipeline tutorial</span></a></li>
+<li><a class="reference internal" href="#cox-tut"><span>Survival tutorial</span></a></li>
+<li><a class="reference internal" href="#skat-tut"><span>SKAT tutorial</span></a></li>
+<li><a class="reference internal" href="#linear-tut"><span>Linear tutorial</span></a></li>
+<li><a class="reference internal" href="#logistic-tut"><span>Logistic tutorial</span></a></li>
+</ol>
+<div class="section" id="pipeline-tutorial">
+<span id="gwip-tut"></span><h2>Pipeline tutorial<a class="headerlink" href="#pipeline-tutorial" title="Permalink to this headline">¶</a></h2>
+<p>This tutorial walks through the main objective of this module, which is the
+genome-wide imputation of genotypes. It describes in detail the expected input
+and output files.</p>
 <div class="toctree-wrapper compound">
 <ul>
-<li class="toctree-l1"><a class="reference internal" href="tutorial_SKAT.html">SKAT Tutorial</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorial_SKAT.html#quick-navigation">Quick Navigation</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial_SKAT.html#skat-analysis-tutorial">SKAT analysis tutorial</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="tutorial_SKAT.html#input-files-generated-by-gwip">Input files generated by GWIP</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorial_SKAT.html#creating-a-snp-sets-file">Creating a SNP sets file</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorial_SKAT.html#format-for-the-phenotypes-file">Format for the phenotypes file</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorial_SKAT.html#running-the-script">Running the script</a></li>
-<li class="toctree-l3"><a class="reference internal" href="tutorial_SKAT.html#results">Results</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial_gwip.html">Pipeline Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/tutorial_gwip.html#quick-navigation">Quick navigation</a></li>
 </ul>
 </li>
+</ul>
+</div>
+</div>
+<div class="section" id="survival-tutorial">
+<span id="cox-tut"></span><h2>Survival tutorial<a class="headerlink" href="#survival-tutorial" title="Permalink to this headline">¶</a></h2>
+<p>This tutorial walks through a full example of a survival regression (using
+Cox&#8217;s proportional hazard model). It describes in detail the expected input and
+output files.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial_cox.html">Cox Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/tutorial_cox.html#quick-navigation">Quick navigation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="skat-tutorial">
+<span id="skat-tut"></span><h2>SKAT tutorial<a class="headerlink" href="#skat-tutorial" title="Permalink to this headline">¶</a></h2>
+<p>This tutorial walks through a full example of a typical SKAT analysis while
+describing the expected input and output files.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial_SKAT.html">SKAT Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/tutorial_SKAT.html#quick-navigation">Quick navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/tutorial_SKAT.html#skat-analysis-tutorial">SKAT analysis tutorial</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/tutorial_SKAT.html#input-files-generated-by-gwip">Input files generated by gwip</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/tutorial_SKAT.html#creating-a-snp-sets-file">Creating a SNP sets file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/tutorial_SKAT.html#format-for-the-phenotypes-file">Format for the phenotypes file</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/tutorial_SKAT.html#running-the-script">Running the script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="tutorials/tutorial_SKAT.html#results">Results</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="linear-tutorial">
+<span id="linear-tut"></span><h2>Linear tutorial<a class="headerlink" href="#linear-tutorial" title="Permalink to this headline">¶</a></h2>
+<p>This tutorial walks through a full example of a linear regression analysis
+(using ordinary least squares). It describes in detail the expected input and
+output files.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial_linear.html">Linear Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/tutorial_linear.html#quick-navigation">Quick navigation</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="logistic-tutorial">
+<span id="logistic-tut"></span><h2>Logistic tutorial<a class="headerlink" href="#logistic-tutorial" title="Permalink to this headline">¶</a></h2>
+<p>This tutorial walks through a full example of a logistic regression analysis
+(using a GLM with a binomial distribution and a logit link). It describes in
+detail the expected input and output file.</p>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tutorials/tutorial_logistic.html">Logistic Tutorial</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials/tutorial_logistic.html#quick-navigation">Quick navigation</a></li>
 </ul>
 </li>
 </ul>
@@ -158,7 +209,7 @@ describing the expected input and output file formats.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tutorial_SKAT.html" title="SKAT Tutorial"
+          <a href="tutorials/tutorial_gwip.html" title="Pipeline Tutorial"
              >next</a> |</li>
         <li class="right" >
           <a href="installation.html" title="Installation"
