@@ -1,0 +1,761 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>gwip.tests package &mdash; gwip 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="top" title="gwip 0.1 documentation" href="../index.html" />
+    <link rel="up" title="gwip package" href="gwip.html" />
+    <link rel="next" title="gwip.tools package" href="gwip.tools.html" />
+    <link rel="prev" title="gwip.task package" href="gwip.task.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gwip.tools.html" title="gwip.tools package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="gwip.task.html" title="gwip.task package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">gwip 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >gwip</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="gwip.html" accesskey="U">gwip package</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">gwip.tests package</a><ul>
+<li><a class="reference internal" href="#module-gwip.tests.python_3_3_compatibility">gwip.tests.python_3_3_compatibility module</a></li>
+<li><a class="reference internal" href="#module-gwip.tests.test_db">gwip.tests.test_db module</a></li>
+<li><a class="reference internal" href="#module-gwip.tests.test_formats">gwip.tests.test_formats module</a></li>
+<li><a class="reference internal" href="#module-gwip.tests.test_impute2_merger">gwip.tests.test_impute2_merger module</a></li>
+<li><a class="reference internal" href="#module-gwip.tests.test_imputed_stats">gwip.tests.test_imputed_stats module</a></li>
+<li><a class="reference internal" href="#module-gwip.tests.test_launcher">gwip.tests.test_launcher module</a></li>
+<li><a class="reference internal" href="#module-gwip.tests.test_main_pipeline">gwip.tests.test_main_pipeline module</a></li>
+<li><a class="reference internal" href="#module-gwip.tests.test_reporting_utils">gwip.tests.test_reporting_utils module</a></li>
+<li><a class="reference internal" href="#module-gwip.tests">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="gwip.task.html"
+                        title="previous chapter">gwip.task package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="gwip.tools.html"
+                        title="next chapter">gwip.tools package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/module_content/gwip.tests.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="gwip-tests-package">
+<h1>gwip.tests package<a class="headerlink" href="#gwip-tests-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-gwip.tests.python_3_3_compatibility">
+<span id="gwip-tests-python-3-3-compatibility-module"></span><h2>gwip.tests.python_3_3_compatibility module<a class="headerlink" href="#module-gwip.tests.python_3_3_compatibility" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gwip.tests.python_3_3_compatibility.Python_3_4_AssertLogsContext">
+<em class="property">class </em><code class="descclassname">gwip.tests.python_3_3_compatibility.</code><code class="descname">Python_3_4_AssertLogsContext</code><span class="sig-paren">(</span><em>test_case</em>, <em>logger_name</em>, <em>level</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/python_3_3_compatibility.html#Python_3_4_AssertLogsContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.python_3_3_compatibility.Python_3_4_AssertLogsContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference internal" href="#gwip.tests.python_3_3_compatibility.Python_3_4_BaseTestCaseContext" title="gwip.tests.python_3_3_compatibility.Python_3_4_BaseTestCaseContext"><code class="xref py py-class docutils literal"><span class="pre">gwip.tests.python_3_3_compatibility.Python_3_4_BaseTestCaseContext</span></code></a></p>
+<p>A context manager used to implement TestCase.assertLogs().</p>
+<dl class="attribute">
+<dt id="gwip.tests.python_3_3_compatibility.Python_3_4_AssertLogsContext.LOGGING_FORMAT">
+<code class="descname">LOGGING_FORMAT</code><em class="property"> = '%(levelname)s:%(name)s:%(message)s'</em><a class="headerlink" href="#gwip.tests.python_3_3_compatibility.Python_3_4_AssertLogsContext.LOGGING_FORMAT" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gwip.tests.python_3_3_compatibility.Python_3_4_BaseTestCaseContext">
+<em class="property">class </em><code class="descclassname">gwip.tests.python_3_3_compatibility.</code><code class="descname">Python_3_4_BaseTestCaseContext</code><span class="sig-paren">(</span><em>test_case</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/python_3_3_compatibility.html#Python_3_4_BaseTestCaseContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.python_3_3_compatibility.Python_3_4_BaseTestCaseContext" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/library/functions.html#object" title="(in Python v2.7)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
+</dd></dl>
+
+<dl class="class">
+<dt id="gwip.tests.python_3_3_compatibility.Python_3_4_CapturingHandler">
+<em class="property">class </em><code class="descclassname">gwip.tests.python_3_3_compatibility.</code><code class="descname">Python_3_4_CapturingHandler</code><a class="reference internal" href="../_modules/gwip/tests/python_3_3_compatibility.html#Python_3_4_CapturingHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.python_3_3_compatibility.Python_3_4_CapturingHandler" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">logging.Handler</span></code></p>
+<p>A logging handler capturing all (raw and formatted) logging output.</p>
+<dl class="method">
+<dt id="gwip.tests.python_3_3_compatibility.Python_3_4_CapturingHandler.emit">
+<code class="descname">emit</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/python_3_3_compatibility.html#Python_3_4_CapturingHandler.emit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.python_3_3_compatibility.Python_3_4_CapturingHandler.emit" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.python_3_3_compatibility.Python_3_4_CapturingHandler.flush">
+<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/python_3_3_compatibility.html#Python_3_4_CapturingHandler.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.python_3_3_compatibility.Python_3_4_CapturingHandler.flush" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gwip.tests.test_db">
+<span id="gwip-tests-test-db-module"></span><h2>gwip.tests.test_db module<a class="headerlink" href="#module-gwip.tests.test_db" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gwip.tests.test_db.TestDB">
+<em class="property">class </em><code class="descclassname">gwip.tests.test_db.</code><code class="descname">TestDB</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_db.html#TestDB"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_db.TestDB" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="gwip.tests.test_db.TestDB.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_db.html#TestDB.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_db.TestDB.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the tests.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_db.TestDB.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_db.html#TestDB.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_db.TestDB.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finishes the test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_db.TestDB.test_check_task_completion">
+<code class="descname">test_check_task_completion</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_db.html#TestDB.test_check_task_completion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_db.TestDB.test_check_task_completion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;check_task_completion&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_db.TestDB.test_create_db_connection">
+<code class="descname">test_create_db_connection</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_db.html#TestDB.test_create_db_connection"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_db.TestDB.test_create_db_connection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;_create_db_connection&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_db.TestDB.test_create_task_db">
+<code class="descname">test_create_task_db</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_db.html#TestDB.test_create_task_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_db.TestDB.test_create_task_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;create_task_db&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_db.TestDB.test_create_task_entry">
+<code class="descname">test_create_task_entry</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_db.html#TestDB.test_create_task_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_db.TestDB.test_create_task_entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;create_task_entry&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_db.TestDB.test_get_all_runtimes">
+<code class="descname">test_get_all_runtimes</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_db.html#TestDB.test_get_all_runtimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_db.TestDB.test_get_all_runtimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;get_all_runtimes&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_db.TestDB.test_get_task_runtime">
+<code class="descname">test_get_task_runtime</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_db.html#TestDB.test_get_task_runtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_db.TestDB.test_get_task_runtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;task_runtime&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_db.TestDB.test_mark_drmaa_task_completed">
+<code class="descname">test_mark_drmaa_task_completed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_db.html#TestDB.test_mark_drmaa_task_completed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_db.TestDB.test_mark_drmaa_task_completed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;mark_drmaa_task_completed&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_db.TestDB.test_mark_task_completed">
+<code class="descname">test_mark_task_completed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_db.html#TestDB.test_mark_task_completed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_db.TestDB.test_mark_task_completed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;mark_task_completed&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_db.TestDB.test_mark_task_incomplete">
+<code class="descname">test_mark_task_incomplete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_db.html#TestDB.test_mark_task_incomplete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_db.TestDB.test_mark_task_incomplete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;mark_task_incomplete&#8217; function.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gwip.tests.test_formats">
+<span id="gwip-tests-test-formats-module"></span><h2>gwip.tests.test_formats module<a class="headerlink" href="#module-gwip.tests.test_formats" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gwip.tests.test_formats.TestFormats">
+<em class="property">class </em><code class="descclassname">gwip.tests.test_formats.</code><code class="descname">TestFormats</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_formats.html#TestFormats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_formats.TestFormats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="gwip.tests.test_formats.TestFormats.test_dosage_from_probs">
+<code class="descname">test_dosage_from_probs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_formats.html#TestFormats.test_dosage_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_formats.TestFormats.test_dosage_from_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;dosage_from_probs&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_formats.TestFormats.test_get_good_probs">
+<code class="descname">test_get_good_probs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_formats.html#TestFormats.test_get_good_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_formats.TestFormats.test_get_good_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;get_good_probs&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_formats.TestFormats.test_maf_from_probs">
+<code class="descname">test_maf_from_probs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_formats.html#TestFormats.test_maf_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_formats.TestFormats.test_maf_from_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;maf_from_probs&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_formats.TestFormats.test_matrix_from_line">
+<code class="descname">test_matrix_from_line</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_formats.html#TestFormats.test_matrix_from_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_formats.TestFormats.test_matrix_from_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;matrix_from_line&#8217; function.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gwip.tests.test_impute2_merger">
+<span id="gwip-tests-test-impute2-merger-module"></span><h2>gwip.tests.test_impute2_merger module<a class="headerlink" href="#module-gwip.tests.test_impute2_merger" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gwip.tests.test_impute2_merger.TestImpute2Merger">
+<em class="property">class </em><code class="descclassname">gwip.tests.test_impute2_merger.</code><code class="descname">TestImpute2Merger</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_impute2_merger.html#TestImpute2Merger"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_impute2_merger.TestImpute2Merger" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="staticmethod">
+<dt id="gwip.tests.test_impute2_merger.TestImpute2Merger.clean_logging_handlers">
+<em class="property">static </em><code class="descname">clean_logging_handlers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_impute2_merger.html#TestImpute2Merger.clean_logging_handlers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_impute2_merger.TestImpute2Merger.clean_logging_handlers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_impute2_merger.TestImpute2Merger.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_impute2_merger.html#TestImpute2Merger.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_impute2_merger.TestImpute2Merger.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the tests.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_impute2_merger.TestImpute2Merger.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_impute2_merger.html#TestImpute2Merger.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_impute2_merger.TestImpute2Merger.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finishes the test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_impute2_merger.TestImpute2Merger.test_check_alleles">
+<code class="descname">test_check_alleles</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_impute2_merger.html#TestImpute2Merger.test_check_alleles"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_impute2_merger.TestImpute2Merger.test_check_alleles" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the &#8216;.alleles&#8217; file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_impute2_merger.TestImpute2Merger.test_check_output_files">
+<code class="descname">test_check_output_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_impute2_merger.html#TestImpute2Merger.test_check_output_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_impute2_merger.TestImpute2Merger.test_check_output_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the presence of all the output files.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_impute2_merger.TestImpute2Merger.test_completion_rates">
+<code class="descname">test_completion_rates</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_impute2_merger.html#TestImpute2Merger.test_completion_rates"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_impute2_merger.TestImpute2Merger.test_completion_rates" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the &#8216;.completion_rates&#8217; file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_impute2_merger.TestImpute2Merger.test_good_sites">
+<code class="descname">test_good_sites</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_impute2_merger.html#TestImpute2Merger.test_good_sites"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_impute2_merger.TestImpute2Merger.test_good_sites" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the &#8216;.good_sites&#8217; file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_impute2_merger.TestImpute2Merger.test_impute2">
+<code class="descname">test_impute2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_impute2_merger.html#TestImpute2Merger.test_impute2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_impute2_merger.TestImpute2Merger.test_impute2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the &#8216;.impute2&#8217; file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_impute2_merger.TestImpute2Merger.test_imputed_sites">
+<code class="descname">test_imputed_sites</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_impute2_merger.html#TestImpute2Merger.test_imputed_sites"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_impute2_merger.TestImpute2Merger.test_imputed_sites" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the &#8216;.imputed_sites&#8217; file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_impute2_merger.TestImpute2Merger.test_maf">
+<code class="descname">test_maf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_impute2_merger.html#TestImpute2Merger.test_maf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_impute2_merger.TestImpute2Merger.test_maf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the &#8216;.maf&#8217; file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_impute2_merger.TestImpute2Merger.test_map">
+<code class="descname">test_map</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_impute2_merger.html#TestImpute2Merger.test_map"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_impute2_merger.TestImpute2Merger.test_map" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the &#8216;.map&#8217; file.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gwip.tests.test_imputed_stats">
+<span id="gwip-tests-test-imputed-stats-module"></span><h2>gwip.tests.test_imputed_stats module<a class="headerlink" href="#module-gwip.tests.test_imputed_stats" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStats">
+<em class="property">class </em><code class="descclassname">gwip.tests.test_imputed_stats.</code><code class="descname">TestImputedStats</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStats.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStats.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStats.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the tests.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStats.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStats.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStats.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finishes the test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStats.test_check_args">
+<code class="descname">test_check_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStats.test_check_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStats.test_check_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;check_args&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStats.test_compute_statistics">
+<code class="descname">test_compute_statistics</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStats.test_compute_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStats.test_compute_statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;compute_statistics&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStats.test_get_formula">
+<code class="descname">test_get_formula</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStats.test_get_formula"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStats.test_get_formula" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;get_formula&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStats.test_get_result_from_linear_logistic">
+<code class="descname">test_get_result_from_linear_logistic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStats.test_get_result_from_linear_logistic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStats.test_get_result_from_linear_logistic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;_get_result_from_linear_logistic&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStats.test_process_impute2_site">
+<code class="descname">test_process_impute2_site</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStats.test_process_impute2_site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStats.test_process_impute2_site" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;process_impute2_site&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStats.test_read_phenotype">
+<code class="descname">test_read_phenotype</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStats.test_read_phenotype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStats.test_read_phenotype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;read_phenotype&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStats.test_read_samples">
+<code class="descname">test_read_samples</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStats.test_read_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStats.test_read_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;read_samples&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStats.test_read_sites_to_extract">
+<code class="descname">test_read_sites_to_extract</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStats.test_read_sites_to_extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStats.test_read_sites_to_extract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;test_read_sites_to_extract&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStats.test_samples_with_hetero_calls">
+<code class="descname">test_samples_with_hetero_calls</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStats.test_samples_with_hetero_calls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStats.test_samples_with_hetero_calls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;samples_with_hetero_calls&#8217; function.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsCox">
+<em class="property">class </em><code class="descclassname">gwip.tests.test_imputed_stats.</code><code class="descname">TestImputedStatsCox</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsCox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsCox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsCox.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsCox.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsCox.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the tests.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsCox.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsCox.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsCox.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finishes the test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox">
+<code class="descname">test_fit_cox</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsCox.test_fit_cox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_cox&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox_interaction">
+<code class="descname">test_fit_cox_interaction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsCox.test_fit_cox_interaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox_interaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_cox&#8217; function with interaction.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsCox.test_full_fit_cox">
+<code class="descname">test_full_fit_cox</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsCox.test_full_fit_cox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsCox.test_full_fit_cox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the full pipeline for Cox&#8217;s regression.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsCox.test_full_fit_cox_interaction">
+<code class="descname">test_full_fit_cox_interaction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsCox.test_full_fit_cox_interaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsCox.test_full_fit_cox_interaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the full pipeline for Cox&#8217;s regression with interaction.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsCox.test_full_fit_cox_multiprocess">
+<code class="descname">test_full_fit_cox_multiprocess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsCox.test_full_fit_cox_multiprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsCox.test_full_fit_cox_multiprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the full pipeline for Cox&#8217;s regression with &gt;1 processes.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLinear">
+<em class="property">class </em><code class="descclassname">gwip.tests.test_imputed_stats.</code><code class="descname">TestImputedStatsLinear</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLinear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLinear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLinear.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLinear.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLinear.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the tests.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLinear.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLinear.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLinear.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finishes the test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear">
+<code class="descname">test_fit_linear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLinear.test_fit_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_linear&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear_interaction">
+<code class="descname">test_fit_linear_interaction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLinear.test_fit_linear_interaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear_interaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_linear&#8217; function with interaction.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLinear.test_full_fit_linear">
+<code class="descname">test_full_fit_linear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLinear.test_full_fit_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLinear.test_full_fit_linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the full pipeline for linear regression.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLinear.test_full_fit_linear_interaction">
+<code class="descname">test_full_fit_linear_interaction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLinear.test_full_fit_linear_interaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLinear.test_full_fit_linear_interaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the full pipeline for linear regression with interaction.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLinear.test_full_fit_linear_multiprocess">
+<code class="descname">test_full_fit_linear_multiprocess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLinear.test_full_fit_linear_multiprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLinear.test_full_fit_linear_multiprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the full pipeline for linear regression with &gt;1 processes.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLogistic">
+<em class="property">class </em><code class="descclassname">gwip.tests.test_imputed_stats.</code><code class="descname">TestImputedStatsLogistic</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLogistic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLogistic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLogistic.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLogistic.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLogistic.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the tests.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLogistic.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLogistic.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLogistic.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finishes the test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic">
+<code class="descname">test_fit_logistic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLogistic.test_fit_logistic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_logistic&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic_interaction">
+<code class="descname">test_fit_logistic_interaction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLogistic.test_fit_logistic_interaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic_interaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_logistic&#8217; function with interaction.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLogistic.test_full_fit_logistic">
+<code class="descname">test_full_fit_logistic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLogistic.test_full_fit_logistic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLogistic.test_full_fit_logistic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the full pipeline for logistic regression.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLogistic.test_full_fit_logistic_interaction">
+<code class="descname">test_full_fit_logistic_interaction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLogistic.test_full_fit_logistic_interaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLogistic.test_full_fit_logistic_interaction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the full pipeline for logistic regression with interaction.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_imputed_stats.TestImputedStatsLogistic.test_full_fit_logistic_multiprocess">
+<code class="descname">test_full_fit_logistic_multiprocess</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_imputed_stats.html#TestImputedStatsLogistic.test_full_fit_logistic_multiprocess"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_imputed_stats.TestImputedStatsLogistic.test_full_fit_logistic_multiprocess" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the full pipeline, logistic regression with &gt;1 processes.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gwip.tests.test_launcher">
+<span id="gwip-tests-test-launcher-module"></span><h2>gwip.tests.test_launcher module<a class="headerlink" href="#module-gwip.tests.test_launcher" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gwip.tests.test_launcher.TestLauncher">
+<em class="property">class </em><code class="descclassname">gwip.tests.test_launcher.</code><code class="descname">TestLauncher</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_launcher.html#TestLauncher"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_launcher.TestLauncher" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="gwip.tests.test_launcher.TestLauncher.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_launcher.html#TestLauncher.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_launcher.TestLauncher.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the tests.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_launcher.TestLauncher.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_launcher.html#TestLauncher.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_launcher.TestLauncher.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finishes the test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_launcher.TestLauncher.test_check_output_files">
+<code class="descname">test_check_output_files</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_launcher.html#TestLauncher.test_check_output_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_launcher.TestLauncher.test_check_output_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;_check_output_files&#8217; function.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gwip.tests.test_main_pipeline">
+<span id="gwip-tests-test-main-pipeline-module"></span><h2>gwip.tests.test_main_pipeline module<a class="headerlink" href="#module-gwip.tests.test_main_pipeline" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gwip.tests.test_main_pipeline.TestMainPipeline">
+<em class="property">class </em><code class="descclassname">gwip.tests.test_main_pipeline.</code><code class="descname">TestMainPipeline</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_main_pipeline.html#TestMainPipeline"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_main_pipeline.TestMainPipeline" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="gwip.tests.test_main_pipeline.TestMainPipeline.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_main_pipeline.html#TestMainPipeline.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_main_pipeline.TestMainPipeline.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the tests.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_main_pipeline.TestMainPipeline.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_main_pipeline.html#TestMainPipeline.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_main_pipeline.TestMainPipeline.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finishes the test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_main_pipeline.TestMainPipeline.test_check_args">
+<code class="descname">test_check_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_main_pipeline.html#TestMainPipeline.test_check_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_main_pipeline.TestMainPipeline.test_check_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;check_args&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_main_pipeline.TestMainPipeline.test_file_sorter">
+<code class="descname">test_file_sorter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_main_pipeline.html#TestMainPipeline.test_file_sorter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_main_pipeline.TestMainPipeline.test_file_sorter" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;file_sorter&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_main_pipeline.TestMainPipeline.test_gather_execution_time">
+<code class="descname">test_gather_execution_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_main_pipeline.html#TestMainPipeline.test_gather_execution_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_main_pipeline.TestMainPipeline.test_gather_execution_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;gather_execution_time&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_main_pipeline.TestMainPipeline.test_gather_imputation_stats">
+<code class="descname">test_gather_imputation_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_main_pipeline.html#TestMainPipeline.test_gather_imputation_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_main_pipeline.TestMainPipeline.test_gather_imputation_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;gather_imputation_stats&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_main_pipeline.TestMainPipeline.test_gather_maf_stats">
+<code class="descname">test_gather_maf_stats</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_main_pipeline.html#TestMainPipeline.test_gather_maf_stats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_main_pipeline.TestMainPipeline.test_gather_maf_stats" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;gather_maf_stats&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_main_pipeline.TestMainPipeline.test_get_chrom_encoding">
+<code class="descname">test_get_chrom_encoding</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_main_pipeline.html#TestMainPipeline.test_get_chrom_encoding"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_main_pipeline.TestMainPipeline.test_get_chrom_encoding" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;get_chrom_encoding&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_main_pipeline.TestMainPipeline.test_get_chromosome_length">
+<code class="descname">test_get_chromosome_length</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_main_pipeline.html#TestMainPipeline.test_get_chromosome_length"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_main_pipeline.TestMainPipeline.test_get_chromosome_length" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;get_chromosome_length&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_main_pipeline.TestMainPipeline.test_get_cross_validation_results">
+<code class="descname">test_get_cross_validation_results</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_main_pipeline.html#TestMainPipeline.test_get_cross_validation_results"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_main_pipeline.TestMainPipeline.test_get_cross_validation_results" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;get_cross_validation_results&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_main_pipeline.TestMainPipeline.test_is_reversed">
+<code class="descname">test_is_reversed</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_main_pipeline.html#TestMainPipeline.test_is_reversed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_main_pipeline.TestMainPipeline.test_is_reversed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;is_reversed&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_main_pipeline.TestMainPipeline.test_read_preamble">
+<code class="descname">test_read_preamble</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_main_pipeline.html#TestMainPipeline.test_read_preamble"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_main_pipeline.TestMainPipeline.test_read_preamble" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;read_preamble&#8217; function.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gwip.tests.test_reporting_utils">
+<span id="gwip-tests-test-reporting-utils-module"></span><h2>gwip.tests.test_reporting_utils module<a class="headerlink" href="#module-gwip.tests.test_reporting_utils" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="gwip.tests.test_reporting_utils.TestReportingUtils">
+<em class="property">class </em><code class="descclassname">gwip.tests.test_reporting_utils.</code><code class="descname">TestReportingUtils</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_reporting_utils.html#TestReportingUtils"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_reporting_utils.TestReportingUtils" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="method">
+<dt id="gwip.tests.test_reporting_utils.TestReportingUtils.test_colorize_time">
+<code class="descname">test_colorize_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_reporting_utils.html#TestReportingUtils.test_colorize_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_reporting_utils.TestReportingUtils.test_colorize_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;colorize_time&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_reporting_utils.TestReportingUtils.test_create_float">
+<code class="descname">test_create_float</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_reporting_utils.html#TestReportingUtils.test_create_float"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_reporting_utils.TestReportingUtils.test_create_float" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;create_float&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_reporting_utils.TestReportingUtils.test_create_tabular">
+<code class="descname">test_create_tabular</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_reporting_utils.html#TestReportingUtils.test_create_tabular"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_reporting_utils.TestReportingUtils.test_create_tabular" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;create_tabular&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_reporting_utils.TestReportingUtils.test_format_tex">
+<code class="descname">test_format_tex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_reporting_utils.html#TestReportingUtils.test_format_tex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_reporting_utils.TestReportingUtils.test_format_tex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;format_tex&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_reporting_utils.TestReportingUtils.test_format_time">
+<code class="descname">test_format_time</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_reporting_utils.html#TestReportingUtils.test_format_time"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_reporting_utils.TestReportingUtils.test_format_time" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;format_time&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_reporting_utils.TestReportingUtils.test_is_sanitized">
+<code class="descname">test_is_sanitized</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_reporting_utils.html#TestReportingUtils.test_is_sanitized"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_reporting_utils.TestReportingUtils.test_is_sanitized" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;_is_sanitized&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_reporting_utils.TestReportingUtils.test_sanitize_tex">
+<code class="descname">test_sanitize_tex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_reporting_utils.html#TestReportingUtils.test_sanitize_tex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_reporting_utils.TestReportingUtils.test_sanitize_tex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;sanitize_tex&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_reporting_utils.TestReportingUtils.test_tex_inline_math">
+<code class="descname">test_tex_inline_math</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_reporting_utils.html#TestReportingUtils.test_tex_inline_math"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_reporting_utils.TestReportingUtils.test_tex_inline_math" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;tex_inline_math&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="gwip.tests.test_reporting_utils.TestReportingUtils.test_wrap_tex">
+<code class="descname">test_wrap_tex</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tests/test_reporting_utils.html#TestReportingUtils.test_wrap_tex"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tests.test_reporting_utils.TestReportingUtils.test_wrap_tex" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;wrap_tex&#8217; function.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-gwip.tests">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gwip.tests" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gwip.tools.html" title="gwip.tools package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="gwip.task.html" title="gwip.task package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">gwip 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >gwip</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="gwip.html" >gwip package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

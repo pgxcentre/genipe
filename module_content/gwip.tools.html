@@ -1,0 +1,309 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>gwip.tools package &mdash; gwip 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="top" title="gwip 0.1 documentation" href="../index.html" />
+    <link rel="up" title="gwip package" href="gwip.html" />
+    <link rel="prev" title="gwip.tests package" href="gwip.tests.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gwip.tests.html" title="gwip.tests package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">gwip 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >gwip</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="gwip.html" accesskey="U">gwip package</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">gwip.tools package</a><ul>
+<li><a class="reference internal" href="#module-gwip.tools.impute2_merger">gwip.tools.impute2_merger module</a></li>
+<li><a class="reference internal" href="#module-gwip.tools.imputed_stats">gwip.tools.imputed_stats module</a></li>
+<li><a class="reference internal" href="#module-gwip.tools">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="gwip.tests.html"
+                        title="previous chapter">gwip.tests package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/module_content/gwip.tools.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="gwip-tools-package">
+<h1>gwip.tools package<a class="headerlink" href="#gwip-tools-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-gwip.tools.impute2_merger">
+<span id="gwip-tools-impute2-merger-module"></span><h2>gwip.tools.impute2_merger module<a class="headerlink" href="#module-gwip.tools.impute2_merger" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gwip.tools.impute2_merger.check_args">
+<code class="descclassname">gwip.tools.impute2_merger.</code><code class="descname">check_args</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/impute2_merger.html#check_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.impute2_merger.check_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the arguments and options.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.impute2_merger.concatenate_files">
+<code class="descclassname">gwip.tools.impute2_merger.</code><code class="descname">concatenate_files</code><span class="sig-paren">(</span><em>i_filenames</em>, <em>out_prefix</em>, <em>real_chrom</em>, <em>options</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/impute2_merger.html#concatenate_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.impute2_merger.concatenate_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenates and extracts information from IMPUTE2 GEN file(s).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.impute2_merger.main">
+<code class="descclassname">gwip.tools.impute2_merger.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/impute2_merger.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.impute2_merger.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.impute2_merger.parse_args">
+<code class="descclassname">gwip.tools.impute2_merger.</code><code class="descname">parse_args</code><span class="sig-paren">(</span><em>parser</em>, <em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/impute2_merger.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.impute2_merger.parse_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the command line options and arguments.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gwip.tools.imputed_stats">
+<span id="gwip-tools-imputed-stats-module"></span><h2>gwip.tools.imputed_stats module<a class="headerlink" href="#module-gwip.tools.imputed_stats" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gwip.tools.imputed_stats.check_args">
+<code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">check_args</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#check_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.check_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the arguments and options.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.imputed_stats.compute_statistics">
+<code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">compute_statistics</code><span class="sig-paren">(</span><em>impute2_filename</em>, <em>samples</em>, <em>markers_to_extract</em>, <em>phenotypes</em>, <em>remove_gender</em>, <em>out_prefix</em>, <em>options</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#compute_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.compute_statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses IMPUTE2 file while computing statistics.</p>
+<p>This function takes care of parallelism. It reads the Impute2 file and
+fills a queue that will trigger the analysis when full.</p>
+<p>If the number of process to launch is 1, the rows are analyzed as they
+come.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.imputed_stats.fit_cox">
+<code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">fit_cox</code><span class="sig-paren">(</span><em>data</em>, <em>time_to_event</em>, <em>censure</em>, <em>result_col</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#fit_cox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.fit_cox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a Cox&#8217; proportional hazard to the data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.imputed_stats.fit_linear">
+<code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">fit_linear</code><span class="sig-paren">(</span><em>data</em>, <em>formula</em>, <em>result_col</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#fit_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.fit_linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a linear regression to the data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.imputed_stats.fit_logistic">
+<code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">fit_logistic</code><span class="sig-paren">(</span><em>data</em>, <em>formula</em>, <em>result_col</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#fit_logistic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.fit_logistic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a logistic regression to the data.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.imputed_stats.get_formula">
+<code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">get_formula</code><span class="sig-paren">(</span><em>phenotype</em>, <em>covars</em>, <em>interaction</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#get_formula"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.get_formula" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the linear/logistic regression formula (for statsmodel).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.imputed_stats.main">
+<code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main function.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.imputed_stats.parse_args">
+<code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">parse_args</code><span class="sig-paren">(</span><em>parser</em>, <em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.parse_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the command line options and arguments.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.imputed_stats.process_impute2_site">
+<code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">process_impute2_site</code><span class="sig-paren">(</span><em>site_info</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#process_impute2_site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.process_impute2_site" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process an IMPUTE2 site (a line in an IMPUTE2 file).</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.imputed_stats.read_phenotype">
+<code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">read_phenotype</code><span class="sig-paren">(</span><em>i_filename</em>, <em>opts</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#read_phenotype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.read_phenotype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the phenotype file.</p>
+<p>This file is expected to be a tab separated file of phenotypes and
+covariates. The columns to use will be determined by the <cite>&#8211;sample-column</cite>
+and the <cite>&#8211;covar</cite> options.</p>
+<p>For analysis including the X chromosome, the gender is automatically
+added as a covariate. The results are not shown to the user unless asked
+for.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.imputed_stats.read_samples">
+<code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">read_samples</code><span class="sig-paren">(</span><em>i_filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#read_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.read_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the sample file (produced by SHAPEIT).</p>
+<p>The expected format for this file is a tab separated file with a first
+row containing the following columns:</p>
+<div class="highlight-python"><div class="highlight"><pre>ID_1    ID_2    missing father  mother  sex     plink_pheno
+</pre></div>
+</div>
+<p>The subsequent row will be discarded and should contain:</p>
+<div class="highlight-python"><div class="highlight"><pre>0       0       0 D     D       D       B
+</pre></div>
+</div>
+<p>We are mostly interested in the sample IDs corresponding to the <cite>ID_2</cite>
+column.</p>
+<p>Their uniqueness is verified by pandas.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.imputed_stats.read_sites_to_extract">
+<code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">read_sites_to_extract</code><span class="sig-paren">(</span><em>i_filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#read_sites_to_extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.read_sites_to_extract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the list of sites to extract.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>i_filename</strong> (<a class="reference external" href="https://docs.python.org/library/functions.html#str" title="(in Python v2.7)"><em>str</em></a>) &#8211; The input filename containing the IDs of the variants
+to consider for the analysis.</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A set containing the variants.</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/library/stdtypes.html#set" title="(in Python v2.7)">set</a></td>
+</tr>
+</tbody>
+</table>
+<p>The expected file format is simply a list of variants. Every row should
+correspond to a single variant identifier.</p>
+<p>e.g.</p>
+<div class="highlight-python"><div class="highlight"><pre>3:60069:t
+rs123456:A
+3:60322:A
+</pre></div>
+</div>
+<p>Typically, this is used to analyze only variants that passed some QC
+threshold. The _gwip_ pipeline generates this file at the &#8216;merge_impute2&#8217;
+step.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.imputed_stats.samples_with_hetero_calls">
+<code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">samples_with_hetero_calls</code><span class="sig-paren">(</span><em>data</em>, <em>hetero_c</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#samples_with_hetero_calls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.samples_with_hetero_calls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets male and heterozygous calls.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.imputed_stats.skat_parse_impute2">
+<code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">skat_parse_impute2</code><span class="sig-paren">(</span><em>impute2_filename</em>, <em>samples</em>, <em>markers_to_extract</em>, <em>phenotypes</em>, <em>remove_gender</em>, <em>out_prefix</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#skat_parse_impute2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.skat_parse_impute2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the impute2 file and run the SKAT analysis.</p>
+<p>This function does most of the &#8220;dispatching&#8221; to run SKAT. It writes the
+input files to the disk, runs the generated R scripts to do the actual
+analysis and then writes the results to disk.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.tools.imputed_stats.skat_read_snp_set">
+<code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">skat_read_snp_set</code><span class="sig-paren">(</span><em>i_filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#skat_read_snp_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.skat_read_snp_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the SKAT SNP set file.</p>
+<p>This file has to be supplied by the user. The recognized columns are:
+<cite>variant, snp_set, weight</cite>. The <cite>weight</cite> column is optional and can
+be used to specify a custom weighting scheme for SKAT. If nothing is
+specified, the default Beta weights are used.</p>
+<p>The file has to be tab delimited.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gwip.tools">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gwip.tools" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gwip.tests.html" title="gwip.tests package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">gwip 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >gwip</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="gwip.html" >gwip package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

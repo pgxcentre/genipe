@@ -1,0 +1,304 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>gwip.reporting.utils &mdash; gwip 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
+    <link rel="top" title="gwip 0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="gwip" href="../../gwip.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">gwip 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../gwip.html" accesskey="U">gwip</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for gwip.reporting.utils</h1><div class="highlight"><pre>
+<span class="c"># This file is part of gwip.</span>
+<span class="c">#</span>
+<span class="c"># This work is licensed under the Creative Commons Attribution-NonCommercial</span>
+<span class="c"># 4.0 International License. To view a copy of this license, visit</span>
+<span class="c"># http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative</span>
+<span class="c"># Commons, PO Box 1866, Mountain View, CA 94042, USA.</span>
+
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">wrap</span>
+
+<span class="kn">import</span> <span class="nn">jinja2</span>
+
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s">&quot;Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s">&quot;Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)&quot;</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;config_jinja2&quot;</span><span class="p">,</span> <span class="s">&quot;sanitize_tex&quot;</span><span class="p">,</span> <span class="s">&quot;format_tex&quot;</span><span class="p">,</span> <span class="s">&quot;wrap_tex&quot;</span><span class="p">,</span>
+           <span class="s">&quot;create_tabular&quot;</span><span class="p">,</span> <span class="s">&quot;create_float&quot;</span><span class="p">,</span> <span class="s">&quot;tex_inline_math&quot;</span><span class="p">,</span> <span class="s">&quot;format_time&quot;</span><span class="p">,</span>
+           <span class="s">&quot;colorize_time&quot;</span><span class="p">]</span>
+
+
+<span class="n">_char_mod</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;~&quot;</span><span class="p">:</span> <span class="s">r&quot;$\sim$&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">_escaped_char</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;$&quot;</span><span class="p">,</span> <span class="s">&quot;%&quot;</span><span class="p">,</span> <span class="s">&quot;_&quot;</span><span class="p">,</span> <span class="s">&quot;}&quot;</span><span class="p">,</span> <span class="s">&quot;{&quot;</span><span class="p">,</span> <span class="s">&quot;&amp;&quot;</span><span class="p">,</span> <span class="s">&quot;#&quot;</span><span class="p">]</span>
+<span class="n">_valid_tex_formats</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;texttt&quot;</span><span class="p">,</span> <span class="s">&quot;emph&quot;</span><span class="p">,</span> <span class="s">&quot;textbf&quot;</span><span class="p">,</span> <span class="s">&quot;textit&quot;</span><span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">config_jinja2</span><span class="p">():</span>
+<div class="viewcode-block" id="config_jinja2"><a class="viewcode-back" href="../../../module_content/gwip.reporting.html#gwip.reporting.utils.config_jinja2">[docs]</a>    <span class="sd">&quot;&quot;&quot;Configure the jinja2 environment.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span>
+        <span class="n">block_start_string</span><span class="o">=</span><span class="s">&#39;\BLOCK{&#39;</span><span class="p">,</span>
+        <span class="n">block_end_string</span><span class="o">=</span><span class="s">&#39;}&#39;</span><span class="p">,</span>
+        <span class="n">variable_start_string</span><span class="o">=</span><span class="s">&#39;\VAR{&#39;</span><span class="p">,</span>
+        <span class="n">variable_end_string</span><span class="o">=</span><span class="s">&#39;}&#39;</span><span class="p">,</span>
+        <span class="n">comment_start_string</span><span class="o">=</span><span class="s">&#39;\#{&#39;</span><span class="p">,</span>
+        <span class="n">comment_end_string</span><span class="o">=</span><span class="s">&#39;}&#39;</span><span class="p">,</span>
+        <span class="n">line_statement_prefix</span><span class="o">=</span><span class="s">&#39;%-&#39;</span><span class="p">,</span>
+        <span class="n">line_comment_prefix</span><span class="o">=</span><span class="s">&#39;%#&#39;</span><span class="p">,</span>
+        <span class="n">trim_blocks</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">autoescape</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">loader</span><span class="o">=</span><span class="n">jinja2</span><span class="o">.</span><span class="n">PackageLoader</span><span class="p">(</span><span class="n">__name__</span><span class="p">,</span> <span class="s">&quot;templates&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">sanitize_tex</span><span class="p">(</span><span class="n">original_text</span><span class="p">):</span></div>
+<div class="viewcode-block" id="sanitize_tex"><a class="viewcode-back" href="../../../module_content/gwip.reporting.html#gwip.reporting.utils.sanitize_tex">[docs]</a>    <span class="sd">&quot;&quot;&quot;Sanitize TeX text.&quot;&quot;&quot;</span>
+    <span class="c"># The backslashes</span>
+    <span class="n">sanitized_tex</span> <span class="o">=</span> <span class="n">original_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">&quot;</span><span class="p">,</span> <span class="s">r&quot;\textbackslash &quot;</span><span class="p">)</span>
+
+    <span class="c"># Escaping</span>
+    <span class="n">sanitized_tex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&quot;([{}])&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_escaped_char</span><span class="p">)),</span>
+                           <span class="s">r&quot;</span><span class="se">\\</span><span class="s">\g&lt;1&gt;&quot;</span><span class="p">,</span> <span class="n">sanitized_tex</span><span class="p">)</span>
+
+    <span class="c"># Replacing</span>
+    <span class="k">for</span> <span class="n">character</span><span class="p">,</span> <span class="n">mod</span> <span class="ow">in</span> <span class="n">_char_mod</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">sanitized_tex</span> <span class="o">=</span> <span class="n">sanitized_tex</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">mod</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sanitized_tex</span>
+
+
+<span class="k">def</span> <span class="nf">wrap_tex</span><span class="p">(</span><span class="n">original_text</span><span class="p">):</span></div>
+<div class="viewcode-block" id="wrap_tex"><a class="viewcode-back" href="../../../module_content/gwip.reporting.html#gwip.reporting.utils.wrap_tex">[docs]</a>    <span class="sd">&quot;&quot;&quot;Wraps the text.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wrap</span><span class="p">(</span><span class="n">original_text</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">format_tex</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">tex_format</span><span class="p">):</span></div>
+<div class="viewcode-block" id="format_tex"><a class="viewcode-back" href="../../../module_content/gwip.reporting.html#gwip.reporting.utils.format_tex">[docs]</a>    <span class="sd">&quot;&quot;&quot;Change the TeX text format.&quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">tex_format</span> <span class="ow">in</span> <span class="n">_valid_tex_formats</span><span class="p">,</span> <span class="s">&quot;invalid format&quot;</span>
+    <span class="k">assert</span> <span class="n">_is_sanitized</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="s">&quot;text not sanitized&quot;</span>
+
+    <span class="k">return</span> <span class="s">r&quot;\</span><span class="si">%s</span><span class="s">{</span><span class="si">%s</span><span class="s">}&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tex_format</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">tex_inline_math</span><span class="p">(</span><span class="n">content</span><span class="p">):</span></div>
+<div class="viewcode-block" id="tex_inline_math"><a class="viewcode-back" href="../../../module_content/gwip.reporting.html#gwip.reporting.utils.tex_inline_math">[docs]</a>    <span class="sd">&quot;&quot;&quot;Creates an inline mathematical formula in TeX.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s">&quot;${}$&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_is_sanitized</span><span class="p">(</span><span class="n">text</span><span class="p">):</span></div>
+    <span class="sd">&quot;&quot;&quot;Check if text is sanitized.&quot;&quot;&quot;</span>
+    <span class="c"># Checking the escaped characters</span>
+    <span class="n">sanitized</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">r&quot;[^</span><span class="se">\\</span><span class="s">][{}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_escaped_char</span><span class="p">)),</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">sanitized</span> <span class="o">=</span> <span class="n">sanitized</span> <span class="ow">is</span> <span class="bp">None</span>
+
+    <span class="c"># Checking the characters to replace</span>
+    <span class="k">for</span> <span class="n">character</span> <span class="ow">in</span> <span class="n">_char_mod</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">sanitized</span> <span class="o">=</span> <span class="n">sanitized</span> <span class="ow">and</span> <span class="p">(</span><span class="n">character</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">text</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sanitized</span>
+
+
+<span class="k">def</span> <span class="nf">create_tabular</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">header_multicol</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<div class="viewcode-block" id="create_tabular"><a class="viewcode-back" href="../../../module_content/gwip.reporting.html#gwip.reporting.utils.create_tabular">[docs]</a>                   <span class="n">col_align</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a TeX tabular.&quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">header_multicol</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">header_multicol</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">header</span><span class="p">]</span>
+
+    <span class="c"># Getting the number of columns</span>
+    <span class="n">nb_col</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">header_multicol</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">col_align</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">col_align</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;c&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">nb_col</span>
+
+    <span class="c"># Checking that the number of columns holds</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">header_multicol</span><span class="p">),</span> <span class="s">&quot;len(header) != len(multicol)&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">col_align</span><span class="p">)</span> <span class="o">==</span> <span class="n">nb_col</span><span class="p">,</span> <span class="s">&quot;len(align) != number of columns&quot;</span>
+
+    <span class="c"># Generating the tabular data</span>
+    <span class="n">tabular_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;col_alignments&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col_align</span><span class="p">),</span>
+        <span class="s">&quot;header_data&quot;</span><span class="p">:</span>    <span class="nb">zip</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">header_multicol</span><span class="p">),</span>
+        <span class="s">&quot;tabular_data&quot;</span><span class="p">:</span>   <span class="n">data</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c"># Rendering</span>
+    <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">tabular_data</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">create_float</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">float_type</span><span class="p">,</span> <span class="n">caption</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">placement</span><span class="o">=</span><span class="s">&quot;H&quot;</span><span class="p">):</span></div>
+<div class="viewcode-block" id="create_float"><a class="viewcode-back" href="../../../module_content/gwip.reporting.html#gwip.reporting.utils.create_float">[docs]</a>    <span class="sd">&quot;&quot;&quot;Creates a TeX float.&quot;&quot;&quot;</span>
+    <span class="c"># Some assertions</span>
+    <span class="k">assert</span> <span class="n">float_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;figure&quot;</span><span class="p">,</span> <span class="s">&quot;table&quot;</span><span class="p">],</span> <span class="s">&quot;invalid float type&quot;</span>
+    <span class="k">for</span> <span class="n">character</span> <span class="ow">in</span> <span class="n">placement</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">character</span> <span class="ow">in</span> <span class="s">&quot;htbp!H&quot;</span><span class="p">,</span> <span class="s">&quot;invalid placement&quot;</span>
+    <span class="k">if</span> <span class="s">&quot;H&quot;</span> <span class="ow">in</span> <span class="n">placement</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">placement</span> <span class="o">==</span> <span class="s">&quot;H&quot;</span><span class="p">,</span> <span class="s">&quot;placement &#39;H&#39; should be alone&quot;</span>
+
+    <span class="c"># Generating the float data</span>
+    <span class="n">float_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;float_type&quot;</span><span class="p">:</span>      <span class="n">float_type</span><span class="p">,</span>
+        <span class="s">&quot;float_placement&quot;</span><span class="p">:</span> <span class="n">placement</span><span class="p">,</span>
+        <span class="s">&quot;float_caption&quot;</span><span class="p">:</span>   <span class="n">caption</span><span class="p">,</span>
+        <span class="s">&quot;float_label&quot;</span><span class="p">:</span>     <span class="n">label</span><span class="p">,</span>
+        <span class="s">&quot;float_content&quot;</span><span class="p">:</span>   <span class="n">content</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c"># Rendering</span>
+    <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">float_data</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">format_time</span><span class="p">(</span><span class="n">total_seconds</span><span class="p">,</span> <span class="n">written_time</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
+<div class="viewcode-block" id="format_time"><a class="viewcode-back" href="../../../module_content/gwip.reporting.html#gwip.reporting.utils.format_time">[docs]</a>    <span class="sd">&quot;&quot;&quot;Format time (either &quot;HH:MM:SS&quot; or &quot;H hours, M minutes and S seconds&quot;.&quot;&quot;&quot;</span>
+    <span class="c"># The format for the time</span>
+    <span class="n">time_fmt</span> <span class="o">=</span> <span class="s">&quot;{hours:02d}:{minutes:02d}:{seconds:02d}&quot;</span>
+
+    <span class="c"># Getting the number of seconds, minutes and hours</span>
+    <span class="n">minutes</span><span class="p">,</span> <span class="n">seconds</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">total_seconds</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">minutes</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="c"># Formatting</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">written_time</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">time_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">seconds</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="n">minutes</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="n">hours</span><span class="p">)</span>
+
+    <span class="c"># The written time</span>
+    <span class="n">written_time</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c"># The hours</span>
+    <span class="k">if</span> <span class="n">hours</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">written_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s">&quot;{} hour{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span> <span class="s">&quot;s&quot;</span> <span class="k">if</span> <span class="n">hours</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="c"># The minutes</span>
+    <span class="k">if</span> <span class="n">minutes</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">written_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s">&quot;{} minute{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">minutes</span><span class="p">,</span> <span class="s">&quot;s&quot;</span> <span class="k">if</span> <span class="n">minutes</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="c"># The seconds</span>
+    <span class="k">if</span> <span class="n">seconds</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">written_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s">&quot;{} second{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="s">&quot;s&quot;</span> <span class="k">if</span> <span class="n">seconds</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="c"># Formatting the written time</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">written_time</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&quot;no time&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">written_time</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">written_time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">written_time</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot; and &quot;</span> <span class="o">+</span> <span class="n">written_time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">colorize_time</span><span class="p">(</span><span class="n">total_seconds</span><span class="p">):</span></div>
+<div class="viewcode-block" id="colorize_time"><a class="viewcode-back" href="../../../module_content/gwip.reporting.html#gwip.reporting.utils.colorize_time">[docs]</a>    <span class="sd">&quot;&quot;&quot;Colorize the time.&quot;&quot;&quot;</span>
+    <span class="c"># Formatting the time</span>
+    <span class="n">formatted_time</span> <span class="o">=</span> <span class="n">format_time</span><span class="p">(</span><span class="n">total_seconds</span><span class="p">)</span>
+
+    <span class="c"># Setting the color</span>
+    <span class="n">colored_time</span> <span class="o">=</span> <span class="n">formatted_time</span>
+    <span class="n">to_color</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s">&quot;([0:]+)&quot;</span><span class="p">,</span> <span class="n">formatted_time</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">to_color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">colored_time</span> <span class="o">=</span> <span class="s">r&quot;{\color{light_gray}&quot;</span>
+        <span class="n">colored_time</span> <span class="o">+=</span> <span class="n">formatted_time</span><span class="p">[:</span><span class="n">to_color</span><span class="o">.</span><span class="n">end</span><span class="p">()]</span>
+        <span class="n">colored_time</span> <span class="o">+=</span> <span class="s">&quot;}&quot;</span> <span class="o">+</span> <span class="n">formatted_time</span><span class="p">[</span><span class="n">to_color</span><span class="o">.</span><span class="n">end</span><span class="p">():]</span>
+
+    <span class="c"># Formatting the time</span>
+    <span class="k">return</span> <span class="n">colored_time</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">gwip 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../gwip.html" >gwip</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

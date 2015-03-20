@@ -1,0 +1,195 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>gwip.db package &mdash; gwip 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="top" title="gwip 0.1 documentation" href="../index.html" />
+    <link rel="up" title="gwip package" href="gwip.html" />
+    <link rel="next" title="gwip.formats package" href="gwip.formats.html" />
+    <link rel="prev" title="gwip.config package" href="gwip.config.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gwip.formats.html" title="gwip.formats package"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="gwip.config.html" title="gwip.config package"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">gwip 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >gwip</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="gwip.html" accesskey="U">gwip package</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">gwip.db package</a><ul>
+<li><a class="reference internal" href="#module-gwip.db.utils">gwip.db.utils module</a></li>
+<li><a class="reference internal" href="#module-gwip.db">Module contents</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="gwip.config.html"
+                        title="previous chapter">gwip.config package</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="gwip.formats.html"
+                        title="next chapter">gwip.formats package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/module_content/gwip.db.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="gwip-db-package">
+<h1>gwip.db package<a class="headerlink" href="#gwip-db-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-gwip.db.utils">
+<span id="gwip-db-utils-module"></span><h2>gwip.db.utils module<a class="headerlink" href="#module-gwip.db.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="function">
+<dt id="gwip.db.utils.create_task_db">
+<code class="descclassname">gwip.db.utils.</code><code class="descname">create_task_db</code><span class="sig-paren">(</span><em>out_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/db/utils.html#create_task_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.db.utils.create_task_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a task DB.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.db.utils.check_task_completion">
+<code class="descclassname">gwip.db.utils.</code><code class="descname">check_task_completion</code><span class="sig-paren">(</span><em>task_id</em>, <em>db_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/db/utils.html#check_task_completion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.db.utils.check_task_completion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the task exists and is completed.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.db.utils.create_task_entry">
+<code class="descclassname">gwip.db.utils.</code><code class="descname">create_task_entry</code><span class="sig-paren">(</span><em>task_id</em>, <em>db_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/db/utils.html#create_task_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.db.utils.create_task_entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a update a task entry.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.db.utils.mark_task_completed">
+<code class="descclassname">gwip.db.utils.</code><code class="descname">mark_task_completed</code><span class="sig-paren">(</span><em>task_id</em>, <em>db_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/db/utils.html#mark_task_completed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.db.utils.mark_task_completed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marks the task as completed.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.db.utils.mark_task_incomplete">
+<code class="descclassname">gwip.db.utils.</code><code class="descname">mark_task_incomplete</code><span class="sig-paren">(</span><em>task_id</em>, <em>db_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/db/utils.html#mark_task_incomplete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.db.utils.mark_task_incomplete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marks a task as incomplete.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.db.utils.get_task_runtime">
+<code class="descclassname">gwip.db.utils.</code><code class="descname">get_task_runtime</code><span class="sig-paren">(</span><em>task_id</em>, <em>db_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/db/utils.html#get_task_runtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.db.utils.get_task_runtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the task run time.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.db.utils.get_all_runtimes">
+<code class="descclassname">gwip.db.utils.</code><code class="descname">get_all_runtimes</code><span class="sig-paren">(</span><em>db_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/db/utils.html#get_all_runtimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.db.utils.get_all_runtimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all tasks execution time.</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="gwip.db.utils.mark_drmaa_task_completed">
+<code class="descclassname">gwip.db.utils.</code><code class="descname">mark_drmaa_task_completed</code><span class="sig-paren">(</span><em>task_id</em>, <em>launch_time</em>, <em>start_time</em>, <em>end_time</em>, <em>db_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/db/utils.html#mark_drmaa_task_completed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.db.utils.mark_drmaa_task_completed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marks a task run by DRMAA as completed (while updating times).</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-gwip.db">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gwip.db" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="gwip.formats.html" title="gwip.formats package"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="gwip.config.html" title="gwip.config package"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">gwip 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >gwip</a> &raquo;</li>
+          <li class="nav-item nav-item-3"><a href="gwip.html" >gwip package</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

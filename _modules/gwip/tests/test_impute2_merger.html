@@ -1,0 +1,502 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>gwip.tests.test_impute2_merger &mdash; gwip 0.1 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '0.1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
+    <link rel="top" title="gwip 0.1 documentation" href="../../../index.html" />
+    <link rel="up" title="gwip" href="../../gwip.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">gwip 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../gwip.html" accesskey="U">gwip</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for gwip.tests.test_impute2_merger</h1><div class="highlight"><pre>
+<span class="c"># This file is part of gwip.</span>
+<span class="c">#</span>
+<span class="c"># This work is licensed under the Creative Commons Attribution-NonCommercial</span>
+<span class="c"># 4.0 International License. To view a copy of this license, visit</span>
+<span class="c"># http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative</span>
+<span class="c"># Commons, PO Box 1866, Mountain View, CA 94042, USA.</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">TemporaryDirectory</span>
+
+<span class="kn">from</span> <span class="nn">..tools</span> <span class="kn">import</span> <span class="n">impute2_merger</span>
+
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s">&quot;Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s">&quot;Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)&quot;</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;TestImpute2Merger&quot;</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">TestImpute2Merger</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<div class="viewcode-block" id="TestImpute2Merger"><a class="viewcode-back" href="../../../module_content/gwip.tests.html#gwip.tests.test_impute2_merger.TestImpute2Merger">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">clean_logging_handlers</span><span class="p">():</span>
+<div class="viewcode-block" id="TestImpute2Merger.clean_logging_handlers"><a class="viewcode-back" href="../../../module_content/gwip.tests.html#gwip.tests.test_impute2_merger.TestImpute2Merger.clean_logging_handlers">[docs]</a>        <span class="n">handlers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">handlers</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">handlers</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Merger.setUp"><a class="viewcode-back" href="../../../module_content/gwip.tests.html#gwip.tests.test_impute2_merger.TestImpute2Merger.setUp">[docs]</a>        <span class="sd">&quot;&quot;&quot;Setup the tests.&quot;&quot;&quot;</span>
+        <span class="c"># Creating the temporary directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">TemporaryDirectory</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s">&quot;gwip_test_&quot;</span><span class="p">)</span>
+
+        <span class="c"># Creating three small input files</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;input_1.impute2&quot;</span><span class="p">),</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;input_2.impute2&quot;</span><span class="p">),</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;input_3.impute2&quot;</span><span class="p">),</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;input_4.impute2&quot;</span><span class="p">),</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;input_5.impute2&quot;</span><span class="p">),</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;input_6.impute2&quot;</span><span class="p">),</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;input_7.impute2&quot;</span><span class="p">),</span>
+        <span class="p">]</span>
+
+        <span class="c"># The content of the three files</span>
+        <span class="n">file_content</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s">&quot;--- rs12345 1231415 A G 1 0 0 0.988 0.002 0 0 0.997 0.003&quot;</span><span class="p">,</span>
+            <span class="s">&quot;1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--- rs23457 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--- rs23457 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--- rs23457 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--- . 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--- . 3214570 T TC 0.869 0.130 0 0.869 0.130 0 0.869 0.130 0&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+
+        <span class="c"># The summary content</span>
+        <span class="n">summary_content</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s">&quot;-Output file</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot; --1 type 0 SNPs</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot; --0 type 1 SNPs</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot; --1 type 2 SNPs</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot; --1 type 3 SNPs</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot; --1 total SNPs&quot;</span>
+        <span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">)</span>
+
+        <span class="c"># Creating the files</span>
+        <span class="k">for</span> <span class="n">filename</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">s_content</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">filenames</span><span class="p">,</span> <span class="n">file_content</span><span class="p">,</span>
+                                                <span class="n">summary_content</span><span class="p">):</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s">&quot;_summary&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">s_content</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+
+        <span class="c"># Executing the script for the first time</span>
+        <span class="n">prefix1</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;gwip_results_1&quot;</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s">&quot;--chr&quot;</span><span class="p">,</span> <span class="s">&quot;1&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--probability&quot;</span><span class="p">,</span> <span class="s">&quot;0.9&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--completion&quot;</span><span class="p">,</span> <span class="s">&quot;0.98&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--prefix&quot;</span><span class="p">,</span> <span class="n">prefix1</span><span class="p">,</span>
+            <span class="s">&quot;--impute2&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">args</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span>
+        <span class="n">impute2_merger</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="c"># Cleaning the handlers</span>
+        <span class="n">TestImpute2Merger</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Executing the script for the second time with different values</span>
+        <span class="n">prefix2</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;gwip_results_2&quot;</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s">&quot;--chr&quot;</span><span class="p">,</span> <span class="s">&quot;1&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--probability&quot;</span><span class="p">,</span> <span class="s">&quot;0.8&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--completion&quot;</span><span class="p">,</span> <span class="s">&quot;0.98&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--prefix&quot;</span><span class="p">,</span> <span class="n">prefix2</span><span class="p">,</span>
+            <span class="s">&quot;--impute2&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">args</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span>
+        <span class="n">impute2_merger</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="c"># Cleaning the handlers</span>
+        <span class="n">TestImpute2Merger</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Executing the script for the second time with different values</span>
+        <span class="n">prefix3</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;gwip_results_3&quot;</span><span class="p">)</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s">&quot;--chr&quot;</span><span class="p">,</span> <span class="s">&quot;1&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--probability&quot;</span><span class="p">,</span> <span class="s">&quot;0.9&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--completion&quot;</span><span class="p">,</span> <span class="s">&quot;0.6&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--prefix&quot;</span><span class="p">,</span> <span class="n">prefix3</span><span class="p">,</span>
+            <span class="s">&quot;--impute2&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">args</span> <span class="o">+=</span> <span class="bp">self</span><span class="o">.</span><span class="n">filenames</span>
+        <span class="n">impute2_merger</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="c"># Cleaning the handlers</span>
+        <span class="n">TestImpute2Merger</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Saving the prefixes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span> <span class="o">=</span> <span class="p">[</span><span class="n">prefix1</span><span class="p">,</span> <span class="n">prefix2</span><span class="p">,</span> <span class="n">prefix3</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Merger.tearDown"><a class="viewcode-back" href="../../../module_content/gwip.tests.html#gwip.tests.test_impute2_merger.TestImpute2Merger.tearDown">[docs]</a>        <span class="sd">&quot;&quot;&quot;Finishes the test.&quot;&quot;&quot;</span>
+        <span class="c"># Deleting the output directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">test_check_output_files</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Merger.test_check_output_files"><a class="viewcode-back" href="../../../module_content/gwip.tests.html#gwip.tests.test_impute2_merger.TestImpute2Merger.test_check_output_files">[docs]</a>        <span class="sd">&quot;&quot;&quot;Checks the presence of all the output files.&quot;&quot;&quot;</span>
+        <span class="n">suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;.alleles&quot;</span><span class="p">,</span> <span class="s">&quot;.completion_rates&quot;</span><span class="p">,</span> <span class="s">&quot;.good_sites&quot;</span><span class="p">,</span> <span class="s">&quot;.impute2&quot;</span><span class="p">,</span>
+                    <span class="s">&quot;.imputed_sites&quot;</span><span class="p">,</span> <span class="s">&quot;.log&quot;</span><span class="p">,</span> <span class="s">&quot;.maf&quot;</span><span class="p">,</span> <span class="s">&quot;.map&quot;</span><span class="p">,</span> <span class="p">]</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">suffixes</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">test_check_alleles</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Merger.test_check_alleles"><a class="viewcode-back" href="../../../module_content/gwip.tests.html#gwip.tests.test_impute2_merger.TestImpute2Merger.test_check_alleles">[docs]</a>        <span class="sd">&quot;&quot;&quot;Checks the &#39;.alleles&#39; file.&quot;&quot;&quot;</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;name</span><span class="se">\t</span><span class="s">a1</span><span class="se">\t</span><span class="s">a2</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs12345</span><span class="se">\t</span><span class="s">A</span><span class="se">\t</span><span class="s">G</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23456</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">C</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_1</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_2</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570_1</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c"># Checking the files</span>
+        <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s">&quot;.alleles&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+                <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_completion_rates</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Merger.test_completion_rates"><a class="viewcode-back" href="../../../module_content/gwip.tests.html#gwip.tests.test_impute2_merger.TestImpute2Merger.test_completion_rates">[docs]</a>        <span class="sd">&quot;&quot;&quot;Checks the &#39;.completion_rates&#39; file.&quot;&quot;&quot;</span>
+        <span class="n">all_expected</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">all_expected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span>
+            <span class="s">&quot;name</span><span class="se">\t</span><span class="s">nb_missing</span><span class="se">\t</span><span class="s">completion_rate</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs12345</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23456</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_1</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_2</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570_1</span><span class="se">\t</span><span class="s">3</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">all_expected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span>
+            <span class="s">&quot;name</span><span class="se">\t</span><span class="s">nb_missing</span><span class="se">\t</span><span class="s">completion_rate</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs12345</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23456</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_2</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+        <span class="n">all_expected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span>
+            <span class="s">&quot;name</span><span class="se">\t</span><span class="s">nb_missing</span><span class="se">\t</span><span class="s">completion_rate</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs12345</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23456</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_1</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_2</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570_1</span><span class="se">\t</span><span class="s">3</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+        <span class="c"># There should be enough expected values</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_expected</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s">&quot;Wrong number of expected values...&quot;</span><span class="p">)</span>
+
+        <span class="c"># Checking the files</span>
+        <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">expected</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">,</span> <span class="n">all_expected</span><span class="p">):</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s">&quot;.completion_rates&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+                <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+            <span class="c"># Splitting lines</span>
+            <span class="n">expected</span> <span class="o">=</span> <span class="n">expected</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">observed</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+
+            <span class="c"># Should have the same number of lines</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">expected</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed</span><span class="p">))</span>
+
+            <span class="c"># Comparing the results</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+                <span class="c"># Splitting</span>
+                <span class="n">e</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)</span>
+                <span class="n">o</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)</span>
+
+                <span class="c"># Should be the same length</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+
+                <span class="c"># Values should be the same</span>
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span> <span class="nb">int</span><span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+                    <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s">&quot;Wrong number of values&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_good_sites</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Merger.test_good_sites"><a class="viewcode-back" href="../../../module_content/gwip.tests.html#gwip.tests.test_impute2_merger.TestImpute2Merger.test_good_sites">[docs]</a>        <span class="sd">&quot;&quot;&quot;Checks the &#39;.good_sites&#39; file.&quot;&quot;&quot;</span>
+        <span class="n">all_expected</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">all_expected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s">&quot;rs12345</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">all_expected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s">&quot;rs12345</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23456</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_2</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570_1</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">all_expected</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s">&quot;rs12345</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23456</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_2</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c"># There should be enough expected values</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_expected</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s">&quot;Wrong number of expected values...&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">expected</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">,</span> <span class="n">all_expected</span><span class="p">):</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s">&quot;.good_sites&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+                <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_impute2</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Merger.test_impute2"><a class="viewcode-back" href="../../../module_content/gwip.tests.html#gwip.tests.test_impute2_merger.TestImpute2Merger.test_impute2">[docs]</a>        <span class="sd">&quot;&quot;&quot;Checks the &#39;.impute2&#39; file.&quot;&quot;&quot;</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs12345 1231415 A G 1 0 0 0.988 0.002 0 0 0.997 0.003</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_1 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_2 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 1:3214570 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 1:3214570_1 3214570 T TC 0.869 0.130 0 0.869 0.130 0 0.869 &quot;</span>
+            <span class="s">&quot;0.130 0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c"># Checking the files</span>
+        <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s">&quot;.impute2&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+                <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_imputed_sites</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Merger.test_imputed_sites"><a class="viewcode-back" href="../../../module_content/gwip.tests.html#gwip.tests.test_impute2_merger.TestImpute2Merger.test_imputed_sites">[docs]</a>        <span class="sd">&quot;&quot;&quot;Checks the &#39;.imputed_sites&#39; file.&quot;&quot;&quot;</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;rs12345</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_2</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570_1</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c"># Checking the files</span>
+        <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s">&quot;.imputed_sites&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+                <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_maf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Merger.test_maf"><a class="viewcode-back" href="../../../module_content/gwip.tests.html#gwip.tests.test_impute2_merger.TestImpute2Merger.test_maf">[docs]</a>        <span class="sd">&quot;&quot;&quot;Checks the &#39;.maf&#39; file.&quot;&quot;&quot;</span>
+        <span class="n">all_expected</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">all_expected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span>
+            <span class="s">&quot;name</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">maf</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs12345</span><span class="se">\t</span><span class="s">A</span><span class="se">\t</span><span class="s">G</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23456</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_1</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_2</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570_1</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="s">&quot;NA&quot;</span><span class="p">))</span>
+        <span class="n">all_expected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span>
+            <span class="s">&quot;name</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">maf</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs12345</span><span class="se">\t</span><span class="s">A</span><span class="se">\t</span><span class="s">G</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23456</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_1</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_2</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570_1</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+        <span class="n">all_expected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span>
+            <span class="s">&quot;name</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">maf</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs12345</span><span class="se">\t</span><span class="s">A</span><span class="se">\t</span><span class="s">G</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23456</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_1</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;rs23457_2</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1:3214570_1</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="s">&quot;NA&quot;</span><span class="p">))</span>
+
+        <span class="c"># There should be enough expected values</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">all_expected</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s">&quot;Wrong number of expected values...&quot;</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">expected</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">,</span> <span class="n">all_expected</span><span class="p">):</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s">&quot;.maf&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+                <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+            <span class="c"># Splitting lines</span>
+            <span class="n">expected</span> <span class="o">=</span> <span class="n">expected</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">observed</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span>
+
+            <span class="c"># Should have the same number of lines</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">expected</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed</span><span class="p">))</span>
+
+            <span class="c"># Comparing the results</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)):</span>
+                <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">e</span><span class="p">,</span> <span class="n">o</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+                <span class="c"># Splitting</span>
+                <span class="n">e</span> <span class="o">=</span> <span class="n">e</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)</span>
+                <span class="n">o</span> <span class="o">=</span> <span class="n">o</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)</span>
+
+                <span class="c"># Should be the same length</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">o</span><span class="p">))</span>
+
+                <span class="c"># Values should be the same</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">e</span><span class="p">[:</span><span class="mi">3</span><span class="p">],</span> <span class="n">o</span><span class="p">[:</span><span class="mi">3</span><span class="p">])</span>
+
+                <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">e</span><span class="p">)):</span>
+                    <span class="k">if</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">j</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">e</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;NA&quot;</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="nb">float</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="n">j</span><span class="p">]),</span> <span class="nb">float</span><span class="p">(</span><span class="n">o</span><span class="p">[</span><span class="n">j</span><span class="p">]))</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">e</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">o</span><span class="p">[</span><span class="n">j</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s">&quot;Wrong number of values&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_map</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Merger.test_map"><a class="viewcode-back" href="../../../module_content/gwip.tests.html#gwip.tests.test_impute2_merger.TestImpute2Merger.test_map">[docs]</a>        <span class="sd">&quot;&quot;&quot;Checks the &#39;.map&#39; file.&quot;&quot;&quot;</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs12345</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">1231415</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_2</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:3214570</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:3214570_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+
+        <span class="c"># Checking the files</span>
+        <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s">&quot;.map&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+                <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">gwip 0.1 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../gwip.html" >gwip</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>
