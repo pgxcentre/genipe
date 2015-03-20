@@ -6,6 +6,10 @@
 Genome-Wide Imputation Pipeline
 ================================
 
+.. note::
+
+   Documentation is in progress...
+
 Introduction
 -------------
 
@@ -25,4 +29,5 @@ provides a useful standalone tool to perform statistical analysis on imputed
    tutorial
    input_files
    output_files
+   implementation
 
