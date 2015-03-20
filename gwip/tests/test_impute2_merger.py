@@ -139,7 +139,7 @@ class TestImpute2Merger(unittest.TestCase):
                 self.assertTrue(os.path.isfile(prefix + suffix))
 
     def test_check_alleles(self):
-        """Checks the '*.alleles' file."""
+        """Checks the '.alleles' file."""
         expected = (
             "name\ta1\ta2\n"
             "rs12345\tA\tG\n"
@@ -159,7 +159,7 @@ class TestImpute2Merger(unittest.TestCase):
             self.assertEqual(expected, observed)
 
     def test_completion_rates(self):
-        """Checks the '*.completion_rates' file."""
+        """Checks the '.completion_rates' file."""
         all_expected = []
         all_expected.append((
             "name\tnb_missing\tcompletion_rate\n"
@@ -234,7 +234,7 @@ class TestImpute2Merger(unittest.TestCase):
                         self.fail("Wrong number of values")
 
     def test_good_sites(self):
-        """Checks the '*.good_sites' file."""
+        """Checks the '.good_sites' file."""
         all_expected = []
         all_expected.append(
             "rs12345\n"
@@ -268,7 +268,7 @@ class TestImpute2Merger(unittest.TestCase):
             self.assertEqual(expected, observed)
 
     def test_impute2(self):
-        """Checks the '*.impute2' file."""
+        """Checks the '.impute2' file."""
         expected = (
             "1 rs12345 1231415 A G 1 0 0 0.988 0.002 0 0 0.997 0.003\n"
             "1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1\n"
@@ -288,7 +288,7 @@ class TestImpute2Merger(unittest.TestCase):
             self.assertEqual(expected, observed)
 
     def test_imputed_sites(self):
-        """Checks the '*.imputed_sites' file."""
+        """Checks the '.imputed_sites' file."""
         expected = (
             "rs12345\n"
             "rs23457\n"
@@ -306,7 +306,7 @@ class TestImpute2Merger(unittest.TestCase):
             self.assertEqual(expected, observed)
 
     def test_maf(self):
-        """Checks the '*.maf' file."""
+        """Checks the '.maf' file."""
         all_expected = []
         all_expected.append((
             "name\tmajor\tminor\tmaf\n"
@@ -383,7 +383,7 @@ class TestImpute2Merger(unittest.TestCase):
                         self.fail("Wrong number of values")
 
     def test_map(self):
-        """Checks the '*.map' file."""
+        """Checks the '.map' file."""
         expected = (
             "1\trs12345\t0\t1231415\n"
             "1\trs23456\t0\t3214569\n"
