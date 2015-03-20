@@ -43,6 +43,7 @@ def setup_package():
             "console_scripts": [
                 "gwip-launcher=gwip.pipeline:main",
                 "impute2-merger=gwip.tools.impute2_merger:main",
+                "impute2-extractor=gwip.tools.impute2_extractor:main",
                 "imputed-stats=gwip.tools.imputed_stats:main",
             ],
         },
