@@ -447,7 +447,10 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
 
     with open(output_filename, "w") as f:
         # Write the header.
-        print("snp_set_id", "p_value", "q_value", sep="\t", file=f)
+        if args.skat_o:
+            print("snp_set_id", "p_value", sep="\t", file=f)
+        else:
+            print("snp_set_id", "p_value", "q_value", sep="\t", file=f)
 
         # The order in the snp_sets list should have been consistent
         # across the whole analysis. We just want to make sure that we
@@ -457,7 +460,10 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
         # Write a tab separated file containing the set and p-values.
         for i, (p_value, q_value) in enumerate(results):
             set_id = snp_sets[i]
-            print(set_id, p_value, q_value, sep="\t", file=f)
+            if args.skat_o:
+                print(set_id, p_value, sep="\t", file=f)
+            else:
+                print(set_id, p_value, q_value, sep="\t", file=f)
 
 
 def _skat_run_job(script_filename):
@@ -466,6 +472,7 @@ def _skat_run_job(script_filename):
     The results should be somewhere in the standard output. The expected
     format is: ::
 
+        _PYTHON_HOOK_QVAL:[0.123]
         _PYTHON_HOOK_PVAL:[0.123]
 
     If the template script is modified, this format should still be respected.
@@ -500,7 +507,11 @@ def _skat_run_job(script_filename):
         raise ProgramError("SKAT did not return properly. See script "
                            "'{}' for details.".format(script_filename))
 
-    return float(p_match.group(1)), float(q_match.group(1))
+    if q_match.group(1) == "NA":
+        # For SKAT-O, the Q will be set to NA.
+        return float(p_match.group(1)), None
+    else:
+        return float(p_match.group(1)), float(q_match.group(1))
 
 
 def _skat_generate_r_script(dir_name, r_files, args):
