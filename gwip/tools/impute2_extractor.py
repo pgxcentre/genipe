@@ -12,6 +12,8 @@ import sys
 import logging
 import argparse
 
+import pandas as pd
+
 from ..formats.index import *
 from ..error import ProgramError
 from .. import __version__, chromosomes
@@ -54,6 +56,21 @@ def main(args=None):
         # Checking the options
         check_args(args)
 
+        # Retrieving the file index
+        impute2_index = get_impute2_index(args.impute2)
+
+        # Gathering what needs to be extracted
+        pos_to_extract = gather_extraction_positions(
+            maf=args.maf,
+            rate=args.rate,
+            maf_filename=args.maf_file,
+            rate_filename=args.rate_file,
+            map_filename=args.map_file,
+            extract_filename=args.extract,
+        )
+        logging.info("Keeping a total of {:,d} "
+                     "markers".format(len(pos_to_extract)))
+
     # Catching the Ctrl^C
     except KeyboardInterrupt:
         logging.info("Cancelled by user")
@@ -73,6 +90,82 @@ def main(args=None):
             logging_fh.close()
 
 
+def get_impute2_index(i_filename):
+    """Gets the impute2 file index."""
+    if not os.path.isfile(get_index_fn(i_filename)):
+        # The index does not exists, so we create it
+        logging.info("Creating index for '{}'".format(i_filename))
+        return build_index(
+            i_filename,
+            chrom_col=0,
+            pos_col=2,
+            delimiter=' ',
+        )
+    else:
+        logging.info("Retrieving index for '{}'".format(i_filename))
+        return get_index(i_filename)
+
+
+def gather_extraction_positions(maf, maf_filename, rate, rate_filename,
+                                map_filename, extract_filename):
+    "Gather positions that are required."""
+    map_data = None
+    markers_to_keep = None
+
+    # Reading the map data
+    if map_filename is not None:
+        logging.info("Reading the MAP data")
+        map_data = pd.read_csv(map_filename, sep="\t",
+                               names=["chrom", "name", "cm", "pos"])
+        map_data = map_data.set_index("name", verify_integrity=True)
+        markers_to_keep = map_data.index
+
+        logging.info("  - read {:,d} markers".format(len(markers_to_keep)))
+
+    # Extracting using names?
+    if extract_filename is not None:
+        logging.info("Reading the markers to extract")
+        with open(extract_filename, "r") as i_file:
+            markers_to_keep = markers_to_keep.intersection({
+                i for i in i_file.read().splitlines()
+            })
+        logging.info("  - kept {:,d} markers".format(len(markers_to_keep)))
+
+    # Extracting using MAF?
+    if maf is not None:
+        logging.info("Reading the MAF data")
+
+        maf_data = pd.read_csv(maf_filename, sep="\t")
+        maf_data = maf_data.set_index("name", verify_integrity=True)
+        maf_data = maf_data[maf_data.maf >= maf]
+
+        markers_to_keep = markers_to_keep.intersection(maf_data.index)
+        logging.info("  - kept {:,d} markers".format(len(markers_to_keep)))
+
+    # Extracting using completion rate?
+    if rate is not None:
+        logging.info("Reading the completion rate data")
+
+        rate_data = pd.read_csv(rate_filename, sep="\t")
+        rate_data = rate_data.set_index("name", verify_integrity=True)
+        rate_data = rate_data[rate_data.completion_rate >= rate]
+
+        markers_to_keep = markers_to_keep.intersection(rate_data.index)
+        logging.info("  - kept {:,d} markers".format(len(markers_to_keep)))
+
+    # Needed to extract something?
+    if markers_to_keep is None:
+        return {}
+
+    # Keeping only what is required
+    map_data = map_data.loc[markers_to_keep, :].sort(["chrom", "pos"])
+
+    # Extracting the positions
+    return [
+        tuple(i) for i in map_data[["chrom", "pos"]].values
+    ]
+
+
 def check_args(args):
     """Checks the arguments and options."""
     # Checking that the impute2 files exists
@@ -81,8 +174,19 @@ def check_args(args):
 
     # Is there something to extract?
     if not args.genomic and not args.maf and not args.rate:
-        raise ProgramError("nothing to extreact: use '--genomic', '--maf' or "
-                           "'--rate'")
+        if args.extract is None:
+            raise ProgramError("nothing to extract: use '--extract', "
+                               "'--genomic', '--maf' or '--rate'")
+
+    elif args.extract is not None:
+        raise ProgramError("'--extract' can only be used alone")
+
+    # If extract, check the file
+    if args.extract is not None:
+        if args.map_file is None:
+            raise ProgramError("needs '--map-file' when using '--extract'")
+        if not os.path.isfile(args.extract):
+            raise ProgramError("{}: no such file".format(args.extract))
 
     # If genomic, we check the format
     if args.genomic is not None:
@@ -193,10 +297,18 @@ def parse_args(parser, args=None):
     # What to extract
     group = parser.add_argument_group("Extraction Options")
     group.add_argument(
+        "--extract",
+        type=str,
+        metavar="FILE",
+        help="File containing marker names to extract. Requires the option "
+             "'--map-file'.",
+    )
+    group.add_argument(
         "--genomic",
         type=str,
         metavar="CHR:START-END",
-        help="The range to extract (e.g. 22 1000000 1500000).",
+        help="The range to extract (e.g. 22 1000000 1500000). Can be used in "
+             "combination with '--rate' and '--maf'.",
     )
     group.add_argument(
         "--maf",
@@ -204,7 +316,8 @@ def parse_args(parser, args=None):
         metavar="FLOAT",
         help="Extract markers with a minor allele frequency equal or higher "
              "than the specified threshold. Requires the two options "
-             "'--maf-file' and '--map-file'.",
+             "'--maf-file' and '--map-file'. Can be used in combination with "
+             "'--rate' and '--genomic'.",
     )
     group.add_argument(
         "--rate",
@@ -212,7 +325,8 @@ def parse_args(parser, args=None):
         metavar="FLOAT",
         help="Extract markers with a completion rate equal or higher to the "
              "specified threshold. Requires the two options '--rate-file' and "
-             "'--map-file'.",
+             "'--map-file'. Can be used in combination with '--maf' and "
+             "'--genomic'.",
     )
 
     if args is not None:

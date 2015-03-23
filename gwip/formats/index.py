@@ -63,7 +63,7 @@ def build_index(fn, chrom_col, pos_col, delimiter='\t', skip_lines=0,
 
     """
 
-    idx_fn = _get_index_fn(fn)
+    idx_fn = get_index_fn(fn)
     idx = {}
 
     size = os.path.getsize(fn)  # Total filesize
@@ -186,8 +186,7 @@ def build_index(fn, chrom_col, pos_col, delimiter='\t', skip_lines=0,
 
 
 def get_index(fn):
-    """Restores the index for a given file or builds it if the index was not
-       previously created.
+    """Restores the index for a given file.
 
     :param fn: The filname of the file to index.
     :type fn: str
@@ -197,7 +196,7 @@ def get_index(fn):
 
     """
 
-    with open(_get_index_fn(fn), "rb") as f:
+    with open(get_index_fn(fn), "rb") as f:
         idx = pickle.load(f)
     return idx
 
@@ -209,7 +208,7 @@ def goto(f, idx, chrom, pos):
     :type f: file
 
     :param idx: The index data structure (see build_index).
-    :param idx: dict
+    :rtype idx: dict
 
     :param chrom: The queried chromosome.
     :param pos: The queried position on the chromosome.
@@ -319,17 +318,11 @@ def goto(f, idx, chrom, pos):
             return True
 
 
-def _get_index_fn(fn):
+def get_index_fn(fn):
     """Generates the index filename from the path to the indexed file.
 
     :param fn: The name of the file to index.
     :type fn: str
 
     """
-
-    if not os.path.isfile(fn):
-        raise Exception("File '{}' does not exist.".format(
-            fn
-        ))
-
     return os.path.abspath("{}.gtidx".format(fn))
