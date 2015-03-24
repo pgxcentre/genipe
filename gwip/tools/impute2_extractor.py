@@ -16,6 +16,7 @@ from collections import namedtuple
 import pandas as pd
 from numpy import nan
 
+from ..formats.index import *
 from ..formats.impute2 import *
 from ..error import ProgramError
 from .. import __version__, chromosomes
@@ -113,24 +114,44 @@ def extract(impute2_filename, names, genomic, out_prefix, out_format):
     # Extracted positions
     extracted = set()
 
-    # Reading the impute2 file
+    # Reading all impute2 files
     for input_filename in impute2_filename:
-        with open(input_filename, "r") as i_file:
-            for line in i_file:
+        # Finding the name of the file containing the index
+        file_index = get_index(input_filename, cols=[0, 1, 2],
+                               names=["chrom", "name", "pos"], sep=" ")
+
+        # Keeping only required values from the index
+        if len(names) == 0:
+            # Using genomic location
+            in_region = (
+                (file_index.chrom == genomic.chrom) &
+                (file_index.pos >= genomic.start) &
+                (file_index.pos <= genomic.end)
+            )
+            file_index = file_index[in_region]
+
+        else:
+            # Using the names
+            file_index = file_index[file_index.name.isin(names)]
+
+        # Getting all the seek value
+        with get_open_func(input_filename)[1](input_filename, "r") as i_file:
+            for seek_value in file_index.seek.values:
+                # Seeking
+                i_file.seek(int(seek_value))
+
+                # Reading the line
+                line = i_file.readline()
                 row = line.rstrip("\n").split(" ")
+
+                # The marker name
                 name = row[1]
-                chrom = int(row[0])
-                pos = int(row[2])
 
-                if len(names) == 0:
-                    if (chrom == genomic.chrom and pos >= genomic.start and
-                            pos <= genomic.end):
-                        print_data(o_files, line=line, row=row)
-                        extracted.add(name)
+                # Printing the data
+                print_data(o_files, line=line, row=row)
 
-                elif name in names:
-                    print_data(o_files, line=line, row=row)
-                    extracted.add(name)
+                # Saving statistics
+                extracted.add(name)
 
     # Closing the files
     for o_file in o_files.values():
@@ -155,7 +176,7 @@ def print_data(o_files, *, line=None, row=None):
     chrom = None
     good_calls = None
     probabilities = None
-    if "dosage" in o_files or "calls" in dosage:
+    if "dosage" in o_files or "calls" in o_files:
         # Getting the informations
         marker_info, probabilities = matrix_from_line(row)
         chrom, name, pos, a1, a2 = marker_info
