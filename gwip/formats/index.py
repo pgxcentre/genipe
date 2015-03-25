@@ -23,8 +23,7 @@ __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
 __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
-__all__ = ["generate_index", "get_index", "goto", "get_index_fn", "has_index",
-           "get_open_func"]
+__all__ = ["get_index", "get_open_func"]
 
 
 _CHECK_STRING = b"GWIP INDEX FILE"
@@ -53,7 +52,7 @@ def generate_index(fn, cols=None, names=None, sep=" "):
     assert len(cols) == len(names)
 
     # Getting the open function
-    bgzip, open_func = get_open_func(fn)
+    bgzip, open_func = get_open_func(fn, return_fmt=True)
 
     # Reading the required columns
     data = pd.read_csv(fn, sep=sep, engine="c", usecols=cols, names=names,
@@ -70,7 +69,7 @@ def generate_index(fn, cols=None, names=None, sep=" "):
     return data
 
 
-def get_open_func(fn):
+def get_open_func(fn, return_fmt=False):
     """Get the opening function."""
     # The file might be compressed using bgzip
     bgzip = None
@@ -95,7 +94,10 @@ def get_open_func(fn):
     except ValueError:
         raise ProgramError("{}: use bgzip for compression...".format(fn))
 
-    return bgzip, open_func
+    if return_format:
+        return bgzip, open_func
+
+    return open_func
 
 
 def get_index(fn, cols, names, sep):
@@ -140,11 +142,6 @@ def read_index(fn):
         ))
 
     return index
-
-
-def goto(f, seek):
-    """Given a file and a seek position, go to the required line."""
-    pass
 
 
 def get_index_fn(fn):
