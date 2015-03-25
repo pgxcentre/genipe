@@ -94,7 +94,7 @@ def get_open_func(fn, return_fmt=False):
     except ValueError:
         raise ProgramError("{}: use bgzip for compression...".format(fn))
 
-    if return_format:
+    if return_fmt:
         return bgzip, open_func
 
     return open_func
