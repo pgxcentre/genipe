@@ -187,7 +187,9 @@ def print_data(o_files, prob_t, *, line=None, row=None):
 
     # Hard calls?
     if "calls" in o_files:
-        pass
+        calls = hard_calls_from_probs(a1, a2, probabilities)
+        calls[~good_calls] = "0 0"
+        print(chrom, name, "0", pos, *calls, sep="\t", file=o_files["calls"])
 
 
 def gather_extraction(i_filenames, maf, rate, extract_filename, genomic_range):
