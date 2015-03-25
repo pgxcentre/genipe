@@ -61,21 +61,18 @@ def main(args=None):
 
         # Gathering what needs to be extracted
         to_extract = gather_extraction(
+            i_filenames=args.impute2,
             maf=args.maf,
             rate=args.rate,
-            maf_filename=args.maf_file,
-            rate_filename=args.rate_file,
-            map_filename=args.map_file,
             extract_filename=args.extract,
             genomic_range=args.genomic,
         )
 
         # Extraction
         logging.info("Extracting the markers")
-        extract(
-            impute2_filename=args.impute2,
-            names=to_extract,
-            genomic=args.genomic,
+        extract_markers(
+            i_filenames=args.impute2,
+            to_extract=to_extract,
             out_prefix=args.out,
             out_format=args.out_format,
         )
@@ -99,7 +96,7 @@ def main(args=None):
             logging_fh.close()
 
 
-def extract(impute2_filename, names, genomic, out_prefix, out_format):
+def extract_markers(i_filenames, to_extract, out_prefix, out_format):
     """Extracts according to names."""
     # The output files (probabilities)
     o_files = {
@@ -115,27 +112,20 @@ def extract(impute2_filename, names, genomic, out_prefix, out_format):
     extracted = set()
 
     # Reading all impute2 files
-    for input_filename in impute2_filename:
+    for i_filename in i_filenames:
+        names = to_extract[i_filename]
+        logging.info("Extracting {:,d} markers from "
+                     "{}".format(len(names), i_filename))
+
         # Finding the name of the file containing the index
-        file_index = get_index(input_filename, cols=[0, 1, 2],
+        file_index = get_index(i_filename, cols=[0, 1, 2],
                                names=["chrom", "name", "pos"], sep=" ")
 
         # Keeping only required values from the index
-        if len(names) == 0:
-            # Using genomic location
-            in_region = (
-                (file_index.chrom == genomic.chrom) &
-                (file_index.pos >= genomic.start) &
-                (file_index.pos <= genomic.end)
-            )
-            file_index = file_index[in_region]
+        file_index = file_index[file_index.name.isin(names)]
 
-        else:
-            # Using the names
-            file_index = file_index[file_index.name.isin(names)]
-
-        # Getting all the seek value
-        with get_open_func(input_filename)[1](input_filename, "r") as i_file:
+        # Getting all the markers value
+        with get_open_func(i_filename)(i_filename, "r") as i_file:
             for seek_value in file_index.seek.values:
                 # Seeking
                 i_file.seek(int(seek_value))
@@ -153,13 +143,13 @@ def extract(impute2_filename, names, genomic, out_prefix, out_format):
                 # Saving statistics
                 extracted.add(name)
 
+        logging.info("Extracted {:,d} markers".format(len(extracted)))
+        if len(names - extracted) > 0:
+            logging.warning("Missing markers")
+
     # Closing the files
     for o_file in o_files.values():
         o_file.close()
-
-    logging.info("Extracted {:,d} markers".format(len(extracted)))
-    if len(names - extracted) > 0:
-        logging.warning("Missing markers")
 
 
 def print_data(o_files, *, line=None, row=None):
@@ -201,74 +191,88 @@ def print_data(o_files, *, line=None, row=None):
         pass
 
 
-def gather_extraction(maf, maf_filename, rate, rate_filename, map_filename,
-                      extract_filename, genomic_range):
+def gather_extraction(i_filenames, maf, rate, extract_filename, genomic_range):
     "Gather positions that are required."""
-    map_data = None
-    markers_to_keep = None
+    to_extract = {}
 
-    # Reading the map data
-    if map_filename is not None:
-        logging.info("Reading the MAP data")
-        map_data = pd.read_csv(map_filename, sep="\t",
-                               names=["chrom", "name", "cm", "pos"])
+    for i_filename in i_filenames:
+        logging.info("Gathering information about {}".format(i_filename))
+
+        # If extraction, we only require a list of marker names
+        if extract_filename is not None:
+            with open(extract_filename, "r") as i_file:
+                to_extract[i_filename] = set(i_file.read().splitlines())
+            continue
+
+        # The prefix of all the input files
+        prefix = get_file_prefix(i_filename)
+
+        # Reading the map file
+        logging.info("Reading MAP data")
+        map_data = pd.read_csv(prefix + ".map", sep="\t", usecols=[0, 1, 3],
+                               names=["chrom", "name", "pos"])
         map_data = map_data.set_index("name", verify_integrity=True)
-        markers_to_keep = map_data.index
+        logging.info("MAP data contained {:,d} markers".format(len(map_data)))
 
-        logging.info("  - read {:,d} markers".format(len(markers_to_keep)))
+        # Do we require a genomic location?
+        if genomic_range is not None:
+            logging.info("Keeping markers in required genomic region")
+            map_data = map_data[(
+                (map_data.chrom == genomic_range.chrom) &
+                (map_data.pos >= genomic_range.start) &
+                (map_data.pos <= genomic_range.end)
+            )]
+            logging.info("Required genomic region contained {:,d} "
+                         "markers".format(len(map_data)))
 
-    # Extracting using names?
-    if extract_filename is not None:
-        logging.info("Reading the markers to extract")
-        with open(extract_filename, "r") as i_file:
-            markers_to_keep = markers_to_keep.intersection({
-                i for i in i_file.read().splitlines()
-            })
-        logging.info("  - kept {:,d} markers".format(len(markers_to_keep)))
+        # Do we require a certain MAF?
+        if maf is not None:
+            logging.info("Reading MAF data")
+            maf_data = pd.read_csv(prefix + ".maf", sep="\t")
+            maf_data = maf_data.set_index("name", verify_integrity=True)
 
-    # Extracting using MAF?
-    if maf is not None:
-        logging.info("Reading the MAF data")
+            # Merging
+            map_data = pd.merge(
+                map_data,
+                maf_data[maf_data.maf >= maf],
+                how="inner",
+                left_index=True,
+                right_index=True,
+            )
+            logging.info("{:,d} markers with maf >= "
+                         "{}".format(len(map_data), maf))
 
-        maf_data = pd.read_csv(maf_filename, sep="\t")
-        maf_data = maf_data.set_index("name", verify_integrity=True)
-        maf_data = maf_data[maf_data.maf >= maf]
+        # Do we required a certain completion rate?
+        if rate is not None:
+            logging.info("Reading completion rates")
+            rate_data = pd.read_csv(prefix + ".completion_rates", sep="\t",
+                                    usecols=[0, 2])
+            rate_data = rate_data.set_index("name", verify_integrity=True)
+            map_data = pd.merge(
+                map_data,
+                rate_data[rate_data.completion_rate >= rate],
+                how="inner",
+                left_index=True,
+                right_index=True,
+            )
+            logging.info("{:,d} markers with completion rate >= "
+                         "{}".format(len(map_data), rate))
 
-        markers_to_keep = markers_to_keep.intersection(maf_data.index)
-        logging.info("  - kept {:,d} markers".format(len(markers_to_keep)))
+        # Extracting the names
+        to_extract[i_filename] = set(map_data.index)
 
-    # Extracting using completion rate?
-    if rate is not None:
-        logging.info("Reading the completion rate data")
+        if len(to_extract[i_filename]) == 0:
+            logging.warning("No marker left for analysis")
 
-        rate_data = pd.read_csv(rate_filename, sep="\t")
-        rate_data = rate_data.set_index("name", verify_integrity=True)
-        rate_data = rate_data[rate_data.completion_rate >= rate]
+    return to_extract
 
-        markers_to_keep = markers_to_keep.intersection(rate_data.index)
-        logging.info("  - kept {:,d} markers".format(len(markers_to_keep)))
 
-    # Needed to extract something?
-    if markers_to_keep is None:
-        return set()
-
-    # Keeping only what is required
-    map_data = map_data.loc[markers_to_keep, :].sort(["chrom", "pos"])
-
-    # Is a genomic range required?
-    if genomic_range is not None and len(map_data) > 0:
-        to_keep = map_data.chrom == genomic_range.chrom
-        to_keep = to_keep & (map_data.pos >= genomic_range.start)
-        to_keep = to_keep & (map_data.pos <= genomic_range.end)
-        map_data = map_data[to_keep]
-
-        if len(map_data) == 0:
-            raise ProgramError("no marker left")
-
-    map_data = set(map_data.index)
-    logging.info("Keeping a total of {:,d} markers".format(len(map_data)))
-
-    return map_data
+def get_file_prefix(fn):
+    """Gets the filename prefix."""
+    prefix = os.path.splitext(fn)[0]
+    if prefix.endswith("impute2"):
+        prefix = os.path.splitext(prefix)[0]
+    return prefix
 
 
 def check_args(args):
@@ -287,10 +291,11 @@ def check_args(args):
     elif args.extract is not None:
         raise ProgramError("'--extract' can only be use alone")
 
+    # What extensions to look for after checking arguments
+    extensions = set()
+
     # If extract, check the file
     if args.extract is not None:
-        if args.map_file is None:
-            raise ProgramError("needs '--map-file' when using '--extract'")
         if not os.path.isfile(args.extract):
             raise ProgramError("{}: no such file".format(args.extract))
 
@@ -315,26 +320,25 @@ def check_args(args):
 
     # If MAF, we check what's required
     if args.maf is not None:
+        extensions.add("map")
+        extensions.add("maf")
         if args.maf < 0 or args.maf > 0.5:
             raise ProgramError("{}: invalid MAF".format(args.maf))
-        if args.maf_file is None:
-            raise ProgramError("needs '--maf-file' when using '--maf'")
-        if args.map_file is None:
-            raise ProgramError("needs '--map-file' when using '--maf'")
 
     # If completion rate, we check what's required
     if args.rate is not None:
+        extensions.add("map")
+        extensions.add("completion_rates")
         if args.rate < 0 or args.rate > 1:
             raise ProgramError("{}: invalid rate".format(args.rate))
-        if args.rate_file is None:
-            raise ProgramError("needs '--rate-file' when using '--rate'")
-        if args.map_file is None:
-            raise ProgramError("needs '--map-file' when using '--rate'")
 
-    # Checking the other files
-    for filename in [args.maf_file, args.rate_file, args.map_file]:
-        if filename and not os.path.isfile(filename):
-            raise ProgramError("{}: no such file".format(filename))
+    # Checking the other files (for each impute2 file)
+    for filename in args.impute2:
+        f_prefix = get_file_prefix(filename)
+        for f_extension in extensions:
+            fn = f_prefix + "." + f_extension
+            if not os.path.isfile(fn):
+                raise ProgramError("{}: no such file".format(fn))
 
     # Checking the output format
     for out_format in args.out_format:
@@ -369,24 +373,6 @@ def parse_args(parser, args=None):
         nargs="+",
         help="The output from IMPUTE2.",
     )
-    group.add_argument(
-        "--maf-file",
-        type=str,
-        metavar="FILE",
-        help="The file containing the MAF",
-    )
-    group.add_argument(
-        "--rate-file",
-        type=str,
-        metavar="FILE",
-        help="The file containing the completion rates.",
-    )
-    group.add_argument(
-        "--map-file",
-        type=str,
-        metavar="FILE",
-        help="The file containing the mapping information.",
-    )
 
     # The output files
     group = parser.add_argument_group("Output Options")
@@ -414,8 +400,7 @@ def parse_args(parser, args=None):
         "--extract",
         type=str,
         metavar="FILE",
-        help="File containing marker names to extract. Requires the option "
-             "'--map-file'.",
+        help="File containing marker names to extract.",
     )
     group.add_argument(
         "--genomic",
@@ -429,8 +414,7 @@ def parse_args(parser, args=None):
         type=float,
         metavar="FLOAT",
         help="Extract markers with a minor allele frequency equal or higher "
-             "than the specified threshold. Requires the two options "
-             "'--maf-file' and '--map-file'. Can be use in combination with "
+             "than the specified threshold. Can be use in combination with "
              "'--rate' and '--genomic'.",
     )
     group.add_argument(
@@ -438,8 +422,7 @@ def parse_args(parser, args=None):
         type=float,
         metavar="FLOAT",
         help="Extract markers with a completion rate equal or higher to the "
-             "specified threshold. Requires the two options '--rate-file' and "
-             "'--map-file'. Can be use in combination with '--maf' and "
+             "specified threshold. Can be use in combination with '--maf' and "
              "'--genomic'.",
     )
 
