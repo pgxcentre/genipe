@@ -69,12 +69,12 @@ def main(args=None):
         )
 
         # Extraction
-        logging.info("Extracting the markers")
         extract_markers(
             i_filenames=args.impute2,
             to_extract=to_extract,
             out_prefix=args.out,
             out_format=args.out_format,
+            prob_t=args.prob,
         )
 
     # Catching the Ctrl^C
@@ -96,7 +96,7 @@ def main(args=None):
             logging_fh.close()
 
 
-def extract_markers(i_filenames, to_extract, out_prefix, out_format):
+def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
     """Extracts according to names."""
     # The output files (probabilities)
     o_files = {
@@ -114,8 +114,6 @@ def extract_markers(i_filenames, to_extract, out_prefix, out_format):
     # Reading all impute2 files
     for i_filename in i_filenames:
         names = to_extract[i_filename]
-        logging.info("Extracting {:,d} markers from "
-                     "{}".format(len(names), i_filename))
 
         # Finding the name of the file containing the index
         file_index = get_index(i_filename, cols=[0, 1, 2],
@@ -125,6 +123,7 @@ def extract_markers(i_filenames, to_extract, out_prefix, out_format):
         file_index = file_index[file_index.name.isin(names)]
 
         # Getting all the markers value
+        logging.info("Extracting")
         with get_open_func(i_filename)(i_filename, "r") as i_file:
             for seek_value in file_index.seek.values:
                 # Seeking
@@ -138,7 +137,7 @@ def extract_markers(i_filenames, to_extract, out_prefix, out_format):
                 name = row[1]
 
                 # Printing the data
-                print_data(o_files, line=line, row=row)
+                print_data(o_files, prob_t, line=line, row=row)
 
                 # Saving statistics
                 extracted.add(name)
@@ -152,7 +151,7 @@ def extract_markers(i_filenames, to_extract, out_prefix, out_format):
         o_file.close()
 
 
-def print_data(o_files, *, line=None, row=None):
+def print_data(o_files, prob_t, *, line=None, row=None):
     """Prints an impute2 line."""
     # Probabilities?
     if "impute2" in o_files:
@@ -172,7 +171,7 @@ def print_data(o_files, *, line=None, row=None):
         chrom, name, pos, a1, a2 = marker_info
 
         # Getting the good calls
-        good_calls = get_good_probs(probabilities, min_prob=0.9)
+        good_calls = get_good_probs(probabilities, min_prob=prob_t)
 
     # Dosage?
     if "dosage" in o_files:
@@ -332,6 +331,11 @@ def check_args(args):
         if args.rate < 0 or args.rate > 1:
             raise ProgramError("{}: invalid rate".format(args.rate))
 
+    # Checking the probability threshold
+    if args.prob < 0 or args.prob > 1:
+        raise ProgramError("{}: invalid probability "
+                           "threshold".format(args.prob))
+
     # Checking the other files (for each impute2 file)
     for filename in args.impute2:
         f_prefix = get_file_prefix(filename)
@@ -378,12 +382,14 @@ def parse_args(parser, args=None):
     group = parser.add_argument_group("Output Options")
     group.add_argument(
         "--out",
+        type=str,
         metavar="PREFIX",
         default="impute2_extractor",
         help="The prefix of the output files. [%(default)s]",
     )
     group.add_argument(
         "--format",
+        type=str,
         metavar="FORMAT",
         nargs="+",
         default=["impute2"],
@@ -392,6 +398,13 @@ def parse_args(parser, args=None):
              "probabilities (same as impute2 format, i.e. 3 values per "
              "sample), 'dosage' for dosage values (one value between 0 and 2 "
              "by sample), or 'calls' for hard calls. %(default)s",
+    )
+    group.add_argument(
+        "--prob",
+        type=float,
+        metavar="FLOAT",
+        default=0.9,
+        help="The probability threshold used when creating a dosage file.",
     )
 
     # What to extract
