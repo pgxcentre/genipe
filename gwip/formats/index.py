@@ -125,7 +125,7 @@ def write_index(fn, index):
     with open(fn, "wb") as o_file:
         o_file.write(_CHECK_STRING)
         o_file.write(zlib.compress(bytes(
-            index.to_csv(None, ndex=False, encoding="utf-8"),
+            index.to_csv(None, index=False, encoding="utf-8"),
             encoding="utf-8",
         )))
 
