@@ -18,7 +18,7 @@ __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
 __all__ = ["matrix_from_line", "get_good_probs", "maf_from_probs",
-           "dosage_from_probs"]
+           "dosage_from_probs", "hard_calls_from_probs"]
 
 
 def matrix_from_line(impute2_line):
@@ -100,3 +100,14 @@ def maf_from_probs(prob_matrix, a1, a2, gender=None, site_name=None):
 def dosage_from_probs(homo_probs, hetero_probs, scale=2):
     """Computes dosage from probability matrix (for the minor allele)."""
     return (homo_probs + (hetero_probs / 2)) * scale
+
+
+def hard_calls_from_probs(a1, a2, probs):
+    """Computes hard calls from probability matrix."""
+    possible_geno = np.array([
+        " ".join([a1] * 2),     # Homo A1
+        " ".join([a1, a2]),     # Hetero
+        " ".join([a2] * 2),     # Homo A2
+    ])
+
+    return possible_geno[np.argmax(probs, axis=1)]

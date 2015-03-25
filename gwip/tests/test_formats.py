@@ -288,3 +288,27 @@ class TestFormats(unittest.TestCase):
         error_m = ("operands could not be broadcast together with shapes "
                    "(8,) (7,)")
         self.assertEqual(error_m, str(cm.exception).strip())
+
+    def test_hard_calls_from_probs(self):
+        """Tests the 'hard_calls_from_probs' function."""
+        prob_matrix = np.array([
+            [0.01, 0.01, 0.98],
+            [0.01, 0.98, 0.01],
+            [0.98, 0.01, 0.01],
+        ])
+
+        # Checking with single alleles
+        a1 = "A"
+        a2 = "B"
+        expected = np.array(["B B", "A B", "A A"])
+        observed = hard_calls_from_probs(a1, a2, prob_matrix)
+        self.assertEqual(expected.shape, observed.shape)
+        self.assertTrue((expected == observed).all())
+
+        # Checking with indels
+        a1 = "ABB"
+        a2 = "AB"
+        expected = np.array(["AB AB", "ABB AB", "ABB ABB"])
+        observed = hard_calls_from_probs(a1, a2, prob_matrix)
+        self.assertEqual(expected.shape, observed.shape)
+        self.assertTrue((expected == observed).all())
