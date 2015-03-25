@@ -7,9 +7,9 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 
+import io
 import os
-import gzip
-import pickle
+import zlib
 import logging
 
 import numpy as np
@@ -65,9 +65,7 @@ def generate_index(fn, cols=None, names=None, sep=" "):
     f.close()
 
     # Saving the index to file
-    with gzip.open(get_index_fn(fn), "wb") as o_file:
-        o_file.write(_CHECK_STRING)
-        pickle.dump(data, o_file)
+    write_index(get_index_fn(fn), data)
 
     return data
 
@@ -108,12 +106,7 @@ def get_index(fn, cols, names, sep):
 
     # Retrieving the index
     logging.info("Retrieving the index for '{}'".format(fn))
-    file_index = None
-    with gzip.open(get_index_fn(fn), "rb") as i_file:
-        if i_file.read(len(_CHECK_STRING)) != _CHECK_STRING:
-            raise ProgramError("{}: not a valid index file: "
-                               "reindex".format(get_index_fn(fn)))
-        file_index = pickle.load(i_file)
+    file_index = read_index(get_index_fn(fn))
 
     # Checking the names are there
     if len(set(names) - (set(file_index.columns) - {'seek'})) != 0:
@@ -123,6 +116,30 @@ def get_index(fn, cols, names, sep):
         raise ProgramError("{}: invalid index: reindex".format(fn))
 
     return file_index
+
+
+def write_index(fn, index):
+    """Writes the index to file."""
+    with open(fn, "wb") as o_file:
+        o_file.write(_CHECK_STRING)
+        o_file.write(zlib.compress(bytes(
+            index.to_csv(None, ndex=False, encoding="utf-8"),
+            encoding="utf-8",
+        )))
+
+
+def read_index(fn):
+    """Reads index from file."""
+    index = None
+    with open(fn, "rb") as i_file:
+        if i_file.read(len(_CHECK_STRING)) != _CHECK_STRING:
+            raise ProgramError("{}: not a valid index file".format(fn))
+
+        index = pd.read_csv(io.StringIO(
+            zlib.decompress(i_file.read()).decode(encoding="utf-8"),
+        ))
+
+    return index
 
 
 def goto(f, seek):
