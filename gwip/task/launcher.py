@@ -219,6 +219,11 @@ def _execute_command(command_info):
         logging.debug("'{}' exit status problem".format(task_id))
         return False, name, "problem", None
 
+    # Checking all the required files were generated
+    if not _check_output_files(command_info["o_files"]):
+        logging.debug("'{}' exit status problem".format(task_id))
+        return False, name, "problem", None
+
     # The task was performed correctly, so we update to completed
     mark_task_completed(task_id, db_name)
 
@@ -331,6 +336,11 @@ def _execute_command_drmaa(command_info):
         ))
         return False, name, "problem", None
     if check_rc and ret_val.exitStatus != 0:
+        logging.debug("'{}' exit status problem".format(task_id))
+        return False, name, "problem", None
+
+    # Checking all the required files were generated
+    if not _check_output_files(command_info["o_files"]):
         logging.debug("'{}' exit status problem".format(task_id))
         return False, name, "problem", None
 
