@@ -8,6 +8,7 @@
 
 
 import os
+import re
 import sys
 import shlex
 import logging
@@ -135,12 +136,43 @@ def _check_output_files(o_files):
         if filename.endswith(".impute2"):
             # IMPUTE2 files might be gzipped
             if not (isfile(filename) or isfile(filename + ".gz")):
-                return False
+                if not _check_impute2_file(filename):
+                    return False
 
         elif not isfile(filename):
             return False
 
     return True
+
+
+def _check_impute2_file(fn):
+    """Checks the summary to explain the absence of an .impute2 file.
+
+    :returns: True if it's normal, False otherwise.
+
+    """
+    # The name of the summary file
+    summary_fn = fn + "_summary"
+
+    if not os.path.isfile(summary_fn):
+        # The summary file doesn't exists...
+        return False
+
+    # Checking the summary file
+    match = None
+    with open(summary_fn, "r") as i_file:
+        match = re.search(
+            r"\sThere are no SNPs in the imputation interval, so there is "
+            "nothing for IMPUTE2 to analyze; the program will quit now.",
+            i_file.read(),
+        )
+
+    # If it matched, everything is OK
+    if match:
+        return True
+
+    # If attained, there is a problem
+    return False
 
 
 def _execute_command(command_info):

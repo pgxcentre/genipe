@@ -351,7 +351,7 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
                                                              end),
                 "command": base_command + remaining_command,
                 "task_db": db_name,
-                "o_files": [c_prefix + "_summary", ],
+                "o_files": [c_prefix + "_summary", c_prefix],
             })
 
             # The new starting position
