@@ -1,5 +1,5 @@
-Cox Tutorial
-=============
+Survival Tutorial
+==================
 
 Quick navigation
 -----------------
