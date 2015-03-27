@@ -29,6 +29,11 @@ def parse_drmaa_config(configfile):
     drmaa_config = configparser.ConfigParser()
     drmaa_config.read(configfile)
 
+    # Is SKIP is set?
+    if "main" in drmaa_config:
+        if drmaa_config["main"].get("skip_drmaa_config", "no") == "yes":
+            return final_config
+
     # First is 'plink_exclude'
     config = _generate_default_values("plink_exclude", drmaa_config)
     final_config.update(config)
