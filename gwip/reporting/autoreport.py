@@ -519,7 +519,8 @@ def _generate_annex(templates, run_options, run_information):
                           "shapeit_check_2_exec_time",
                           "plink_missing_exec_time", "plink_flip_exec_time",
                           "plink_final_exec_time", "shapeit_phase_exec_time",
-                          "merge_impute2_exec_time", "impute2_exec_time"]
+                          "merge_impute2_exec_time", "impute2_exec_time",
+                          "bgzip_exec_time"]
     for required_variable in required_variables:
         assert required_variable in run_information, required_variable
 
@@ -627,6 +628,17 @@ def _generate_annex(templates, run_options, run_information):
         tabular_t=tabular_template,
         float_t=float_template,
     )
+
+    # The last table (bgzip_chr*) only if present
+    if run_information["bgzip_exec_time"]:
+        content += _generate_time_float(
+            table=run_information["bgzip_exec_time"],
+            header=table_header,
+            task_name="bgzip_chr*",
+            label="bgzip_exec_time",
+            tabular_t=tabular_template,
+            float_t=float_template,
+        )
 
     return content
 

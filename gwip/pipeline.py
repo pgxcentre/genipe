@@ -207,6 +207,13 @@ def main():
                                          "chr{chrom}.imputed"),
                             args.probability, args.completion, db_name, args)
 
+        # If required, zipping the impute2 files
+        if args.bgzip:
+            compress_impute2_files(os.path.join(args.out_dir, "chr{chrom}",
+                                                "final_impute2",
+                                                "chr{chrom}.imputed.impute2"),
+                                   db_name, args)
+
         # Gathering the imputation statistics
         numbers = gather_imputation_stats(args.probability, args.completion,
                                           len(samples), missing_rate,
@@ -430,6 +437,34 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
                           hpc_options=options.task_options,
                           out_dir=options.out_dir, preamble=options.preamble)
     logging.info("Done merging reports")
+
+
+def compress_impute2_files(filename_template, db_name, options):
+    """Merges impute2 files."""
+    commands_info = []
+    base_command = ["bgzip", "-f"]
+
+    for chrom in chromosomes:
+        # The current output prefix
+        filename = filename_template.format(chrom=chrom)
+
+        remaining_command = [
+            filename,
+        ]
+        commands_info.append({
+            "task_id": "bgzip_chr{}".format(chrom),
+            "name": "Compress chr{}".format(chrom),
+            "command": base_command + remaining_command,
+            "task_db": db_name,
+            "o_files": [filename + ".gz"],
+        })
+
+    # Executing command
+    logging.info("Compressing impute2 files")
+    launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
+                          hpc_options=options.task_options,
+                          out_dir=options.out_dir, preamble=options.preamble)
+    logging.info("Done compressing impute2 files")
 
 
 def file_sorter(filename):
@@ -1455,6 +1490,7 @@ def gather_execution_time(db_name):
     shapeit_phase_exec_time = []
     impute2_exec_time = []
     merge_impute2_exec_time = []
+    bgzip_exec_time = []
     for chrom in chromosomes:
         # Getting the time for 'plink_exclude'
         seconds = exec_time["plink_exclude_chr{}".format(chrom)]
@@ -1499,6 +1535,11 @@ def gather_execution_time(db_name):
         seconds = exec_time["merge_impute2_chr{}".format(chrom)]
         merge_impute2_exec_time.append([chrom, seconds])
 
+        # Getting the time for 'bgzip' if required
+        seconds = exec_time.get("bgzip_chr{}".format(chrom), None)
+        if seconds:
+            bgzip_exec_time.append([chrom, seconds])
+
     # Getting the execution time for the second step (plink missing)
     plink_missing_exec_time = exec_time["plink_missing_rate"]
 
@@ -1513,6 +1554,7 @@ def gather_execution_time(db_name):
         "shapeit_phase_exec_time":   shapeit_phase_exec_time,
         "merge_impute2_exec_time":   merge_impute2_exec_time,
         "impute2_exec_time":         impute2_exec_time,
+        "bgzip_exec_time":           bgzip_exec_time,
     }
 
 
@@ -1624,6 +1666,11 @@ def check_args(args):
     if not os.path.isfile(args.sample_file):
         raise ProgramError("{}: no such file".format(args.sample_file))
 
+    # Checking if bgzip is installed, if asking for compression
+    if args.bgzip:
+        if which("bgzip") is None:
+            raise ProgramError("bgzip: no installed")
+
     # Checking the SHAPEIT binary if required
     if args.shapeit_bin is not None:
         if not os.path.isfile(args.shapeit_bin):
@@ -1734,6 +1781,11 @@ def parse_args(parser):
         default="gwip",
         dest="out_dir",
         help="The name of the output directory. [%(default)s]",
+    )
+    group.add_argument(
+        "--bgzip",
+        action="store_true",
+        help="Use bgzip to compress the impute2 files.",
     )
 
     # The HPC options

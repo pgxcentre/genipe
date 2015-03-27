@@ -68,6 +68,10 @@ def parse_drmaa_config(configfile):
     config = _generate_default_values("merge_impute2", drmaa_config)
     final_config.update(config)
 
+    # Tenth is 'bgzip'
+    config = _generate_default_values("bgzip", drmaa_config)
+    final_config.update(config)
+
     return final_config
 
 
