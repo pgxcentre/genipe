@@ -623,6 +623,9 @@ class TestMainPipeline(unittest.TestCase):
                 pass
         args.reference = reference
 
+        # bgzip
+        args.bgzip = False
+
         # Testing begins
         # Everything should work
         self.assertTrue(check_args(args))
@@ -744,6 +747,16 @@ class TestMainPipeline(unittest.TestCase):
         else:
             self.assertTrue(check_args(args))
         args.plink_bin = original_value
+
+        # If bgzip is not in the path, it should raise an error
+        args.bgzip = True
+        if which("bgzip") is None:
+            with self.assertRaises(ProgramError) as cm:
+                check_args(args)
+            self.assertEqual("bgzip: no installed", str(cm.exception))
+        else:
+            self.assertTrue(check_args(args))
+        args.bgzip = False
 
         # Modifying the segment length
         original_value = args.segment_length
