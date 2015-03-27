@@ -355,14 +355,21 @@ def _execute_command_drmaa(command_info):
     job_id = s.runJob(job)
 
     # Waiting for the job
-    ret_val = s.wait(job_id, drmaa.Session.TIMEOUT_WAIT_FOREVER)
+    ret_val = None
+    try:
+        ret_val = s.wait(job_id, drmaa.Session.TIMEOUT_WAIT_FOREVER)
+
+    except KeyboardInterrupt:
+        s.control(job_id, drmaa.JobControlAction.TERMINATE)
+        logging.warning("{}: terminated".format(task_id))
+        raise
+
+    finally:
+        s.deleteJobTemplate(job)
+        s.exit()
+
+    # The job is done
     logging.debug("'{}' finished".format(task_id))
-
-    # Deleting the job
-    s.deleteJobTemplate(job)
-
-    # Closing the connection
-    s.exit()
 
     # Removing the temporary file
     os.remove(tmp_file.name)
