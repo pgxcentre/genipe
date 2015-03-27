@@ -48,7 +48,7 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
 
         # Checking if we need to run this task
         if check_task_completion(task_id, db_name):
-            if _check_output_files(o_files):
+            if _check_output_files(o_files, task_id):
                 run_time = get_task_runtime(task_id, db_name)
                 logging.info("Task '{}': already performed in {:,d} "
                              "seconds".format(task_name, run_time))
@@ -130,13 +130,13 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
                 raise ProgramError("problem executing {}".format(data["name"]))
 
 
-def _check_output_files(o_files):
+def _check_output_files(o_files, task):
     """Check that the files exist."""
     for filename in o_files:
         if filename.endswith(".impute2"):
             # IMPUTE2 files might be gzipped
             if not (isfile(filename) or isfile(filename + ".gz")):
-                if not _check_impute2_file(filename):
+                if not _check_impute2_file(filename, task):
                     return False
 
         elif not isfile(filename):
@@ -145,7 +145,7 @@ def _check_output_files(o_files):
     return True
 
 
-def _check_impute2_file(fn):
+def _check_impute2_file(fn, task):
     """Checks the summary to explain the absence of an .impute2 file.
 
     :returns: True if it's normal, False otherwise.
@@ -169,6 +169,8 @@ def _check_impute2_file(fn):
 
     # If it matched, everything is OK
     if match:
+        logging.warning("{}: there are no SNPs in the imputation "
+                        "interval".format(task))
         return True
 
     # If attained, there is a problem
@@ -195,7 +197,7 @@ def _execute_command(command_info):
     logging.debug("Checking status for '{}'".format(task_id))
     # Checking if the command was completed
     if check_task_completion(task_id, db_name):
-        if _check_output_files(command_info["o_files"]):
+        if _check_output_files(command_info["o_files"], task_id):
             logging.debug("'{}' completed".format(task_id))
             runtime = get_task_runtime(task_id, db_name)
             return True, name, "already performed", runtime
@@ -220,7 +222,7 @@ def _execute_command(command_info):
         return False, name, "problem", None
 
     # Checking all the required files were generated
-    if not _check_output_files(command_info["o_files"]):
+    if not _check_output_files(command_info["o_files"], task_id):
         logging.debug("'{}' exit status problem".format(task_id))
         return False, name, "problem", None
 
@@ -260,7 +262,7 @@ def _execute_command_drmaa(command_info):
     # Checking if the command was completed
     logging.debug("Checking status for '{}'".format(task_id))
     if check_task_completion(task_id, db_name):
-        if _check_output_files(command_info["o_files"]):
+        if _check_output_files(command_info["o_files"], task_id):
             logging.debug("'{}' completed".format(task_id))
             runtime = get_task_runtime(task_id, db_name)
             return True, name, "already performed", runtime
@@ -340,7 +342,7 @@ def _execute_command_drmaa(command_info):
         return False, name, "problem", None
 
     # Checking all the required files were generated
-    if not _check_output_files(command_info["o_files"]):
+    if not _check_output_files(command_info["o_files"], task_id):
         logging.debug("'{}' exit status problem".format(task_id))
         return False, name, "problem", None
 
