@@ -181,6 +181,7 @@ def read_phenotype(i_filename, opts):
     """
     # Reading the data (and setting the index)
     pheno = pd.read_csv(i_filename, sep="\t", na_values=opts.missing_value)
+    pheno[opts.sample_column] = pheno[opts.sample_column].astype(str)
     pheno = pheno.set_index(opts.sample_column, verify_integrity=True)
 
     # Finding the required column
@@ -235,6 +236,7 @@ def read_samples(i_filename):
     """
     samples = pd.read_csv(i_filename, sep=" ", usecols=[0, 1])
     samples = samples.drop(samples.index[0], axis=0)
+    samples["ID_2"] = samples["ID_2"].astype(str)
     return samples.set_index("ID_2", verify_integrity=True)
 
 
