@@ -145,7 +145,7 @@ def _check_output_files(o_files, task):
     return True
 
 
-def _check_impute2_file(fn, task):
+def _check_impute2_file(fn, task=None):
     """Checks the summary to explain the absence of an .impute2 file.
 
     :returns: True if it's normal, False otherwise.
@@ -153,24 +153,50 @@ def _check_impute2_file(fn, task):
     """
     # The name of the summary file
     summary_fn = fn + "_summary"
-
     if not os.path.isfile(summary_fn):
         # The summary file doesn't exists...
         return False
 
-    # Checking the summary file
-    match = None
+    # Reading the file content
+    summary = None
     with open(summary_fn, "r") as i_file:
-        match = re.search(
-            r"\sThere are no SNPs in the imputation interval, so there is "
-            "nothing for IMPUTE2 to analyze; the program will quit now.",
-            i_file.read(),
-        )
+        summary = i_file.read()
 
-    # If it matched, everything is OK
+    # Checking if there are no SNPs in the imputation interval?
+    match = re.search(
+        r"\sThere are no SNPs in the imputation interval, so there is "
+        "nothing for IMPUTE2 to analyze; the program will quit now.",
+        summary,
+    )
     if match:
-        logging.warning("{}: there are no SNPs in the imputation "
-                        "interval".format(task))
+        if task:
+            logging.warning("{}: there are no SNPs in the imputation "
+                            "interval".format(task))
+        return True
+
+    # Checking if there are not type 2 SNPs
+    match = re.search(
+        r"\sERROR: There are no type 2 SNPs after applying the command-line "
+        "settings for this run, which makes it impossible to perform "
+        "imputation.",
+        summary,
+    )
+    if match:
+        if task:
+            logging.warning("{}: there are no type 2 SNPs for this "
+                            "run".format(task))
+        return True
+
+    # Checking if there are no output SNPs
+    match = re.search(
+        r"\sYour current command-line settings imply that there will not be "
+        "any SNPs in the output file, so IMPUTE2 will not perform any "
+        "analysis or print output files.",
+        summary,
+    )
+    if match:
+        if task:
+            logging.warning("{}: no SNPs in the output file".format(task))
         return True
 
     # If attained, there is a problem
@@ -217,9 +243,22 @@ def _execute_command(command_info):
     outs, errs = proc.communicate()
     rc = proc.returncode
     if check_rc and rc != 0:
-        # There was a problem...
-        logging.debug("'{}' exit status problem".format(task_id))
-        return False, name, "problem", None
+        if not task_id.startswith("impute2"):
+            # There was a problem...
+            logging.debug("'{}' exit status problem".format(task_id))
+            return False, name, "problem", None
+
+        else:
+            # Task is IMPUTE2, and it might be normal according to message in
+            # the summary file
+            impute2_fn = None
+            for fn in command_info["o_files"]:
+                if fn.endswith(".impute2"):
+                    impute2_fn = fn
+                    break
+            if not _check_impute2_file(impute2_fn):
+                logging.debug("'{}' exit status problem".format(task_id))
+                return False, name, "problem", None
 
     # Checking all the required files were generated
     if not _check_output_files(command_info["o_files"], task_id):
@@ -337,9 +376,25 @@ def _execute_command_drmaa(command_info):
             ret_val.hasSignal,
         ))
         return False, name, "problem", None
+
     if check_rc and ret_val.exitStatus != 0:
-        logging.debug("'{}' exit status problem".format(task_id))
-        return False, name, "problem", None
+        if not task_id.startswith("impute2"):
+            # There was a problem...
+            logging.debug("'{}' exit status problem".format(task_id))
+            return False, name, "problem", None
+
+        else:
+            # Task is IMPUTE2, and it might be normal according to message in
+            # the summary file
+            impute2_fn = None
+            for fn in command_info["o_files"]:
+                if fn.endswith(".impute2"):
+                    impute2_fn = fn
+                    break
+            if not _check_impute2_file(impute2_fn):
+                logging.debug("'{}' exit status problem".format(task_id))
+                return False, name, "problem", None
+
 
     # Checking all the required files were generated
     if not _check_output_files(command_info["o_files"], task_id):
