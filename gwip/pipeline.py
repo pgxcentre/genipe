@@ -315,6 +315,9 @@ def phase_markers(prefix, o_prefix, db_name, options):
 def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
                    options):
     """Imputes the markers using IMPUTE2."""
+    # Are we skipping DRMAA options?
+    skip_drmaa_config = options.task_options.get("skip_drmaa_config", False)
+
     commands_info = []
     base_command = [
         "impute2" if options.impute2_bin is None else options.impute2_bin,
@@ -365,7 +368,7 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
             start = end + 1
 
             # Adding the walltime for this particular task_id
-            if options.use_drmaa:
+            if options.use_drmaa and not skip_drmaa_config:
                 if task_id not in options.task_options:
                     # Sending the chromosome specific instead
                     value = options.task_options["impute2_chr{}".format(chrom)]
