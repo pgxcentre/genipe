@@ -118,8 +118,8 @@ Reference panels
 
 IMPUTE2 can use publicly available reference datasets. They provide such
 dataset on their website. Go to IMPUTE2's
-`reference page <https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference>`_, and
-download the most recent reference data (which is over 12Gb). Once the
+`reference page <https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference>`_,
+and download the most recent reference data (which is over 12Gb). Once the
 reference is downloaded, extract it in the working directory
 (``$HOME/gwip_tutorial``).
 
@@ -141,7 +141,11 @@ It is possible to download the human reference (*fasta* format) from
 
    $ mkdir -p $HOME/gwip_tutorial/hg19
    $ cd $HOME/gwip_tutorial/hg19
+
    $ wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/chromFa.tar.gz
+   $ tar -zxf chromFa.tar.gz
+   $ for chrom in $(seq 1 22) X Y M; do cat chr${chrom}.fa; done > hg19.fasta
+   $ rm -f *.fa chromFa.tar.gz
 
 To index the *fasta* file, *samtools* is required at
 `htslib's download page <http://www.htslib.org/download/>`_. Once *samtools* is
@@ -151,41 +155,158 @@ installed, perform the following command:
 
    $ samtools faidx hg19.fasta
 
-You should now have two files: ``hg19.fasta`` and ``hg19.fasta.fai``.
+You should now have two files in the ``$HOME/gwip_tutorial/hg19`` directory:
+``hg19.fasta`` and ``hg19.fasta.fai``.
 
 
 DRMAA configuration (optional)
 """""""""""""""""""""""""""""""
 
+If the pipeline is to be launch on a computing server, the ``--use-drmaa``
+option should be used. This will launch each step on the server using the DRMAA
+api. On some cluster, supplemental information is required for each task
+(*i.e.* execution time, number of nodes/processes to reserve). This
+parametrization is done using a configuration (*ini*) file, describing these
+parameters for each step.
+
+When providing an empty *ini* file, the default walltime and number of
+nodes/processes will be 15 minutes and 1/1, respectively. Otherwise, different
+parameters can be used for each step. For example, the following configuration
+will increase the walltime for all phasing tasks from 15 minutes to 3 hours. It
+will also run each phasing tasks on one node using 12 processes.
+
+.. code-block:: ini
+
+   [shapeit_phase]
+   walltime = 03:00:00
+   nodes    = 1
+   ppn      = 12
+
+The following example has the same configuration as the previous example, but
+will increase the walltime for chromosome 2 to 4 hours, with 1 node and 24
+processes.
+
+.. code-block:: ini
+
+   [shapeit_phase]
+   walltime = 03:00:00
+   nodes    = 1
+   ppn      = 12
+
+   chr2_walltime = 04:00:00
+   chr2_nodes    = 1
+   chr2_ppn      = 24
+
+Since imputation is performed on segments for each chromosome, it is possible
+to modify the parameters for a single segment. This is usefull when a segment
+doesn't have time to finish and its imputation requires a rerun. For example,
+the following parameters will increase the walltime from 15 minutes to 3.5
+hours for segment 10,000,001-15,000,000 on chromosome 1. Also, all segments
+located on chromosome 2 will have a walltime of 4 hours.
+
+.. code-block:: ini
+
+   [impute2]
+   chr1_10000001_15000000_walltime = 03:30:00
+
+   chr2_walltime = 04:00:00
+
+We provide a `configuration example <http://pgxcentre.github.io/gwip/_static/config_example.ini>`_
+including all possible section. Also, here is a list of all possible section
+( *i.e* pipeline step) that can be parametrized.
+
+- ``plink_exclude``
+- ``plink_missing_rate``
+- ``shapeit_check_1``
+- ``plink_flip``
+- ``shapeit_check_2``
+- ``plink_final_exclude``
+- ``shapeit_phase``
+- ``impute2``
+- ``merge_impute2``
+- ``bgzip``
+
+
+Some cluster doesn't require any configuration at all. To skip configuration,
+use the ``main`` section of the *ini* file as such:
+
+.. code-block:: ini
+
+   [main]
+   skip_drmaa_config = yes
+
+.. note::
+
+   Keep in mind that lines starting with a ``#`` are comments and are not used
+   in the DRMAA configuration. This is usefull to describe what parameters are
+   used for each step.
 
 Preamble (optional)
 """"""""""""""""""""
+
+When using the ``--use-drmaa`` option, the pipeline creates *bash* script that
+are launched on the computing cluster. Some clusters require module to be
+loaded and the python virtual environment to be loaded before executing a
+script. This is done using the preamble file (the ``--preamble`` option).
+
+The content of the file will be added between the first line of the temporary
+*bash* script (the *shebang*) and the actual command. For example, the
+following file will load the gcc module (version 4.8.2) and the python virtual
+environment before launching the task.
+
+.. code-block:: bash
+
+   # Loading the required module
+   module load gcc/4.8.2
+
+   # The python virtual environment
+   source $HOME/softwares/python_env/bin/activate
+
+.. note::
+
+   The preamble file is system dependent, but you should always at least
+   activate the virtual python environment so that the tools provided by
+   :py:mod:`gwip` are automatically in the system path.
 
 
 Summary
 """"""""
 
-You should have the following directory tree:
+You should have the following directory structure:
 
 .. code-block:: text
 
-   imputation_project/
-   ├── genetic_data.bed
-   ├── genetic_data.bim
-   ├── genetic_data.fam
-   ├── gwip.ini
-   ├── preamble.sh
-   └── impute2_files/
-       └── 1000GP_Phase3
-           ├── 1000GP_Phase3_chr1.hap.gz
-           ├── 1000GP_Phase3_chr1.legend.gz
-           ├── 1000GP_Phase3_chr2.hap.gz
-           ├── 1000GP_Phase3_chr2.legend.gz
-           ├── ...
-           ├── 1000GP_Phase3.sample
-           ├── genetic_map_chr1_combined_b37.txt
-           ├── genetic_map_chr2_combined_b37.txt
-           └── ...
+   $HOME/gwip_tut/
+   │
+   ├── 1000GP_Phase3/
+   │   ├── 1000GP_Phase3_chr1.hap.gz
+   │   ├── 1000GP_Phase3_chr2.hap.gz
+   │   ├── ...
+   │   ├── 1000GP_Phase3_chr1.legend.gz
+   │   ├── 1000GP_Phase3_chr2.legend.gz
+   │   ├── ...
+   │   ├── 1000GP_Phase3.sample
+   │   ├── genetic_map_chr1_combined_b37.txt
+   │   ├── genetic_map_chr2_combined_b37.txt
+   │   └── ...
+   │
+   ├── bin/
+   │   ├── impute2
+   │   ├── plink
+   │   └── shapeit
+   │
+   ├── data/
+   │   ├── hapmap_CEU_r23a_hg19.bed
+   │   ├── hapmap_CEU_r23a_hg19.bim
+   │   └── hapmap_CEU_r23a_hg19.fam
+   │
+   ├── gwip_config.ini                          # OPTIONAL
+   │
+   ├── hg19/
+   │   ├── hg19.fasta
+   │   └── hg19.fasta.fai
+   │
+   └── preamble.txt                             # OPTIONAL
 
 
 .. _gwip-tut-execute:
@@ -193,9 +314,62 @@ You should have the following directory tree:
 Execute the pipeline
 ^^^^^^^^^^^^^^^^^^^^^
 
+.. code-block:: bash
+
+   #!/usr/bin/env bash
+
+   cd $HOME/gwip_tut
+   
+   gwip-launcher \
+       --bfile data/hapmap_CEU_r23a_hg19 \
+       --reference hg19/hg19.fasta \
+       --hap-template 1000GP_Phase3/1000GP_Phase3_chr{chrom}.hap.gz \
+       --legend-template 1000GP_Phase3/1000GP_Phase3_chr{chrom}.legend.gz \
+       --map-template 1000GP_Phase3/genetic_map_chr{chrom}_combined_b37.txt \
+       --sample-file 1000GP_Phase3/1000GP_Phase3.sample \
+       --filtering-rules 'ALL<0.01' 'ALL>0.99' \
+       --report-number "Test Report" \
+       --report-title "Tutorial" \
+       --bgzip \
+       --thread 4
+
+.. note::
+
+   Do not forget that if the pipeline fails (*e.g.* not enough memory or
+   walltime exceeded), re-running the pipeline (with different number of thread
+   or different walltime) will only launch the task that are not completed.
+
 
 .. _gwip-tut-output-files:
 
 Output files
 ^^^^^^^^^^^^^
+
+All results will be located in the ``gwip`` directory (or whatever
+``--output-dir`` links to). Here is the directory tree explaining the results:
+
+.. code-block:: text
+
+   gwip/
+   │
+   ├── chr1/
+   │   └── ...
+   │
+   ├── chr2/
+   │   └── ...
+   │
+   ├── .../
+   │
+   ├── gwip.log
+   │
+   ├── markers_to_exclude.txt
+   │
+   ├── markers_to_flip.txt
+   │
+   ├── missing/
+   │   ├── missing.imiss
+   │   ├── missing.lmiss
+   │   └── missing.log
+   │
+   └── tasks.db
 
