@@ -208,8 +208,8 @@ To download the data for this tutorial, execute the following command:</p>
 <h4>Reference panels<a class="headerlink" href="#reference-panels" title="Permalink to this headline">¶</a></h4>
 <p>IMPUTE2 can use publicly available reference datasets. They provide such
 dataset on their website. Go to IMPUTE2&#8217;s
-<a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference">reference page</a>, and
-download the most recent reference data (which is over 12Gb). Once the
+<a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference">reference page</a>,
+and download the most recent reference data (which is over 12Gb). Once the
 reference is downloaded, extract it in the working directory
 (<code class="docutils literal"><span class="pre">$HOME/gwip_tutorial</span></code>).</p>
 </div>
@@ -225,7 +225,11 @@ genome (in <em>fasta</em> format, indexed using <em>faidx</em>).</p>
 (the file named <code class="docutils literal"><span class="pre">chromFa.tar.gz</span></code>).</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> mkdir -p <span class="nv">$HOME</span>/gwip_tutorial/hg19
 <span class="gp">$</span> <span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/hg19
+
 <span class="gp">$</span> wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/chromFa.tar.gz
+<span class="gp">$</span> tar -zxf chromFa.tar.gz
+<span class="gp">$</span> <span class="k">for</span> chrom in <span class="k">$(</span>seq <span class="m">1</span> 22<span class="k">)</span> X Y M<span class="p">;</span> <span class="k">do</span> cat chr<span class="si">${</span><span class="nv">chrom</span><span class="si">}</span>.fa<span class="p">;</span> <span class="k">done</span> &gt; hg19.fasta
+<span class="gp">$</span> rm -f *.fa chromFa.tar.gz
 </pre></div>
 </div>
 <p>To index the <em>fasta</em> file, <em>samtools</em> is required at
@@ -234,43 +238,198 @@ installed, perform the following command:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> samtools faidx hg19.fasta
 </pre></div>
 </div>
-<p>You should now have two files: <code class="docutils literal"><span class="pre">hg19.fasta</span></code> and <code class="docutils literal"><span class="pre">hg19.fasta.fai</span></code>.</p>
+<p>You should now have two files in the <code class="docutils literal"><span class="pre">$HOME/gwip_tutorial/hg19</span></code> directory:
+<code class="docutils literal"><span class="pre">hg19.fasta</span></code> and <code class="docutils literal"><span class="pre">hg19.fasta.fai</span></code>.</p>
 </div>
 <div class="section" id="drmaa-configuration-optional">
 <h4>DRMAA configuration (optional)<a class="headerlink" href="#drmaa-configuration-optional" title="Permalink to this headline">¶</a></h4>
+<p>If the pipeline is to be launch on a computing server, the <code class="docutils literal"><span class="pre">--use-drmaa</span></code>
+option should be used. This will launch each step on the server using the DRMAA
+api. On some cluster, supplemental information is required for each task
+(<em>i.e.</em> execution time, number of nodes/processes to reserve). This
+parametrization is done using a configuration (<em>ini</em>) file, describing these
+parameters for each step.</p>
+<p>When providing an empty <em>ini</em> file, the default walltime and number of
+nodes/processes will be 15 minutes and 1/1, respectively. Otherwise, different
+parameters can be used for each step. For example, the following configuration
+will increase the walltime for all phasing tasks from 15 minutes to 3 hours. It
+will also run each phasing tasks on one node using 12 processes.</p>
+<div class="highlight-ini"><div class="highlight"><pre><span class="k">[shapeit_phase]</span>
+<span class="na">walltime</span> <span class="o">=</span> <span class="s">03:00:00</span>
+<span class="na">nodes</span>    <span class="o">=</span> <span class="s">1</span>
+<span class="na">ppn</span>      <span class="o">=</span> <span class="s">12</span>
+</pre></div>
+</div>
+<p>The following example has the same configuration as the previous example, but
+will increase the walltime for chromosome 2 to 4 hours, with 1 node and 24
+processes.</p>
+<div class="highlight-ini"><div class="highlight"><pre><span class="k">[shapeit_phase]</span>
+<span class="na">walltime</span> <span class="o">=</span> <span class="s">03:00:00</span>
+<span class="na">nodes</span>    <span class="o">=</span> <span class="s">1</span>
+<span class="na">ppn</span>      <span class="o">=</span> <span class="s">12</span>
+
+<span class="na">chr2_walltime</span> <span class="o">=</span> <span class="s">04:00:00</span>
+<span class="na">chr2_nodes</span>    <span class="o">=</span> <span class="s">1</span>
+<span class="na">chr2_ppn</span>      <span class="o">=</span> <span class="s">24</span>
+</pre></div>
+</div>
+<p>Since imputation is performed on segments for each chromosome, it is possible
+to modify the parameters for a single segment. This is usefull when a segment
+doesn&#8217;t have time to finish and its imputation requires a rerun. For example,
+the following parameters will increase the walltime from 15 minutes to 3.5
+hours for segment 10,000,001-15,000,000 on chromosome 1. Also, all segments
+located on chromosome 2 will have a walltime of 4 hours.</p>
+<div class="highlight-ini"><div class="highlight"><pre><span class="k">[impute2]</span>
+<span class="na">chr1_10000001_15000000_walltime</span> <span class="o">=</span> <span class="s">03:30:00</span>
+
+<span class="na">chr2_walltime</span> <span class="o">=</span> <span class="s">04:00:00</span>
+</pre></div>
+</div>
+<p>We provide a <a class="reference external" href="http://pgxcentre.github.io/gwip/_static/config_example.ini">configuration example</a>
+including all possible section. Also, here is a list of all possible section
+( <em>i.e</em> pipeline step) that can be parametrized.</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">plink_exclude</span></code></li>
+<li><code class="docutils literal"><span class="pre">plink_missing_rate</span></code></li>
+<li><code class="docutils literal"><span class="pre">shapeit_check_1</span></code></li>
+<li><code class="docutils literal"><span class="pre">plink_flip</span></code></li>
+<li><code class="docutils literal"><span class="pre">shapeit_check_2</span></code></li>
+<li><code class="docutils literal"><span class="pre">plink_final_exclude</span></code></li>
+<li><code class="docutils literal"><span class="pre">shapeit_phase</span></code></li>
+<li><code class="docutils literal"><span class="pre">impute2</span></code></li>
+<li><code class="docutils literal"><span class="pre">merge_impute2</span></code></li>
+<li><code class="docutils literal"><span class="pre">bgzip</span></code></li>
+</ul>
+<p>Some cluster doesn&#8217;t require any configuration at all. To skip configuration,
+use the <code class="docutils literal"><span class="pre">main</span></code> section of the <em>ini</em> file as such:</p>
+<div class="highlight-ini"><div class="highlight"><pre><span class="k">[main]</span>
+<span class="na">skip_drmaa_config</span> <span class="o">=</span> <span class="s">yes</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Keep in mind that lines starting with a <code class="docutils literal"><span class="pre">#</span></code> are comments and are not used
+in the DRMAA configuration. This is usefull to describe what parameters are
+used for each step.</p>
+</div>
 </div>
 <div class="section" id="preamble-optional">
 <h4>Preamble (optional)<a class="headerlink" href="#preamble-optional" title="Permalink to this headline">¶</a></h4>
+<p>When using the <code class="docutils literal"><span class="pre">--use-drmaa</span></code> option, the pipeline creates <em>bash</em> script that
+are launched on the computing cluster. Some clusters require module to be
+loaded and the python virtual environment to be loaded before executing a
+script. This is done using the preamble file (the <code class="docutils literal"><span class="pre">--preamble</span></code> option).</p>
+<p>The content of the file will be added between the first line of the temporary
+<em>bash</em> script (the <em>shebang</em>) and the actual command. For example, the
+following file will load the gcc module (version 4.8.2) and the python virtual
+environment before launching the task.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c"># Loading the required module</span>
+module load gcc/4.8.2
+
+<span class="c"># The python virtual environment</span>
+<span class="nb">source</span> <span class="nv">$HOME</span>/softwares/python_env/bin/activate
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The preamble file is system dependent, but you should always at least
+activate the virtual python environment so that the tools provided by
+<a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> are automatically in the system path.</p>
+</div>
 </div>
 <div class="section" id="summary">
 <h4>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h4>
-<p>You should have the following directory tree:</p>
-<div class="highlight-text"><div class="highlight"><pre>imputation_project/
-├── genetic_data.bed
-├── genetic_data.bim
-├── genetic_data.fam
-├── gwip.ini
-├── preamble.sh
-└── impute2_files/
-    └── 1000GP_Phase3
-        ├── 1000GP_Phase3_chr1.hap.gz
-        ├── 1000GP_Phase3_chr1.legend.gz
-        ├── 1000GP_Phase3_chr2.hap.gz
-        ├── 1000GP_Phase3_chr2.legend.gz
-        ├── ...
-        ├── 1000GP_Phase3.sample
-        ├── genetic_map_chr1_combined_b37.txt
-        ├── genetic_map_chr2_combined_b37.txt
-        └── ...
+<p>You should have the following directory structure:</p>
+<div class="highlight-text"><div class="highlight"><pre>$HOME/gwip_tut/
+│
+├── 1000GP_Phase3/
+│   ├── 1000GP_Phase3_chr1.hap.gz
+│   ├── 1000GP_Phase3_chr2.hap.gz
+│   ├── ...
+│   ├── 1000GP_Phase3_chr1.legend.gz
+│   ├── 1000GP_Phase3_chr2.legend.gz
+│   ├── ...
+│   ├── 1000GP_Phase3.sample
+│   ├── genetic_map_chr1_combined_b37.txt
+│   ├── genetic_map_chr2_combined_b37.txt
+│   └── ...
+│
+├── bin/
+│   ├── impute2
+│   ├── plink
+│   └── shapeit
+│
+├── data/
+│   ├── hapmap_CEU_r23a_hg19.bed
+│   ├── hapmap_CEU_r23a_hg19.bim
+│   └── hapmap_CEU_r23a_hg19.fam
+│
+├── gwip_config.ini                          # OPTIONAL
+│
+├── hg19/
+│   ├── hg19.fasta
+│   └── hg19.fasta.fai
+│
+└── preamble.txt                             # OPTIONAL
 </pre></div>
 </div>
 </div>
 </div>
 <div class="section" id="execute-the-pipeline">
 <span id="gwip-tut-execute"></span><h3>Execute the pipeline<a class="headerlink" href="#execute-the-pipeline" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span class="c">#!/usr/bin/env bash</span>
+
+<span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tut
+
+gwip-launcher <span class="se">\</span>
+    --bfile data/hapmap_CEU_r23a_hg19 <span class="se">\</span>
+    --reference hg19/hg19.fasta <span class="se">\</span>
+    --hap-template 1000GP_Phase3/1000GP_Phase3_chr<span class="o">{</span>chrom<span class="o">}</span>.hap.gz <span class="se">\</span>
+    --legend-template 1000GP_Phase3/1000GP_Phase3_chr<span class="o">{</span>chrom<span class="o">}</span>.legend.gz <span class="se">\</span>
+    --map-template 1000GP_Phase3/genetic_map_chr<span class="o">{</span>chrom<span class="o">}</span>_combined_b37.txt <span class="se">\</span>
+    --sample-file 1000GP_Phase3/1000GP_Phase3.sample <span class="se">\</span>
+    --filtering-rules <span class="s1">&#39;ALL&lt;0.01&#39;</span> <span class="s1">&#39;ALL&gt;0.99&#39;</span> <span class="se">\</span>
+    --report-number <span class="s2">&quot;Test Report&quot;</span> <span class="se">\</span>
+    --report-title <span class="s2">&quot;Tutorial&quot;</span> <span class="se">\</span>
+    --bgzip <span class="se">\</span>
+    --thread 4
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not forget that if the pipeline fails (<em>e.g.</em> not enough memory or
+walltime exceeded), re-running the pipeline (with different number of thread
+or different walltime) will only launch the task that are not completed.</p>
+</div>
 </div>
 <div class="section" id="output-files">
 <span id="gwip-tut-output-files"></span><h3>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h3>
+<p>All results will be located in the <code class="docutils literal"><span class="pre">gwip</span></code> directory (or whatever
+<code class="docutils literal"><span class="pre">--output-dir</span></code> links to). Here is the directory tree explaining the results:</p>
+<div class="highlight-text"><div class="highlight"><pre>gwip/
+│
+├── chr1/
+│   └── ...
+│
+├── chr2/
+│   └── ...
+│
+├── .../
+│
+├── gwip.log
+│
+├── markers_to_exclude.txt
+│
+├── markers_to_flip.txt
+│
+├── missing/
+│   ├── missing.imiss
+│   ├── missing.lmiss
+│   └── missing.log
+│
+└── tasks.db
+</pre></div>
+</div>
 </div>
 </div>
 </div>
