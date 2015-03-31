@@ -110,10 +110,12 @@
 <li><code class="docutils literal"><span class="pre">setuptools</span></code> version 12.0.5 or latest</li>
 <li><code class="docutils literal"><span class="pre">pyfaidx</span></code> version 0.3.7 or latest</li>
 </ul>
-<p>The following modules are optional (required for statistical analysis):</p>
+<p>The following modules are optional (required for statistical analysis and data
+management):</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">lifelines</span></code> version 0.7.0 or latest</li>
 <li><code class="docutils literal"><span class="pre">statsmodels</span></code> version 0.6.1 or latest</li>
+<li><code class="docutils literal"><span class="pre">biopython</span></code> version 1.65 or latest</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -147,6 +149,13 @@ command:</p>
 <div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> pip install <span class="nv">$HOME</span>/gwip
 </pre></div>
 </div>
+<p>If required, the optional dependencies can be installed using the following
+command:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> pip install statsmodels
+<span class="gp">$</span> pip install lifelines
+<span class="gp">$</span> pip install biopython
+</pre></div>
+</div>
 </div>
 <div class="section" id="using-miniconda">
 <h2>Using Miniconda<a class="headerlink" href="#using-miniconda" title="Permalink to this headline">¶</a></h2>
@@ -167,6 +176,7 @@ doesn&#8217;t required a previous Python 3 installation.</p>
 <span class="gp">$</span> conda install matplotlib
 <span class="gp">$</span> conda install setuptools
 <span class="gp">$</span> conda install statsmodels
+<span class="gp">$</span> conda install biopython
 </pre></div>
 </div>
 <p>Finally, using <code class="docutils literal"><span class="pre">pip</span></code>, install the missing dependencies and <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>:</p>

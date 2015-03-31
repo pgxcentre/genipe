@@ -361,6 +361,30 @@
         <span class="n">error_m</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;operands could not be broadcast together with shapes &quot;</span>
                    <span class="s">&quot;(8,) (7,)&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">error_m</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">test_hard_calls_from_probs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestFormats.test_hard_calls_from_probs"><a class="viewcode-back" href="../../../module_content/gwip.tests.html#gwip.tests.test_formats.TestFormats.test_hard_calls_from_probs">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the &#39;hard_calls_from_probs&#39; function.&quot;&quot;&quot;</span>
+        <span class="n">prob_matrix</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+            <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.98</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.98</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">],</span>
+            <span class="p">[</span><span class="mf">0.98</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">,</span> <span class="mf">0.01</span><span class="p">],</span>
+        <span class="p">])</span>
+
+        <span class="c"># Checking with single alleles</span>
+        <span class="n">a1</span> <span class="o">=</span> <span class="s">&quot;A&quot;</span>
+        <span class="n">a2</span> <span class="o">=</span> <span class="s">&quot;B&quot;</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s">&quot;B B&quot;</span><span class="p">,</span> <span class="s">&quot;A B&quot;</span><span class="p">,</span> <span class="s">&quot;A A&quot;</span><span class="p">])</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="n">hard_calls_from_probs</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">prob_matrix</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">((</span><span class="n">expected</span> <span class="o">==</span> <span class="n">observed</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+
+        <span class="c"># Checking with indels</span>
+        <span class="n">a1</span> <span class="o">=</span> <span class="s">&quot;ABB&quot;</span>
+        <span class="n">a2</span> <span class="o">=</span> <span class="s">&quot;AB&quot;</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s">&quot;AB AB&quot;</span><span class="p">,</span> <span class="s">&quot;ABB AB&quot;</span><span class="p">,</span> <span class="s">&quot;ABB ABB&quot;</span><span class="p">])</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="n">hard_calls_from_probs</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">prob_matrix</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">((</span><span class="n">expected</span> <span class="o">==</span> <span class="n">observed</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
 </pre></div></div></div>
 
           </div>

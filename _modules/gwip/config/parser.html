@@ -102,6 +102,11 @@
     <span class="n">drmaa_config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
     <span class="n">drmaa_config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">configfile</span><span class="p">)</span>
 
+    <span class="c"># Is SKIP is set?</span>
+    <span class="k">if</span> <span class="s">&quot;main&quot;</span> <span class="ow">in</span> <span class="n">drmaa_config</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">drmaa_config</span><span class="p">[</span><span class="s">&quot;main&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;skip_drmaa_config&quot;</span><span class="p">,</span> <span class="s">&quot;no&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s">&quot;yes&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&quot;skip_drmaa_config&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
+
     <span class="c"># First is &#39;plink_exclude&#39;</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">_generate_default_values</span><span class="p">(</span><span class="s">&quot;plink_exclude&quot;</span><span class="p">,</span> <span class="n">drmaa_config</span><span class="p">)</span>
     <span class="n">final_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
@@ -139,6 +144,10 @@
 
     <span class="c"># Ninth  is &#39;merge_impute2&#39;</span>
     <span class="n">config</span> <span class="o">=</span> <span class="n">_generate_default_values</span><span class="p">(</span><span class="s">&quot;merge_impute2&quot;</span><span class="p">,</span> <span class="n">drmaa_config</span><span class="p">)</span>
+    <span class="n">final_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="c"># Tenth is &#39;bgzip&#39;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">_generate_default_values</span><span class="p">(</span><span class="s">&quot;bgzip&quot;</span><span class="p">,</span> <span class="n">drmaa_config</span><span class="p">)</span>
     <span class="n">final_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">final_config</span>

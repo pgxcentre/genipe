@@ -254,6 +254,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Reading the data (and setting the index)</span>
     <span class="n">pheno</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">i_filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">na_values</span><span class="o">=</span><span class="n">opts</span><span class="o">.</span><span class="n">missing_value</span><span class="p">)</span>
+    <span class="n">pheno</span><span class="p">[</span><span class="n">opts</span><span class="o">.</span><span class="n">sample_column</span><span class="p">]</span> <span class="o">=</span> <span class="n">pheno</span><span class="p">[</span><span class="n">opts</span><span class="o">.</span><span class="n">sample_column</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
     <span class="n">pheno</span> <span class="o">=</span> <span class="n">pheno</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="n">opts</span><span class="o">.</span><span class="n">sample_column</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
     <span class="c"># Finding the required column</span>
@@ -308,6 +309,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">samples</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">i_filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot; &quot;</span><span class="p">,</span> <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
     <span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">samples</span><span class="p">[</span><span class="s">&quot;ID_2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s">&quot;ID_2&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">samples</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">&quot;ID_2&quot;</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
 
@@ -520,7 +522,10 @@
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="c"># Write the header.</span>
-        <span class="k">print</span><span class="p">(</span><span class="s">&quot;snp_set_id&quot;</span><span class="p">,</span> <span class="s">&quot;p_value&quot;</span><span class="p">,</span> <span class="s">&quot;q_value&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">skat_o</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;snp_set_id&quot;</span><span class="p">,</span> <span class="s">&quot;p_value&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;snp_set_id&quot;</span><span class="p">,</span> <span class="s">&quot;p_value&quot;</span><span class="p">,</span> <span class="s">&quot;q_value&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
 
         <span class="c"># The order in the snp_sets list should have been consistent</span>
         <span class="c"># across the whole analysis. We just want to make sure that we</span>
@@ -530,7 +535,10 @@
         <span class="c"># Write a tab separated file containing the set and p-values.</span>
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">p_value</span><span class="p">,</span> <span class="n">q_value</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
             <span class="n">set_id</span> <span class="o">=</span> <span class="n">snp_sets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-            <span class="k">print</span><span class="p">(</span><span class="n">set_id</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">q_value</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">skat_o</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">set_id</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">set_id</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">q_value</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_skat_run_job</span><span class="p">(</span><span class="n">script_filename</span><span class="p">):</span></div>
@@ -539,6 +547,7 @@
 <span class="sd">    The results should be somewhere in the standard output. The expected</span>
 <span class="sd">    format is: ::</span>
 
+<span class="sd">        _PYTHON_HOOK_QVAL:[0.123]</span>
 <span class="sd">        _PYTHON_HOOK_PVAL:[0.123]</span>
 
 <span class="sd">    If the template script is modified, this format should still be respected.</span>
@@ -573,7 +582,11 @@
         <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;SKAT did not return properly. See script &quot;</span>
                            <span class="s">&quot;&#39;{}&#39; for details.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">script_filename</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">p_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="n">q_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">q_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s">&quot;NA&quot;</span><span class="p">:</span>
+        <span class="c"># For SKAT-O, the Q will be set to NA.</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">p_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span> <span class="bp">None</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">p_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="n">q_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 
 
 <span class="k">def</span> <span class="nf">_skat_generate_r_script</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">r_files</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>

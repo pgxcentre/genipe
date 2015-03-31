@@ -28,7 +28,7 @@
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
     <link rel="top" title="gwip 0.1 documentation" href="../index.html" />
     <link rel="up" title="Short Tutorials" href="../tutorial.html" />
-    <link rel="next" title="Cox Tutorial" href="tutorial_cox.html" />
+    <link rel="next" title="Survival Tutorial" href="tutorial_cox.html" />
     <link rel="prev" title="Short Tutorials" href="../tutorial.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -46,7 +46,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tutorial_cox.html" title="Cox Tutorial"
+          <a href="tutorial_cox.html" title="Survival Tutorial"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="../tutorial.html" title="Short Tutorials"
@@ -61,6 +61,21 @@
   <ul>
 <li><a class="reference internal" href="#">Pipeline Tutorial</a><ul>
 <li><a class="reference internal" href="#quick-navigation">Quick navigation</a></li>
+<li><a class="reference internal" href="#genome-wide-imputation-pipeline">Genome-wide imputation pipeline</a><ul>
+<li><a class="reference internal" href="#required-softwares">Required softwares</a></li>
+<li><a class="reference internal" href="#input-files">Input files</a><ul>
+<li><a class="reference internal" href="#genotypes">Genotypes</a></li>
+<li><a class="reference internal" href="#reference-panels">Reference panels</a></li>
+<li><a class="reference internal" href="#human-reference-optional">Human reference (optional)</a></li>
+<li><a class="reference internal" href="#drmaa-configuration-optional">DRMAA configuration (optional)</a></li>
+<li><a class="reference internal" href="#preamble-optional">Preamble (optional)</a></li>
+<li><a class="reference internal" href="#summary">Summary</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#execute-the-pipeline">Execute the pipeline</a></li>
+<li><a class="reference internal" href="#output-files">Output files</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -70,7 +85,7 @@
                         title="previous chapter">Short Tutorials</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="tutorial_cox.html"
-                        title="next chapter">Cox Tutorial</a></p>
+                        title="next chapter">Survival Tutorial</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -101,8 +116,162 @@
             
   <div class="section" id="pipeline-tutorial">
 <h1>Pipeline Tutorial<a class="headerlink" href="#pipeline-tutorial" title="Permalink to this headline">¶</a></h1>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Work on this tutorial is still in progress...</p>
+</div>
 <div class="section" id="quick-navigation">
 <h2>Quick navigation<a class="headerlink" href="#quick-navigation" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><a class="reference internal" href="#gwip-tut-softwares"><span>Required softwares</span></a></li>
+<li><a class="reference internal" href="#gwip-tut-input-files"><span>Input files</span></a></li>
+<li><a class="reference internal" href="#gwip-tut-execute"><span>Execute the pipeline</span></a></li>
+<li><a class="reference internal" href="#gwip-tut-output-files"><span>Output files</span></a></li>
+</ol>
+</div>
+<div class="section" id="genome-wide-imputation-pipeline">
+<h2>Genome-wide imputation pipeline<a class="headerlink" href="#genome-wide-imputation-pipeline" title="Permalink to this headline">¶</a></h2>
+<p>High-throughput genotyping platforms can assess up to five million variations
+in thousands of samples. Depending on the genotyped data and the reference
+panel used, genome-wide imputation tools can infer genotypes for more than 38
+million variants (single nucleotides, insertions and deletions). Unfortunately,
+genome-wide imputation requires high computation power and multiple data
+processing steps.</p>
+<p>The <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> pipeline automates the different steps for pre-phasing and
+imputation for genome-wide data. The pipeline follows the guideline described
+by IMPUTE2&#8217;s best practices when analyzing genome-wide data (described
+<a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#prephasing">by IMPUTE2</a>
+and <a class="reference external" href="http://www.shapeit.fr/pages/m03_phasing/imputation.html">by SHAPEIT</a>).</p>
+<p>First, we will create a project directory where all the analysis will be
+performed:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> mkdir -p <span class="nv">$HOME</span>/gwip_tutorial
+<span class="gp">$</span> <span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial
+</pre></div>
+</div>
+<div class="section" id="required-softwares">
+<span id="gwip-tut-softwares"></span><h3>Required softwares<a class="headerlink" href="#required-softwares" title="Permalink to this headline">¶</a></h3>
+<p>The main <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> pipeline requires three external tools:
+<a class="reference external" href="http://pngu.mgh.harvard.edu/~purcell/plink/">Plink</a>,
+<a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html">IMPUTE2</a> and
+<a class="reference external" href="https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html">SHAPEIT</a>.
+These tools are not required to be located in your <code class="docutils literal"><span class="pre">PATH</span></code> variable, since you
+can specify each of their location at runtime.</p>
+<p>We will create a directory where the binaries will go:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> mkdir -p <span class="nv">$HOME</span>/gwip_tutorial/bin
+<span class="gp">$</span> <span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/bin
+</pre></div>
+</div>
+<p>Plink is freely available. Go to
+<a class="reference external" href="http://pngu.mgh.harvard.edu/~purcell/plink/download.shtml">Plink download page</a>,
+read the license, and download the most recent version. Extract the binary and
+copy it to the <code class="docutils literal"><span class="pre">bin</span></code> directory previously created.</p>
+<p>IMPUTE2 is freely available for academic use. Go to
+<a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#download">IMPUTE2 download page</a>,
+read the license, and download the most recent version. Extract the binary and
+copy it to the <code class="docutils literal"><span class="pre">bin</span></code> directory previously created.</p>
+<p>SHAPEIT is freely available for academic use. Go to
+<a class="reference external" href="https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html#download">SHAPEIT download page</a>,
+read the license, and download the most recent version. Extract the binary and
+copy it to the <code class="docutils literal"><span class="pre">bin</span></code> directory previously created.</p>
+<p>The <code class="docutils literal"><span class="pre">bin</span></code> directory should now contain three binaries:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> ls <span class="nv">$HOME</span>/gwip_tutorial/bin
+<span class="go">impute2  plink  shapeit</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="input-files">
+<span id="gwip-tut-input-files"></span><h3>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="genotypes">
+<h4>Genotypes<a class="headerlink" href="#genotypes" title="Permalink to this headline">¶</a></h4>
+<p>The genotypes of the study cohort have to be in Plink&#8217;s binary pedfile format.
+This format allows for time and disk space optimization. Each dataset is
+comprised of three files: the <code class="docutils literal"><span class="pre">.bed</span></code> (binary file, genotype information),
+<code class="docutils literal"><span class="pre">.fam</span></code> (text file, sample information) and <code class="docutils literal"><span class="pre">.bim</span></code> (text file, marker
+information) files. Those file are generated by Plink.</p>
+<p>Genotype data are provided for this tutorial. They are a subset from the
+files provided by Plink on its
+<a class="reference external" href="http://pngu.mgh.harvard.edu/~purcell/plink/res.shtml">resources page</a>.
+The build was lifted over from <em>GRCh36</em> to <em>GRCh37</em> using
+<a class="reference external" href="https://genome.ucsc.edu/cgi-bin/hgLiftOver">USCS liftOver</a>. Only CEU samples
+were kept, along with markers having a completion rate higher or equal to 0.98.
+To download the data for this tutorial, execute the following command:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> mkdir -p <span class="nv">$HOME</span>/gwip_tutorial/data
+<span class="gp">$</span> <span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/data
+
+<span class="gp">$</span> wget http://pgxcentre.github.io/gwip/_static/hapmap_CEU_r23a_hg19.tar.bz2
+<span class="gp">$</span> tar -jxf hapmap_CEU_r23a_hg19.tar.bz2
+<span class="gp">$</span> rm hapmap_CEU_r23a_hg19.tar.bz2
+</pre></div>
+</div>
+</div>
+<div class="section" id="reference-panels">
+<h4>Reference panels<a class="headerlink" href="#reference-panels" title="Permalink to this headline">¶</a></h4>
+<p>IMPUTE2 can use publicly available reference datasets. They provide such
+dataset on their website. Go to IMPUTE2&#8217;s
+<a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference">reference page</a>, and
+download the most recent reference data (which is over 12Gb). Once the
+reference is downloaded, extract it in the working directory
+(<code class="docutils literal"><span class="pre">$HOME/gwip_tutorial</span></code>).</p>
+</div>
+<div class="section" id="human-reference-optional">
+<h4>Human reference (optional)<a class="headerlink" href="#human-reference-optional" title="Permalink to this headline">¶</a></h4>
+<p>The pipeline include a step to check for strand alignment with the reference
+panel (using <em>SHAPEIT</em>). The drawback of this method is that it is impossible
+to verify the strand of markers which are absent from the <em>IMPUTE2</em>&#8216;s
+reference. We have introduce a way to check the strand using the reference
+genome (in <em>fasta</em> format, indexed using <em>faidx</em>).</p>
+<p>It is possible to download the human reference (<em>fasta</em> format) from
+<a class="reference external" href="http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/">UCSC&#8217;s download page</a>
+(the file named <code class="docutils literal"><span class="pre">chromFa.tar.gz</span></code>).</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> mkdir -p <span class="nv">$HOME</span>/gwip_tutorial/hg19
+<span class="gp">$</span> <span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/hg19
+<span class="gp">$</span> wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/chromFa.tar.gz
+</pre></div>
+</div>
+<p>To index the <em>fasta</em> file, <em>samtools</em> is required at
+<a class="reference external" href="http://www.htslib.org/download/">htslib&#8217;s download page</a>. Once <em>samtools</em> is
+installed, perform the following command:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> samtools faidx hg19.fasta
+</pre></div>
+</div>
+<p>You should now have two files: <code class="docutils literal"><span class="pre">hg19.fasta</span></code> and <code class="docutils literal"><span class="pre">hg19.fasta.fai</span></code>.</p>
+</div>
+<div class="section" id="drmaa-configuration-optional">
+<h4>DRMAA configuration (optional)<a class="headerlink" href="#drmaa-configuration-optional" title="Permalink to this headline">¶</a></h4>
+</div>
+<div class="section" id="preamble-optional">
+<h4>Preamble (optional)<a class="headerlink" href="#preamble-optional" title="Permalink to this headline">¶</a></h4>
+</div>
+<div class="section" id="summary">
+<h4>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h4>
+<p>You should have the following directory tree:</p>
+<div class="highlight-text"><div class="highlight"><pre>imputation_project/
+├── genetic_data.bed
+├── genetic_data.bim
+├── genetic_data.fam
+├── gwip.ini
+├── preamble.sh
+└── impute2_files/
+    └── 1000GP_Phase3
+        ├── 1000GP_Phase3_chr1.hap.gz
+        ├── 1000GP_Phase3_chr1.legend.gz
+        ├── 1000GP_Phase3_chr2.hap.gz
+        ├── 1000GP_Phase3_chr2.legend.gz
+        ├── ...
+        ├── 1000GP_Phase3.sample
+        ├── genetic_map_chr1_combined_b37.txt
+        ├── genetic_map_chr2_combined_b37.txt
+        └── ...
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="execute-the-pipeline">
+<span id="gwip-tut-execute"></span><h3>Execute the pipeline<a class="headerlink" href="#execute-the-pipeline" title="Permalink to this headline">¶</a></h3>
+</div>
+<div class="section" id="output-files">
+<span id="gwip-tut-output-files"></span><h3>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h3>
+</div>
 </div>
 </div>
 
@@ -122,7 +291,7 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tutorial_cox.html" title="Cox Tutorial"
+          <a href="tutorial_cox.html" title="Survival Tutorial"
              >next</a> |</li>
         <li class="right" >
           <a href="../tutorial.html" title="Short Tutorials"

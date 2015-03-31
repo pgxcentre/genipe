@@ -592,7 +592,8 @@
                           <span class="s">&quot;shapeit_check_2_exec_time&quot;</span><span class="p">,</span>
                           <span class="s">&quot;plink_missing_exec_time&quot;</span><span class="p">,</span> <span class="s">&quot;plink_flip_exec_time&quot;</span><span class="p">,</span>
                           <span class="s">&quot;plink_final_exec_time&quot;</span><span class="p">,</span> <span class="s">&quot;shapeit_phase_exec_time&quot;</span><span class="p">,</span>
-                          <span class="s">&quot;merge_impute2_exec_time&quot;</span><span class="p">,</span> <span class="s">&quot;impute2_exec_time&quot;</span><span class="p">]</span>
+                          <span class="s">&quot;merge_impute2_exec_time&quot;</span><span class="p">,</span> <span class="s">&quot;impute2_exec_time&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;bgzip_exec_time&quot;</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">required_variable</span> <span class="ow">in</span> <span class="n">required_variables</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">required_variable</span> <span class="ow">in</span> <span class="n">run_information</span><span class="p">,</span> <span class="n">required_variable</span>
 
@@ -700,6 +701,17 @@
         <span class="n">tabular_t</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span>
         <span class="n">float_t</span><span class="o">=</span><span class="n">float_template</span><span class="p">,</span>
     <span class="p">)</span>
+
+    <span class="c"># The last table (bgzip_chr*) only if present</span>
+    <span class="k">if</span> <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;bgzip_exec_time&quot;</span><span class="p">]:</span>
+        <span class="n">content</span> <span class="o">+=</span> <span class="n">_generate_time_float</span><span class="p">(</span>
+            <span class="n">table</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;bgzip_exec_time&quot;</span><span class="p">],</span>
+            <span class="n">header</span><span class="o">=</span><span class="n">table_header</span><span class="p">,</span>
+            <span class="n">task_name</span><span class="o">=</span><span class="s">&quot;bgzip_chr*&quot;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s">&quot;bgzip_exec_time&quot;</span><span class="p">,</span>
+            <span class="n">tabular_t</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span>
+            <span class="n">float_t</span><span class="o">=</span><span class="n">float_template</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">content</span>
 

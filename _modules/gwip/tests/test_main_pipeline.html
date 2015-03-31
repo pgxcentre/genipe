@@ -696,6 +696,9 @@
                 <span class="k">pass</span>
         <span class="n">args</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="n">reference</span>
 
+        <span class="c"># bgzip</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">bgzip</span> <span class="o">=</span> <span class="bp">False</span>
+
         <span class="c"># Testing begins</span>
         <span class="c"># Everything should work</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">check_args</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
@@ -817,6 +820,16 @@
         <span class="k">else</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">check_args</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
         <span class="n">args</span><span class="o">.</span><span class="n">plink_bin</span> <span class="o">=</span> <span class="n">original_value</span>
+
+        <span class="c"># If bgzip is not in the path, it should raise an error</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">bgzip</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="k">if</span> <span class="n">which</span><span class="p">(</span><span class="s">&quot;bgzip&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">ProgramError</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+                <span class="n">check_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">&quot;bgzip: no installed&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">exception</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">check_args</span><span class="p">(</span><span class="n">args</span><span class="p">))</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">bgzip</span> <span class="o">=</span> <span class="bp">False</span>
 
         <span class="c"># Modifying the segment length</span>
         <span class="n">original_value</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">segment_length</span>

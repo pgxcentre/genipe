@@ -9,10 +9,12 @@ The tools require a standard Python 3 installation with the following modules:
 * ``setuptools`` version 12.0.5 or latest
 * ``pyfaidx`` version 0.3.7 or latest
 
-The following modules are optional (required for statistical analysis):
+The following modules are optional (required for statistical analysis and data
+management):
 
 * ``lifelines`` version 0.7.0 or latest
 * ``statsmodels`` version 0.6.1 or latest
+* ``biopython`` version 1.65 or latest
 
 .. note::
 
@@ -49,7 +51,6 @@ activate it, as long as Python 3 was previously installed on the machine.
    $ pyvenv $HOME/gwip_pyvenv
    $ source $HOME/gwip_pyvenv/bin/activate
 
-
 Then, install the package (and all its dependencies) using the following
 command:
 
@@ -57,6 +58,14 @@ command:
 
    $ pip install $HOME/gwip
 
+If required, the optional dependencies can be installed using the following
+command:
+
+.. code-block:: console
+
+   $ pip install statsmodels
+   $ pip install lifelines
+   $ pip install biopython
 
 Using Miniconda
 ----------------
@@ -83,6 +92,7 @@ It is recommended to install the dependencies using ``conda`` instead of
    $ conda install matplotlib
    $ conda install setuptools
    $ conda install statsmodels
+   $ conda install biopython
 
 Finally, using ``pip``, install the missing dependencies and :py:mod:`gwip`:
 

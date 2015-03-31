@@ -91,7 +91,7 @@
 
 
 <span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;matrix_from_line&quot;</span><span class="p">,</span> <span class="s">&quot;get_good_probs&quot;</span><span class="p">,</span> <span class="s">&quot;maf_from_probs&quot;</span><span class="p">,</span>
-           <span class="s">&quot;dosage_from_probs&quot;</span><span class="p">]</span>
+           <span class="s">&quot;dosage_from_probs&quot;</span><span class="p">,</span> <span class="s">&quot;hard_calls_from_probs&quot;</span><span class="p">]</span>
 
 
 <span class="k">def</span> <span class="nf">matrix_from_line</span><span class="p">(</span><span class="n">impute2_line</span><span class="p">):</span>
@@ -173,6 +173,17 @@
 <span class="k">def</span> <span class="nf">dosage_from_probs</span><span class="p">(</span><span class="n">homo_probs</span><span class="p">,</span> <span class="n">hetero_probs</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span></div>
 <div class="viewcode-block" id="dosage_from_probs"><a class="viewcode-back" href="../../../module_content/gwip.formats.html#gwip.formats.impute2.dosage_from_probs">[docs]</a>    <span class="sd">&quot;&quot;&quot;Computes dosage from probability matrix (for the minor allele).&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">homo_probs</span> <span class="o">+</span> <span class="p">(</span><span class="n">hetero_probs</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">scale</span>
+
+
+<span class="k">def</span> <span class="nf">hard_calls_from_probs</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">probs</span><span class="p">):</span></div>
+<div class="viewcode-block" id="hard_calls_from_probs"><a class="viewcode-back" href="../../../module_content/gwip.formats.html#gwip.formats.impute2.hard_calls_from_probs">[docs]</a>    <span class="sd">&quot;&quot;&quot;Computes hard calls from probability matrix.&quot;&quot;&quot;</span>
+    <span class="n">possible_geno</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+        <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">a1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">),</span>     <span class="c"># Homo A1</span>
+        <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">]),</span>     <span class="c"># Hetero</span>
+        <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">([</span><span class="n">a2</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">),</span>     <span class="c"># Homo A2</span>
+    <span class="p">])</span>
+
+    <span class="k">return</span> <span class="n">possible_geno</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)]</span>
 </pre></div></div>
 
           </div>

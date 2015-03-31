@@ -81,6 +81,7 @@
 
 
 <span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
 <span class="kn">import</span> <span class="nn">shlex</span>
 <span class="kn">import</span> <span class="nn">logging</span>
@@ -120,7 +121,7 @@
 
         <span class="c"># Checking if we need to run this task</span>
         <span class="k">if</span> <span class="n">check_task_completion</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">):</span>
-            <span class="k">if</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">o_files</span><span class="p">):</span>
+            <span class="k">if</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">o_files</span><span class="p">,</span> <span class="n">task_id</span><span class="p">):</span>
                 <span class="n">run_time</span> <span class="o">=</span> <span class="n">get_task_runtime</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
                 <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Task &#39;{}&#39;: already performed in {:,d} &quot;</span>
                              <span class="s">&quot;seconds&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_name</span><span class="p">,</span> <span class="n">run_time</span><span class="p">))</span>
@@ -202,18 +203,77 @@
                 <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;problem executing {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]))</span>
 
 
-<span class="k">def</span> <span class="nf">_check_output_files</span><span class="p">(</span><span class="n">o_files</span><span class="p">):</span></div>
+<span class="k">def</span> <span class="nf">_check_output_files</span><span class="p">(</span><span class="n">o_files</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span></div>
     <span class="sd">&quot;&quot;&quot;Check that the files exist.&quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;.impute2&quot;</span><span class="p">):</span>
             <span class="c"># IMPUTE2 files might be gzipped</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">or</span> <span class="n">isfile</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s">&quot;.gz&quot;</span><span class="p">)):</span>
-                <span class="k">return</span> <span class="bp">False</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_impute2_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
+                    <span class="k">return</span> <span class="bp">False</span>
 
         <span class="k">elif</span> <span class="ow">not</span> <span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
             <span class="k">return</span> <span class="bp">False</span>
 
     <span class="k">return</span> <span class="bp">True</span>
+
+
+<span class="k">def</span> <span class="nf">_check_impute2_file</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Checks the summary to explain the absence of an .impute2 file.</span>
+
+<span class="sd">    :returns: True if it&#39;s normal, False otherwise.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># The name of the summary file</span>
+    <span class="n">summary_fn</span> <span class="o">=</span> <span class="n">fn</span> <span class="o">+</span> <span class="s">&quot;_summary&quot;</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">summary_fn</span><span class="p">):</span>
+        <span class="c"># The summary file doesn&#39;t exists...</span>
+        <span class="k">return</span> <span class="bp">False</span>
+
+    <span class="c"># Reading the file content</span>
+    <span class="n">summary</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">summary_fn</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+        <span class="n">summary</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="c"># Checking if there are no SNPs in the imputation interval?</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+        <span class="s">r&quot;\sThere are no SNPs in the imputation interval, so there is &quot;</span>
+        <span class="s">&quot;nothing for IMPUTE2 to analyze; the program will quit now.&quot;</span><span class="p">,</span>
+        <span class="n">summary</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">task</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;{}: there are no SNPs in the imputation &quot;</span>
+                            <span class="s">&quot;interval&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="c"># Checking if there are not type 2 SNPs</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+        <span class="s">r&quot;\sERROR: There are no type 2 SNPs after applying the command-line &quot;</span>
+        <span class="s">&quot;settings for this run, which makes it impossible to perform &quot;</span>
+        <span class="s">&quot;imputation.&quot;</span><span class="p">,</span>
+        <span class="n">summary</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">task</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;{}: there are no type 2 SNPs for this &quot;</span>
+                            <span class="s">&quot;run&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="c"># Checking if there are no output SNPs</span>
+    <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
+        <span class="s">r&quot;\sYour current command-line settings imply that there will not be &quot;</span>
+        <span class="s">&quot;any SNPs in the output file, so IMPUTE2 will not perform any &quot;</span>
+        <span class="s">&quot;analysis or print output files.&quot;</span><span class="p">,</span>
+        <span class="n">summary</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">task</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;{}: no SNPs in the output file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">True</span>
+
+    <span class="c"># If attained, there is a problem</span>
+    <span class="k">return</span> <span class="bp">False</span>
 
 
 <span class="k">def</span> <span class="nf">_execute_command</span><span class="p">(</span><span class="n">command_info</span><span class="p">):</span>
@@ -236,7 +296,7 @@
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Checking status for &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
     <span class="c"># Checking if the command was completed</span>
     <span class="k">if</span> <span class="n">check_task_completion</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="s">&quot;o_files&quot;</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="s">&quot;o_files&quot;</span><span class="p">],</span> <span class="n">task_id</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; completed&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
             <span class="n">runtime</span> <span class="o">=</span> <span class="n">get_task_runtime</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;already performed&quot;</span><span class="p">,</span> <span class="n">runtime</span>
@@ -256,7 +316,25 @@
     <span class="n">outs</span><span class="p">,</span> <span class="n">errs</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
     <span class="n">rc</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span>
     <span class="k">if</span> <span class="n">check_rc</span> <span class="ow">and</span> <span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="c"># There was a problem...</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">task_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">):</span>
+            <span class="c"># There was a problem...</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Task is IMPUTE2, and it might be normal according to message in</span>
+            <span class="c"># the summary file</span>
+            <span class="n">impute2_fn</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;o_files&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;.impute2&quot;</span><span class="p">):</span>
+                    <span class="n">impute2_fn</span> <span class="o">=</span> <span class="n">fn</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_impute2_file</span><span class="p">(</span><span class="n">impute2_fn</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+                <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
+
+    <span class="c"># Checking all the required files were generated</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="s">&quot;o_files&quot;</span><span class="p">],</span> <span class="n">task_id</span><span class="p">):</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
 
@@ -296,7 +374,7 @@
     <span class="c"># Checking if the command was completed</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Checking status for &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">check_task_completion</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="s">&quot;o_files&quot;</span><span class="p">]):</span>
+        <span class="k">if</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="s">&quot;o_files&quot;</span><span class="p">],</span> <span class="n">task_id</span><span class="p">):</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; completed&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
             <span class="n">runtime</span> <span class="o">=</span> <span class="n">get_task_runtime</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
             <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;already performed&quot;</span><span class="p">,</span> <span class="n">runtime</span>
@@ -350,14 +428,21 @@
     <span class="n">job_id</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">runJob</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
 
     <span class="c"># Waiting for the job</span>
-    <span class="n">ret_val</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">drmaa</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">TIMEOUT_WAIT_FOREVER</span><span class="p">)</span>
+    <span class="n">ret_val</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">ret_val</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">drmaa</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">TIMEOUT_WAIT_FOREVER</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">control</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">drmaa</span><span class="o">.</span><span class="n">JobControlAction</span><span class="o">.</span><span class="n">TERMINATE</span><span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;{}: terminated&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+        <span class="k">raise</span>
+
+    <span class="k">finally</span><span class="p">:</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">deleteJobTemplate</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+        <span class="n">s</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+
+    <span class="c"># The job is done</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; finished&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
-
-    <span class="c"># Deleting the job</span>
-    <span class="n">s</span><span class="o">.</span><span class="n">deleteJobTemplate</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
-
-    <span class="c"># Closing the connection</span>
-    <span class="n">s</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
     <span class="c"># Removing the temporary file</span>
     <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmp_file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
@@ -371,7 +456,28 @@
             <span class="n">ret_val</span><span class="o">.</span><span class="n">hasSignal</span><span class="p">,</span>
         <span class="p">))</span>
         <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
+
     <span class="k">if</span> <span class="n">check_rc</span> <span class="ow">and</span> <span class="n">ret_val</span><span class="o">.</span><span class="n">exitStatus</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">task_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">):</span>
+            <span class="c"># There was a problem...</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c"># Task is IMPUTE2, and it might be normal according to message in</span>
+            <span class="c"># the summary file</span>
+            <span class="n">impute2_fn</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;o_files&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;.impute2&quot;</span><span class="p">):</span>
+                    <span class="n">impute2_fn</span> <span class="o">=</span> <span class="n">fn</span>
+                    <span class="k">break</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_impute2_file</span><span class="p">(</span><span class="n">impute2_fn</span><span class="p">):</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+                <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
+
+
+    <span class="c"># Checking all the required files were generated</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="s">&quot;o_files&quot;</span><span class="p">],</span> <span class="n">task_id</span><span class="p">):</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
 
