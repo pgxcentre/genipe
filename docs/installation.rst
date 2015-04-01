@@ -40,8 +40,11 @@ environment: using Python's ``pyvenv`` command, or using
 use since it doesn't require any compilation.
 
 
+Virtual environment
+--------------------
+
 Using pyvenv
--------------
+^^^^^^^^^^^^^
 
 The following commands should successfully create a virtual environment and
 activate it, as long as Python 3 was previously installed on the machine.
@@ -70,8 +73,9 @@ command:
    pip install lifelines
    pip install biopython
 
+
 Using Miniconda
-----------------
+^^^^^^^^^^^^^^^^
 
 The following commands should successfully download and install Miniconda,
 create and activate a new python virtual environment. This installation method
@@ -109,6 +113,38 @@ Finally, using ``pip``, install the missing dependencies and :py:mod:`gwip`:
    pip install --no-deps pyfaidx
    pip install --no-deps lifelines
    pip install --no-deps $HOME/gwip
+
+
+.. _gwip-pyvenv-activation:
+
+Virtual environment activation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Before using the :py:mod:`gwip` module for any analysis, the Python virtual
+environment needs to be activated. Depending of your installation type (*i.e*
+*pyvenv* or *miniconda*), the activation process will differ.
+
+
+Pyvenv
+"""""""
+
+If the module was installed into a *pyvenv* environment, perform the following
+command to activate it.
+
+.. code-block:: bash
+
+   source $HOME/gwip_pyvenv/bin/activate
+
+
+Miniconda
+""""""""""
+
+If the module was installed into a *Miniconda* environment, perform the
+following command to activate it.
+
+.. code-block:: bash
+
+   source $HOME/miniconda/bin/activate gwip_pyvenv
 
 
 Testing the installation
