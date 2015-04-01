@@ -32,6 +32,8 @@ provides a useful standalone tool to perform statistical analysis on imputed
    implementation
 
 
+.. _gwip-usage:
+
 Usage
 ------
 
