@@ -238,7 +238,7 @@ use the ``main`` section of the *ini* file as such:
 .. note::
 
    Keep in mind that lines starting with a ``#`` are comments and are not used
-   in the DRMAA configuration. This is usefull to describe what parameters are
+   in the DRMAA configuration. This is useful to describe what parameters are
    used for each step.
 
 Preamble (optional)
@@ -268,9 +268,14 @@ environment before launching the task.
    activate the virtual python environment so that the tools provided by
    :py:mod:`gwip` are automatically in the system path.
 
+.. warning::
 
-Summary
-""""""""
+   The preamble will be added **as-is** in the *bash* script that will be
+   executed. Hence, always be careful of what is included in the preamble.
+
+
+Input file summary
+"""""""""""""""""""
 
 You should have the following directory structure:
 
@@ -300,13 +305,13 @@ You should have the following directory structure:
    │   ├── hapmap_CEU_r23a_hg19.bim
    │   └── hapmap_CEU_r23a_hg19.fam
    │
-   ├── gwip_config.ini                          # OPTIONAL
+   ├── gwip_config.ini  # OPTIONAL (--use-drmaa, --drmaa-config)
    │
    ├── hg19/
    │   ├── hg19.fasta
    │   └── hg19.fasta.fai
    │
-   └── preamble.txt                             # OPTIONAL
+   └── preamble.txt     # OPTIONAL (--use-drmaa, --preamble)
 
 
 .. _gwip-tut-execute:
