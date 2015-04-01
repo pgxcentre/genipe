@@ -316,7 +316,12 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
                    options):
     """Imputes the markers using IMPUTE2."""
     # Are we skipping DRMAA options?
-    skip_drmaa_config = options.task_options.get("skip_drmaa_config", False)
+    skip_drmaa_config = False
+    if options.task_options is not None:
+        skip_drmaa_config = options.task_options.get(
+            "skip_drmaa_config",
+            False,
+        )
 
     commands_info = []
     base_command = [
