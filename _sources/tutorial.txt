@@ -12,6 +12,7 @@ statistical analysis or data management.
 4. :ref:`linear-tut`
 5. :ref:`logistic-tut`
 
+
 .. _gwip-tut:
 
 Pipeline tutorial
@@ -25,6 +26,7 @@ and output files.
    :maxdepth: 3
 
    tutorials/tutorial_gwip
+
 
 .. _cox-tut:
 
@@ -40,6 +42,7 @@ output files.
 
    tutorials/tutorial_cox
 
+
 .. _skat-tut:
 
 SKAT tutorial
@@ -52,6 +55,7 @@ describing the expected input and output files.
    :maxdepth: 3
 
    tutorials/tutorial_SKAT
+
 
 .. _linear-tut:
 
@@ -67,6 +71,7 @@ output files.
 
    tutorials/tutorial_linear
 
+
 .. _logistic-tut:
 
 Logistic tutorial
@@ -80,4 +85,19 @@ detail the expected input and output file.
    :maxdepth: 3
 
    tutorials/tutorial_logistic
+
+
+.. _extraction-tut:
+
+Site extraction tutorial
+-------------------------
+
+This tutorial walks through a full example of the tool used to extract sites
+from imputation files. It describes in detail the expected input and output
+file.
+
+.. toctree::
+   :maxdepth: 3
+
+   tutorials/tutorial_extract
 

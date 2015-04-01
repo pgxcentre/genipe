@@ -389,7 +389,12 @@
 <div class="viewcode-block" id="impute_markers"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.impute_markers">[docs]</a>                   <span class="n">options</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Imputes the markers using IMPUTE2.&quot;&quot;&quot;</span>
     <span class="c"># Are we skipping DRMAA options?</span>
-    <span class="n">skip_drmaa_config</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">task_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;skip_drmaa_config&quot;</span><span class="p">,</span> <span class="bp">False</span><span class="p">)</span>
+    <span class="n">skip_drmaa_config</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">task_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">skip_drmaa_config</span> <span class="o">=</span> <span class="n">options</span><span class="o">.</span><span class="n">task_options</span><span class="o">.</span><span class="n">get</span><span class="p">(</span>
+            <span class="s">&quot;skip_drmaa_config&quot;</span><span class="p">,</span>
+            <span class="bp">False</span><span class="p">,</span>
+        <span class="p">)</span>
 
     <span class="n">commands_info</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">base_command</span> <span class="o">=</span> <span class="p">[</span>

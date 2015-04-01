@@ -33,10 +33,10 @@ and `by SHAPEIT <http://www.shapeit.fr/pages/m03_phasing/imputation.html>`_).
 First, we will create a project directory where all the analysis will be
 performed:
 
-.. code-block:: console
+.. code-block:: bash
 
-   $ mkdir -p $HOME/gwip_tutorial
-   $ cd $HOME/gwip_tutorial
+   mkdir -p $HOME/gwip_tutorial
+   cd $HOME/gwip_tutorial
 
 
 .. _gwip-tut-softwares:
@@ -53,10 +53,10 @@ can specify each of their location at runtime.
 
 We will create a directory where the binaries will go:
 
-.. code-block:: console
+.. code-block:: bash
 
-   $ mkdir -p $HOME/gwip_tutorial/bin
-   $ cd $HOME/gwip_tutorial/bin
+   mkdir -p $HOME/gwip_tutorial/bin
+   cd $HOME/gwip_tutorial/bin
 
 Plink is freely available. Go to
 `Plink download page <http://pngu.mgh.harvard.edu/~purcell/plink/download.shtml>`_,
@@ -73,12 +73,8 @@ SHAPEIT is freely available for academic use. Go to
 read the license, and download the most recent version. Extract the binary and
 copy it to the ``bin`` directory previously created.
 
-The ``bin`` directory should now contain three binaries:
-
-.. code-block:: console
-
-   $ ls $HOME/gwip_tutorial/bin
-   impute2  plink  shapeit
+The ``bin`` directory should now contain three binaries: ``impute2``, ``plink``
+and ``shapeit``.
 
 
 .. _gwip-tut-input-files:
@@ -103,14 +99,14 @@ The build was lifted over from *GRCh36* to *GRCh37* using
 were kept, along with markers having a completion rate higher or equal to 0.98.
 To download the data for this tutorial, execute the following command:
 
-.. code-block:: console
+.. code-block:: bash
 
-   $ mkdir -p $HOME/gwip_tutorial/data
-   $ cd $HOME/gwip_tutorial/data
+   mkdir -p $HOME/gwip_tutorial/data
+   cd $HOME/gwip_tutorial/data
 
-   $ wget http://pgxcentre.github.io/gwip/_static/hapmap_CEU_r23a_hg19.tar.bz2
-   $ tar -jxf hapmap_CEU_r23a_hg19.tar.bz2
-   $ rm hapmap_CEU_r23a_hg19.tar.bz2
+   wget http://pgxcentre.github.io/gwip/_static/hapmap_CEU_r23a_hg19.tar.bz2
+   tar -jxf hapmap_CEU_r23a_hg19.tar.bz2
+   rm hapmap_CEU_r23a_hg19.tar.bz2
 
 
 Reference panels
@@ -137,23 +133,23 @@ It is possible to download the human reference (*fasta* format) from
 `UCSC's download page <http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/>`_
 (the file named ``chromFa.tar.gz``).
 
-.. code-block:: console
+.. code-block:: bash
 
-   $ mkdir -p $HOME/gwip_tutorial/hg19
-   $ cd $HOME/gwip_tutorial/hg19
+   mkdir -p $HOME/gwip_tutorial/hg19
+   cd $HOME/gwip_tutorial/hg19
 
-   $ wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/chromFa.tar.gz
-   $ tar -zxf chromFa.tar.gz
-   $ for chrom in $(seq 1 22) X Y M; do cat chr${chrom}.fa; done > hg19.fasta
-   $ rm -f *.fa chromFa.tar.gz
+   wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/chromFa.tar.gz
+   tar -zxf chromFa.tar.gz
+   for chrom in $(seq 1 22) X Y M; do cat chr${chrom}.fa; done > hg19.fasta
+   rm -f *.fa chromFa.tar.gz
 
 To index the *fasta* file, *samtools* is required at
 `htslib's download page <http://www.htslib.org/download/>`_. Once *samtools* is
 installed, perform the following command:
 
-.. code-block:: console
+.. code-block:: bash
 
-   $ samtools faidx hg19.fasta
+   samtools faidx hg19.fasta
 
 You should now have two files in the ``$HOME/gwip_tutorial/hg19`` directory:
 ``hg19.fasta`` and ``hg19.fasta.fai``.
@@ -238,7 +234,7 @@ use the ``main`` section of the *ini* file as such:
 .. note::
 
    Keep in mind that lines starting with a ``#`` are comments and are not used
-   in the DRMAA configuration. This is usefull to describe what parameters are
+   in the DRMAA configuration. This is useful to describe what parameters are
    used for each step.
 
 Preamble (optional)
@@ -268,9 +264,14 @@ environment before launching the task.
    activate the virtual python environment so that the tools provided by
    :py:mod:`gwip` are automatically in the system path.
 
+.. warning::
 
-Summary
-""""""""
+   The preamble will be added **as-is** in the *bash* script that will be
+   executed. Hence, always be careful of what is included in the preamble.
+
+
+Input file summary
+"""""""""""""""""""
 
 You should have the following directory structure:
 
@@ -300,13 +301,13 @@ You should have the following directory structure:
    │   ├── hapmap_CEU_r23a_hg19.bim
    │   └── hapmap_CEU_r23a_hg19.fam
    │
-   ├── gwip_config.ini                          # OPTIONAL
+   ├── gwip_config.ini  # OPTIONAL (--use-drmaa, --drmaa-config)
    │
    ├── hg19/
    │   ├── hg19.fasta
    │   └── hg19.fasta.fai
    │
-   └── preamble.txt                             # OPTIONAL
+   └── preamble.txt     # OPTIONAL (--use-drmaa, --preamble)
 
 
 .. _gwip-tut-execute:
@@ -314,9 +315,14 @@ You should have the following directory structure:
 Execute the pipeline
 ^^^^^^^^^^^^^^^^^^^^^
 
-.. code-block:: bash
+Once all the input files are ready for analysis, you can finally execute the
+pipeline. Make sure that the virtual Python environment was properly activated
+(see :ref:`gwip-pyvenv-activation` for more details).
 
-   #!/usr/bin/env bash
+When in the correct working directory, the following command should execute the
+genome-wide imputation of the *HapMap* CEU dataset.
+
+.. code-block:: bash
 
    cd $HOME/gwip_tut
    
@@ -328,16 +334,68 @@ Execute the pipeline
        --map-template 1000GP_Phase3/genetic_map_chr{chrom}_combined_b37.txt \
        --sample-file 1000GP_Phase3/1000GP_Phase3.sample \
        --filtering-rules 'ALL<0.01' 'ALL>0.99' \
-       --report-number "Test Report" \
-       --report-title "Tutorial" \
        --bgzip \
-       --thread 4
+       --thread 4 \
+       --report-title "Tutorial" \
+       --report-number "Test Report"
+
+The following table describes the option used by :py:mod:`gwip` in the previous
+command (see the :ref:`gwip-usage` section for a full list):
+
+.. table::
+
+    +-----------------------+-------------------------------------------------+
+    | Option                | Description                                     |
+    +=======================+=================================================+
+    | ``--bfile``           | The genotypes of the study cohort to be imputed.|
+    +-----------------------+-------------------------------------------------+
+    | ``--reference``       | The *fasta* file containing the reference genome|
+    |                       | for initial strand verification (*optional*).   |
+    +-----------------------+-------------------------------------------------+
+    | ``--hap-template``    | The template for *IMPUTE2*'s reference haplotype|
+    |                       | files (``{chrom}`` will be replaced by the      |
+    |                       | chromosome number).                             |
+    +-----------------------+-------------------------------------------------+
+    | ``--legend-template`` | The template for *IMPUTE2*'s reference legend   |
+    |                       | files (``{chrom}`` will be replaced by the      |
+    |                       | chromosome number).                             |
+    +-----------------------+-------------------------------------------------+
+    | ``--map-template``    | The template for *IMPUTE2*'s reference map      |
+    |                       | files (``{chrom}`` will be replaced by the      |
+    |                       | chromosome number).                             |
+    +-----------------------+-------------------------------------------------+
+    | ``--sample-file``     | The name of *IMPUTE2*'s reference sample file.  |
+    +-----------------------+-------------------------------------------------+
+    | ``--filtering-rules`` | Rules used by *IMPUTE2* to exclude sites from   |
+    |                       | its reference files (using the legend files).   |
+    |                       | Each terms are joined using a logical *OR*.     |
+    +-----------------------+-------------------------------------------------+
+    | ``--bgzip``           | The final (merged) *IMPUTE2* output files will  |
+    |                       | be compressed using the ``bgzip`` software (the |
+    |                       | latter must be in the ``path``). This will not  |
+    |                       | compress the segment files.                     |
+    +-----------------------+-------------------------------------------------+
+    | ``--thread``          | The number of thread to use for the analysis.   |
+    |                       | When using *DRMAA*, this will be the number of  |
+    |                       | simultaneous tasks.                             |
+    +-----------------------+-------------------------------------------------+
+    | ``--report-title``    | The title of the automatic report.              |
+    +-----------------------+-------------------------------------------------+
+    | ``--report-number``   | The number of the report (will appear as        |
+    |                       | sub-title and in the footer of the automatic    |
+    |                       | report).                                        |
+    +-----------------------+-------------------------------------------------+
+
 
 .. note::
 
-   Do not forget that if the pipeline fails (*e.g.* not enough memory or
+   If the pipeline fails (*e.g.* not enough memory or the
    walltime exceeded), re-running the pipeline (with different number of thread
-   or different walltime) will only launch the task that are not completed.
+   or different walltime) will only launch the task that were not completed.
+
+   The pipeline checks if output files are missing. If an output file is
+   deleted, the step producing this file will be run again (but not the
+   subsequent steps).
 
 
 .. _gwip-tut-output-files:
@@ -346,7 +404,8 @@ Output files
 ^^^^^^^^^^^^^
 
 All results will be located in the ``gwip`` directory (or whatever
-``--output-dir`` links to). Here is the directory tree explaining the results:
+``--output-dir`` links to). Here is the directory tree summarizing the output
+files.
 
 .. code-block:: text
 

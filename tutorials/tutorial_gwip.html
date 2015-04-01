@@ -69,7 +69,7 @@
 <li><a class="reference internal" href="#human-reference-optional">Human reference (optional)</a></li>
 <li><a class="reference internal" href="#drmaa-configuration-optional">DRMAA configuration (optional)</a></li>
 <li><a class="reference internal" href="#preamble-optional">Preamble (optional)</a></li>
-<li><a class="reference internal" href="#summary">Summary</a></li>
+<li><a class="reference internal" href="#input-file-summary">Input file summary</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#execute-the-pipeline">Execute the pipeline</a></li>
@@ -144,8 +144,8 @@ by IMPUTE2&#8217;s best practices when analyzing genome-wide data (described
 and <a class="reference external" href="http://www.shapeit.fr/pages/m03_phasing/imputation.html">by SHAPEIT</a>).</p>
 <p>First, we will create a project directory where all the analysis will be
 performed:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> mkdir -p <span class="nv">$HOME</span>/gwip_tutorial
-<span class="gp">$</span> <span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial
+<div class="highlight-bash"><div class="highlight"><pre>mkdir -p <span class="nv">$HOME</span>/gwip_tutorial
+<span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial
 </pre></div>
 </div>
 <div class="section" id="required-softwares">
@@ -157,8 +157,8 @@ performed:</p>
 These tools are not required to be located in your <code class="docutils literal"><span class="pre">PATH</span></code> variable, since you
 can specify each of their location at runtime.</p>
 <p>We will create a directory where the binaries will go:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> mkdir -p <span class="nv">$HOME</span>/gwip_tutorial/bin
-<span class="gp">$</span> <span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/bin
+<div class="highlight-bash"><div class="highlight"><pre>mkdir -p <span class="nv">$HOME</span>/gwip_tutorial/bin
+<span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/bin
 </pre></div>
 </div>
 <p>Plink is freely available. Go to
@@ -173,11 +173,8 @@ copy it to the <code class="docutils literal"><span class="pre">bin</span></code
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html#download">SHAPEIT download page</a>,
 read the license, and download the most recent version. Extract the binary and
 copy it to the <code class="docutils literal"><span class="pre">bin</span></code> directory previously created.</p>
-<p>The <code class="docutils literal"><span class="pre">bin</span></code> directory should now contain three binaries:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> ls <span class="nv">$HOME</span>/gwip_tutorial/bin
-<span class="go">impute2  plink  shapeit</span>
-</pre></div>
-</div>
+<p>The <code class="docutils literal"><span class="pre">bin</span></code> directory should now contain three binaries: <code class="docutils literal"><span class="pre">impute2</span></code>, <code class="docutils literal"><span class="pre">plink</span></code>
+and <code class="docutils literal"><span class="pre">shapeit</span></code>.</p>
 </div>
 <div class="section" id="input-files">
 <span id="gwip-tut-input-files"></span><h3>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h3>
@@ -195,12 +192,12 @@ The build was lifted over from <em>GRCh36</em> to <em>GRCh37</em> using
 <a class="reference external" href="https://genome.ucsc.edu/cgi-bin/hgLiftOver">USCS liftOver</a>. Only CEU samples
 were kept, along with markers having a completion rate higher or equal to 0.98.
 To download the data for this tutorial, execute the following command:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> mkdir -p <span class="nv">$HOME</span>/gwip_tutorial/data
-<span class="gp">$</span> <span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/data
+<div class="highlight-bash"><div class="highlight"><pre>mkdir -p <span class="nv">$HOME</span>/gwip_tutorial/data
+<span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/data
 
-<span class="gp">$</span> wget http://pgxcentre.github.io/gwip/_static/hapmap_CEU_r23a_hg19.tar.bz2
-<span class="gp">$</span> tar -jxf hapmap_CEU_r23a_hg19.tar.bz2
-<span class="gp">$</span> rm hapmap_CEU_r23a_hg19.tar.bz2
+wget http://pgxcentre.github.io/gwip/_static/hapmap_CEU_r23a_hg19.tar.bz2
+tar -jxf hapmap_CEU_r23a_hg19.tar.bz2
+rm hapmap_CEU_r23a_hg19.tar.bz2
 </pre></div>
 </div>
 </div>
@@ -223,19 +220,19 @@ genome (in <em>fasta</em> format, indexed using <em>faidx</em>).</p>
 <p>It is possible to download the human reference (<em>fasta</em> format) from
 <a class="reference external" href="http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/">UCSC&#8217;s download page</a>
 (the file named <code class="docutils literal"><span class="pre">chromFa.tar.gz</span></code>).</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> mkdir -p <span class="nv">$HOME</span>/gwip_tutorial/hg19
-<span class="gp">$</span> <span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/hg19
+<div class="highlight-bash"><div class="highlight"><pre>mkdir -p <span class="nv">$HOME</span>/gwip_tutorial/hg19
+<span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/hg19
 
-<span class="gp">$</span> wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/chromFa.tar.gz
-<span class="gp">$</span> tar -zxf chromFa.tar.gz
-<span class="gp">$</span> <span class="k">for</span> chrom in <span class="k">$(</span>seq <span class="m">1</span> 22<span class="k">)</span> X Y M<span class="p">;</span> <span class="k">do</span> cat chr<span class="si">${</span><span class="nv">chrom</span><span class="si">}</span>.fa<span class="p">;</span> <span class="k">done</span> &gt; hg19.fasta
-<span class="gp">$</span> rm -f *.fa chromFa.tar.gz
+wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/chromFa.tar.gz
+tar -zxf chromFa.tar.gz
+<span class="k">for</span> chrom in <span class="k">$(</span>seq <span class="m">1</span> 22<span class="k">)</span> X Y M<span class="p">;</span> <span class="k">do</span> cat chr<span class="si">${</span><span class="nv">chrom</span><span class="si">}</span>.fa<span class="p">;</span> <span class="k">done</span> &gt; hg19.fasta
+rm -f *.fa chromFa.tar.gz
 </pre></div>
 </div>
 <p>To index the <em>fasta</em> file, <em>samtools</em> is required at
 <a class="reference external" href="http://www.htslib.org/download/">htslib&#8217;s download page</a>. Once <em>samtools</em> is
 installed, perform the following command:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> samtools faidx hg19.fasta
+<div class="highlight-bash"><div class="highlight"><pre>samtools faidx hg19.fasta
 </pre></div>
 </div>
 <p>You should now have two files in the <code class="docutils literal"><span class="pre">$HOME/gwip_tutorial/hg19</span></code> directory:
@@ -309,7 +306,7 @@ use the <code class="docutils literal"><span class="pre">main</span></code> sect
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Keep in mind that lines starting with a <code class="docutils literal"><span class="pre">#</span></code> are comments and are not used
-in the DRMAA configuration. This is usefull to describe what parameters are
+in the DRMAA configuration. This is useful to describe what parameters are
 used for each step.</p>
 </div>
 </div>
@@ -336,9 +333,14 @@ module load gcc/4.8.2
 activate the virtual python environment so that the tools provided by
 <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> are automatically in the system path.</p>
 </div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The preamble will be added <strong>as-is</strong> in the <em>bash</em> script that will be
+executed. Hence, always be careful of what is included in the preamble.</p>
 </div>
-<div class="section" id="summary">
-<h4>Summary<a class="headerlink" href="#summary" title="Permalink to this headline">¶</a></h4>
+</div>
+<div class="section" id="input-file-summary">
+<h4>Input file summary<a class="headerlink" href="#input-file-summary" title="Permalink to this headline">¶</a></h4>
 <p>You should have the following directory structure:</p>
 <div class="highlight-text"><div class="highlight"><pre>$HOME/gwip_tut/
 │
@@ -364,22 +366,25 @@ activate the virtual python environment so that the tools provided by
 │   ├── hapmap_CEU_r23a_hg19.bim
 │   └── hapmap_CEU_r23a_hg19.fam
 │
-├── gwip_config.ini                          # OPTIONAL
+├── gwip_config.ini  # OPTIONAL (--use-drmaa, --drmaa-config)
 │
 ├── hg19/
 │   ├── hg19.fasta
 │   └── hg19.fasta.fai
 │
-└── preamble.txt                             # OPTIONAL
+└── preamble.txt     # OPTIONAL (--use-drmaa, --preamble)
 </pre></div>
 </div>
 </div>
 </div>
 <div class="section" id="execute-the-pipeline">
 <span id="gwip-tut-execute"></span><h3>Execute the pipeline<a class="headerlink" href="#execute-the-pipeline" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-bash"><div class="highlight"><pre><span class="c">#!/usr/bin/env bash</span>
-
-<span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tut
+<p>Once all the input files are ready for analysis, you can finally execute the
+pipeline. Make sure that the virtual Python environment was properly activated
+(see <a class="reference internal" href="../installation.html#gwip-pyvenv-activation"><span>Virtual environment activation</span></a> for more details).</p>
+<p>When in the correct working directory, the following command should execute the
+genome-wide imputation of the <em>HapMap</em> CEU dataset.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tut
 
 gwip-launcher <span class="se">\</span>
     --bfile data/hapmap_CEU_r23a_hg19 <span class="se">\</span>
@@ -389,23 +394,91 @@ gwip-launcher <span class="se">\</span>
     --map-template 1000GP_Phase3/genetic_map_chr<span class="o">{</span>chrom<span class="o">}</span>_combined_b37.txt <span class="se">\</span>
     --sample-file 1000GP_Phase3/1000GP_Phase3.sample <span class="se">\</span>
     --filtering-rules <span class="s1">&#39;ALL&lt;0.01&#39;</span> <span class="s1">&#39;ALL&gt;0.99&#39;</span> <span class="se">\</span>
-    --report-number <span class="s2">&quot;Test Report&quot;</span> <span class="se">\</span>
-    --report-title <span class="s2">&quot;Tutorial&quot;</span> <span class="se">\</span>
     --bgzip <span class="se">\</span>
-    --thread 4
+    --thread <span class="m">4</span> <span class="se">\</span>
+    --report-title <span class="s2">&quot;Tutorial&quot;</span> <span class="se">\</span>
+    --report-number <span class="s2">&quot;Test Report&quot;</span>
 </pre></div>
 </div>
+<p>The following table describes the option used by <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> in the previous
+command (see the <a class="reference internal" href="../index.html#gwip-usage"><span>Usage</span></a> section for a full list):</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--bfile</span></code></td>
+<td>The genotypes of the study cohort to be imputed.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--reference</span></code></td>
+<td>The <em>fasta</em> file containing the reference genome
+for initial strand verification (<em>optional</em>).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--hap-template</span></code></td>
+<td>The template for <em>IMPUTE2</em>&#8216;s reference haplotype
+files (<code class="docutils literal"><span class="pre">{chrom}</span></code> will be replaced by the
+chromosome number).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--legend-template</span></code></td>
+<td>The template for <em>IMPUTE2</em>&#8216;s reference legend
+files (<code class="docutils literal"><span class="pre">{chrom}</span></code> will be replaced by the
+chromosome number).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--map-template</span></code></td>
+<td>The template for <em>IMPUTE2</em>&#8216;s reference map
+files (<code class="docutils literal"><span class="pre">{chrom}</span></code> will be replaced by the
+chromosome number).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--sample-file</span></code></td>
+<td>The name of <em>IMPUTE2</em>&#8216;s reference sample file.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--filtering-rules</span></code></td>
+<td>Rules used by <em>IMPUTE2</em> to exclude sites from
+its reference files (using the legend files).
+Each terms are joined using a logical <em>OR</em>.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--bgzip</span></code></td>
+<td>The final (merged) <em>IMPUTE2</em> output files will
+be compressed using the <code class="docutils literal"><span class="pre">bgzip</span></code> software (the
+latter must be in the <code class="docutils literal"><span class="pre">path</span></code>). This will not
+compress the segment files.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--thread</span></code></td>
+<td>The number of thread to use for the analysis.
+When using <em>DRMAA</em>, this will be the number of
+simultaneous tasks.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--report-title</span></code></td>
+<td>The title of the automatic report.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--report-number</span></code></td>
+<td>The number of the report (will appear as
+sub-title and in the footer of the automatic
+report).</td>
+</tr>
+</tbody>
+</table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Do not forget that if the pipeline fails (<em>e.g.</em> not enough memory or
+<p>If the pipeline fails (<em>e.g.</em> not enough memory or the
 walltime exceeded), re-running the pipeline (with different number of thread
-or different walltime) will only launch the task that are not completed.</p>
+or different walltime) will only launch the task that were not completed.</p>
+<p class="last">The pipeline checks if output files are missing. If an output file is
+deleted, the step producing this file will be run again (but not the
+subsequent steps).</p>
 </div>
 </div>
 <div class="section" id="output-files">
 <span id="gwip-tut-output-files"></span><h3>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h3>
 <p>All results will be located in the <code class="docutils literal"><span class="pre">gwip</span></code> directory (or whatever
-<code class="docutils literal"><span class="pre">--output-dir</span></code> links to). Here is the directory tree explaining the results:</p>
+<code class="docutils literal"><span class="pre">--output-dir</span></code> links to). Here is the directory tree summarizing the output
+files.</p>
 <div class="highlight-text"><div class="highlight"><pre>gwip/
 │
 ├── chr1/

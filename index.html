@@ -55,6 +55,7 @@
   <ul>
 <li><a class="reference internal" href="#">Genome-Wide Imputation Pipeline</a><ul>
 <li><a class="reference internal" href="#introduction">Introduction</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
 </ul>
 </li>
 </ul>
@@ -110,8 +111,7 @@ provides a useful standalone tool to perform statistical analysis on imputed
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#download">Download</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#using-pyvenv">Using pyvenv</a></li>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#using-miniconda">Using Miniconda</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installation.html#virtual-environment">Virtual environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#testing-the-installation">Testing the installation</a></li>
 </ul>
 </li>
@@ -121,6 +121,7 @@ provides a useful standalone tool to perform statistical analysis on imputed
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#skat-tutorial">SKAT tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#linear-tutorial">Linear tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorial.html#logistic-tutorial">Logistic tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorial.html#site-extraction-tutorial">Site extraction tutorial</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="input_files.html">Input Files</a></li>
@@ -130,6 +131,91 @@ provides a useful standalone tool to perform statistical analysis on imputed
 </ul>
 </li>
 </ul>
+</div>
+</div>
+<div class="section" id="usage">
+<span id="gwip-usage"></span><h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> gwip-launcher --help
+<span class="go">usage: gwip-launcher [-h] [-v] [--debug] [--thread THREAD] --bfile PREFIX</span>
+<span class="go">                     [--reference FILE] [--output-dir DIR] [--bgzip]</span>
+<span class="go">                     [--use-drmaa] [--drmaa-config FILE] [--preamble FILE]</span>
+<span class="go">                     [--shapeit-bin BINARY] [--shapeit-thread INT]</span>
+<span class="go">                     [--plink-bin BINARY] [--impute2-bin BINARY]</span>
+<span class="go">                     [--segment-length BP] --hap-template TEMPLATE</span>
+<span class="go">                     --legend-template TEMPLATE --map-template TEMPLATE</span>
+<span class="go">                     --sample-file FILE [--filtering-rules RULE [RULE ...]]</span>
+<span class="go">                     [--probability FLOAT] [--completion FLOAT]</span>
+<span class="go">                     [--report-number NB] [--report-title TITLE]</span>
+<span class="go">                     [--report-author AUTHOR]</span>
+
+<span class="go">Execute the genome-wide imputation pipeline. This script is part of the &#39;gwip&#39;</span>
+<span class="go">package, version 0.1.</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -v, --version         show program&#39;s version number and exit</span>
+<span class="go">  --debug               set the logging level to debug</span>
+<span class="go">  --thread THREAD       number of threads [1]</span>
+
+<span class="go">Input Options:</span>
+<span class="go">  --bfile PREFIX        The prefix of the binary pedfiles (input data).</span>
+<span class="go">  --reference FILE      The human reference to perform an initial strand check</span>
+<span class="go">                        (useful for genotyped markers not in the IMPUTE2</span>
+<span class="go">                        reference files) (optional).</span>
+
+<span class="go">Output Options:</span>
+<span class="go">  --output-dir DIR      The name of the output directory. [gwip]</span>
+<span class="go">  --bgzip               Use bgzip to compress the impute2 files.</span>
+
+<span class="go">HPC Options:</span>
+<span class="go">  --use-drmaa           Launch tasks using DRMAA.</span>
+<span class="go">  --drmaa-config FILE   The configuration file for tasks (use this option when</span>
+<span class="go">                        launching tasks using DRMAA). This file should</span>
+<span class="go">                        describe the walltime and the number of</span>
+<span class="go">                        nodes/processors to use for each task.</span>
+<span class="go">  --preamble FILE       This option should be used when using DRMAA on a HPC</span>
+<span class="go">                        to load required module and set environment variables.</span>
+<span class="go">                        The content of the file will be added between the</span>
+<span class="go">                        &#39;shebang&#39; line and the tool command.</span>
+
+<span class="go">SHAPEIT Options:</span>
+<span class="go">  --shapeit-bin BINARY  The SHAPEIT binary if it&#39;s not in the path.</span>
+<span class="go">  --shapeit-thread INT  The number of thread for phasing. [1]</span>
+
+<span class="go">Plink Options:</span>
+<span class="go">  --plink-bin BINARY    The Plink binary if it&#39;s not in the path.</span>
+
+<span class="go">IMPUTE2 Options:</span>
+<span class="go">  --impute2-bin BINARY  The IMPUTE2 binary if it&#39;s not in the path.</span>
+<span class="go">  --segment-length BP   The length of a single segment for imputation. [5e+06]</span>
+<span class="go">  --hap-template TEMPLATE</span>
+<span class="go">                        The template for IMPUTE2&#39;s haplotype files (replace</span>
+<span class="go">                        the chromosome number by &#39;{chrom}&#39;, e.g.</span>
+<span class="go">                        &#39;1000GP_Phase3_chr{chrom}.hap.gz&#39;).</span>
+<span class="go">  --legend-template TEMPLATE</span>
+<span class="go">                        The template for IMPUTE2&#39;s legend files (replace the</span>
+<span class="go">                        chromosome number by &#39;{chrom}&#39;, e.g.</span>
+<span class="go">                        &#39;1000GP_Phase3_chr{chrom}.legend.gz&#39;).</span>
+<span class="go">  --map-template TEMPLATE</span>
+<span class="go">                        The template for IMPUTE2&#39;s map files (replace the</span>
+<span class="go">                        chromosome number by &#39;{chrom}&#39;, e.g.</span>
+<span class="go">                        &#39;genetic_map_chr{chrom}_combined_b37.txt&#39;).</span>
+<span class="go">  --sample-file FILE    The name of IMPUTE2&#39;s sample file.</span>
+<span class="go">  --filtering-rules RULE [RULE ...]</span>
+<span class="go">                        IMPUTE2 filtering rules (optional).</span>
+
+<span class="go">IMPUTE2 Merger Options:</span>
+<span class="go">  --probability FLOAT   The probability threshold for no calls. [&lt;0.9]</span>
+<span class="go">  --completion FLOAT    The completion rate threshold for site exclusion.</span>
+<span class="go">                        [&lt;0.98]</span>
+
+<span class="go">Automatic Report Options:</span>
+<span class="go">  --report-number NB    The report number. [GWIP automatic report]</span>
+<span class="go">  --report-title TITLE  The report title. [GWIP: Automatic genome-wide</span>
+<span class="go">                        imputation]</span>
+<span class="go">  --report-author AUTHOR</span>
+<span class="go">                        The report author. [Automatically generated by GWIP]</span>
+</pre></div>
 </div>
 </div>
 </div>

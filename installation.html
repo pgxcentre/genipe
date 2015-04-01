@@ -59,8 +59,16 @@
   <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#download">Download</a></li>
+<li><a class="reference internal" href="#virtual-environment">Virtual environment</a><ul>
 <li><a class="reference internal" href="#using-pyvenv">Using pyvenv</a></li>
 <li><a class="reference internal" href="#using-miniconda">Using Miniconda</a></li>
+<li><a class="reference internal" href="#virtual-environment-activation">Virtual environment activation</a><ul>
+<li><a class="reference internal" href="#pyvenv">Pyvenv</a></li>
+<li><a class="reference internal" href="#id1">Miniconda</a></li>
+</ul>
+</li>
+</ul>
+</li>
 <li><a class="reference internal" href="#testing-the-installation">Testing the installation</a></li>
 </ul>
 </li>
@@ -127,7 +135,7 @@ management):</p>
 directory directly from <a class="reference external" href="https://github.com/pgxcentre/gwip">github</a>. Once
 official releases are available, they will be located
 <a class="reference external" href="https://github.com/pgxcentre/gwip/releases">here</a>.</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> git clone https://github.com/pgxcentre/gwip.git <span class="nv">$HOME</span>/gwip
+<div class="highlight-bash"><div class="highlight"><pre>git clone https://github.com/pgxcentre/gwip.git <span class="nv">$HOME</span>/gwip
 </pre></div>
 </div>
 <p>For simplicity of use, we recommend to install the <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> module using
@@ -136,64 +144,93 @@ environment: using Python&#8217;s <code class="docutils literal"><span class="pr
 <a class="reference external" href="http://conda.pydata.org/miniconda.html">Miniconda</a>. The latter is easier to
 use since it doesn&#8217;t require any compilation.</p>
 </div>
+<div class="section" id="virtual-environment">
+<h2>Virtual environment<a class="headerlink" href="#virtual-environment" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="using-pyvenv">
-<h2>Using pyvenv<a class="headerlink" href="#using-pyvenv" title="Permalink to this headline">¶</a></h2>
+<h3>Using pyvenv<a class="headerlink" href="#using-pyvenv" title="Permalink to this headline">¶</a></h3>
 <p>The following commands should successfully create a virtual environment and
 activate it, as long as Python 3 was previously installed on the machine.</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> pyvenv <span class="nv">$HOME</span>/gwip_pyvenv
-<span class="gp">$</span> <span class="nb">source</span> <span class="nv">$HOME</span>/gwip_pyvenv/bin/activate
+<div class="highlight-bash"><div class="highlight"><pre><span class="c"># Creating the environment</span>
+pyvenv <span class="nv">$HOME</span>/gwip_pyvenv
+
+<span class="c"># Activating the environment</span>
+<span class="nb">source</span> <span class="nv">$HOME</span>/gwip_pyvenv/bin/activate
 </pre></div>
 </div>
 <p>Then, install the package (and all its dependencies) using the following
 command:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> pip install <span class="nv">$HOME</span>/gwip
+<div class="highlight-bash"><div class="highlight"><pre>pip install <span class="nv">$HOME</span>/gwip
 </pre></div>
 </div>
 <p>If required, the optional dependencies can be installed using the following
 command:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> pip install statsmodels
-<span class="gp">$</span> pip install lifelines
-<span class="gp">$</span> pip install biopython
+<div class="highlight-bash"><div class="highlight"><pre>pip install statsmodels
+pip install lifelines
+pip install biopython
 </pre></div>
 </div>
 </div>
 <div class="section" id="using-miniconda">
-<h2>Using Miniconda<a class="headerlink" href="#using-miniconda" title="Permalink to this headline">¶</a></h2>
+<h3>Using Miniconda<a class="headerlink" href="#using-miniconda" title="Permalink to this headline">¶</a></h3>
 <p>The following commands should successfully download and install Miniconda,
 create and activate a new python virtual environment. This installation method
 doesn&#8217;t required a previous Python 3 installation.</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-<span class="gp">$</span> bash miniconda.sh -b -p <span class="nv">$HOME</span>/miniconda
-<span class="gp">$</span> <span class="nv">$HOME</span>/miniconda/bin/conda create -q -n gwip_pyvenv <span class="nv">python</span><span class="o">=</span>3.4
-<span class="gp">$</span> <span class="nb">source</span> <span class="nv">$HOME</span>/miniconda/bin/activate gwip_pyvenv
+<div class="highlight-bash"><div class="highlight"><pre><span class="c"># Installing Miniconda</span>
+wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+bash miniconda.sh -b -p <span class="nv">$HOME</span>/miniconda
+
+<span class="c"># Creating the environment</span>
+<span class="nv">$HOME</span>/miniconda/bin/conda create -q -n gwip_pyvenv <span class="nv">python</span><span class="o">=</span>3.4
+
+<span class="c"># Activating the environment</span>
+<span class="nb">source</span> <span class="nv">$HOME</span>/miniconda/bin/activate gwip_pyvenv
 </pre></div>
 </div>
 <p>It is recommended to install the dependencies using <code class="docutils literal"><span class="pre">conda</span></code> instead of
 <code class="docutils literal"><span class="pre">pip</span></code> when available (before installing <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>).</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> conda install numpy
-<span class="gp">$</span> conda install jinja2
-<span class="gp">$</span> conda install pandas
-<span class="gp">$</span> conda install matplotlib
-<span class="gp">$</span> conda install setuptools
-<span class="gp">$</span> conda install statsmodels
-<span class="gp">$</span> conda install biopython
+<div class="highlight-bash"><div class="highlight"><pre>conda install numpy
+conda install jinja2
+conda install pandas
+conda install matplotlib
+conda install setuptools
+conda install statsmodels
+conda install biopython
 </pre></div>
 </div>
 <p>Finally, using <code class="docutils literal"><span class="pre">pip</span></code>, install the missing dependencies and <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> pip install --no-deps pyfaidx
-<span class="gp">$</span> pip install --no-deps lifelines
-<span class="gp">$</span> pip install --no-deps <span class="nv">$HOME</span>/gwip
+<div class="highlight-bash"><div class="highlight"><pre>pip install --no-deps pyfaidx
+pip install --no-deps lifelines
+pip install --no-deps <span class="nv">$HOME</span>/gwip
 </pre></div>
+</div>
+</div>
+<div class="section" id="virtual-environment-activation">
+<span id="gwip-pyvenv-activation"></span><h3>Virtual environment activation<a class="headerlink" href="#virtual-environment-activation" title="Permalink to this headline">¶</a></h3>
+<p>Before using the <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> module for any analysis, the Python virtual
+environment needs to be activated. Depending of your installation type (<em>i.e</em>
+<em>pyvenv</em> or <em>miniconda</em>), the activation process will differ.</p>
+<div class="section" id="pyvenv">
+<h4>Pyvenv<a class="headerlink" href="#pyvenv" title="Permalink to this headline">¶</a></h4>
+<p>If the module was installed into a <em>pyvenv</em> environment, perform the following
+command to activate it.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">source</span> <span class="nv">$HOME</span>/gwip_pyvenv/bin/activate
+</pre></div>
+</div>
+</div>
+<div class="section" id="id1">
+<h4>Miniconda<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<p>If the module was installed into a <em>Miniconda</em> environment, perform the
+following command to activate it.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">source</span> <span class="nv">$HOME</span>/miniconda/bin/activate gwip_pyvenv
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 <div class="section" id="testing-the-installation">
 <h2>Testing the installation<a class="headerlink" href="#testing-the-installation" title="Permalink to this headline">¶</a></h2>
-<p>To test the installation, make sure that the virtual environment is activated.</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> python --version
-<span class="go">Python 3.4.3</span>
-</pre></div>
-</div>
-<p>Then, launch python and use the following commands:</p>
+<p>To test the installation, make sure that the virtual environment is activated.
+Then, launch python and use the following commands:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">gwip</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">gwip</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
 <span class="go">.....................ss.ss........................ss...s.s.........</span>
