@@ -29,9 +29,9 @@ directory directly from `github <https://github.com/pgxcentre/gwip>`_. Once
 official releases are available, they will be located
 `here <https://github.com/pgxcentre/gwip/releases>`_.
 
-.. code-block:: console
+.. code-block:: bash
 
-   $ git clone https://github.com/pgxcentre/gwip.git $HOME/gwip
+   git clone https://github.com/pgxcentre/gwip.git $HOME/gwip
 
 For simplicity of use, we recommend to install the :py:mod:`gwip` module using
 a Python virtual environment. There are two possible ways to create such an
@@ -46,26 +46,29 @@ Using pyvenv
 The following commands should successfully create a virtual environment and
 activate it, as long as Python 3 was previously installed on the machine.
 
-.. code-block:: console
+.. code-block:: bash
 
-   $ pyvenv $HOME/gwip_pyvenv
-   $ source $HOME/gwip_pyvenv/bin/activate
+   # Creating the environment
+   pyvenv $HOME/gwip_pyvenv
+
+   # Activating the environment
+   source $HOME/gwip_pyvenv/bin/activate
 
 Then, install the package (and all its dependencies) using the following
 command:
 
-.. code-block:: console
+.. code-block:: bash
 
-   $ pip install $HOME/gwip
+   pip install $HOME/gwip
 
 If required, the optional dependencies can be installed using the following
 command:
 
-.. code-block:: console
+.. code-block:: bash
 
-   $ pip install statsmodels
-   $ pip install lifelines
-   $ pip install biopython
+   pip install statsmodels
+   pip install lifelines
+   pip install biopython
 
 Using Miniconda
 ----------------
@@ -74,45 +77,44 @@ The following commands should successfully download and install Miniconda,
 create and activate a new python virtual environment. This installation method
 doesn't required a previous Python 3 installation.
 
-.. code-block:: console
+.. code-block:: bash
 
-   $ wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
-   $ bash miniconda.sh -b -p $HOME/miniconda
-   $ $HOME/miniconda/bin/conda create -q -n gwip_pyvenv python=3.4
-   $ source $HOME/miniconda/bin/activate gwip_pyvenv
+   # Installing Miniconda
+   wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
+   bash miniconda.sh -b -p $HOME/miniconda
+
+   # Creating the environment
+   $HOME/miniconda/bin/conda create -q -n gwip_pyvenv python=3.4
+
+   # Activating the environment
+   source $HOME/miniconda/bin/activate gwip_pyvenv
 
 It is recommended to install the dependencies using ``conda`` instead of
 ``pip`` when available (before installing :py:mod:`gwip`).
 
-.. code-block:: console
+.. code-block:: bash
 
-   $ conda install numpy
-   $ conda install jinja2
-   $ conda install pandas
-   $ conda install matplotlib
-   $ conda install setuptools
-   $ conda install statsmodels
-   $ conda install biopython
+   conda install numpy
+   conda install jinja2
+   conda install pandas
+   conda install matplotlib
+   conda install setuptools
+   conda install statsmodels
+   conda install biopython
 
 Finally, using ``pip``, install the missing dependencies and :py:mod:`gwip`:
 
-.. code-block:: console
+.. code-block:: bash
 
-   $ pip install --no-deps pyfaidx
-   $ pip install --no-deps lifelines
-   $ pip install --no-deps $HOME/gwip
+   pip install --no-deps pyfaidx
+   pip install --no-deps lifelines
+   pip install --no-deps $HOME/gwip
 
 
 Testing the installation
 -------------------------
 
 To test the installation, make sure that the virtual environment is activated.
-
-.. code-block:: console
-   
-   $ python --version
-   Python 3.4.3
-
 Then, launch python and use the following commands:
 
 .. code-block:: python
