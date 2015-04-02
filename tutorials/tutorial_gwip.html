@@ -73,7 +73,14 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#execute-the-pipeline">Execute the pipeline</a></li>
-<li><a class="reference internal" href="#output-files">Output files</a></li>
+<li><a class="reference internal" href="#output-files">Output files</a><ul>
+<li><a class="reference internal" href="#gwip-directory"><code class="docutils literal"><span class="pre">gwip</span></code> directory</a></li>
+<li><a class="reference internal" href="#gwip-chrn-directories"><code class="docutils literal"><span class="pre">gwip/chrN</span></code> directories</a></li>
+<li><a class="reference internal" href="#gwip-chrn-final-impute2-directories"><code class="docutils literal"><span class="pre">gwip/chrN/final_impute2</span></code> directories</a></li>
+<li><a class="reference internal" href="#gwip-missing-directory"><code class="docutils literal"><span class="pre">gwip/missing</span></code> directory</a></li>
+<li><a class="reference internal" href="#gwip-report-directory"><code class="docutils literal"><span class="pre">gwip/report</span></code> directory</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -195,7 +202,7 @@ To download the data for this tutorial, execute the following command:</p>
 <div class="highlight-bash"><div class="highlight"><pre>mkdir -p <span class="nv">$HOME</span>/gwip_tutorial/data
 <span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/data
 
-wget http://pgxcentre.github.io/gwip/_static/hapmap_CEU_r23a_hg19.tar.bz2
+wget http://pgxcentre.github.io/gwip/_static/tutorial/hapmap_CEU_r23a_hg19.tar.bz2
 tar -jxf hapmap_CEU_r23a_hg19.tar.bz2
 rm hapmap_CEU_r23a_hg19.tar.bz2
 </pre></div>
@@ -282,9 +289,10 @@ located on chromosome 2 will have a walltime of 4 hours.</p>
 <span class="na">chr2_walltime</span> <span class="o">=</span> <span class="s">04:00:00</span>
 </pre></div>
 </div>
-<p>We provide a <a class="reference external" href="http://pgxcentre.github.io/gwip/_static/config_example.ini">configuration example</a>
+<p>We provide a
+<a class="reference external" href="http://pgxcentre.github.io/gwip/_static/tutorial/config_example.ini">configuration example</a>
 including all possible section. Also, here is a list of all possible section
-( <em>i.e</em> pipeline step) that can be parametrized.</p>
+(<em>i.e</em> pipeline step) that can be parametrized.</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">plink_exclude</span></code></li>
 <li><code class="docutils literal"><span class="pre">plink_missing_rate</span></code></li>
@@ -482,26 +490,208 @@ files.</p>
 <div class="highlight-text"><div class="highlight"><pre>gwip/
 │
 ├── chr1/
-│   └── ...
-│
-├── chr2/
-│   └── ...
+│   ├── chr1.1_5000000.impute2
+│   ├── chr1.1_5000000.impute2_info
+│   ├── chr1.1_5000000.impute2_info_by_sample
+│   ├── chr1.1_5000000.impute2_summary
+│   ├── chr1.1_5000000.impute2_warnings
+│   ├── ...
+│   ├── chr1.final.bed
+│   ├── chr1.final.bim
+│   ├── chr1.final.fam
+│   ├── chr1.final.log
+│   ├── chr1.final.phased.haps
+│   ├── chr1.final.phased.ind.me
+│   ├── chr1.final.phased.ind.mm
+│   ├── chr1.final.phased.log
+│   ├── chr1.final.phased.sample
+│   ├── chr1.final.phased.snp.me
+│   ├── chr1.final.phased.snp.mm
+│   ├── ...
+│   │
+│   └── final_impute2/
+│       ├── chr1.imputed.alleles
+│       ├── chr1.imputed.completion_rates
+│       ├── chr1.imputed.good_sites
+│       ├── chr1.imputed.impute2.gz
+│       ├── chr1.imputed.imputed_sites
+│       ├── chr1.imputed.log
+│       ├── chr1.imputed.maf
+│       ├── chr1.imputed.map
+│       └── chr1.imputed.sample
 │
 ├── .../
 │
+├── chromosome_lengths.txt
+├── frequency_pie.pdf
 ├── gwip.log
-│
 ├── markers_to_exclude.txt
-│
 ├── markers_to_flip.txt
 │
-├── missing/
+├── missing
 │   ├── missing.imiss
 │   ├── missing.lmiss
 │   └── missing.log
 │
+├── report
+│   ├── frequency_pie.pdf
+│   ├── Makefile
+│   ├── references.bib
+│   ├── references.bst
+│   └── report.tex
+│
 └── tasks.db
 </pre></div>
+</div>
+<div class="section" id="gwip-directory">
+<h4><code class="docutils literal"><span class="pre">gwip</span></code> directory<a class="headerlink" href="#gwip-directory" title="Permalink to this headline">¶</a></h4>
+<p>This directory contains all the chromosome specific analysis. The specific
+directory content is describe below. The following files are created inside the
+<code class="docutils literal"><span class="pre">gwip</span></code> directory:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="39%" />
+<col width="61%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">File</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">chromosome_lengths.txt</span></code></td>
+<td>The length of each chromosome (this
+information is fetched from Ensembl using
+its REST API and saved to file).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">frequency_pie.pdf</span></code></td>
+<td>This file contains a pie chart describing
+the minor allele frequency distribution of
+the imputed markers. This file is generated
+only if the <code class="xref py py-mod docutils literal"><span class="pre">matplotlib</span></code> module is
+installed.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">gwip.log</span></code></td>
+<td>The log file of the main pipeline.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">markers_to_exclude.txt</span></code></td>
+<td>The list of markers to exclude prior to
+phasing.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">markers_to_flip.txt</span></code></td>
+<td>The list of markers to flip prior to
+phasing.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">tasks.db</span></code></td>
+<td>The <em>sqlite</em> database containing
+information of all tasks (if it&#8217;s
+completed, execution time, etc).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="gwip-chrn-directories">
+<h4><code class="docutils literal"><span class="pre">gwip/chrN</span></code> directories<a class="headerlink" href="#gwip-chrn-directories" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal"><span class="pre">chrN</span></code> directories contain the intermediate files, created throughout the
+pipeline. The most important files in these directories are the log files (for
+errors and summary statistics). There will be one directory per autosomal
+chromosomes.</p>
+</div>
+<div class="section" id="gwip-chrn-final-impute2-directories">
+<h4><code class="docutils literal"><span class="pre">gwip/chrN/final_impute2</span></code> directories<a class="headerlink" href="#gwip-chrn-final-impute2-directories" title="Permalink to this headline">¶</a></h4>
+<p>These <code class="docutils literal"><span class="pre">final_impute2</span></code> directories (located in the <code class="docutils literal"><span class="pre">gwip/chrN</span></code> directories)
+contain the final output files from the pipeline for each autosomal
+chromosomes. They will contain the following files:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="43%" />
+<col width="57%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Extension</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.alleles</span></code></td>
+<td>Description of the reference and
+alternative allele at each sites.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.completion_rates</span></code></td>
+<td>Number of missing values and completion
+rate for all sites (using the
+probability threshold set by the user,
+where the default is higher and equal
+to 0.9).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.good_sites</span></code></td>
+<td>List of sites which pass the completion
+rate threshold (set by the user, where
+the default is higher and equal to 0.98)
+using the probability threshold (set by
+the user, where the default is higher
+and equal to 0.9).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.impute2</span></code></td>
+<td>Imputation results (merged from the
+individual segment files. This file
+might be compress (with the <code class="docutils literal"><span class="pre">.gz</span></code>
+extension) if the <code class="docutils literal"><span class="pre">--bgzip</span></code> option was
+used when launching the pipeline.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.imputed_sites</span></code></td>
+<td>List of imputed sites (excluding sites
+that were previously genotyped in the
+study cohort).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.log</span></code></td>
+<td>The log file of the merging step.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.maf</span></code></td>
+<td>File containing the minor allele
+frequency (along with minor allele
+identification) for all sites using the
+probabilitty threshold of 0.9. When no
+genotypes are available (because they
+are all below the threshold), the MAF is
+<code class="docutils literal"><span class="pre">NA</span></code>.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.map</span></code></td>
+<td>A <em>map</em> file describing the genomic
+location of all sites.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.sample</span></code></td>
+<td>The sample file generated by the phasing
+step, which describe the sample ordering
+in the IMPUTE2 files.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="gwip-missing-directory">
+<h4><code class="docutils literal"><span class="pre">gwip/missing</span></code> directory<a class="headerlink" href="#gwip-missing-directory" title="Permalink to this headline">¶</a></h4>
+<p>The <code class="docutils literal"><span class="pre">missing</span></code> directory contains the missing rates for both samples
+(<code class="docutils literal"><span class="pre">missing.imiss</span></code>) and genotypes markers (<code class="docutils literal"><span class="pre">missing.lmiss</span></code>). Those files are
+generated by Plink.</p>
+</div>
+<div class="section" id="gwip-report-directory">
+<h4><code class="docutils literal"><span class="pre">gwip/report</span></code> directory<a class="headerlink" href="#gwip-report-directory" title="Permalink to this headline">¶</a></h4>
+<p>This <code class="docutils literal"><span class="pre">report</span></code> directory contains the automatically generated report, which
+provides valuable information about the imputation analysis. Such information
+contains cross-validation statistics (as provided by IMPUTE2), frequency
+statistics and completion rates according to user defined parameters.</p>
+<p>The automatic report is generated in the <code class="docutils literal"><span class="pre">LaTeX</span></code> language (file
+<code class="docutils literal"><span class="pre">report.tex</span></code>), and can be compile using the following command (as long as
+<code class="docutils literal"><span class="pre">LaTeX</span></code> is installed).</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tut/gwip/report
+make <span class="o">&amp;&amp;</span> make clean
+</pre></div>
+</div>
+<p>This will generate the following
+<a class="reference external" href="http://pgxcentre.github.io/gwip/_static/tutorial/report.pdf">PDF report</a>
+(which is named <code class="docutils literal"><span class="pre">report.pdf</span></code>). It is always possible to modify the original
+<code class="docutils literal"><span class="pre">report.tex</span></code> file to include analysis specific details (<em>e.g.</em> cohort
+description).</p>
 </div>
 </div>
 </div>

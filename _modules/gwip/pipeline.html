@@ -124,19 +124,25 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">():</span>
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.main">[docs]</a>    <span class="sd">&quot;&quot;&quot;The main function.</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.main">[docs]</a>    <span class="sd">&quot;&quot;&quot;The main function of the genome-wide imputation pipeline.</span>
 
-<span class="sd">    This is what the pipeline should do:</span>
-<span class="sd">        1- Exclude markers that have ambiguous alleles [A/T or C/G] (Plink)</span>
-<span class="sd">        2- Exclude duplicated markers (only keep one) (Plink)</span>
-<span class="sd">        3- Split the dataset by chromosome (Plink)</span>
-<span class="sd">        4- Find markers that need to be flipped (strand problem) (SHAPEIT)</span>
-<span class="sd">        5- Flip those markers (Plink)</span>
-<span class="sd">        6- Find markers with strand problem (SHAPEIT)</span>
-<span class="sd">        7- Exclude markers with strand problem (Plink)</span>
-<span class="sd">        8- Phase using SHAPEIT</span>
-<span class="sd">        9- Impute using IMPUTE2</span>
-<span class="sd">        10- Merge IMPUTE2 files</span>
+<span class="sd">    These are the pipeline steps:</span>
+
+<span class="sd">    1.  Find markers with strand issues and flip them (Plink)</span>
+<span class="sd">    2.  Exclude markers that have ambiguous alleles [A/T or C/G] (Plink)</span>
+<span class="sd">    3.  Exclude duplicated markers (only keep one) (Plink)</span>
+<span class="sd">    4.  Split the dataset by chromosome (Plink)</span>
+<span class="sd">    5.  Find markers that need to be flipped (strand problem) (SHAPEIT)</span>
+<span class="sd">    6.  Flip those markers (Plink)</span>
+<span class="sd">    7.  Find markers with strand problem (SHAPEIT)</span>
+<span class="sd">    8.  Exclude markers with strand problem (Plink)</span>
+<span class="sd">    9.  Phase using SHAPEIT</span>
+<span class="sd">    10. Impute using IMPUTE2</span>
+<span class="sd">    11. Merge IMPUTE2 files</span>
+<span class="sd">    12. If asked by the user, compress the final IMPUTE2 files (bgzip)</span>
+
+<span class="sd">    At the end of the pipeline, a report (LaTeX) is automatically generated. It</span>
+<span class="sd">    includes different quality statistics and imputation metrics.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Creating the option parser</span>
@@ -335,7 +341,26 @@
 
 
 <span class="k">def</span> <span class="nf">phase_markers</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">o_prefix</span><span class="p">,</span> <span class="n">db_name</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span></div>
-<div class="viewcode-block" id="phase_markers"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.phase_markers">[docs]</a>    <span class="sd">&quot;&quot;&quot;Phase markers using shapeit.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="phase_markers"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.phase_markers">[docs]</a>    <span class="sd">&quot;&quot;&quot;Phase markers using shapeit.</span>
+
+<span class="sd">    :param prefix: the prefix template of the input files</span>
+<span class="sd">    :param o_prefix: the prefix template of the output files</span>
+<span class="sd">    :param db_name: the name of the DB saving tasks&#39; information</span>
+<span class="sd">    :param options: the pipeline options</span>
+
+<span class="sd">    :type prefix: str</span>
+<span class="sd">    :type o_prefix: str</span>
+<span class="sd">    :type db_name: str</span>
+<span class="sd">    :type options: argparse.Namespace</span>
+
+<span class="sd">    :returns: the list of all samples that were phased</span>
+<span class="sd">    :rtype: list</span>
+
+<span class="sd">    A template contains the string ``{chrom}``, which will be replaced by the</span>
+<span class="sd">    chromosome number (e.g. ``gwip/chr{chrom}/chr{chrom}.final`` will be</span>
+<span class="sd">    replaced by ``gwip/chr1/chr1.final``).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">commands_info</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">base_command</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s">&quot;shapeit&quot;</span> <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">shapeit_bin</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">options</span><span class="o">.</span><span class="n">shapeit_bin</span><span class="p">,</span>
@@ -387,7 +412,25 @@
 
 <span class="k">def</span> <span class="nf">impute_markers</span><span class="p">(</span><span class="n">phased_haplotypes</span><span class="p">,</span> <span class="n">out_prefix</span><span class="p">,</span> <span class="n">chrom_length</span><span class="p">,</span> <span class="n">db_name</span><span class="p">,</span></div>
 <div class="viewcode-block" id="impute_markers"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.impute_markers">[docs]</a>                   <span class="n">options</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Imputes the markers using IMPUTE2.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Imputes the markers using IMPUTE2.</span>
+
+<span class="sd">    :param phased_haplotypes: the template for the haplotype files</span>
+<span class="sd">    :param out_prefix: the prefix template of the output files</span>
+<span class="sd">    :param chrom_length: the length of each chromosome</span>
+<span class="sd">    :param db_name: the name of the DB saving tasks&#39; information</span>
+<span class="sd">    :param options: the pipeline options</span>
+
+<span class="sd">    :type phased_haplotypes: str</span>
+<span class="sd">    :type out_prefix: str</span>
+<span class="sd">    :type chrom_length: dict</span>
+<span class="sd">    :type db_name: str</span>
+<span class="sd">    :type options: argparse.Namespace</span>
+
+<span class="sd">    A template contains the string ``{chrom}``, which will be replaced by the</span>
+<span class="sd">    chromosome number (e.g. ``gwip/chr{chrom}/chr{chrom}.final`` will be</span>
+<span class="sd">    replaced by ``gwip/chr1/chr1.final``).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Are we skipping DRMAA options?</span>
     <span class="n">skip_drmaa_config</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">task_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -462,7 +505,28 @@
 
 <span class="k">def</span> <span class="nf">merge_impute2_files</span><span class="p">(</span><span class="n">in_glob</span><span class="p">,</span> <span class="n">o_prefix</span><span class="p">,</span> <span class="n">probability_t</span><span class="p">,</span> <span class="n">completion_t</span><span class="p">,</span></div>
 <div class="viewcode-block" id="merge_impute2_files"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.merge_impute2_files">[docs]</a>                        <span class="n">db_name</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Merges impute2 files.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Merges impute2 files.</span>
+
+<span class="sd">    :param in_glob: the template that will be used to find files with the</span>
+<span class="sd">                    :py:mod:`glob` module</span>
+<span class="sd">    :param o_prefix: the prefix template of the output files</span>
+<span class="sd">    :param probability_t: the probability threshold to use</span>
+<span class="sd">    :param completion_t: the completion threshold to use</span>
+<span class="sd">    :param db_name: the name of the DB saving tasks&#39; information</span>
+<span class="sd">    :param options: the pipeline options</span>
+
+<span class="sd">    :type in_glob: str</span>
+<span class="sd">    :type o_prefix: str</span>
+<span class="sd">    :type probability_t: float</span>
+<span class="sd">    :type completion_t: float</span>
+<span class="sd">    :type db_name: str</span>
+<span class="sd">    :type options: argparse.Namespace</span>
+
+<span class="sd">    A template contains the string ``{chrom}``, which will be replaced by the</span>
+<span class="sd">    chromosome number (e.g. ``gwip/chr{chrom}/chr{chrom}.final`` will be</span>
+<span class="sd">    replaced by ``gwip/chr1/chr1.final``).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">commands_info</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">base_command</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s">&quot;impute2-merger&quot;</span><span class="p">,</span>
@@ -521,7 +585,21 @@
 
 
 <span class="k">def</span> <span class="nf">compress_impute2_files</span><span class="p">(</span><span class="n">filename_template</span><span class="p">,</span> <span class="n">db_name</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span></div>
-<div class="viewcode-block" id="compress_impute2_files"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.compress_impute2_files">[docs]</a>    <span class="sd">&quot;&quot;&quot;Merges impute2 files.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="compress_impute2_files"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.compress_impute2_files">[docs]</a>    <span class="sd">&quot;&quot;&quot;Merges impute2 files.</span>
+
+<span class="sd">    :param filename_template: the template for the final IMPUTE2 file</span>
+<span class="sd">    :param db_name: the name of the DB saving tasks&#39; information</span>
+<span class="sd">    :param options: the pipeline options</span>
+
+<span class="sd">    :type filename_template: str</span>
+<span class="sd">    :type db_name: str</span>
+<span class="sd">    :type options: argparse.Namespace</span>
+
+<span class="sd">    A template contains the string ``{chrom}``, which will be replaced by the</span>
+<span class="sd">    chromosome number (e.g. ``gwip/chr{chrom}/chr{chrom}.final`` will be</span>
+<span class="sd">    replaced by ``gwip/chr1/chr1.final``).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">commands_info</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">base_command</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;bgzip&quot;</span><span class="p">,</span> <span class="s">&quot;-f&quot;</span><span class="p">]</span>
 
@@ -549,7 +627,20 @@
 
 
 <span class="k">def</span> <span class="nf">file_sorter</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span></div>
-<div class="viewcode-block" id="file_sorter"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.file_sorter">[docs]</a>    <span class="sd">&quot;&quot;&quot;Helps in filename sorting.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="file_sorter"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.file_sorter">[docs]</a>    <span class="sd">&quot;&quot;&quot;Helps in filename sorting.</span>
+
+<span class="sd">    :param filename: the name of the file to compare while sorting</span>
+<span class="sd">    :type filename: str</span>
+
+<span class="sd">    :returns: a tuple containing three elements: chromosome (int), start (int)</span>
+<span class="sd">              and end (int)</span>
+<span class="sd">    :rtype: tuple</span>
+
+<span class="sd">    Using a regular expression, finds the chromosome along with the starting</span>
+<span class="sd">    and ending position of an imputed segment. The file</span>
+<span class="sd">    ``chr22.1_50000.impute2`` should return ``(22, 1, 50000)``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">r</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">r&quot;chr(\d+)\.(\d+)_(\d+)\.impute2&quot;</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
     <span class="k">return</span> <span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">)),</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">)))</span>
 
@@ -603,7 +694,29 @@
 
 
 <span class="k">def</span> <span class="nf">check_strand</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">id_suffix</span><span class="p">,</span> <span class="n">db_name</span><span class="p">,</span> <span class="n">options</span><span class="p">,</span> <span class="n">exclude</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
-<div class="viewcode-block" id="check_strand"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.check_strand">[docs]</a>    <span class="sd">&quot;&quot;&quot;Checks the strand using SHAPEIT2.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="check_strand"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.check_strand">[docs]</a>    <span class="sd">&quot;&quot;&quot;Checks the strand using SHAPEIT2.</span>
+
+<span class="sd">    :param prefix: the prefix template of the input files</span>
+<span class="sd">    :param id_suffix: the suffix of the task</span>
+<span class="sd">    :param db_name: the name of the DB saving tasks&#39; information</span>
+<span class="sd">    :param options: the pipeline options</span>
+<span class="sd">    :param exclude: should markers be excluded or flipped (default is flipped)</span>
+
+<span class="sd">    :type prefix: str</span>
+<span class="sd">    :type id_suffix: str</span>
+<span class="sd">    :type db_name: str</span>
+<span class="sd">    :type options: argparse.Namespace</span>
+<span class="sd">    :type exclude: boolean</span>
+
+<span class="sd">    :returns: statistics about the task (number of markers that will be flipped</span>
+<span class="sd">              or excluded)</span>
+<span class="sd">    :rtype: dict</span>
+
+<span class="sd">    A template contains the string ``{chrom}``, which will be replaced by the</span>
+<span class="sd">    chromosome number (e.g. ``gwip/chr{chrom}/chr{chrom}.final`` will be</span>
+<span class="sd">    replaced by ``gwip/chr1/chr1.final``).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Creating the command to launch</span>
     <span class="n">base_command</span> <span class="o">=</span> <span class="p">[</span>
         <span class="s">&quot;shapeit&quot;</span> <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">shapeit_bin</span> <span class="ow">is</span> <span class="bp">None</span> <span class="k">else</span> <span class="n">options</span><span class="o">.</span><span class="n">shapeit_bin</span><span class="p">,</span>
@@ -710,7 +823,23 @@
 
 
 <span class="k">def</span> <span class="nf">flip_markers</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">to_flip</span><span class="p">,</span> <span class="n">db_name</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span></div>
-<div class="viewcode-block" id="flip_markers"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.flip_markers">[docs]</a>    <span class="sd">&quot;&quot;&quot;Flip markers.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="flip_markers"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.flip_markers">[docs]</a>    <span class="sd">&quot;&quot;&quot;Flip markers.</span>
+
+<span class="sd">    :param prefix: the prefix template of the input files</span>
+<span class="sd">    :param to_flip: the name of the file containing markers to flip</span>
+<span class="sd">    :param db_name: the name of the DB saving tasks&#39; information</span>
+<span class="sd">    :param options: the pipeline options</span>
+
+<span class="sd">    :type prefix: str</span>
+<span class="sd">    :type to_flip: str</span>
+<span class="sd">    :type db_name: str</span>
+<span class="sd">    :type options: argparse.Namespace</span>
+
+<span class="sd">    A template contains the string ``{chrom}``, which will be replaced by the</span>
+<span class="sd">    chromosome number (e.g. ``gwip/chr{chrom}/chr{chrom}.final`` will be</span>
+<span class="sd">    replaced by ``gwip/chr1/chr1.final``).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># The commands to run</span>
     <span class="n">commands_info</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">base_command</span> <span class="o">=</span> <span class="p">[</span>
@@ -749,7 +878,26 @@
 
 
 <span class="k">def</span> <span class="nf">final_exclusion</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">to_exclude</span><span class="p">,</span> <span class="n">db_name</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span></div>
-<div class="viewcode-block" id="final_exclusion"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.final_exclusion">[docs]</a>    <span class="sd">&quot;&quot;&quot;Flip markers.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="final_exclusion"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.final_exclusion">[docs]</a>    <span class="sd">&quot;&quot;&quot;Flip markers.</span>
+
+<span class="sd">    :param prefix: the prefix template of the input files</span>
+<span class="sd">    :param to_exclude: the name of the file containing the markers to exclude</span>
+<span class="sd">    :param db_name: the name of the DB saving tasks&#39; information</span>
+<span class="sd">    :param options: the pipeline options</span>
+
+<span class="sd">    :type prefix: str</span>
+<span class="sd">    :type to_exclude: str</span>
+<span class="sd">    :type db_name: str</span>
+<span class="sd">    :type options: argparse.Namespace</span>
+
+<span class="sd">    :returns: the number of remaining markers for phasing</span>
+<span class="sd">    :rtype: dict</span>
+
+<span class="sd">    A template contains the string ``{chrom}``, which will be replaced by the</span>
+<span class="sd">    chromosome number (e.g. ``gwip/chr{chrom}/chr{chrom}.final`` will be</span>
+<span class="sd">    replaced by ``gwip/chr1/chr1.final``).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># The commands to run</span>
     <span class="n">commands_info</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="n">base_command</span> <span class="o">=</span> <span class="p">[</span>
@@ -800,7 +948,20 @@
 
 
 <span class="k">def</span> <span class="nf">compute_marker_missing_rate</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">db_name</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span></div>
-<div class="viewcode-block" id="compute_marker_missing_rate"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.compute_marker_missing_rate">[docs]</a>    <span class="sd">&quot;&quot;&quot;Compute (using Plink) marker missing rate.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="compute_marker_missing_rate"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.compute_marker_missing_rate">[docs]</a>    <span class="sd">&quot;&quot;&quot;Compute (using Plink) marker missing rate.</span>
+
+<span class="sd">    :param prefix: the prefix of the input file</span>
+<span class="sd">    :param db_name: the name of the DB saving tasks&#39; information</span>
+<span class="sd">    :param options: the pipeline options</span>
+
+<span class="sd">    :type prefix: str</span>
+<span class="sd">    :type db_name: str</span>
+<span class="sd">    :type options: argparse.Namespace</span>
+
+<span class="sd">    :returns: the missing rate for each site (results from Plink):</span>
+<span class="sd">    :rtype: pandas.DataFrame</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># The output prefix</span>
     <span class="n">o_prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="s">&quot;missing&quot;</span><span class="p">)</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">o_prefix</span><span class="p">):</span>
@@ -838,7 +999,24 @@
 
 
 <span class="k">def</span> <span class="nf">exclude_markers_before_phasing</span><span class="p">(</span><span class="n">prefix</span><span class="p">,</span> <span class="n">db_name</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span></div>
-<div class="viewcode-block" id="exclude_markers_before_phasing"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.exclude_markers_before_phasing">[docs]</a>    <span class="sd">&quot;&quot;&quot;Finds and excludes ambiguous markers (A/T and G/C) or duplicated.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="exclude_markers_before_phasing"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.exclude_markers_before_phasing">[docs]</a>    <span class="sd">&quot;&quot;&quot;Finds and excludes ambiguous markers (A/T and G/C) or duplicated.</span>
+
+<span class="sd">    :param prefix: the prefix of the input files</span>
+
+<span class="sd">    :type prefix: str</span>
+
+<span class="sd">    :returns: information about the data set</span>
+<span class="sd">    :rtype: dict</span>
+
+<span class="sd">    If required, the function uses :py:func:`is_reversed` to check if a marker</span>
+<span class="sd">    is on the reverse strand and needs flipping.</span>
+
+<span class="sd">    The information returned includes the initial number of markers and</span>
+<span class="sd">    samples, the number of ambiguous, duplicated, special (not on autosomal</span>
+<span class="sd">    chromosomes) markers, along with the number of markers to flip if the</span>
+<span class="sd">    reference was checked.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># The ambiguous genotypes</span>
     <span class="n">ambiguous_genotypes</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;AT&quot;</span><span class="p">,</span> <span class="s">&quot;TA&quot;</span><span class="p">,</span> <span class="s">&quot;GC&quot;</span><span class="p">,</span> <span class="s">&quot;CG&quot;</span><span class="p">}</span>
 
@@ -986,7 +1164,19 @@
 
 
 <span class="k">def</span> <span class="nf">get_chrom_encoding</span><span class="p">(</span><span class="n">reference</span><span class="p">):</span></div>
-<div class="viewcode-block" id="get_chrom_encoding"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.get_chrom_encoding">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gets the chromosome&#39;s encoding (e.g. 1 vs chr1, X vs 23, etc).&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="get_chrom_encoding"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.get_chrom_encoding">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gets the chromosome&#39;s encoding (e.g. 1 vs chr1, X vs 23, etc).</span>
+
+<span class="sd">    :param reference: the reference</span>
+<span class="sd">    :type reference: pyfaidx.Fasta</span>
+
+<span class="sd">    :returns: the chromosome encoding</span>
+<span class="sd">    :rtype: dict</span>
+
+<span class="sd">    The encoding is a dictionary where numerical chromosomes from 1 to 22 are</span>
+<span class="sd">    the keys, and the encoded chromosomes (the one present in the reference)</span>
+<span class="sd">    are the values. An example would be ``1 -&gt; chr1``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># The encoding</span>
     <span class="n">encoding</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -1024,7 +1214,26 @@
 
 
 <span class="k">def</span> <span class="nf">is_reversed</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">reference</span><span class="p">,</span> <span class="n">encoding</span><span class="p">):</span></div>
-<div class="viewcode-block" id="is_reversed"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.is_reversed">[docs]</a>    <span class="sd">&quot;&quot;&quot;Checks the strand using a reference, returns False if problem.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="is_reversed"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.is_reversed">[docs]</a>    <span class="sd">&quot;&quot;&quot;Checks the strand using a reference, returns False if problem.</span>
+
+<span class="sd">    :param chrom: the chromosome</span>
+<span class="sd">    :param pos: the position</span>
+<span class="sd">    :param a1: the first allele</span>
+<span class="sd">    :param a2: the second allele</span>
+<span class="sd">    :param reference: the reference</span>
+<span class="sd">    :param encoding: the chromosome encoding in the reference</span>
+
+<span class="sd">    :type chrom: str</span>
+<span class="sd">    :type pos: int</span>
+<span class="sd">    :type a1: str</span>
+<span class="sd">    :type a2: str</span>
+<span class="sd">    :type reference: pyfaidx.Fasta</span>
+<span class="sd">    :type encoding: dict</span>
+
+<span class="sd">    The encoding (used to encode chromosome to search in the reference) is the</span>
+<span class="sd">    dictionary returned by the :py:func:`get_chrom_encoding` function.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Upper!</span>
     <span class="n">a1</span> <span class="o">=</span> <span class="n">a1</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
     <span class="n">a2</span> <span class="o">=</span> <span class="n">a2</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
@@ -1063,7 +1272,20 @@
 
 
 <span class="k">def</span> <span class="nf">get_cross_validation_results</span><span class="p">(</span><span class="n">glob_pattern</span><span class="p">):</span></div>
-<div class="viewcode-block" id="get_cross_validation_results"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.get_cross_validation_results">[docs]</a>    <span class="sd">&quot;&quot;&quot;Creates a weighed mean for each chromosome for cross-validation.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="get_cross_validation_results"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.get_cross_validation_results">[docs]</a>    <span class="sd">&quot;&quot;&quot;Creates a weighted mean for each chromosome for cross-validation.</span>
+
+<span class="sd">    :param glob_pattern: the pattern used to find files using :py:mod:`glob`</span>
+<span class="sd">    :type glob_pattern: str</span>
+
+<span class="sd">    :returns: weighted mean by chromosome (cross-validation)</span>
+<span class="sd">    :rtype: dict</span>
+
+<span class="sd">    The returned information includes the total number of genotyped tested, the</span>
+<span class="sd">    total number of genotyped by chromosome, the two summary tables produced by</span>
+<span class="sd">    IMPUTE2 (but using weighted means) for all chromosomes, and the two summary</span>
+<span class="sd">    tables for each chromosome.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Gathering cross-validation statistics&quot;</span><span class="p">)</span>
 
     <span class="c"># The regular expressions used here</span>
@@ -1279,7 +1501,81 @@
 
 
 <span class="k">def</span> <span class="nf">gather_imputation_stats</span><span class="p">(</span><span class="n">prob_t</span><span class="p">,</span> <span class="n">completion_t</span><span class="p">,</span> <span class="n">nb_samples</span><span class="p">,</span> <span class="n">missing</span><span class="p">,</span> <span class="n">o_dir</span><span class="p">):</span></div>
-<div class="viewcode-block" id="gather_imputation_stats"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.gather_imputation_stats">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gathers imputation statistics from the merged dataset.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="gather_imputation_stats"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.gather_imputation_stats">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gathers imputation statistics from the merged dataset.</span>
+
+<span class="sd">    :param prob_t: the probability threshold (&gt;= t)</span>
+<span class="sd">    :param completion_t: the completion threshold (&gt;= t)</span>
+<span class="sd">    :param nb_samples: the number of samples</span>
+<span class="sd">    :param missing: the missing rate</span>
+<span class="sd">    :param o_dir: the output directory</span>
+
+<span class="sd">    :type prob_t: float</span>
+<span class="sd">    :type completion_t: float</span>
+<span class="sd">    :type nb_samples: int</span>
+<span class="sd">    :type missing: pandas.DataFrame</span>
+<span class="sd">    :type o_dir: str</span>
+
+<span class="sd">    :returns: imputation statistics</span>
+<span class="sd">    :rtype: dict</span>
+
+<span class="sd">    The information returned includes the following (all values are formated in</span>
+<span class="sd">    strings):</span>
+
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | Information                    | Description                            |</span>
+<span class="sd">    +================================+========================================+</span>
+<span class="sd">    | ``prob_threshold``             | the probability threshold used (&gt;= t)  |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``nb_imputed``                 | the number of imputed sites            |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``average_comp_rate``          | the average completion rate            |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``rate_threshold``             | the completion rate threshold (&gt;= t)   |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``nb_good_sites``              | the number of &quot;good&quot; sites (that pass  |</span>
+<span class="sd">    |                                | the different probability and          |</span>
+<span class="sd">    |                                | completion thresholds)                 |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``pct_good_sites``             | the percentage of &quot;good&quot; sites (that   |</span>
+<span class="sd">    |                                | pass the different probability and     |</span>
+<span class="sd">    |                                | completion thresholds)                 |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``average_comp_rate_cleaned``  | the average completion rate of &quot;good&quot;  |</span>
+<span class="sd">    |                                | sites                                  |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``mean_missing``               | the mean number of missing genotypes   |</span>
+<span class="sd">    |                                | per sample (according to the           |</span>
+<span class="sd">    |                                | probability and completion thresholds) |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``nb_samples``                 | the total number of samples            |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``nb_genotyped``               | the number of genotyped sites in the   |</span>
+<span class="sd">    |                                | original dataset that are included in  |</span>
+<span class="sd">    |                                | the imputed dataset                    |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``nb_genotyped_not_complete``  | The number of original markers with a  |</span>
+<span class="sd">    |                                | completion rate lower than 100%        |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``pct_genotyped_not_complete`` | The percentage of original markers     |</span>
+<span class="sd">    |                                | with a completion rate lower than 100% |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``nb_geno_now_complete``       | The number of original (genotyped)     |</span>
+<span class="sd">    |                                | markers which are now 100% complete    |</span>
+<span class="sd">    |                                | after imputation                       |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``nb_missing_geno``            | The number of missing genotypes        |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``pct_geno_now_complete``      | The percentage of now complete         |</span>
+<span class="sd">    |                                | genotypes (according to the number of  |</span>
+<span class="sd">    |                                | previously missing ones)               |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``nb_site_now_complete``       | The number of previously genotyped     |</span>
+<span class="sd">    |                                | markers that are now 100% complete     |</span>
+<span class="sd">    |                                | after imputation                       |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Gathering imputation statistics&quot;</span><span class="p">)</span>
 
     <span class="c"># The stats we want to gather</span>
@@ -1373,7 +1669,50 @@
 
 
 <span class="k">def</span> <span class="nf">gather_maf_stats</span><span class="p">(</span><span class="n">o_dir</span><span class="p">):</span></div>
-<div class="viewcode-block" id="gather_maf_stats"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.gather_maf_stats">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gather minor allele frequencies from imputation.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="gather_maf_stats"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.gather_maf_stats">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gather minor allele frequencies from imputation.</span>
+
+<span class="sd">    :param o_dir: the output directory</span>
+<span class="sd">    :type o_dir: str</span>
+
+<span class="sd">    :returns: frequency information</span>
+<span class="sd">    :rtype: dict</span>
+
+<span class="sd">    The following information about minor allele frequencies (MAF) are</span>
+<span class="sd">    returned (all values are formatted in strings):</span>
+
+<span class="sd">    +--------------------------+----------------------------------------------+</span>
+<span class="sd">    | Information              | Description                                  |</span>
+<span class="sd">    +==========================+==============================================+</span>
+<span class="sd">    | ``nb_maf_nan``           | the number of markers with invalid MAF       |</span>
+<span class="sd">    +--------------------------+----------------------------------------------+</span>
+<span class="sd">    | ``nb_marker_with_maf``   | the number of markers with valid MAF         |</span>
+<span class="sd">    +--------------------------+----------------------------------------------+</span>
+<span class="sd">    | ``nb_maf_geq_01``        | the number of markers with MAF &gt;= 1%         |</span>
+<span class="sd">    +--------------------------+----------------------------------------------+</span>
+<span class="sd">    | ``nb_maf_geq_05``        | the number of markers with MAF &gt;= 5%         |</span>
+<span class="sd">    +--------------------------+----------------------------------------------+</span>
+<span class="sd">    | ``nb_maf_lt_05``         | the number of markers with MAF &lt; 5%          |</span>
+<span class="sd">    +--------------------------+----------------------------------------------+</span>
+<span class="sd">    | ``nb_maf_lt_01``         | the number of markers with MAF &lt; 1%          |</span>
+<span class="sd">    +--------------------------+----------------------------------------------+</span>
+<span class="sd">    | ``nb_maf_geq_01_lt_05``  | the number of markers with 1% &gt;= MAF &lt; 5%    |</span>
+<span class="sd">    +--------------------------+----------------------------------------------+</span>
+<span class="sd">    | ``pct_maf_geq_01``       | the percentage of markers with MAF &gt;= 1%     |</span>
+<span class="sd">    +--------------------------+----------------------------------------------+</span>
+<span class="sd">    | ``pct_maf_geq_05``       | the percentage of markers with MAF &gt;= 5%     |</span>
+<span class="sd">    +--------------------------+----------------------------------------------+</span>
+<span class="sd">    | ``pct_maf_lt_05``        | the percentage of markers with MAF &lt; 5%      |</span>
+<span class="sd">    +--------------------------+----------------------------------------------+</span>
+<span class="sd">    | ``pct_maf_lt_01``        | the percentage of markers with MAF &lt; 1%      |</span>
+<span class="sd">    +--------------------------+----------------------------------------------+</span>
+<span class="sd">    | ``pct_maf_geq_01_lt_05`` | the percentage of markers with               |</span>
+<span class="sd">    |                          | 1% &gt;= MAF &lt; 5%                               |</span>
+<span class="sd">    +--------------------------+----------------------------------------------+</span>
+<span class="sd">    | ``frequency_pie``        | the name of the file containing the pie      |</span>
+<span class="sd">    |                          | chart (if it was created)                    |</span>
+<span class="sd">    +--------------------------+----------------------------------------------+</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Gathering frequency statistics&quot;</span><span class="p">)</span>
 
     <span class="c"># The statistics we want to gather</span>
@@ -1558,7 +1897,15 @@
 
 
 <span class="k">def</span> <span class="nf">gather_execution_time</span><span class="p">(</span><span class="n">db_name</span><span class="p">):</span></div>
-<div class="viewcode-block" id="gather_execution_time"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.gather_execution_time">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gather all the execution times.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="gather_execution_time"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.gather_execution_time">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gather all the execution times.</span>
+
+<span class="sd">    :param db_name: the name of the DB</span>
+<span class="sd">    :type db_name: str</span>
+
+<span class="sd">    :returns: the execution time for all tasks</span>
+<span class="sd">    :rtype: dict</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Getting all the execution time from the DB</span>
     <span class="n">exec_time</span> <span class="o">=</span> <span class="n">get_all_runtimes</span><span class="p">(</span><span class="n">db_name</span><span class="p">)</span>
 
@@ -1640,7 +1987,15 @@
 
 
 <span class="k">def</span> <span class="nf">read_preamble</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span></div>
-<div class="viewcode-block" id="read_preamble"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.read_preamble">[docs]</a>    <span class="sd">&quot;&quot;&quot;Reads the preamble file.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="read_preamble"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.read_preamble">[docs]</a>    <span class="sd">&quot;&quot;&quot;Reads the preamble file.</span>
+
+<span class="sd">    :param filename: the name of the preamble file</span>
+<span class="sd">    :type filename: str</span>
+
+<span class="sd">    :returns: the preamble</span>
+<span class="sd">    :rtype: str</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="s">&quot;&quot;</span>
 
@@ -1658,7 +2013,25 @@
 
 
 <span class="k">def</span> <span class="nf">get_shapeit_version</span><span class="p">(</span><span class="n">binary</span><span class="p">):</span></div>
-<div class="viewcode-block" id="get_shapeit_version"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.get_shapeit_version">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gets the SHAPEIT version from the binary.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="get_shapeit_version"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.get_shapeit_version">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gets the SHAPEIT version from the binary.</span>
+
+<span class="sd">    :param binary: the name of the SHAPEIT binary</span>
+<span class="sd">    :type binary: str</span>
+
+<span class="sd">    :returns: the version of the SHAPEIT software</span>
+<span class="sd">    :rtype: str</span>
+
+<span class="sd">    This function uses :py:class:`subprocess.Popen` to gather the version of</span>
+<span class="sd">    the SHAPEIT binary.</span>
+
+<span class="sd">    .. warning::</span>
+
+<span class="sd">        This function only works as long as the version is returned as</span>
+<span class="sd">        ``Version: NNN`` (where ``NNN`` is the version), since we use regular</span>
+<span class="sd">        expression to extract the version number from the standard output of</span>
+<span class="sd">        the software.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Running the command</span>
     <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="n">binary</span><span class="p">,</span> <span class="s">&quot;--version&quot;</span><span class="p">]</span>
     <span class="n">proc</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span>
@@ -1677,7 +2050,26 @@
 
 
 <span class="k">def</span> <span class="nf">get_impute2_version</span><span class="p">(</span><span class="n">binary</span><span class="p">):</span></div>
-<div class="viewcode-block" id="get_impute2_version"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.get_impute2_version">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gets the IMPUTE2 version from the binary.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="get_impute2_version"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.get_impute2_version">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gets the IMPUTE2 version from the binary.</span>
+
+<span class="sd">    :param binary: the name of the IMPUTE2 binary</span>
+<span class="sd">    :type binary: str</span>
+
+<span class="sd">    :returns: the version of the IMPUTE2 software</span>
+<span class="sd">    :rtype: str</span>
+
+<span class="sd">    This function uses :py:class:`subprocess.Popen` to gather the version of</span>
+<span class="sd">    the IMPUTE2 binary. Since executing the software to gather the version</span>
+<span class="sd">    creates output files, they are deleted.</span>
+
+<span class="sd">    .. warning::</span>
+
+<span class="sd">        This function only works as long as the version is returned as</span>
+<span class="sd">        ``IMPUTE version NNN`` (where ``NNN`` is the version), since we use</span>
+<span class="sd">        regular expression to extract the version number from the standard</span>
+<span class="sd">        output of the software.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Running the command</span>
     <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="n">binary</span><span class="p">]</span>
     <span class="n">proc</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span>
@@ -1701,7 +2093,26 @@
 
 
 <span class="k">def</span> <span class="nf">get_plink_version</span><span class="p">(</span><span class="n">binary</span><span class="p">):</span></div>
-<div class="viewcode-block" id="get_plink_version"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.get_plink_version">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gets the Plink version from the binary.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="get_plink_version"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.get_plink_version">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gets the Plink version from the binary.</span>
+
+<span class="sd">    :param binary: the name of the Plink binary</span>
+<span class="sd">    :type binary: str</span>
+
+<span class="sd">    :returns: the version of the Plink software</span>
+<span class="sd">    :rtype: str</span>
+
+<span class="sd">    This function uses :py:class:`subprocess.Popen` to gather the version of</span>
+<span class="sd">    the Plink binary. Since executing the software to gather the version</span>
+<span class="sd">    creates an output file, it is deleted.</span>
+
+<span class="sd">    .. warning::</span>
+
+<span class="sd">        This function only works as long as the version is returned as</span>
+<span class="sd">        ``| PLINK! | NNN |`` (where, ``NNN`` is the version), since we use</span>
+<span class="sd">        regular expresion to extract the version number from the standard</span>
+<span class="sd">        output of the software.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Running the command</span>
     <span class="n">command</span> <span class="o">=</span> <span class="p">[</span><span class="n">binary</span><span class="p">,</span> <span class="s">&quot;--noweb&quot;</span><span class="p">]</span>
     <span class="n">proc</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span>
@@ -1724,7 +2135,16 @@
 
 
 <span class="k">def</span> <span class="nf">check_args</span><span class="p">(</span><span class="n">args</span><span class="p">):</span></div>
-<div class="viewcode-block" id="check_args"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.check_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Checks the arguments and options.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="check_args"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.check_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Checks the arguments and options.</span>
+
+<span class="sd">    :param args: the arguments and options</span>
+<span class="sd">    :type args: argparse.Namespace</span>
+
+<span class="sd">    :returns: `True` if everything is OK</span>
+
+<span class="sd">    If an option is invalid, a :py:class:`gwip.error.ProgramError` is raised.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Checking the presence of the BED, BIM and BAM files</span>
     <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;.bed&quot;</span><span class="p">,</span> <span class="s">&quot;.bim&quot;</span><span class="p">,</span> <span class="s">&quot;.fam&quot;</span><span class="p">):</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">bfile</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">):</span>
@@ -1816,7 +2236,15 @@
 
 
 <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="n">parser</span><span class="p">):</span></div>
-<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.parse_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Parses the command line options and arguments.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../module_content/gwip.html#gwip.pipeline.parse_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Parses the command line options and arguments.</span>
+
+<span class="sd">    :param parser: the parser object</span>
+<span class="sd">    :type parser: argparse.ArgumentParser</span>
+
+<span class="sd">    :returns: the parsed options and arguments</span>
+<span class="sd">    :rtype: argparse.Namespace</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s">&quot;-v&quot;</span><span class="p">,</span>
         <span class="s">&quot;--version&quot;</span><span class="p">,</span>
