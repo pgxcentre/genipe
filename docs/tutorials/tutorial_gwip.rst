@@ -104,7 +104,7 @@ To download the data for this tutorial, execute the following command:
    mkdir -p $HOME/gwip_tutorial/data
    cd $HOME/gwip_tutorial/data
 
-   wget http://pgxcentre.github.io/gwip/_static/hapmap_CEU_r23a_hg19.tar.bz2
+   wget http://pgxcentre.github.io/gwip/_static/tutorial/hapmap_CEU_r23a_hg19.tar.bz2
    tar -jxf hapmap_CEU_r23a_hg19.tar.bz2
    rm hapmap_CEU_r23a_hg19.tar.bz2
 
@@ -207,9 +207,10 @@ located on chromosome 2 will have a walltime of 4 hours.
 
    chr2_walltime = 04:00:00
 
-We provide a `configuration example <http://pgxcentre.github.io/gwip/_static/config_example.ini>`_
+We provide a
+`configuration example <http://pgxcentre.github.io/gwip/_static/tutorial/config_example.ini>`_
 including all possible section. Also, here is a list of all possible section
-( *i.e* pipeline step) that can be parametrized.
+(*i.e* pipeline step) that can be parametrized.
 
 - ``plink_exclude``
 - ``plink_missing_rate``
@@ -412,23 +413,188 @@ files.
    gwip/
    │
    ├── chr1/
-   │   └── ...
-   │
-   ├── chr2/
-   │   └── ...
+   │   ├── chr1.1_5000000.impute2
+   │   ├── chr1.1_5000000.impute2_info
+   │   ├── chr1.1_5000000.impute2_info_by_sample
+   │   ├── chr1.1_5000000.impute2_summary
+   │   ├── chr1.1_5000000.impute2_warnings
+   │   ├── ...
+   │   ├── chr1.final.bed
+   │   ├── chr1.final.bim
+   │   ├── chr1.final.fam
+   │   ├── chr1.final.log
+   │   ├── chr1.final.phased.haps
+   │   ├── chr1.final.phased.ind.me
+   │   ├── chr1.final.phased.ind.mm
+   │   ├── chr1.final.phased.log
+   │   ├── chr1.final.phased.sample
+   │   ├── chr1.final.phased.snp.me
+   │   ├── chr1.final.phased.snp.mm
+   │   ├── ...
+   │   │
+   │   └── final_impute2/
+   │       ├── chr1.imputed.alleles
+   │       ├── chr1.imputed.completion_rates
+   │       ├── chr1.imputed.good_sites
+   │       ├── chr1.imputed.impute2.gz
+   │       ├── chr1.imputed.imputed_sites
+   │       ├── chr1.imputed.log
+   │       ├── chr1.imputed.maf
+   │       ├── chr1.imputed.map
+   │       └── chr1.imputed.sample
    │
    ├── .../
    │
+   ├── chromosome_lengths.txt
+   ├── frequency_pie.pdf
    ├── gwip.log
-   │
    ├── markers_to_exclude.txt
-   │
    ├── markers_to_flip.txt
    │
-   ├── missing/
+   ├── missing
    │   ├── missing.imiss
    │   ├── missing.lmiss
    │   └── missing.log
    │
+   ├── report
+   │   ├── frequency_pie.pdf
+   │   ├── Makefile
+   │   ├── references.bib
+   │   ├── references.bst
+   │   └── report.tex
+   │
    └── tasks.db
+
+
+``gwip`` directory
+"""""""""""""""""""
+
+This directory contains all the chromosome specific analysis. The specific
+directory content is describe below. The following files are created inside the
+``gwip`` directory:
+
+.. table::
+
+    +----------------------------+--------------------------------------------+
+    | File                       | Description                                |
+    +============================+============================================+
+    | ``chromosome_lengths.txt`` | The length of each chromosome (this        |
+    |                            | information is fetched from Ensembl using  |
+    |                            | its REST API and saved to file).           |
+    +----------------------------+--------------------------------------------+
+    | ``frequency_pie.pdf``      | This file contains a pie chart describing  |
+    |                            | the minor allele frequency distribution of |
+    |                            | the imputed markers. This file is generated|
+    |                            | only if the :py:mod:`matplotlib` module is |
+    |                            | installed.                                 |
+    +----------------------------+--------------------------------------------+
+    | ``gwip.log``               | The log file of the main pipeline.         |
+    +----------------------------+--------------------------------------------+
+    | ``markers_to_exclude.txt`` | The list of markers to exclude prior to    |
+    |                            | phasing.                                   |
+    +----------------------------+--------------------------------------------+
+    | ``markers_to_flip.txt``    | The list of markers to flip prior to       |
+    |                            | phasing.                                   |
+    +----------------------------+--------------------------------------------+
+    | ``tasks.db``               | The *sqlite* database containing           |
+    |                            | information of all tasks (if it's          |
+    |                            | completed, execution time, etc).           |
+    +----------------------------+--------------------------------------------+
+
+
+``gwip/chrN`` directories
+""""""""""""""""""""""""""
+
+The ``chrN`` directories contain the intermediate files, created throughout the
+pipeline. The most important files in these directories are the log files (for
+errors and summary statistics). There will be one directory per autosomal
+chromosomes.
+
+
+``gwip/chrN/final_impute2`` directories
+""""""""""""""""""""""""""""""""""""""""
+
+These ``final_impute2`` directories (located in the ``chrN`` directories)
+contain the final output files from the pipeline for each autosomal
+chromosomes. They will contain the following files:
+
+.. table::
+
+    +-------------------------------+-----------------------------------------+
+    | Extension                     | Description                             |
+    +===============================+=========================================+
+    | ``.imputed.alleles``          | Description of the reference and        |
+    |                               | alternative allele at each sites.       |
+    +-------------------------------+-----------------------------------------+
+    | ``.imputed.completion_rates`` | Number of missing values and completion |
+    |                               | rate for all sites (using the           |
+    |                               | probability threshold set by the user,  |
+    |                               | where the default is higher and equal   |
+    |                               | to 0.9).                                |
+    +-------------------------------+-----------------------------------------+
+    | ``.imputed.good_sites``       | List of sites which pass the completion |
+    |                               | rate threshold (set by the user, where  |
+    |                               | the default is higher and equal to 0.98)|
+    |                               | using the probability threshold (set by |
+    |                               | the user, where the default is higher   |
+    |                               | and equal to 0.9).                      |
+    +-------------------------------+-----------------------------------------+
+    | ``.imputed.impute2``          | Imputation results (merged from the     |
+    |                               | individual segment files. This file     |
+    |                               | might be compress (with the ``.gz``     |
+    |                               | extension) if the ``--bgzip`` option was|
+    |                               | used when launching the pipeline.       |
+    +-------------------------------+-----------------------------------------+
+    | ``.imputed.imputed_sites``    | List of imputed sites (excluding sites  |
+    |                               | that were previously genotyped in the   |
+    |                               | study cohort).                          |
+    +-------------------------------+-----------------------------------------+
+    | ``.imputed.log``              | The log file of the merging step.       |
+    +-------------------------------+-----------------------------------------+
+    | ``.imputed.maf``              | File containing the minor allele        |
+    |                               | frequency (along with minor allele      |
+    |                               | identification) for all sites using the |
+    |                               | probabilitty threshold of 0.9. When no  |
+    |                               | genotypes are available (because they   |
+    |                               | are all below the threshold), the MAF is|
+    |                               | ``NA``.                                 |
+    +-------------------------------+-----------------------------------------+
+    | ``.imputed.map``              | A *map* file describing the genomic     |
+    |                               | location of all sites.                  |
+    +-------------------------------+-----------------------------------------+
+    | ``.imputed.sample``           | The sample file generated by the phasing|
+    |                               | step, which describe the sample ordering|
+    |                               | in the IMPUTE2 files.                   |
+    +-------------------------------+-----------------------------------------+
+
+
+``gwip/missing`` directory
+"""""""""""""""""""""""""""
+
+The ``missing`` directory contains the missing rates for both samples
+(``missing.imiss``) and genotypes markers (``missing.lmiss``). Those files are
+generated by Plink.
+
+``gwip/report`` directory
+""""""""""""""""""""""""""
+
+This ``report`` directory contains the automatically generated report, which
+provides valuable information about the imputation analysis. Such information
+contains cross-validation statistics (as provided by IMPUTE2), frequency
+statistics and completion rates according to user defined parameters.
+
+The automatic report is generated in the ``LaTeX`` language (file
+``report.tex``), and can be compile using the following command (as long as
+``LaTeX`` is installed).
+
+.. code-block:: bash
+
+   cd $HOME/gwip_tut/gwip/report
+   make && make clean
+
+This will generate the following
+`PDF report <http://pgxcentre.github.io/gwip/_static/tutorial/report.pdf>`_
+(which is named ``report.pdf``). It is always possible to modify the original
+``report.tex`` file to include analysis specific details (*e.g.* cohort
+description).
 
