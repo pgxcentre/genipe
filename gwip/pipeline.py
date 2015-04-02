@@ -51,19 +51,25 @@ _complement = {"A": "T", "T": "A", "C": "G", "G": "C"}
 
 
 def main():
-    """The main function.
+    """The main function of the genome-wide imputation pipeline.
 
-    This is what the pipeline should do:
-        1- Exclude markers that have ambiguous alleles [A/T or C/G] (Plink)
-        2- Exclude duplicated markers (only keep one) (Plink)
-        3- Split the dataset by chromosome (Plink)
-        4- Find markers that need to be flipped (strand problem) (SHAPEIT)
-        5- Flip those markers (Plink)
-        6- Find markers with strand problem (SHAPEIT)
-        7- Exclude markers with strand problem (Plink)
-        8- Phase using SHAPEIT
-        9- Impute using IMPUTE2
-        10- Merge IMPUTE2 files
+    These are the pipeline steps:
+
+    1.  Find markers with strand issues and flip them (Plink)
+    2.  Exclude markers that have ambiguous alleles [A/T or C/G] (Plink)
+    3.  Exclude duplicated markers (only keep one) (Plink)
+    4.  Split the dataset by chromosome (Plink)
+    5.  Find markers that need to be flipped (strand problem) (SHAPEIT)
+    6.  Flip those markers (Plink)
+    7.  Find markers with strand problem (SHAPEIT)
+    8.  Exclude markers with strand problem (Plink)
+    9.  Phase using SHAPEIT
+    10. Impute using IMPUTE2
+    11. Merge IMPUTE2 files
+    12. If asked by the user, compress the final IMPUTE2 files (bgzip)
+
+    At the end of the pipeline, a report (LaTeX) is automatically generated. It
+    includes different quality statistics and imputation metrics.
 
     """
     # Creating the option parser
@@ -262,7 +268,26 @@ def main():
 
 
 def phase_markers(prefix, o_prefix, db_name, options):
-    """Phase markers using shapeit."""
+    """Phase markers using shapeit.
+
+    :param prefix: the prefix template of the input files
+    :param o_prefix: the prefix template of the output files
+    :param db_name: the name of the DB saving tasks' information
+    :param options: the pipeline options
+
+    :type prefix: str
+    :type o_prefix: str
+    :type db_name: str
+    :type options: argparse.Namespace
+
+    :returns: the list of all samples that were phased
+    :rtype: list
+
+    A template contains the string ``{chrom}``, which will be replaced by the
+    chromosome number (e.g. ``gwip/chr{chrom}/chr{chrom}.final`` will be
+    replaced by ``gwip/chr1/chr1.final``).
+
+    """
     commands_info = []
     base_command = [
         "shapeit" if options.shapeit_bin is None else options.shapeit_bin,
@@ -314,7 +339,25 @@ def phase_markers(prefix, o_prefix, db_name, options):
 
 def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
                    options):
-    """Imputes the markers using IMPUTE2."""
+    """Imputes the markers using IMPUTE2.
+
+    :param phased_haplotypes: the template for the haplotype files
+    :param out_prefix: the prefix template of the output files
+    :param chrom_length: the length of each chromosome
+    :param db_name: the name of the DB saving tasks' information
+    :param options: the pipeline options
+
+    :type phased_haplotypes: str
+    :type out_prefix: str
+    :type chrom_length: dict
+    :type db_name: str
+    :type options: argparse.Namespace
+
+    A template contains the string ``{chrom}``, which will be replaced by the
+    chromosome number (e.g. ``gwip/chr{chrom}/chr{chrom}.final`` will be
+    replaced by ``gwip/chr1/chr1.final``).
+
+    """
     # Are we skipping DRMAA options?
     skip_drmaa_config = False
     if options.task_options is not None:
@@ -389,7 +432,28 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
 
 def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
                         db_name, options):
-    """Merges impute2 files."""
+    """Merges impute2 files.
+
+    :param in_glob: the template that will be used to find files with the
+                    :py:mod:`glob` module
+    :param o_prefix: the prefix template of the output files
+    :param probability_t: the probability threshold to use
+    :param completion_t: the completion threshold to use
+    :param db_name: the name of the DB saving tasks' information
+    :param options: the pipeline options
+
+    :type in_glob: str
+    :type o_prefix: str
+    :type probability_t: float
+    :type completion_t: float
+    :type db_name: str
+    :type options: argparse.Namespace
+
+    A template contains the string ``{chrom}``, which will be replaced by the
+    chromosome number (e.g. ``gwip/chr{chrom}/chr{chrom}.final`` will be
+    replaced by ``gwip/chr1/chr1.final``).
+
+    """
     commands_info = []
     base_command = [
         "impute2-merger",
@@ -448,7 +512,21 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
 
 
 def compress_impute2_files(filename_template, db_name, options):
-    """Merges impute2 files."""
+    """Merges impute2 files.
+
+    :param filename_template: the template for the final IMPUTE2 file
+    :param db_name: the name of the DB saving tasks' information
+    :param options: the pipeline options
+
+    :type filename_template: str
+    :type db_name: str
+    :type options: argparse.Namespace
+
+    A template contains the string ``{chrom}``, which will be replaced by the
+    chromosome number (e.g. ``gwip/chr{chrom}/chr{chrom}.final`` will be
+    replaced by ``gwip/chr1/chr1.final``).
+
+    """
     commands_info = []
     base_command = ["bgzip", "-f"]
 
@@ -476,7 +554,20 @@ def compress_impute2_files(filename_template, db_name, options):
 
 
 def file_sorter(filename):
-    """Helps in filename sorting."""
+    """Helps in filename sorting.
+
+    :param filename: the name of the file to compare while sorting
+    :type filename: str
+
+    :returns: a tuple containing three elements: chromosome (int), start (int)
+              and end (int)
+    :rtype: tuple
+
+    Using a regular expression, finds the chromosome along with the starting
+    and ending position of an imputed segment. The file
+    ``chr22.1_50000.impute2`` should return ``(22, 1, 50000)``.
+
+    """
     r = re.search(r"chr(\d+)\.(\d+)_(\d+)\.impute2", filename)
     return (int(r.group(1)), int(r.group(2)), int(r.group(3)))
 
@@ -530,7 +621,29 @@ def get_chromosome_length(out_dir):
 
 
 def check_strand(prefix, id_suffix, db_name, options, exclude=False):
-    """Checks the strand using SHAPEIT2."""
+    """Checks the strand using SHAPEIT2.
+
+    :param prefix: the prefix template of the input files
+    :param id_suffix: the suffix of the task
+    :param db_name: the name of the DB saving tasks' information
+    :param options: the pipeline options
+    :param exclude: should markers be excluded or flipped (default is flipped)
+
+    :type prefix: str
+    :type id_suffix: str
+    :type db_name: str
+    :type options: argparse.Namespace
+    :type exclude: boolean
+
+    :returns: statistics about the task (number of markers that will be flipped
+              or excluded)
+    :rtype: dict
+
+    A template contains the string ``{chrom}``, which will be replaced by the
+    chromosome number (e.g. ``gwip/chr{chrom}/chr{chrom}.final`` will be
+    replaced by ``gwip/chr1/chr1.final``).
+
+    """
     # Creating the command to launch
     base_command = [
         "shapeit" if options.shapeit_bin is None else options.shapeit_bin,
@@ -637,7 +750,23 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
 
 
 def flip_markers(prefix, to_flip, db_name, options):
-    """Flip markers."""
+    """Flip markers.
+
+    :param prefix: the prefix template of the input files
+    :param to_flip: the name of the file containing markers to flip
+    :param db_name: the name of the DB saving tasks' information
+    :param options: the pipeline options
+
+    :type prefix: str
+    :type to_flip: str
+    :type db_name: str
+    :type options: argparse.Namespace
+
+    A template contains the string ``{chrom}``, which will be replaced by the
+    chromosome number (e.g. ``gwip/chr{chrom}/chr{chrom}.final`` will be
+    replaced by ``gwip/chr1/chr1.final``).
+
+    """
     # The commands to run
     commands_info = []
     base_command = [
@@ -676,7 +805,26 @@ def flip_markers(prefix, to_flip, db_name, options):
 
 
 def final_exclusion(prefix, to_exclude, db_name, options):
-    """Flip markers."""
+    """Flip markers.
+
+    :param prefix: the prefix template of the input files
+    :param to_exclude: the name of the file containing the markers to exclude
+    :param db_name: the name of the DB saving tasks' information
+    :param options: the pipeline options
+
+    :type prefix: str
+    :type to_exclude: str
+    :type db_name: str
+    :type options: argparse.Namespace
+
+    :returns: the number of remaining markers for phasing
+    :rtype: dict
+
+    A template contains the string ``{chrom}``, which will be replaced by the
+    chromosome number (e.g. ``gwip/chr{chrom}/chr{chrom}.final`` will be
+    replaced by ``gwip/chr1/chr1.final``).
+
+    """
     # The commands to run
     commands_info = []
     base_command = [
@@ -727,7 +875,20 @@ def final_exclusion(prefix, to_exclude, db_name, options):
 
 
 def compute_marker_missing_rate(prefix, db_name, options):
-    """Compute (using Plink) marker missing rate."""
+    """Compute (using Plink) marker missing rate.
+
+    :param prefix: the prefix of the input file
+    :param db_name: the name of the DB saving tasks' information
+    :param options: the pipeline options
+
+    :type prefix: str
+    :type db_name: str
+    :type options: argparse.Namespace
+
+    :returns: the missing rate for each site (results from Plink):
+    :rtype: pandas.DataFrame
+
+    """
     # The output prefix
     o_prefix = os.path.join(options.out_dir, "missing")
     if not os.path.isdir(o_prefix):
@@ -765,7 +926,24 @@ def compute_marker_missing_rate(prefix, db_name, options):
 
 
 def exclude_markers_before_phasing(prefix, db_name, options):
-    """Finds and excludes ambiguous markers (A/T and G/C) or duplicated."""
+    """Finds and excludes ambiguous markers (A/T and G/C) or duplicated.
+
+    :param prefix: the prefix of the input files
+
+    :type prefix: str
+
+    :returns: information about the data set
+    :rtype: dict
+
+    If required, the function uses :py:func:`is_reversed` to check if a marker
+    is on the reverse strand and needs flipping.
+
+    The information returned includes the initial number of markers and
+    samples, the number of ambiguous, duplicated, special (not on autosomal
+    chromosomes) markers, along with the number of markers to flip if the
+    reference was checked.
+
+    """
     # The ambiguous genotypes
     ambiguous_genotypes = {"AT", "TA", "GC", "CG"}
 
@@ -913,7 +1091,19 @@ def exclude_markers_before_phasing(prefix, db_name, options):
 
 
 def get_chrom_encoding(reference):
-    """Gets the chromosome's encoding (e.g. 1 vs chr1, X vs 23, etc)."""
+    """Gets the chromosome's encoding (e.g. 1 vs chr1, X vs 23, etc).
+
+    :param reference: the reference
+    :type reference: pyfaidx.Fasta
+
+    :returns: the chromosome encoding
+    :rtype: dict
+
+    The encoding is a dictionary where numerical chromosomes from 1 to 22 are
+    the keys, and the encoded chromosomes (the one present in the reference)
+    are the values. An example would be ``1 -> chr1``.
+
+    """
     # The encoding
     encoding = {}
 
@@ -951,7 +1141,26 @@ def get_chrom_encoding(reference):
 
 
 def is_reversed(chrom, pos, a1, a2, reference, encoding):
-    """Checks the strand using a reference, returns False if problem."""
+    """Checks the strand using a reference, returns False if problem.
+
+    :param chrom: the chromosome
+    :param pos: the position
+    :param a1: the first allele
+    :param a2: the second allele
+    :param reference: the reference
+    :param encoding: the chromosome encoding in the reference
+
+    :type chrom: str
+    :type pos: int
+    :type a1: str
+    :type a2: str
+    :type reference: pyfaidx.Fasta
+    :type encoding: dict
+
+    The encoding (used to encode chromosome to search in the reference) is the
+    dictionary returned by the :py:func:`get_chrom_encoding` function.
+
+    """
     # Upper!
     a1 = a1.upper()
     a2 = a2.upper()
@@ -990,7 +1199,20 @@ def is_reversed(chrom, pos, a1, a2, reference, encoding):
 
 
 def get_cross_validation_results(glob_pattern):
-    """Creates a weighed mean for each chromosome for cross-validation."""
+    """Creates a weighted mean for each chromosome for cross-validation.
+
+    :param glob_pattern: the pattern used to find files using :py:mod:`glob`
+    :type glob_pattern: str
+
+    :returns: weighted mean by chromosome (cross-validation)
+    :rtype: dict
+
+    The returned information includes the total number of genotyped tested, the
+    total number of genotyped by chromosome, the two summary tables produced by
+    IMPUTE2 (but using weighted means) for all chromosomes, and the two summary
+    tables for each chromosome.
+
+    """
     logging.info("Gathering cross-validation statistics")
 
     # The regular expressions used here
@@ -1206,7 +1428,81 @@ def get_cross_validation_results(glob_pattern):
 
 
 def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
-    """Gathers imputation statistics from the merged dataset."""
+    """Gathers imputation statistics from the merged dataset.
+
+    :param prob_t: the probability threshold (>= t)
+    :param completion_t: the completion threshold (>= t)
+    :param nb_samples: the number of samples
+    :param missing: the missing rate
+    :param o_dir: the output directory
+
+    :type prob_t: float
+    :type completion_t: float
+    :type nb_samples: int
+    :type missing: pandas.DataFrame
+    :type o_dir: str
+
+    :returns: imputation statistics
+    :rtype: dict
+
+    The information returned includes the following (all values are formated in
+    strings):
+
+    +--------------------------------+----------------------------------------+
+    | Information                    | Description                            |
+    +================================+========================================+
+    | ``prob_threshold``             | the probability threshold used (>= t)  |
+    +--------------------------------+----------------------------------------+
+    | ``nb_imputed``                 | the number of imputed sites            |
+    +--------------------------------+----------------------------------------+
+    | ``average_comp_rate``          | the average completion rate            |
+    +--------------------------------+----------------------------------------+
+    | ``rate_threshold``             | the completion rate threshold (>= t)   |
+    +--------------------------------+----------------------------------------+
+    | ``nb_good_sites``              | the number of "good" sites (that pass  |
+    |                                | the different probability and          |
+    |                                | completion thresholds)                 |
+    +--------------------------------+----------------------------------------+
+    | ``pct_good_sites``             | the percentage of "good" sites (that   |
+    |                                | pass the different probability and     |
+    |                                | completion thresholds)                 |
+    +--------------------------------+----------------------------------------+
+    | ``average_comp_rate_cleaned``  | the average completion rate of "good"  |
+    |                                | sites                                  |
+    +--------------------------------+----------------------------------------+
+    | ``mean_missing``               | the mean number of missing genotypes   |
+    |                                | per sample (according to the           |
+    |                                | probability and completion thresholds) |
+    +--------------------------------+----------------------------------------+
+    | ``nb_samples``                 | the total number of samples            |
+    +--------------------------------+----------------------------------------+
+    | ``nb_genotyped``               | the number of genotyped sites in the   |
+    |                                | original dataset that are included in  |
+    |                                | the imputed dataset                    |
+    +--------------------------------+----------------------------------------+
+    | ``nb_genotyped_not_complete``  | The number of original markers with a  |
+    |                                | completion rate lower than 100%        |
+    +--------------------------------+----------------------------------------+
+    | ``pct_genotyped_not_complete`` | The percentage of original markers     |
+    |                                | with a completion rate lower than 100% |
+    +--------------------------------+----------------------------------------+
+    | ``nb_geno_now_complete``       | The number of original (genotyped)     |
+    |                                | markers which are now 100% complete    |
+    |                                | after imputation                       |
+    +--------------------------------+----------------------------------------+
+    | ``nb_missing_geno``            | The number of missing genotypes        |
+    +--------------------------------+----------------------------------------+
+    | ``pct_geno_now_complete``      | The percentage of now complete         |
+    |                                | genotypes (according to the number of  |
+    |                                | previously missing ones)               |
+    +--------------------------------+----------------------------------------+
+    | ``nb_site_now_complete``       | The number of previously genotyped     |
+    |                                | markers that are now 100% complete     |
+    |                                | after imputation                       |
+    +--------------------------------+----------------------------------------+
+
+
+    """
     logging.info("Gathering imputation statistics")
 
     # The stats we want to gather
@@ -1300,7 +1596,50 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
 
 
 def gather_maf_stats(o_dir):
-    """Gather minor allele frequencies from imputation."""
+    """Gather minor allele frequencies from imputation.
+
+    :param o_dir: the output directory
+    :type o_dir: str
+
+    :returns: frequency information
+    :rtype: dict
+
+    The following information about minor allele frequencies (MAF) are
+    returned (all values are formatted in strings):
+
+    +--------------------------+----------------------------------------------+
+    | Information              | Description                                  |
+    +==========================+==============================================+
+    | ``nb_maf_nan``           | the number of markers with invalid MAF       |
+    +--------------------------+----------------------------------------------+
+    | ``nb_marker_with_maf``   | the number of markers with valid MAF         |
+    +--------------------------+----------------------------------------------+
+    | ``nb_maf_geq_01``        | the number of markers with MAF >= 1%         |
+    +--------------------------+----------------------------------------------+
+    | ``nb_maf_geq_05``        | the number of markers with MAF >= 5%         |
+    +--------------------------+----------------------------------------------+
+    | ``nb_maf_lt_05``         | the number of markers with MAF < 5%          |
+    +--------------------------+----------------------------------------------+
+    | ``nb_maf_lt_01``         | the number of markers with MAF < 1%          |
+    +--------------------------+----------------------------------------------+
+    | ``nb_maf_geq_01_lt_05``  | the number of markers with 1% >= MAF < 5%    |
+    +--------------------------+----------------------------------------------+
+    | ``pct_maf_geq_01``       | the percentage of markers with MAF >= 1%     |
+    +--------------------------+----------------------------------------------+
+    | ``pct_maf_geq_05``       | the percentage of markers with MAF >= 5%     |
+    +--------------------------+----------------------------------------------+
+    | ``pct_maf_lt_05``        | the percentage of markers with MAF < 5%      |
+    +--------------------------+----------------------------------------------+
+    | ``pct_maf_lt_01``        | the percentage of markers with MAF < 1%      |
+    +--------------------------+----------------------------------------------+
+    | ``pct_maf_geq_01_lt_05`` | the percentage of markers with               |
+    |                          | 1% >= MAF < 5%                               |
+    +--------------------------+----------------------------------------------+
+    | ``frequency_pie``        | the name of the file containing the pie      |
+    |                          | chart (if it was created)                    |
+    +--------------------------+----------------------------------------------+
+
+    """
     logging.info("Gathering frequency statistics")
 
     # The statistics we want to gather
@@ -1485,7 +1824,15 @@ def gather_maf_stats(o_dir):
 
 
 def gather_execution_time(db_name):
-    """Gather all the execution times."""
+    """Gather all the execution times.
+
+    :param db_name: the name of the DB
+    :type db_name: str
+
+    :returns: the execution time for all tasks
+    :rtype: dict
+
+    """
     # Getting all the execution time from the DB
     exec_time = get_all_runtimes(db_name)
 
@@ -1567,7 +1914,15 @@ def gather_execution_time(db_name):
 
 
 def read_preamble(filename):
-    """Reads the preamble file."""
+    """Reads the preamble file.
+
+    :param filename: the name of the preamble file
+    :type filename: str
+
+    :returns: the preamble
+    :rtype: str
+
+    """
     if filename is None:
         return ""
 
@@ -1585,7 +1940,25 @@ def read_preamble(filename):
 
 
 def get_shapeit_version(binary):
-    """Gets the SHAPEIT version from the binary."""
+    """Gets the SHAPEIT version from the binary.
+
+    :param binary: the name of the SHAPEIT binary
+    :type binary: str
+
+    :returns: the version of the SHAPEIT software
+    :rtype: str
+
+    This function uses :py:class:`subprocess.Popen` to gather the version of
+    the SHAPEIT binary.
+
+    .. warning::
+
+        This function only works as long as the version is returned as
+        ``Version: NNN`` (where ``NNN`` is the version), since we use regular
+        expression to extract the version number from the standard output of
+        the software.
+
+    """
     # Running the command
     command = [binary, "--version"]
     proc = Popen(command, stdout=PIPE)
@@ -1604,7 +1977,26 @@ def get_shapeit_version(binary):
 
 
 def get_impute2_version(binary):
-    """Gets the IMPUTE2 version from the binary."""
+    """Gets the IMPUTE2 version from the binary.
+
+    :param binary: the name of the IMPUTE2 binary
+    :type binary: str
+
+    :returns: the version of the IMPUTE2 software
+    :rtype: str
+
+    This function uses :py:class:`subprocess.Popen` to gather the version of
+    the IMPUTE2 binary. Since executing the software to gather the version
+    creates output files, they are deleted.
+
+    .. warning::
+
+        This function only works as long as the version is returned as
+        ``IMPUTE version NNN`` (where ``NNN`` is the version), since we use
+        regular expression to extract the version number from the standard
+        output of the software.
+
+    """
     # Running the command
     command = [binary]
     proc = Popen(command, stdout=PIPE)
@@ -1628,7 +2020,26 @@ def get_impute2_version(binary):
 
 
 def get_plink_version(binary):
-    """Gets the Plink version from the binary."""
+    """Gets the Plink version from the binary.
+
+    :param binary: the name of the Plink binary
+    :type binary: str
+
+    :returns: the version of the Plink software
+    :rtype: str
+
+    This function uses :py:class:`subprocess.Popen` to gather the version of
+    the Plink binary. Since executing the software to gather the version
+    creates an output file, it is deleted.
+
+    .. warning::
+
+        This function only works as long as the version is returned as
+        ``| PLINK! | NNN |`` (where, ``NNN`` is the version), since we use
+        regular expresion to extract the version number from the standard
+        output of the software.
+
+    """
     # Running the command
     command = [binary, "--noweb"]
     proc = Popen(command, stdout=PIPE, stderr=PIPE)
@@ -1651,7 +2062,16 @@ def get_plink_version(binary):
 
 
 def check_args(args):
-    """Checks the arguments and options."""
+    """Checks the arguments and options.
+
+    :param args: the arguments and options
+    :type args: argparse.Namespace
+
+    :returns: `True` if everything is OK
+
+    If an option is invalid, a :py:class:`gwip.error.ProgramError` is raised.
+
+    """
     # Checking the presence of the BED, BIM and BAM files
     for suffix in (".bed", ".bim", ".fam"):
         if not os.path.isfile(args.bfile + suffix):
@@ -1743,7 +2163,15 @@ def check_args(args):
 
 
 def parse_args(parser):
-    """Parses the command line options and arguments."""
+    """Parses the command line options and arguments.
+
+    :param parser: the parser object
+    :type parser: argparse.ArgumentParser
+
+    :returns: the parsed options and arguments
+    :rtype: argparse.Namespace
+
+    """
     parser.add_argument(
         "-v",
         "--version",
