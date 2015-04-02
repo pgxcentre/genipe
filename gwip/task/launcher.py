@@ -402,7 +402,6 @@ def _execute_command_drmaa(command_info):
                 logging.debug("'{}' exit status problem".format(task_id))
                 return False, name, "problem", None
 
-
     # Checking all the required files were generated
     if not _check_output_files(command_info["o_files"], task_id):
         logging.debug("'{}' exit status problem".format(task_id))
