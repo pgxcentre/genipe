@@ -514,7 +514,7 @@ chromosomes.
 ``gwip/chrN/final_impute2`` directories
 """"""""""""""""""""""""""""""""""""""""
 
-These ``final_impute2`` directories (located in the ``chrN`` directories)
+These ``final_impute2`` directories (located in the ``gwip/chrN`` directories)
 contain the final output files from the pipeline for each autosomal
 chromosomes. They will contain the following files:
 
