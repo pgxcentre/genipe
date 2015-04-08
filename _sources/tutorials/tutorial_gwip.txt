@@ -326,7 +326,7 @@ genome-wide imputation of the *HapMap* CEU dataset.
 .. code-block:: bash
 
    cd $HOME/gwip_tut
-   
+
    gwip-launcher \
        --bfile data/hapmap_CEU_r23a_hg19 \
        --reference hg19/hg19.fasta \
@@ -510,6 +510,8 @@ pipeline. The most important files in these directories are the log files (for
 errors and summary statistics). There will be one directory per autosomal
 chromosomes.
 
+
+.. _gwip-tut-output-files-final_impute2:
 
 ``gwip/chrN/final_impute2`` directories
 """"""""""""""""""""""""""""""""""""""""
