@@ -201,21 +201,26 @@ Execution time
 ^^^^^^^^^^^^^^^
 
 The following figure shows the approximate execution time for different number
-of processes (the ``--nb-process`` option). This analysis was performed on a
-computer with an *Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz* (8 cores) and 16Go
-of RAM. The analysis contained 30,000 imputed markers for 2,402 samples. The
-red line represent the execution time of the same analysis using *Plink* (which
-is simple threaded).
+of processes (the ``--nb-process`` option) with different installation methods
+(*pyvenv* versus *miniconda*). This analysis was performed on a computer with
+an *Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz* (8 cores) and 16Go of RAM. The
+analysis contained 30,000 imputed markers for 2,402 samples, and 6,000 lines
+were processed at a time. The red line represent the execution time of the same
+analysis using *Plink* (which is simple threaded).
 
 .. _linear_exec_time:
 
 .. figure:: ../_static/images/Linear_Walltime.png
     :align: center
+    :width: 100%
     :alt: Linear regression execution time vs number of processes.
 
     Linear regression execution time vs number of processes.
 
-Note that the linear regression from *Statsmodels* uses more than one
-processor, hence we recommend launching *n/2* processes (where *n* is the
-number of processing cores on the machine).
+Note that the linear regression from *Statsmodels* (at least when compiled on a
+modern Linux system, *i.e.* when :py:mod:`gwip` is installed using the *pyvenv*
+method) uses more than 100% of each process, hence we recommend launching *n/2*
+processes (where *n* is the number of processing cores on the machine). This is
+not true when using a *miniconda* installation.
+
 
