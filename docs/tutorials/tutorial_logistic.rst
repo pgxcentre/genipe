@@ -13,6 +13,8 @@ Quick navigation
 2. :ref:`logit-tut-execute`
 3. :ref:`logit-tut-output-files`
 4. :ref:`logit-tut-usage`
+5. :ref:`logit-tut-execution-time`
+6. :ref:`logit-tut-comparison`
 
 
 Logistic regression
@@ -279,4 +281,58 @@ regression analysis in the console:
    
    Logistic Regression Options:
      --pheno-name NAME     The phenotype.
+
+
+.. _logit-tut-execution-time:
+
+Execution time
+^^^^^^^^^^^^^^^
+
+The following figure shows the approximate execution time for different number
+of processes (the ``--nb-process`` option) with different installation methods
+(*pyvenv* in blue, versus *miniconda* in orange). This analysis was performed
+on a computer with an *Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz* (8 cores) and
+16Go of RAM. The analysis contained 30,000 imputed markers for 2,402 samples,
+and 6,000 lines were processed at a time. Each test was performed only one time
+(no repetition). The red line represent the execution time of the same analysis
+using *Plink* (which uses only one process).
+
+.. _logistic_exec_time:
+
+.. figure:: ../_static/images/Logistic_Walltime.png
+    :align: center
+    :width: 60%
+    :alt: Logistic regression execution time vs number of processes.
+
+Note that the logistic regression from *Statsmodels 0.6.1* (at least when
+compiled on a modern Linux system, *i.e.* when :py:mod:`gwip` is installed
+using the *pyvenv* method) uses more than 100% of each process and much more
+memory. We couldn't perform the analysis with more than 4 processes, as the
+system started to swap (due to lack of available memory). Hence we recommend
+testing with a lower number of processes and monitor the memory consumption and
+the system load average. This is not true when using a *miniconda*
+installation, since all processes uses no more than 100% and a normal amount of
+memory.
+
+
+.. _logit-tut-comparison:
+
+Results comparison
+^^^^^^^^^^^^^^^^^^^
+
+The logistic regression results from :py:mod:`gwip` and *Plink* were compared
+for validity. The following figure shows the comparison for, from left to
+right, the coefficients, the standard errors and the *p*-values. The *x* axis
+shows the results from :py:mod:`gwip`, and the *y* axis shows the results for
+*Plink*. The analysis contained 30,000 imputed markers for 2,402 samples.
+
+.. figure:: ../_static/images/Logistic_Diff.png
+   :align: center
+   :width: 100%
+   :alt: Logistic regression comparison between gwip and Plink
+
+The sign of the coefficients might be different when comparing :py:mod:`gwip`
+to *Plink*, since :py:mod:`gwip` computes the statistics on the rare allele,
+while *Plink* computes them on the second (alternative) allele. The alternative
+allele might not always be the rarest.
 
