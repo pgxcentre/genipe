@@ -20,12 +20,12 @@ Linear regression
 ------------------
 
 Linear regressions are commonly used to perform genome-wide association
-studies. It is possible to perform such an analysis using imputation data as
-dosage, where each imputed genotypes varies between 0 and 2 (inclusively).
-Values close to 0 means that a homozygous genotypes of the most frequent allele
-is the most probable. Values close to 2 means that a homozygous genotypes of
-the rare allele is the most probable. Finally, values close to 1 means that a
-heterozygous genotype is the most probable.
+studies. It is possible to perform such an analysis using imputation data
+(dosage format), where each imputed genotypes varies between 0 and 2
+(inclusively). A value close to 0 means that a homozygous genotype of the most
+frequent allele is the most probable. A value close to 2 means that a
+homozygous genotype of the rare allele is the most probable. Finally, a value
+close to 1 means that a heterozygous genotype is the most probable.
 
 We suppose that you have followed the main :ref:`gwip-tut-page`. The following
 command will create the working directory for this tutorial.
@@ -43,9 +43,11 @@ Input files
 Imputed genotypes
 """"""""""""""""""
 
-After running the :py:mod:`gwip` pipeline and has the ``.impute2`` or
-``.impute2.gz`` extension. There should be one *impute2* file per chromosome
-(see the :ref:`gwip-tut-output-files-final_impute2` section in the main
+After running the :py:mod:`gwip` pipeline, the imputed genotypes files will
+have the ``.impute2`` or ``.impute2.gz`` extension Those files will be located
+in the ``final_impute2`` directories of each chromosomes. There should be one
+*impute2* file per chromosome (see the
+:ref:`gwip-tut-output-files-final_impute2` section in the main
 :ref:`gwip-tut-page`). These files consist of the imputed genotypes required to
 perform the analysis.
 
@@ -105,10 +107,10 @@ The following is an example of a phenotype file:
 
 .. code-block:: text
 
-   SampleID        Pheno1  Age     Var1    Gender
-   NA06985 58.6923101992   53      48.0104314206   2
-   NA06993 64.8981628053   47      23.7615117523   1
-   NA06994 129.562482664   48      20.2946857226   1
+   SampleID	Pheno1	Age	Var1	Gender
+   NA06985	58.6923101992	53	48.0104314206	2
+   NA06993	64.8981628053	47	23.7615117523	1
+   NA06994	129.562482664	48	20.2946857226	1
    ...
 
 We provide a *dummy* phenotype file (where values, except for ``Gender``, were
@@ -118,8 +120,8 @@ randomly generated). The following command should download the phenotype file.
 
    cd $HOME/gwip_tut/linear
 
-   wget http://pgxcentre.github.io/gwip/_static/tutorial/phenotypes.txt.bz2
-   bunzip2 phenotypes.txt.bz2 
+   wget http://pgxcentre.github.io/gwip/_static/tutorial/phenotypes_linear.txt.bz2
+   bunzip2 phenotypes_linear.txt.bz2 
 
 .. note::
 
@@ -159,7 +161,7 @@ the linear regression analysis.
    imputed-stats linear \
        --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz \
        --sample ../gwip/chr22/final_impute2/chr22.imputed.sample \
-       --pheno phenotypes.txt \
+       --pheno phenotypes_linear.txt \
        --extract-sites ../gwip/chr22/final_impute2/chr22.imputed.good_sites \
        --nb-process 8 \
        --nb-lines 3000 \
@@ -307,5 +309,3 @@ modern Linux system, *i.e.* when :py:mod:`gwip` is installed using the *pyvenv*
 method) uses more than 100% of each process, hence we recommend launching *n/2*
 processes (where *n* is the number of processing cores on the machine). This is
 not true when using a *miniconda* installation.
-
-
