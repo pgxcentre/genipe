@@ -14,6 +14,7 @@ Quick navigation
 3. :ref:`lin-tut-output-files`
 4. :ref:`lin-tut-usage`
 5. :ref:`lin-tut-execution-time`
+6. :ref:`lin-tut-comparison`
 
 
 Linear regression
@@ -303,9 +304,33 @@ using *Plink* (which uses only one process).
     :width: 60%
     :alt: Linear regression execution time vs number of processes.
 
-Note that the linear regression from *Statsmodels* (at least when compiled on a
-modern Linux system, *i.e.* when :py:mod:`gwip` is installed using the *pyvenv*
-method) uses more than 100% of each process, hence we recommend launching *n/2*
-processes (where *n* is the number of processing cores on the machine). This is
-not true when using a *miniconda* installation, since all processes uses no
-more than 100%.
+Note that the linear regression from *Statsmodels 0.6.1* (at least when
+compiled on a modern Linux system, *i.e.* when :py:mod:`gwip` is installed
+using the *pyvenv* method) uses more than 100% of each process, hence we
+recommend testing with *n/2* processes (where *n* is the number of processing
+cores on the machine) and monitor the system load average. This is not true
+when using a *miniconda* installation, since all processes uses no more than
+100%.
+
+
+.. _lin-tut-comparison:
+
+Results comparison
+^^^^^^^^^^^^^^^^^^^
+
+The linear regression results from :py:mod:`gwip` and *Plink* were compared for
+validity. The following figure shows the comparison for, from left to right,
+the coefficients, the standard errors and the *p*-values. The *x* axis shows
+the results from :py:mod:`gwip`, and the *y* axis shows the results for
+*Plink*. The analysis contained 30,000 imputed markers for 2,402 samples.
+
+.. figure:: ../_static/images/Linear_Diff.png
+   :align: center
+   :width: 100%
+   :alt: Linear regression comparison between gwip and Plink
+
+The sign of the coefficients might be different when comparing :py:mod:`gwip`
+to *Plink*, since :py:mod:`gwip` computes the statistics on the rare allele,
+while *Plink* computes them on the second (alternative) allele. The alternative
+allele might not always be the rarest.
+
