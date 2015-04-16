@@ -1,3 +1,5 @@
+.. _gwip-tut-page:
+
 Pipeline Tutorial
 ==================
 
@@ -313,8 +315,8 @@ You should have the following directory structure:
 
 .. _gwip-tut-execute:
 
-Execute the pipeline
-^^^^^^^^^^^^^^^^^^^^^
+Executing the pipeline
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Once all the input files are ready for analysis, you can finally execute the
 pipeline. Make sure that the virtual Python environment was properly activated
