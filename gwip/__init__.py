@@ -25,7 +25,7 @@ __status__ = "Development"
 chromosomes = range(1, 23)
 
 
-def test():
+def test(verbosity=1):
     """The test functions of gwip."""
     import logging
     import unittest
@@ -34,7 +34,7 @@ def test():
     # Disabling the INFO logging
     logging.disable(logging.INFO)
 
-    unittest.TextTestRunner().run(test_suite)
+    unittest.TextTestRunner(verbosity=verbosity).run(test_suite)
 
     # Enabling back the logging
     logging.disable(logging.NOTSET)
