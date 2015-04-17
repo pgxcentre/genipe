@@ -15,7 +15,7 @@ except ImportError:
 
 __author__ = "Louis-Philippe Lemieux Perreault"
 __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
-__credits__ = ["Louis-Philippe Lemieux Perreault", "Ian Mongrain"]
+__credits__ = ["Louis-Philippe Lemieux Perreault", "Marc-Andre Legault"]
 __license__ = "CC BY-NC 4.0"
 __maintainer__ = "Louis-Philippe Lemieux Perreault"
 __email__ = "louis-philippe.lemieux.perreault@statgen.org"
