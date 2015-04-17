@@ -36,14 +36,34 @@ except ImportError:
 
 
 def _seek_generator(f):
-    """Yields seek position for each line."""
+    """Yields seek position for each line.
+
+    :param f: the file object
+    :type f: file
+
+    """
     yield 0
     for line in f:
         yield f.tell()
 
 
 def generate_index(fn, cols=None, names=None, sep=" "):
-    """Build a index for the given file."""
+    """Build a index for the given file.
+
+    :param fn: the name of the file
+    :param cols: a list containing column to keep (as int)
+    :param names: the name corresponding to the column to keep (as str)
+    :param sep: the field separator
+
+    :type fn: str
+    :type cols: list
+    :type names: list
+    :type sep: str
+
+    :returns: the index
+    :rtype: pandas.DataFrame
+
+    """
     logging.info("Generating index for '{}'".format(fn))
 
     # Some assertions
@@ -70,7 +90,18 @@ def generate_index(fn, cols=None, names=None, sep=" "):
 
 
 def get_open_func(fn, return_fmt=False):
-    """Get the opening function."""
+    """Get the opening function.
+
+    :param fn: the name of the file
+    :param return_fmt: if the file format needs to be returned
+
+    :type fn: str
+    :type return_fmt: boolean
+
+    :returns: either a tuple containing two elements: a boolean telling if the
+              format is bgzip, and the opening function.
+
+    """
     # The file might be compressed using bgzip
     bgzip = None
     with open(fn, "rb") as i_file:
@@ -101,7 +132,24 @@ def get_open_func(fn, return_fmt=False):
 
 
 def get_index(fn, cols, names, sep):
-    """Restores the index for a given file."""
+    """Restores the index for a given file.
+
+    :param fn: the name of the file
+    :param cols: a list containing column to keep (as int)
+    :param names: the name corresponding to the column to keep (as str)
+    :param sep: the field separator
+
+    :type fn: str
+    :type cols: list
+    :type names: list
+    :type sep: str
+
+    :returns: the index
+    :rtype: pandas.DataFrame
+
+    If the index doesn't exist for the file, it is first created.
+
+    """
     if not has_index(fn):
         # The index doesn't exists, generate it
         return generate_index(fn, cols, names, sep)
@@ -121,7 +169,12 @@ def get_index(fn, cols, names, sep):
 
 
 def write_index(fn, index):
-    """Writes the index to file."""
+    """Writes the index to file.
+
+    :param fn: the name of the file that will contain the index
+    :param index: the index
+
+    """
     with open(fn, "wb") as o_file:
         o_file.write(_CHECK_STRING)
         o_file.write(zlib.compress(bytes(
@@ -131,7 +184,18 @@ def write_index(fn, index):
 
 
 def read_index(fn):
-    """Reads index from file."""
+    """Reads index from file.
+
+    :param fn: the name of the file containing the index
+    :type fn: str
+
+    :returns: the index of the file
+    :rtype: pandas.DataFrame
+
+    Before reading the index, we check the first couple of bytes to see if it
+    is a valid index file.
+
+    """
     index = None
     with open(fn, "rb") as i_file:
         if i_file.read(len(_CHECK_STRING)) != _CHECK_STRING:
@@ -145,10 +209,26 @@ def read_index(fn):
 
 
 def get_index_fn(fn):
-    """Generates the index filename from the path to the indexed file."""
+    """Generates the index filename from the path to the indexed file.
+
+    :param fn: the name of the file for which we want an index
+    :type fn: str
+
+    :returns: the name of the file containing the index
+    :rtype: str
+
+    """
     return os.path.abspath("{}.idx".format(fn))
 
 
 def has_index(fn):
-    """Checks if the index exists, if not, create it."""
+    """Checks if the index exists, if not, create it.
+
+    :param fn: the name of the file for which we want the index
+    :type fn: str
+
+    :returns: ``True`` if the file contains an index, ``False`` otherwise
+    :rtype: boolean
+
+    """
     return os.path.isfile(get_index_fn(fn))

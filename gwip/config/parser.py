@@ -21,7 +21,15 @@ __all__ = ["parse_drmaa_config", ]
 
 
 def parse_drmaa_config(configfile):
-    """Parses the tasks' configuration file for DRMAA."""
+    """Parses the tasks' configuration file for DRMAA.
+
+    :param configfile: the name of the configuration file
+    :type configfile: str
+
+    :returns: the DRMAA configuration for each task
+    :rtype: dict
+
+    """
     # This will save the final DRMAA configuration
     final_config = {}
 
@@ -82,7 +90,25 @@ def parse_drmaa_config(configfile):
 
 def _generate_default_values(task_name, config, walltime="00:15:00", nodes="1",
                              ppn="1", only_one=False, template=None):
-    """Generates default values for missing DRMAA configuration."""
+    """Generates default values for missing DRMAA configuration.
+
+    :param task_name: the name of the task
+    :param config: the configuration
+    :param walltime: the default execution time
+    :param nodes: the default number of nodes
+    :param ppn: the default number of processes
+    :param only_one: if there is only on task (and not one per chromosome)
+    :param template: task name template (for each chromosome)
+
+    :type task_name: str
+    :type config: dict
+    :type walltime: str
+    :type nodes: str
+    :type ppn: str
+    :type only_one: boolean
+    :type template: str
+
+    """
     # The final tool configuration
     final_tool_config = {}
 
