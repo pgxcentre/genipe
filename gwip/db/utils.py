@@ -218,7 +218,7 @@ def mark_drmaa_task_completed(task_id, launch_time, start_time, end_time,
 
     :type task_id: str
     :type launch_time: float
-    :type start_time: float 
+    :type start_time: float
     :type end_time: float
     :type db_name: str
 
