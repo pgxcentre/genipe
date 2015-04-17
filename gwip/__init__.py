@@ -26,7 +26,15 @@ chromosomes = range(1, 23)
 
 
 def test(verbosity=1):
-    """The test functions of gwip."""
+    """Executes all the tests for gwip.
+
+    :param verbosity: the verbosity level
+    :type verbosity: int
+
+    Just set ``verbosity`` to an integer higher than 1 to have more information
+    about the tests.
+
+    """
     import logging
     import unittest
     from .tests import test_suite
