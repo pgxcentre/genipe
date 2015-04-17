@@ -280,7 +280,7 @@ You should have the following directory structure:
 
 .. code-block:: text
 
-   $HOME/gwip_tut/
+   $HOME/gwip_tutorial/
    │
    ├── 1000GP_Phase3/
    │   ├── 1000GP_Phase3_chr1.hap.gz
@@ -327,7 +327,7 @@ genome-wide imputation of the *HapMap* CEU dataset.
 
 .. code-block:: bash
 
-   cd $HOME/gwip_tut
+   cd $HOME/gwip_tutorial
 
    gwip-launcher \
        --bfile data/hapmap_CEU_r23a_hg19 \
@@ -341,6 +341,11 @@ genome-wide imputation of the *HapMap* CEU dataset.
        --thread 4 \
        --report-title "Tutorial" \
        --report-number "Test Report"
+
+.. note::
+
+   In the previous command, the ``--refrence`` and ``--bgzip`` options are
+   optional and might be skipped.
 
 The following table describes the option used by :py:mod:`gwip` in the previous
 command (see the :ref:`gwip-usage` section for a full list):
@@ -593,7 +598,7 @@ The automatic report is generated in the ``LaTeX`` language (file
 
 .. code-block:: bash
 
-   cd $HOME/gwip_tut/gwip/report
+   cd $HOME/gwip_tutorial/gwip/report
    make && make clean
 
 This will generate the following

@@ -33,7 +33,7 @@ command will create the working directory for this tutorial.
 
 .. code-block:: bash
 
-   mkdir -p $HOME/gwip_tut/linear
+   mkdir -p $HOME/gwip_tutorial/linear
 
 
 .. _lin-tut-input-files:
@@ -119,7 +119,7 @@ randomly generated). The following command should download the phenotype file.
 
 .. code-block:: bash
 
-   cd $HOME/gwip_tut/linear
+   cd $HOME/gwip_tutorial/linear
 
    wget http://pgxcentre.github.io/gwip/_static/tutorial/phenotypes_linear.txt.bz2
    bunzip2 phenotypes_linear.txt.bz2 
@@ -157,7 +157,7 @@ the linear regression analysis.
 
 .. code-block:: bash
 
-   cd $HOME/gwip_tut/linear
+   cd $HOME/gwip_tutorial/linear
    
    imputed-stats linear \
        --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz \
