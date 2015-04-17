@@ -145,7 +145,7 @@ homozygous genotype of the rare allele is the most probable. Finally, a value
 close to 1 means that a heterozygous genotype is the most probable.</p>
 <p>We suppose that you have followed the main <a class="reference internal" href="tutorial_gwip.html#gwip-tut-page"><span>Pipeline Tutorial</span></a>. The following
 command will create the working directory for this tutorial.</p>
-<div class="highlight-bash"><div class="highlight"><pre>mkdir -p <span class="nv">$HOME</span>/gwip_tut/logistic
+<div class="highlight-bash"><div class="highlight"><pre>mkdir -p <span class="nv">$HOME</span>/gwip_tutorial/logistic
 </pre></div>
 </div>
 <div class="section" id="input-files">
@@ -213,7 +213,7 @@ NA06994      0       48      20.2946857226   1
 </div>
 <p>We provide a <em>dummy</em> phenotype file (where values, except for <code class="docutils literal"><span class="pre">Gender</span></code>, were
 randomly generated). The following command should download the phenotype file.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tut/logistic
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/logistic
 
 wget http://pgxcentre.github.io/gwip/_static/tutorial/phenotypes_logistic.txt.bz2
 bunzip2 phenotypes_logistic.txt.bz2
@@ -245,7 +245,7 @@ number per line) to keep for the analysis. This file might be the
 <span id="logit-tut-execute"></span><h3>Executing the analysis<a class="headerlink" href="#executing-the-analysis" title="Permalink to this headline">¶</a></h3>
 <p>If you followed the <a class="reference internal" href="tutorial_gwip.html#gwip-tut-page"><span>Pipeline Tutorial</span></a>, the following commands should execute
 the logistic regression analysis.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tut/logistic
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/logistic
 
 imputed-stats logistic <span class="se">\</span>
     --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>

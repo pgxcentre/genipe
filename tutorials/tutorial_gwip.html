@@ -350,7 +350,7 @@ executed. Hence, always be careful of what is included in the preamble.</p>
 <div class="section" id="input-file-summary">
 <h4>Input file summary<a class="headerlink" href="#input-file-summary" title="Permalink to this headline">¶</a></h4>
 <p>You should have the following directory structure:</p>
-<div class="highlight-text"><div class="highlight"><pre>$HOME/gwip_tut/
+<div class="highlight-text"><div class="highlight"><pre>$HOME/gwip_tutorial/
 │
 ├── 1000GP_Phase3/
 │   ├── 1000GP_Phase3_chr1.hap.gz
@@ -392,7 +392,7 @@ pipeline. Make sure that the virtual Python environment was properly activated
 (see <a class="reference internal" href="../installation.html#gwip-pyvenv-activation"><span>Virtual environment activation</span></a> for more details).</p>
 <p>When in the correct working directory, the following command should execute the
 genome-wide imputation of the <em>HapMap</em> CEU dataset.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tut
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial
 
 gwip-launcher <span class="se">\</span>
     --bfile data/hapmap_CEU_r23a_hg19 <span class="se">\</span>
@@ -407,6 +407,11 @@ gwip-launcher <span class="se">\</span>
     --report-title <span class="s2">&quot;Tutorial&quot;</span> <span class="se">\</span>
     --report-number <span class="s2">&quot;Test Report&quot;</span>
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">In the previous command, the <code class="docutils literal"><span class="pre">--refrence</span></code> and <code class="docutils literal"><span class="pre">--bgzip</span></code> options are
+optional and might be skipped.</p>
 </div>
 <p>The following table describes the option used by <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> in the previous
 command (see the <a class="reference internal" href="../index.html#gwip-usage"><span>Usage</span></a> section for a full list):</p>
@@ -683,7 +688,7 @@ statistics and completion rates according to user defined parameters.</p>
 <p>The automatic report is generated in the <code class="docutils literal"><span class="pre">LaTeX</span></code> language (file
 <code class="docutils literal"><span class="pre">report.tex</span></code>), and can be compile using the following command (as long as
 <code class="docutils literal"><span class="pre">LaTeX</span></code> is installed).</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tut/gwip/report
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/gwip/report
 make <span class="o">&amp;&amp;</span> make clean
 </pre></div>
 </div>

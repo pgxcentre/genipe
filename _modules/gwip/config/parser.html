@@ -94,7 +94,15 @@
 
 
 <span class="k">def</span> <span class="nf">parse_drmaa_config</span><span class="p">(</span><span class="n">configfile</span><span class="p">):</span>
-<div class="viewcode-block" id="parse_drmaa_config"><a class="viewcode-back" href="../../../module_content/gwip.config.html#gwip.config.parser.parse_drmaa_config">[docs]</a>    <span class="sd">&quot;&quot;&quot;Parses the tasks&#39; configuration file for DRMAA.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="parse_drmaa_config"><a class="viewcode-back" href="../../../module_content/gwip.config.html#gwip.config.parser.parse_drmaa_config">[docs]</a>    <span class="sd">&quot;&quot;&quot;Parses the tasks&#39; configuration file for DRMAA.</span>
+
+<span class="sd">    :param configfile: the name of the configuration file</span>
+<span class="sd">    :type configfile: str</span>
+
+<span class="sd">    :returns: the DRMAA configuration for each task</span>
+<span class="sd">    :rtype: dict</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># This will save the final DRMAA configuration</span>
     <span class="n">final_config</span> <span class="o">=</span> <span class="p">{}</span>
 
@@ -155,7 +163,25 @@
 
 <span class="k">def</span> <span class="nf">_generate_default_values</span><span class="p">(</span><span class="n">task_name</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">walltime</span><span class="o">=</span><span class="s">&quot;00:15:00&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="s">&quot;1&quot;</span><span class="p">,</span></div>
                              <span class="n">ppn</span><span class="o">=</span><span class="s">&quot;1&quot;</span><span class="p">,</span> <span class="n">only_one</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generates default values for missing DRMAA configuration.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Generates default values for missing DRMAA configuration.</span>
+
+<span class="sd">    :param task_name: the name of the task</span>
+<span class="sd">    :param config: the configuration</span>
+<span class="sd">    :param walltime: the default execution time</span>
+<span class="sd">    :param nodes: the default number of nodes</span>
+<span class="sd">    :param ppn: the default number of processes</span>
+<span class="sd">    :param only_one: if there is only on task (and not one per chromosome)</span>
+<span class="sd">    :param template: task name template (for each chromosome)</span>
+
+<span class="sd">    :type task_name: str</span>
+<span class="sd">    :type config: dict</span>
+<span class="sd">    :type walltime: str</span>
+<span class="sd">    :type nodes: str</span>
+<span class="sd">    :type ppn: str</span>
+<span class="sd">    :type only_one: boolean</span>
+<span class="sd">    :type template: str</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># The final tool configuration</span>
     <span class="n">final_tool_config</span> <span class="o">=</span> <span class="p">{}</span>
 

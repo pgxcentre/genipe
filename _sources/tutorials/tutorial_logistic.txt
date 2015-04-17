@@ -33,7 +33,7 @@ command will create the working directory for this tutorial.
 
 .. code-block:: bash
 
-   mkdir -p $HOME/gwip_tut/logistic
+   mkdir -p $HOME/gwip_tutorial/logistic
 
 
 .. _logit-tut-input-files:
@@ -119,7 +119,7 @@ randomly generated). The following command should download the phenotype file.
 
 .. code-block:: bash
 
-   cd $HOME/gwip_tut/logistic
+   cd $HOME/gwip_tutorial/logistic
 
    wget http://pgxcentre.github.io/gwip/_static/tutorial/phenotypes_logistic.txt.bz2
    bunzip2 phenotypes_logistic.txt.bz2 
@@ -157,7 +157,7 @@ the logistic regression analysis.
 
 .. code-block:: bash
 
-   cd $HOME/gwip_tut/logistic
+   cd $HOME/gwip_tutorial/logistic
    
    imputed-stats logistic \
        --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz \

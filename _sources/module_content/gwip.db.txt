@@ -1,6 +1,9 @@
 gwip.db package
 ================
 
+Submodules
+-----------
+
 gwip.db.utils module
 ---------------------
 

@@ -2,7 +2,7 @@ gwip package
 =============
 
 Subpackages
------------
+------------
 
 .. toctree::
 
@@ -13,6 +13,9 @@ Subpackages
     gwip.task
     gwip.tests
     gwip.tools
+
+Submodules
+-----------
 
 gwip.error module
 ------------------
