@@ -1,6 +1,9 @@
 gwip.config package
 ====================
 
+Submodules
+-----------
+
 gwip.config.parser module
 --------------------------
 

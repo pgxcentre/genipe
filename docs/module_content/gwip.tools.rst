@@ -1,6 +1,17 @@
 gwip.tools package
 ===================
 
+Submodules
+-----------
+
+gwip.tools.impute2_extractor module
+------------------------------------
+
+.. automodule:: gwip.tools.impute2_extractor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 gwip.tools.impute2_merger module
 ---------------------------------
 

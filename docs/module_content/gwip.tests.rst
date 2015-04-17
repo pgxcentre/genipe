@@ -1,6 +1,9 @@
 gwip.tests package
 ===================
 
+Submodules
+-----------
+
 gwip.tests.python_3_3_compatibility module
 -------------------------------------------
 
