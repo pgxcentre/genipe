@@ -26,11 +26,11 @@ __all__ = ["create_task_db", "check_task_completion", "create_task_entry",
 def create_task_db(out_dir):
     """Creates a task DB.
 
-    :param out_dir: the directory where the DB will be saved
-    :type out_dir: str
+    Args:
+        out_dir (str): the directory where the DB will be saved
 
-    :returns: the name of the file containing the DB
-    :rtype: str
+    Returns:
+        str: the name of the file containing the DB
 
     A SQLITE database will be created in the ``out_dir`` directory (with the
     name ``tasks.db``. The ``gwip_task`` table is automatically created.
@@ -61,12 +61,12 @@ def create_task_db(out_dir):
 def _create_db_connection(db_name):
     """Creates a DB connection.
 
-    :param db_name: the name of the database (usually a file)
-    :type db_name: str
+    Args:
+        db_name (str): the name of the database (usually a file)
 
-    :returns: a tuple containing the connection object and a cursor to that
-              object
-    :rtype: tuple
+    Returns:
+        tuple: a tuple containing the connection object and a cursor to that
+               object
 
     """
     conn = sqlite3.connect(
@@ -82,18 +82,16 @@ def _create_db_connection(db_name):
 def check_task_completion(task_id, db_name):
     """Checks if the task exists and if it's completed.
 
-    :param task_id: the ID of the task
-    :param db_name: the name of the database (usually a file)
+    Args:
+        task_id (str): the ID of the task
+        db_name (str): the name of the database (usually a file)
 
-    :type task_id: str
-    :param db_name: str
-
-    :returns: ``True`` if the task exists **and** is completed, ``False``
+    Returns:
+        bool: ``True`` if the task exists **and** is completed, ``False``
               otherwise
-    :rtype: bool
 
-    .. note::
-
+    Note
+    ----
         A task is completed if the column ``completed`` equals 1. It is not
         completed otherwise.
 
@@ -122,11 +120,9 @@ def check_task_completion(task_id, db_name):
 def create_task_entry(task_id, db_name):
     """Creates (or updates) a task.
 
-    :param task_id: the ID of the task
-    :param db_name: the name of the database (usually a file)
-
-    :type task_id: str
-    :type db_name: str
+    Args:
+        task_id (str): the ID of the task
+        db_name (str): the name of the database (usually a file)
 
     If the task ID doesn't exist in the DB, a new one will be created with the
     current time as launch and start time.
@@ -164,11 +160,9 @@ def create_task_entry(task_id, db_name):
 def mark_task_completed(task_id, db_name):
     """Marks the task as completed.
 
-    :param task_id: the ID of the task
-    :param db_name: the name of the DB (usually a file)
-
-    :type task_id: str
-    :type db_name: str
+    Args:
+        task_id (str): the ID of the task
+        db_name (str): the name of the DB (usually a file)
 
     The task entry is modified so that ``completed=1`` and the end time is
     updated to the current time.
@@ -187,11 +181,9 @@ def mark_task_completed(task_id, db_name):
 def mark_task_incomplete(task_id, db_name):
     """Marks a task as incomplete.
 
-    :param task_id: the ID of the task
-    :param db_name: the name of the DB (usually a file)
-
-    :type task_id: str
-    :type db_name: str
+    Args:
+        task_id (str): the ID of the task
+        db_name (str): the name of the DB (usually a file)
 
     The task entry is set as incomplete by updating the ``completed`` value to
     ``0``.
@@ -210,17 +202,12 @@ def mark_drmaa_task_completed(task_id, launch_time, start_time, end_time,
                               db_name):
     """Marks a task run by DRMAA as completed (while updating times).
 
-    :param task_id: the ID of the task
-    :param launch_time: the launch time (according to DRMAA)
-    :param start_time: the start time (according to DRMAA)
-    :param end_time: the end time (according to DRMAA)
-    :param db_name: the name of the DB (usually a file)
-
-    :type task_id: str
-    :type launch_time: float
-    :type start_time: float
-    :type end_time: float
-    :type db_name: str
+    Args:
+        task_id (str): the ID of the task
+        launch_time (float): the launch time (according to DRMAA)
+        start_time (float): the start time (according to DRMAA)
+        end_time (float): the end time (according to DRMAA)
+        db_name (str): the name of the DB (usually a file)
 
     The task entry is updated with the launch, start and end time. Those times
     come from the DRMAA library. The launch time is the time at which the task
@@ -247,14 +234,12 @@ def mark_drmaa_task_completed(task_id, launch_time, start_time, end_time,
 def get_task_runtime(task_id, db_name):
     """Gets the task run time.
 
-    :param task_id: the ID of the task
-    :param db_name: the name of the DB (usually a file)
+    Args:
+        task_id (str): the ID of the task
+        db_name (str): the name of the DB (usually a file)
 
-    :type task_id: str
-    :tupe db_name: str
-
-    :returns: the execution time of the task (in seconds)
-    :rtype: int
+    Returns:
+        int: the execution time of the task (in seconds)
 
     """
     conn, c = _create_db_connection(db_name)
@@ -271,11 +256,11 @@ def get_task_runtime(task_id, db_name):
 def get_all_runtimes(db_name):
     """Gets all tasks execution time.
 
-    :param db_name: the name of the DB (usually a file)
-    :type db_name: str
+    Args:
+        db_name (str): the name of the DB (usually a file)
 
-    :returns: the execution time (seconds) of all the tasks in the database
-    :rtype: dict
+    Returns:
+        dict: the execution time (seconds) of all the tasks in the database
 
     This function returns a dictionary of task ID (keys) pointing to execution
     time (in second) (int).

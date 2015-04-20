@@ -34,21 +34,14 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
                  hpc_options=None, out_dir=None, preamble=""):
     """Executes commands.
 
-    :param to_process: a list of tasks to process
-    :param nb_threads: the number of processes that is required
-    :param check_rc: whether or not to check the return code of the task
-    :param hpc: whether or not to execute the tasks on a cluster (DRMAA)
-    :param hpc_options: the DRMAA options
-    :param out_dir: the output directory
-    :param preamble: the script preamble (for DRMAA)
-
-    :type to_process: list
-    :type nb_threads: int
-    :type check_rc: bool
-    :type hpc: bool
-    :type hpc_options: dict
-    :type out_dir: str
-    :type preamble: str
+    Args:
+        to_process (list): a list of tasks to process
+        nb_threads (int): the number of processes that is required
+        check_rc (bool): whether or not to check the return code of the task
+        hpc (bool): whether or not to execute the tasks on a cluster (DRMAA)
+        hpc_options (dict): the DRMAA options
+        out_dir (str): the output directory
+        preamble (str): the script preamble (for DRMAA)
 
     """
     # Do we need to check the return code?
@@ -151,20 +144,18 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
 def _check_output_files(o_files, task):
     """Check that the files exist.
 
-    :param o_files: the list of files got check
-    :param task: the name of the task
+    Args:
+        o_files (list): the list of files got check
+        task (str): the name of the task
 
-    :type o_files: list
-    :type task: str
-
-    :returns: ``True`` if all files exist, ``False`` otherwise
-    :rtype: bool
+    Returns:
+        bool: ``True`` if all files exist, ``False`` otherwise
 
     If the file to check is an impute2 file, and that this file is missing, we
     check for further statistics using the :py:func:`_check_impute2_file`.
 
-    .. note::
-
+    Note
+    ----
         If the file name ends with ``.impute2`` and the file doesn't exist, we
         look for the compressed file (``.impute2.gz``) instead.
 
@@ -185,14 +176,12 @@ def _check_output_files(o_files, task):
 def _check_impute2_file(fn, task=None):
     """Checks the summary to explain the absence of an .impute2 file.
 
-    :param fn: the name of the file to check
-    :param task: the name of the task
+    Args:
+        fn (str): the name of the file to check
+        task (str): the name of the task
 
-    :type fn: str
-    :type task: str
-
-    :returns: ``True`` if everything is normal, ``False`` otherwise.
-    :rtype: bool
+    Returns:
+        bool: ``True`` if everything is normal, ``False`` otherwise.
 
     This function looks for known message in the summary file. Three possible
     ways that an impute2 file is missing:
@@ -257,13 +246,13 @@ def _check_impute2_file(fn, task=None):
 def _execute_command(command_info):
     """Executes a single command.
 
-    :param command_info: information about the command
-    :type command_info: dict
+    Args:
+        command_info (dict): information about the command
 
-    :returns: a tuple containing 4 entries: whether the task completed (bool),
-              the name of the task (str), the status of the run (str) and the
-              execution time in seconds (int)
-    :rtype: tuple
+    Returns:
+        tuple: a tuple containing 4 entries: whether the task completed (bool),
+               the name of the task (str), the status of the run (str) and the
+               execution time in seconds (int)
 
     """
     # Some assertions
@@ -337,16 +326,16 @@ def _execute_command(command_info):
 def _execute_command_drmaa(command_info):
     """Executes a command using DRMAA (usually on a HPC).
 
-    :param command_info: information about the command
-    :type command_info: dict
+    Args:
+        command_info (dict): information about the command
 
-    :returns: a tuple containing 4 entries: whether the task completed (bool),
-              the name of the task (str), the status of the run (str) and the
-              execution time in seconds (int)
-    :rtype: tuple
+    Returns:
+        tuple: a tuple containing 4 entries: whether the task completed (bool),
+               the name of the task (str), the status of the run (str) and the
+               execution time in seconds (int)
 
-    .. note::
-
+    Note
+    ----
         The preamble (if required) is inserted between the shebang line and the
         actual command.
 

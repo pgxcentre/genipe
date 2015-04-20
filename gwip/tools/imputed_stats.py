@@ -52,8 +52,8 @@ except ImportError:
 def _has_skat():
     """Checks if the SKAT R library is installed.
 
-    :returns: True if SKAT is installed, False otherwise.
-    :rtype: bool
+    Returns:
+        bool: True if SKAT is installed, False otherwise.
 
     """
     proc = Popen(
@@ -269,12 +269,12 @@ def skat_read_snp_set(i_filename):
 def read_sites_to_extract(i_filename):
     """Reads the list of sites to extract.
 
-    :param i_filename: The input filename containing the IDs of the variants
-                       to consider for the analysis.
-    :type i_filename: str
+    Args:
+        i_filename (str): The input filename containing the IDs of the variants
+                          to consider for the analysis.
 
-    :returns: A set containing the variants.
-    :rtype: set
+    Returns:
+        set: A set containing the variants.
 
     The expected file format is simply a list of variants. Every row should
     correspond to a single variant identifier.
@@ -520,15 +520,11 @@ def _skat_run_job(script_filename):
 def _skat_generate_r_script(dir_name, r_files, args):
     """Uses jinja2 to generate an R script to do the SKAT analysis.
 
-    :param dir_name: The output directory name to write the scripts in.
-    :type dir_name: str
-
-    :param r_files: A dict containing the different input files required by
-                    the R script.
-    :type r_files: dict
-
-    :param args: The parsed arguments.
-    :type args: Namespace
+    Args:
+        dir_name (str): The output directory name to write the scripts in.
+        r_files (dict): A dict containing the different input files required by
+                        the R script.
+        args (argparse.Namespace): The parsed arguments.
 
     """
     jinja_env = jinja2.Environment(
@@ -569,23 +565,20 @@ def _skat_generate_r_script(dir_name, r_files, args):
 def _skat_parse_line(line, markers_of_interest, samples, gender=None):
     """Parses a single line of the Impute2 file.
 
-    :param line: A line from the Impute2 file.
-    :type line: str
+    Args:
+        line (str): A line from the Impute2 file.
+        markers_of_interest (set): A set of markers that are required for the
+                                   analysis.
+        samples (pandas.DataFrame): A DataFrame containing the samples IDs.
+                                    This is useful to make sure we return a
+                                    dosage vector with the appropriate data.
 
-    :param markers_of_interest: A set of markers that are required for the
-                                analysis.
-    :type markers_of_interest: set
-
-    :param samples: A DataFrame containing the samples IDs. This is useful
-                    to make sure we return a dosage vector with the appropriate
-                    data.
-    :type samples: :py:class:`pandas.DataFrame`
-
-    :returns: Either None if the marker is not of interest or a tuple of `(name
-              , dosage_vector)` where `name` is a `str` representing the
-              variant ID and `dosage_vector` is a numpy array containing the
-              dosage values for every sample in the `samples` dataframe.
-    :rtype: tuple or None
+    Returns:
+        tuple: Either None if the marker is not of interest or a tuple of
+               ``(name , dosage_vector)`` where ``name`` is a ``str``
+               representing the variant ID and ``dosage_vector`` is a numpy
+               array containing the dosage values for every sample in the
+               ``samples`` dataframe.
 
     """
     line = line.split(" ")
@@ -616,19 +609,13 @@ def _skat_parse_line(line, markers_of_interest, samples, gender=None):
 def _skat_write_marker(name, dosage, snp_set, genotype_files):
     """Write the dosage information to the appropriate genotype file.
 
-    :param name: The name of the marker.
-    :type name: str
-
-    :param dosage: The dosage vector.
-    :type dosage: :py:class:`numpy.ndarray`
-
-    :param snp_set: The dataframe that allows us to identify the correct SNP
-                    set for the specified variant.
-    :type snp_set: :py:class:`pandas.DataFrame`
-
-    :param genotype_files: The dict containing the opened CSV files for the
-                           genotypes.
-    :type genotype_files: dict
+    Args:
+        name (str): The name of the marker.
+        dosage (numpy.array): The dosage vector.
+        snp_set (pandas.DataFrame: The dataframe that allows us to identify the
+                                   correct SNP set for the specified variant.
+        genotype_files (dict): The dict containing the opened CSV files for the
+                               genotypes.
 
     """
     # Identify the correct SNP set.

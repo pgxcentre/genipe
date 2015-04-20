@@ -28,8 +28,8 @@ chromosomes = range(1, 23)
 def test(verbosity=1):
     """Executes all the tests for gwip.
 
-    :param verbosity: the verbosity level
-    :type verbosity: int
+    Args:
+        verbosity (int): the verbosity level
 
     Just set ``verbosity`` to an integer higher than 1 to have more information
     about the tests.

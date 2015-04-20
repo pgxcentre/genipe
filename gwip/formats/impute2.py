@@ -24,18 +24,19 @@ __all__ = ["matrix_from_line", "get_good_probs", "maf_from_probs",
 def matrix_from_line(impute2_line):
     """Generates the probability matrix from an IMPUTE2 line.
 
-    :param impute2_line: a single line from IMPUTE2's result (split by space)
-    :type impute2: list
+    Args:
+        impute2_line (list): a single line from IMPUTE2's result (split by
+                             space)
 
-    :returns: a tuple containing the marker's information (first five values of
-              the line) and the matrix probability (numpy array, float)
-    :rtype: tuple
+    Returns:
+        tuple: a tuple containing the marker's information (first five values
+               of the line) and the matrix probability (numpy array, float)
 
     The shape of the matrix is n x 3 where n is the number of samples.
     The columns represent the probability for AA, AB and BB.
 
-    .. note::
-
+    Note
+    ----
         The ``impute2_line`` variable is a list of str, corresponding to a line
         from the IMPUTE2's result, split by space.
 
@@ -49,15 +50,13 @@ def matrix_from_line(impute2_line):
 def get_good_probs(prob_matrix, min_prob=0.9):
     """Gathers good imputed genotypes (>= probability threshold).
 
-    :param prob_matrix: the probability matrix
-    :param min_prob: the probability threshold
+    Args:
+        prob_matrix (numpy.array): the probability matrix
+        min_prob (float): the probability threshold
 
-    :type prob_matrix: numpy.array
-    :type min_prob: float
-
-    :returns: a mask array containing the positions where the probabilities are
-              equal or higher to the threshold
-    :rtype: numpy.array
+    Returns:
+        numpy.array: a mask array containing the positions where the
+                     probabilities are equal or higher to the threshold
 
     """
     return np.amax(prob_matrix, axis=1) >= min_prob
@@ -66,21 +65,16 @@ def get_good_probs(prob_matrix, min_prob=0.9):
 def maf_from_probs(prob_matrix, a1, a2, gender=None, site_name=None):
     """Computes MAF from a probability matrix (and gender if chromosome X).
 
-    :param prob_matrix: the probability matrix
-    :param a1: the first allele
-    :param a2: the second allele
-    :param gender: the gender of the samples
-    :param site_name: the name for this site
+    Args:
+        prob_matrix (numpy.array): the probability matrix
+        a1 (str): the first allele
+        a2 (str): the second allele
+        gender (numpy.array): the gender of the samples
+        site_name (str): the name for this site
 
-    :type prob_matrix: numpy.array
-    :type a1: str
-    :type a2: str
-    :type gender: numpy.array
-    :type site_name: str
-
-    :returns: a tuple containing three values: the minor allele frequency, the
-              minor and the major allele.
-    :rtype: tuple
+    Returns:
+        tuple: a tuple containing three values: the minor allele frequency, the
+               minor and the major allele.
 
     When 'gender' is not None, we assume that the MAF on chromosome X is
     required (hence, males count as 1, and females as 2 alleles). There is also
@@ -141,16 +135,14 @@ def maf_from_probs(prob_matrix, a1, a2, gender=None, site_name=None):
 def dosage_from_probs(homo_probs, hetero_probs, scale=2):
     """Computes dosage from probability matrix (for the minor allele).
 
-    :param homo_probs: the probabilities for the homozygous genotype
-    :param hetero_probs: the probabilities for the heterozygous genotype
-    :param scale: the scale value
+    Args:
+        homo_probs (numpy.array): the probabilities for the homozygous genotype
+        hetero_probs (numpy.array): the probabilities for the heterozygous
+                                    genotype
+        scale (int): the scale value
 
-    :type homo_probs: numpy.array
-    :type hetero_probs: numpy.array
-    :type scale: int
-
-    :returns: the dosage computed from the probabilities
-    :rtype: numpy.array
+    Returns:
+        numpy.array: the dosage computed from the probabilities
 
     """
     return (homo_probs + (hetero_probs / 2)) * scale
@@ -159,16 +151,13 @@ def dosage_from_probs(homo_probs, hetero_probs, scale=2):
 def hard_calls_from_probs(a1, a2, probs):
     """Computes hard calls from probability matrix.
 
-    :param a1: the first allele
-    :param a2: the second allele
-    :param probs: the probability matrix
+    Arg:
+        a1 (str): the first allele
+        a2 (str): the second allele
+        probs (numpy.array): the probability matrix
 
-    :type a1: str
-    :type a2: str
-    :type probs: numpy.array
-
-    :returns: the hard calls computed from the probabilities
-    :rtype: numpy.array
+    Returns:
+        numpy.array: the hard calls computed from the probabilities
 
     """
     possible_geno = np.array([

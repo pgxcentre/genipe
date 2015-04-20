@@ -31,7 +31,15 @@ _valid_tex_formats = {"texttt", "emph", "textbf", "textit"}
 
 
 def config_jinja2():
-    """Configure the jinja2 environment."""
+    """Configure the jinja2 environment for LaTeX.
+
+    Note
+    ----
+        The configuration used is for LaTeX documents. Hence, a block command
+        is done using ``\BLOCK{}`` and variables using ``\VAR{}`` in the Jinja2
+        template.
+
+    """
     return jinja2.Environment(
         block_start_string='\BLOCK{',
         block_end_string='}',
@@ -48,7 +56,20 @@ def config_jinja2():
 
 
 def sanitize_tex(original_text):
-    """Sanitize TeX text."""
+    """Sanitize TeX text.
+
+    Args:
+        original_text (str): the text to sanitize for LaTeX
+
+    Text is sanitized by following these steps:
+
+    1. Replaces ``\\\\`` by ``\\textbackslash``
+    2. Escapes certain characters (such as ``$``, ``%``, ``_``, ``}``, ``{``,
+       ``&`` and ``#``) by adding a backslash (*e.g.* from ``&`` to ``\\&``).
+    3. Replaces special characters such as ``~`` by the LaTeX equivalent
+       (*e.g.* from ``~`` to ``$\\sim$``).
+
+    """
     # The backslashes
     sanitized_tex = original_text.replace("\\", r"\textbackslash ")
 
@@ -64,12 +85,45 @@ def sanitize_tex(original_text):
 
 
 def wrap_tex(original_text):
-    """Wraps the text."""
+    """Wraps the text.
+
+    Args:
+        original_text (str): the text to wrap
+
+    Returns:
+        str: a string where the original text was wrapped
+
+    Wraps the text so that lines are no longer than 80 characters. Uses the
+    :py:func:`str.join` function on the results of the :py:func:`wrap`
+    function, so that a single string is returned.
+
+    """
     return "\n".join(wrap(original_text))
 
 
 def format_tex(text, tex_format):
-    """Change the TeX text format."""
+    """Change the TeX text format.
+
+    Args:
+        text (str): the text for which the format needs to be specified
+        tex_format (str): the format of the text to return
+
+    Returns:
+        str: the formatted text
+
+    This will change the format by adding the LaTeX format command (*e.g.* from
+    ``text`` to ``\\texttt{text}``).
+
+    Note
+    ----
+        Only the following format are available:
+
+        * ``texttt``
+        * ``emph``
+        * ``textbf``
+        * ``textit``
+
+    """
     assert tex_format in _valid_tex_formats, "invalid format"
     assert _is_sanitized(text), "text not sanitized"
 
@@ -77,12 +131,31 @@ def format_tex(text, tex_format):
 
 
 def tex_inline_math(content):
-    """Creates an inline mathematical formula in TeX."""
+    """Creates an inline mathematical formula in TeX.
+
+    Args:
+        content (str): the content of the mathematical formula
+
+    Returns:
+        str: the formatted mathematical formula
+
+    The function only adds ``$`` symbols before and after the content (*e.g.*
+    from ``\\pi`` to ``$\\pi$``).
+
+    """
     return "${}$".format(content)
 
 
 def _is_sanitized(text):
-    """Check if text is sanitized."""
+    """Check if text is sanitized.
+
+    Args:
+        text (str): the text to check
+
+    Returns:
+        bool: ``True`` if the text is sanitized, ``False`` otherwise
+
+    """
     # Checking the escaped characters
     sanitized = re.search(r"[^\\][{}]".format("".join(_escaped_char)), text)
     sanitized = sanitized is None
@@ -96,7 +169,19 @@ def _is_sanitized(text):
 
 def create_tabular(template, header, data, header_multicol=None,
                    col_align=None):
-    """Creates a TeX tabular."""
+    """Creates a TeX tabular.
+
+    Args:
+        template (jinja2.Template): the tabular template
+        header (list): the header of the tabular
+        data (list): the tabular data
+        header_multicol (list): the number of columns for the header
+        col_align (list): the column alignement
+
+    Returns:
+        str: a string representation of a LaTeX tabular
+
+    """
     if header_multicol is None:
         header_multicol = [1 for i in header]
 
@@ -122,7 +207,20 @@ def create_tabular(template, header, data, header_multicol=None,
 
 
 def create_float(template, float_type, caption, label, content, placement="H"):
-    """Creates a TeX float."""
+    """Creates a TeX float.
+
+    Args:
+        template (jinja2.Template): the float template
+        float_type (str): the type of float (``figure`` or  ``table``)
+        caption (str): the caption of the float
+        label (str): the label of the float
+        content (str): the content of the float
+        placement (str): the float placement (*e.g.* ``H``)
+
+    Returns:
+        str: a string representation of a LaTeX float
+
+    """
     # Some assertions
     assert float_type in ["figure", "table"], "invalid float type"
     for character in placement:
@@ -144,7 +242,20 @@ def create_float(template, float_type, caption, label, content, placement="H"):
 
 
 def format_time(total_seconds, written_time=False):
-    """Format time (either "HH:MM:SS" or "H hours, M minutes and S seconds"."""
+    """Format time (either "HH:MM:SS" or "H hours, M minutes and S seconds".
+
+    Args:
+        total_seconds (int): the total number of seconds
+        written_time (bool): whether to write time in written language
+
+    Returns:
+        str: a string representation of the total time
+
+    If ``written_time`` is ``True``, time will be displayed as "H hours, M
+    minutes and S seconds". Otherwise, the time will be represented as
+    HH:MM:SS.
+
+    """
     # The format for the time
     time_fmt = "{hours:02d}:{minutes:02d}:{seconds:02d}"
 
@@ -188,7 +299,18 @@ def format_time(total_seconds, written_time=False):
 
 
 def colorize_time(total_seconds):
-    """Colorize the time."""
+    """Colorize the time.
+
+    Args:
+        total_seconds (int): the total number of seconds
+
+    Returns:
+        str: a colorized LaTeX string representation of time
+
+    The time is displayed as ``HH:MM:SS``, but insignificant zeros are
+    grayed-out.
+
+    """
     # Formatting the time
     formatted_time = format_time(total_seconds)
 

@@ -36,6 +36,7 @@ extensions = [
     'sphinx.ext.intersphinx',
     'sphinx.ext.mathjax',
     'sphinx.ext.viewcode',
+    'sphinx.ext.napoleon',
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -294,4 +295,5 @@ intersphinx_mapping = {
     'https://docs.python.org/3.4': None,
     'numpy': ('http://docs.scipy.org/doc/numpy/', None),
     'pandas': ('http://pandas.pydata.org/pandas-docs/dev', None),
+    'jinja2': ('http://jinja.pocoo.org/docs', None),
 }
