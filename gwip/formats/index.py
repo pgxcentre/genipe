@@ -96,7 +96,7 @@ def get_open_func(fn, return_fmt=False):
     :param return_fmt: if the file format needs to be returned
 
     :type fn: str
-    :type return_fmt: boolean
+    :type return_fmt: bool
 
     :returns: either a tuple containing two elements: a boolean telling if the
               format is bgzip, and the opening function.
@@ -228,7 +228,7 @@ def has_index(fn):
     :type fn: str
 
     :returns: ``True`` if the file contains an index, ``False`` otherwise
-    :rtype: boolean
+    :rtype: bool
 
     """
     return os.path.isfile(get_index_fn(fn))

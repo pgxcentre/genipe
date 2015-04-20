@@ -90,7 +90,7 @@ def check_task_completion(task_id, db_name):
 
     :returns: ``True`` if the task exists **and** is completed, ``False``
               otherwise
-    :rtype: boolean
+    :rtype: bool
 
     .. note::
 

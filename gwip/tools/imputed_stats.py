@@ -53,7 +53,7 @@ def _has_skat():
     """Checks if the SKAT R library is installed.
 
     :returns: True if SKAT is installed, False otherwise.
-    :rtype: boolean
+    :rtype: bool
 
     """
     proc = Popen(

@@ -634,7 +634,7 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
     :type id_suffix: str
     :type db_name: str
     :type options: argparse.Namespace
-    :type exclude: boolean
+    :type exclude: bool
 
     :returns: statistics about the task (number of markers that will be flipped
               or excluded)

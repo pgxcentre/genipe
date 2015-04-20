@@ -105,7 +105,7 @@ def _generate_default_values(task_name, config, walltime="00:15:00", nodes="1",
     :type walltime: str
     :type nodes: str
     :type ppn: str
-    :type only_one: boolean
+    :type only_one: bool
     :type template: str
 
     """
