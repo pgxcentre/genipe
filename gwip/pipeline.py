@@ -20,7 +20,6 @@ from urllib.request import urlopen
 from subprocess import Popen, PIPE
 from collections import defaultdict
 
-from pyfaidx import Fasta
 import pandas as pd
 
 from .db import *
@@ -40,6 +39,12 @@ try:
     HAS_MATPLOTLIB = True
 except ImportError:
     HAS_MATPLOTLIB = False
+
+try:
+    from pyfaidx import Fasta
+    HAS_PYFAIDX = True
+except ImportError:
+    HAS_PYFAIDX = False
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -2124,12 +2129,18 @@ def check_args(args):
 
     # Checking the reference file (if required)
     if args.reference is not None:
-        if not os.path.isfile(args.reference):
-            raise ProgramError("{}: no such file".format(args.reference))
+        if not HAS_PYFAIDX:
+            logging.warning("pyfaidx is not installed, can not perform "
+                            "initial strand check")
+            args.reference = None
 
-        if not os.path.isfile(args.reference + ".fai"):
-            raise ProgramError("{}: should be indexed using "
-                               "FAIDX".format(args.reference))
+        else:
+            if not os.path.isfile(args.reference):
+                raise ProgramError("{}: no such file".format(args.reference))
+
+            if not os.path.isfile(args.reference + ".fai"):
+                raise ProgramError("{}: should be indexed using "
+                                   "FAIDX".format(args.reference))
 
     return True
 

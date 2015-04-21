@@ -11,8 +11,6 @@ import os
 import unittest
 from tempfile import TemporaryDirectory
 
-import pyfaidx
-
 from ..pipeline import *
 from .. import chromosomes
 from ..error import ProgramError
@@ -100,8 +98,12 @@ class TestMainPipeline(unittest.TestCase):
             get_chromosome_length(self.output_dir.name)
         self.assertEqual("missing chromosomes: 12, 9", e.exception.message)
 
+    @unittest.skipIf(not HAS_PYFAIDX,
+                     "optional requirement (pyfaidx) not satisfied")
     def test_get_chrom_encoding(self):
         """Tests the 'get_chrom_encoding' function."""
+        import pyfaidx
+
         # Creating the reference file (fasta file) and index (using samtools)
         fasta_content = [[">{}".format(i), "ACGT"] for i in range(1, 25)]
         fasta_content.append([">26", "ACGT"])
@@ -258,8 +260,12 @@ class TestMainPipeline(unittest.TestCase):
         self.assertEqual(log_m, cm.output)
         reference.close()
 
+    @unittest.skipIf(not HAS_PYFAIDX,
+                     "optional requirement (pyfaidx) not satisfied")
     def test_is_reversed(self):
         """Tests the 'is_reversed' function."""
+        import pyfaidx
+
         # Creating the reference file (fasta file) and index (using samtools)
         fasta_content = (
             ">1\n"
@@ -829,25 +835,29 @@ class TestMainPipeline(unittest.TestCase):
             pass
 
         # Removing the reference index file should raise an exception
-        os.remove(args.reference + ".fai")
-        self.assertFalse(os.path.isfile(args.reference + ".fai"))
-        with self.assertRaises(ProgramError) as cm:
-            check_args(args)
-        self.assertEqual(
-            "{}: should be indexed using FAIDX".format(args.reference),
-            str(cm.exception),
-        )
+        if HAS_PYFAIDX:
+            os.remove(args.reference + ".fai")
+            self.assertFalse(os.path.isfile(args.reference + ".fai"))
+            with self.assertRaises(ProgramError) as cm:
+                check_args(args)
+            self.assertEqual(
+                "{}: should be indexed using FAIDX".format(args.reference),
+                str(cm.exception),
+            )
 
-        # Removing the reference file should raise an exception
-        os.remove(args.reference)
-        self.assertFalse(os.path.isfile(args.reference))
-        with self.assertRaises(ProgramError) as cm:
-            check_args(args)
-        self.assertEqual("{}: no such file".format(args.reference),
-                         str(cm.exception))
+            # Removing the reference file should raise an exception
+            os.remove(args.reference)
+            self.assertFalse(os.path.isfile(args.reference))
+            with self.assertRaises(ProgramError) as cm:
+                check_args(args)
+            self.assertEqual("{}: no such file".format(args.reference),
+                            str(cm.exception))
 
-        # Setting the reference to None should fix everything
-        args.reference = None
+            # Setting the reference to None should fix everything
+            args.reference = None
+
+        else:
+            self.assertTrue(args.reference is None)
 
         # Final check
         self.assertTrue(check_args(args))
