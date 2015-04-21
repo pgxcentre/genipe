@@ -112,7 +112,7 @@ def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
         to_extract (dict): the list of markers to extract for each input file
         out_prefix (str): the output prefix
         out_format (list): the output format(s)
-        prob_t (flot): the probability threshold
+        prob_t (float): the probability threshold
 
     """
     # The output files (probabilities)
