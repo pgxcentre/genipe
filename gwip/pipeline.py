@@ -792,7 +792,8 @@ def final_exclusion(prefix, to_exclude, db_name, options):
 
     Args:
         prefix (str): the prefix template of the input files
-        to_exclude (str): the name of the file containing the markers to exclude
+        to_exclude (str): the name of the file containing the markers to
+                          exclude
         db_name (str): the name of the DB saving tasks' information
         options (argparse.Namespace): the pipeline options
 
