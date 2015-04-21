@@ -1,8 +1,19 @@
 gwip.db package
 ================
 
+
+Module contents
+----------------
+
+.. automodule:: gwip.db
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 Submodules
 -----------
+
 
 gwip.db.utils module
 ---------------------
@@ -12,11 +23,3 @@ gwip.db.utils module
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
-----------------
-
-.. automodule:: gwip.db
-    :members:
-    :undoc-members:
-    :show-inheritance:

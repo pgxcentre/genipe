@@ -1,8 +1,19 @@
 gwip.formats package
 =====================
 
+
+Module contents
+----------------
+
+.. automodule:: gwip.formats
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 Submodules
 -----------
+
 
 gwip.formats.impute2 module
 ----------------------------
@@ -12,6 +23,7 @@ gwip.formats.impute2 module
     :undoc-members:
     :show-inheritance:
 
+
 gwip.formats.index module
 --------------------------
 
@@ -20,11 +32,3 @@ gwip.formats.index module
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
-----------------
-
-.. automodule:: gwip.formats
-    :members:
-    :undoc-members:
-    :show-inheritance:

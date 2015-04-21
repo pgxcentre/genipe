@@ -1,8 +1,18 @@
 gwip.task package
 ==================
 
+
+Module contents
+----------------
+
+.. automodule:: gwip.task
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 Submodules
 -----------
+
 
 gwip.task.launcher module
 --------------------------
@@ -12,11 +22,3 @@ gwip.task.launcher module
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
-----------------
-
-.. automodule:: gwip.task
-    :members:
-    :undoc-members:
-    :show-inheritance:

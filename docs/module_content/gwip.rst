@@ -1,6 +1,16 @@
 gwip package
 =============
 
+
+Module contents
+----------------
+
+.. automodule:: gwip
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 Subpackages
 ------------
 
@@ -14,8 +24,10 @@ Subpackages
     gwip.tests
     gwip.tools
 
+
 Submodules
 -----------
+
 
 gwip.error module
 ------------------
@@ -25,6 +37,7 @@ gwip.error module
     :undoc-members:
     :show-inheritance:
 
+
 gwip.pipeline module
 ---------------------
 
@@ -32,6 +45,7 @@ gwip.pipeline module
     :members:
     :undoc-members:
     :show-inheritance:
+
 
 gwip.version module
 --------------------
@@ -41,11 +55,3 @@ gwip.version module
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
-----------------
-
-.. automodule:: gwip
-    :members:
-    :undoc-members:
-    :show-inheritance:

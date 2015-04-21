@@ -1,8 +1,19 @@
 gwip.reporting package
 =======================
 
+
+Module contents
+----------------
+
+.. automodule:: gwip.reporting
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 Submodules
 -----------
+
 
 gwip.reporting.autoreport module
 ---------------------------------
@@ -12,6 +23,7 @@ gwip.reporting.autoreport module
     :undoc-members:
     :show-inheritance:
 
+
 gwip.reporting.utils module
 ----------------------------
 
@@ -20,11 +32,3 @@ gwip.reporting.utils module
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
-----------------
-
-.. automodule:: gwip.reporting
-    :members:
-    :undoc-members:
-    :show-inheritance:

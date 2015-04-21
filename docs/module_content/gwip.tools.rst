@@ -1,8 +1,14 @@
 gwip.tools package
 ===================
 
-Submodules
------------
+Module contents
+----------------
+
+.. automodule:: gwip.tools
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
 
 gwip.tools.impute2_extractor module
 ------------------------------------
@@ -12,6 +18,7 @@ gwip.tools.impute2_extractor module
     :undoc-members:
     :show-inheritance:
 
+
 gwip.tools.impute2_merger module
 ---------------------------------
 
@@ -19,6 +26,7 @@ gwip.tools.impute2_merger module
     :members:
     :undoc-members:
     :show-inheritance:
+
 
 gwip.tools.imputed_stats module
 --------------------------------
@@ -28,11 +36,3 @@ gwip.tools.imputed_stats module
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
-----------------
-
-.. automodule:: gwip.tools
-    :members:
-    :undoc-members:
-    :show-inheritance:
