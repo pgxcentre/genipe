@@ -28,7 +28,14 @@ __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
 def main(args=None):
-    """The main function."""
+    """The main function.
+
+    Args:
+        args (argparse.Namespace): the arguments to be parsed (if
+                                   :py:func:`main` is called by another
+                                   modulel)
+
+    """
     # Creating the option parser
     desc = ("Extract imputed markers located in a specific genomic region. "
             "This script is part of the 'gwip' package, version "
@@ -98,7 +105,16 @@ def main(args=None):
 
 
 def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
-    """Extracts according to names."""
+    """Extracts according to names.
+
+    Args:
+        i_filenames (list): the list of input file names
+        to_extract (dict): the list of markers to extract for each input file
+        out_prefix (str): the output prefix
+        out_format (list): the output format(s)
+        prob_t (flot): the probability threshold
+
+    """
     # The output files (probabilities)
     o_files = {
         suffix: open(out_prefix + "." + suffix, "w") for suffix in out_format
@@ -153,7 +169,15 @@ def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
 
 
 def print_data(o_files, prob_t, *, line=None, row=None):
-    """Prints an impute2 line."""
+    """Prints an impute2 line.
+
+    Args:
+        o_files (dict): the output files
+        prob_t (float): the probability threshold
+        line (str): the impute2 line
+        row (list): the impute2 line, split by spaces
+
+    """
     # Probabilities?
     if "impute2" in o_files:
         o_files["impute2"].write(line)
@@ -194,7 +218,25 @@ def print_data(o_files, prob_t, *, line=None, row=None):
 
 
 def gather_extraction(i_filenames, maf, rate, extract_filename, genomic_range):
-    "Gather positions that are required."""
+    """Gather positions that are required.
+
+    Args:
+        i_filenames (list): the list of input files
+        maf (float): the minor allele frequency threshold (might be ``None``)
+        rate (float): the call rate threshold (might be ``None``)
+        extract_filename (str): the name of the file containing marker names to
+                                extract (might be ``None``)
+        genomic_range (str): the genomic range for extraction
+
+    Returns:
+        dict: the list of markers to extract for each input file
+
+    If extraction by marker name is required, only those markers will be
+    extracted. Otherwise, ``maf``, ``rate`` or ``genomic_range`` can be
+    specified (alone or together) to extract markers according to minor allele
+    frequency, call rate and genomic location.
+
+    """
     to_extract = {}
 
     for i_filename in i_filenames:
@@ -270,7 +312,19 @@ def gather_extraction(i_filenames, maf, rate, extract_filename, genomic_range):
 
 
 def get_file_prefix(fn):
-    """Gets the filename prefix."""
+    """Gets the filename prefix.
+
+    Args:
+        fn (str): the name of the file from which the prefix is required
+
+    Returns:
+        str: the prefix of the file
+
+    This function removes the extension from the file name, and return its
+    prefix (*e.g.* ``test.impute2`` returns ``test``, and
+    ``../test.impute2.gz`` returns ``../test``).
+
+    """
     prefix = os.path.splitext(fn)[0]
     if prefix.endswith("impute2"):
         prefix = os.path.splitext(prefix)[0]
@@ -278,7 +332,16 @@ def get_file_prefix(fn):
 
 
 def check_args(args):
-    """Checks the arguments and options."""
+    """Checks the arguments and options.
+
+    Args:
+        args (argparse.Namespace): the options to verify
+
+    Note
+    ----
+        If there is a problem, a :py:class:`gwip.error.ProgramError` is raised.
+
+    """
     # Checking that the impute2 files exists
     for filename in args.impute2:
         if not os.path.isfile(filename):
@@ -356,7 +419,21 @@ def check_args(args):
 
 
 def parse_args(parser, args=None):
-    """Parses the command line options and arguments."""
+    """Parses the command line options and arguments.
+
+    Args:
+        parser (argparse.ArgumentParser): the argument parser
+        args (list): the list of arguments (if not taken from ``sys.argv``)
+
+    Returns:
+        argparse.Namespace: the list of options and arguments
+
+    Note
+    ----
+        The only check that is done here is by the parser itself. Values are
+        verified later by the :py:func:`check_args` function.
+
+    """
     # Adding the version option for the main parser
     parser.add_argument(
         "-v",
