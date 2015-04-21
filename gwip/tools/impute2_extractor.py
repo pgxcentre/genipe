@@ -126,11 +126,12 @@ def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
               file=o_files["dosage"])
 
     # Extracted positions
-    extracted = set()
+    all_extracted = set()
 
     # Reading all impute2 files
     for i_filename in i_filenames:
         names = to_extract[i_filename]
+        extracted = set()
 
         # Finding the name of the file containing the index
         file_index = get_index(i_filename, cols=[0, 1, 2],
@@ -140,7 +141,7 @@ def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
         file_index = file_index[file_index.name.isin(names)]
 
         # Getting all the markers value
-        logging.info("Extracting")
+        logging.info("Extracting {:,d} markers".format(len(file_index)))
         with get_open_func(i_filename)(i_filename, "r") as i_file:
             for seek_value in file_index.seek.values:
                 # Seeking
@@ -161,11 +162,19 @@ def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
 
         logging.info("Extracted {:,d} markers".format(len(extracted)))
         if len(names - extracted) > 0:
-            logging.warning("Missing markers")
+            logging.warning("Missing {:,d} "
+                            "markers".format(len(names - extracted)))
+
+        # Keeping track of what has been extracted
+        all_extracted |= extracted
 
     # Closing the files
     for o_file in o_files.values():
         o_file.close()
+
+    # Extraction complete
+    logging.info("Extraction of {:,d} markers "
+                 "completed".format(len(all_extracted)))
 
 
 def print_data(o_files, prob_t, *, line=None, row=None):
@@ -242,12 +251,6 @@ def gather_extraction(i_filenames, maf, rate, extract_filename, genomic_range):
     for i_filename in i_filenames:
         logging.info("Gathering information about {}".format(i_filename))
 
-        # If extraction, we only require a list of marker names
-        if extract_filename is not None:
-            with open(extract_filename, "r") as i_file:
-                to_extract[i_filename] = set(i_file.read().splitlines())
-            continue
-
         # The prefix of all the input files
         prefix = get_file_prefix(i_filename)
 
@@ -257,6 +260,18 @@ def gather_extraction(i_filenames, maf, rate, extract_filename, genomic_range):
                                names=["chrom", "name", "pos"])
         map_data = map_data.set_index("name", verify_integrity=True)
         logging.info("MAP data contained {:,d} markers".format(len(map_data)))
+
+        # If extraction, we only require a list of marker names
+        if extract_filename is not None:
+            available_markers = map_data.index
+            marker_list = None
+            with open(extract_filename, "r") as i_file:
+                marker_list = set(i_file.read().splitlines())
+
+            to_extract[i_filename] = set(
+                available_markers.intersection(marker_list)
+            )
+            continue
 
         # Do we require a genomic location?
         if genomic_range is not None:
