@@ -407,7 +407,8 @@ def parse_args(parser, args=None):
         type=float,
         metavar="FLOAT",
         default=0.9,
-        help="The probability threshold used when creating a dosage file.",
+        help="The probability threshold used when creating a file in the "
+             "dosage or call format.",
     )
 
     # What to extract
