@@ -96,11 +96,11 @@
 <span class="k">def</span> <span class="nf">parse_drmaa_config</span><span class="p">(</span><span class="n">configfile</span><span class="p">):</span>
 <div class="viewcode-block" id="parse_drmaa_config"><a class="viewcode-back" href="../../../module_content/gwip.config.html#gwip.config.parser.parse_drmaa_config">[docs]</a>    <span class="sd">&quot;&quot;&quot;Parses the tasks&#39; configuration file for DRMAA.</span>
 
-<span class="sd">    :param configfile: the name of the configuration file</span>
-<span class="sd">    :type configfile: str</span>
+<span class="sd">    Args:</span>
+<span class="sd">        configfile (str): the name of the configuration file</span>
 
-<span class="sd">    :returns: the DRMAA configuration for each task</span>
-<span class="sd">    :rtype: dict</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: the DRMAA configuration for each task</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># This will save the final DRMAA configuration</span>
@@ -165,21 +165,17 @@
                              <span class="n">ppn</span><span class="o">=</span><span class="s">&quot;1&quot;</span><span class="p">,</span> <span class="n">only_one</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Generates default values for missing DRMAA configuration.</span>
 
-<span class="sd">    :param task_name: the name of the task</span>
-<span class="sd">    :param config: the configuration</span>
-<span class="sd">    :param walltime: the default execution time</span>
-<span class="sd">    :param nodes: the default number of nodes</span>
-<span class="sd">    :param ppn: the default number of processes</span>
-<span class="sd">    :param only_one: if there is only on task (and not one per chromosome)</span>
-<span class="sd">    :param template: task name template (for each chromosome)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        task_name (str): the name of the task</span>
+<span class="sd">        config (dict): the configuration</span>
+<span class="sd">        walltime (str): the default execution time</span>
+<span class="sd">        nodes (str): the default number of nodes</span>
+<span class="sd">        ppn (str): the default number of processes</span>
+<span class="sd">        only_one (bool): if there is only on task (and not one per chromosome)</span>
+<span class="sd">        template (str): task name template (for each chromosome)</span>
 
-<span class="sd">    :type task_name: str</span>
-<span class="sd">    :type config: dict</span>
-<span class="sd">    :type walltime: str</span>
-<span class="sd">    :type nodes: str</span>
-<span class="sd">    :type ppn: str</span>
-<span class="sd">    :type only_one: boolean</span>
-<span class="sd">    :type template: str</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: the final configuration for this task</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># The final tool configuration</span>

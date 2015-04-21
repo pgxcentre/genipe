@@ -62,10 +62,10 @@
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">gwip.formats package</a><ul>
+<li><a class="reference internal" href="#module-gwip.formats">Module contents</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-gwip.formats.impute2">gwip.formats.impute2 module</a></li>
 <li><a class="reference internal" href="#module-gwip.formats.index">gwip.formats.index module</a></li>
-<li><a class="reference internal" href="#module-gwip.formats">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -106,6 +106,9 @@
             
   <div class="section" id="gwip-formats-package">
 <h1>gwip.formats package<a class="headerlink" href="#gwip-formats-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-gwip.formats">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gwip.formats" title="Permalink to this headline">¶</a></h2>
+</div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -119,10 +122,11 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>impute2_line</strong> &#8211; a single line from IMPUTE2&#8217;s result (split by space)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>impute2_line</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; a single line from IMPUTE2&#8217;s result (split by
+space)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a tuple containing the marker&#8217;s information (first five values of
-the line) and the matrix probability (numpy array, float)</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a tuple containing the marker&#8217;s information (first five values
+of the line) and the matrix probability (numpy array, float)</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#tuple" title="(in Python v3.4)">tuple</a></td>
 </tr>
@@ -151,8 +155,8 @@ from the IMPUTE2&#8217;s result, split by space.</p>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a mask array containing the positions where the probabilities are
-equal or higher to the threshold</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a mask array containing the positions where the
+probabilities are equal or higher to the threshold</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)">numpy.array</a></p>
@@ -203,7 +207,8 @@ an Exception raised if there are any heterozygous males.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>homo_probs</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)"><em>numpy.array</em></a>) &#8211; the probabilities for the homozygous genotype</li>
-<li><strong>hetero_probs</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)"><em>numpy.array</em></a>) &#8211; the probabilities for the heterozygous genotype</li>
+<li><strong>hetero_probs</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)"><em>numpy.array</em></a>) &#8211; the probabilities for the heterozygous
+genotype</li>
 <li><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a>) &#8211; the scale value</li>
 </ul>
 </td>
@@ -222,22 +227,19 @@ an Exception raised if there are any heterozygous males.</p>
 <dt id="gwip.formats.impute2.hard_calls_from_probs">
 <code class="descclassname">gwip.formats.impute2.</code><code class="descname">hard_calls_from_probs</code><span class="sig-paren">(</span><em>a1</em>, <em>a2</em>, <em>probs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/formats/impute2.html#hard_calls_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.formats.impute2.hard_calls_from_probs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Computes hard calls from probability matrix.</p>
+<dl class="docutils">
+<dt>Arg:</dt>
+<dd>a1 (str): the first allele
+a2 (str): the second allele
+probs (numpy.array): the probability matrix</dd>
+</dl>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the first allele</li>
-<li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the second allele</li>
-<li><strong>probs</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)"><em>numpy.array</em></a>) &#8211; the probability matrix</li>
-</ul>
-</td>
+<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the hard calls computed from the probabilities</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the hard calls computed from the probabilities</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)">numpy.array</a></p>
-</td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)">numpy.array</a></td>
 </tr>
 </tbody>
 </table>
@@ -283,21 +285,21 @@ an Exception raised if there are any heterozygous males.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the file</li>
-<li><strong>return_fmt</strong> (<em>boolean</em>) &#8211; if the file format needs to be returned</li>
+<li><strong>return_fmt</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) &#8211; if the file format needs to be returned</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">either a tuple containing two elements: a boolean telling if the
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">either a tuple containing two elements: a boolean telling if the
 format is bgzip, and the opening function.</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#tuple" title="(in Python v3.4)">tuple</a></p>
 </td>
 </tr>
 </tbody>
 </table>
 </dd></dl>
 
-</div>
-<div class="section" id="module-gwip.formats">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gwip.formats" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

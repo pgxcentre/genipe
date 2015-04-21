@@ -125,8 +125,8 @@
 <span class="k">def</span> <span class="nf">_has_skat</span><span class="p">():</span>
     <span class="sd">&quot;&quot;&quot;Checks if the SKAT R library is installed.</span>
 
-<span class="sd">    :returns: True if SKAT is installed, False otherwise.</span>
-<span class="sd">    :rtype: boolean</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if SKAT is installed, False otherwise.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">proc</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span>
@@ -154,7 +154,14 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.main">[docs]</a>    <span class="sd">&quot;&quot;&quot;The main function.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.main">[docs]</a>    <span class="sd">&quot;&quot;&quot;The main function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        args (argparse.Namespace): the arguments to be parsed (if</span>
+<span class="sd">                                   :py:func:`main` is called by another</span>
+<span class="sd">                                   modulel)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Creating the option parser</span>
     <span class="n">desc</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Performs statistical analysis on imputed data (either SKAT &quot;</span>
             <span class="s">&quot;analysis, or linear, logistic or survival regression). This &quot;</span>
@@ -244,9 +251,16 @@
 <span class="k">def</span> <span class="nf">read_phenotype</span><span class="p">(</span><span class="n">i_filename</span><span class="p">,</span> <span class="n">opts</span><span class="p">):</span></div>
 <div class="viewcode-block" id="read_phenotype"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.read_phenotype">[docs]</a>    <span class="sd">&quot;&quot;&quot;Reads the phenotype file.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        i_filename (str): the name of the input file</span>
+<span class="sd">        opts (argparse.Namespace): the options</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pandas.DataFrame: the phenotypes</span>
+
 <span class="sd">    This file is expected to be a tab separated file of phenotypes and</span>
-<span class="sd">    covariates. The columns to use will be determined by the `--sample-column`</span>
-<span class="sd">    and the `--covar` options.</span>
+<span class="sd">    covariates. The columns to use will be determined by the</span>
+<span class="sd">    ``--sample-column`` and the ``--covar`` options.</span>
 
 <span class="sd">    For analysis including the X chromosome, the gender is automatically</span>
 <span class="sd">    added as a covariate. The results are not shown to the user unless asked</span>
@@ -293,8 +307,15 @@
 <span class="k">def</span> <span class="nf">read_samples</span><span class="p">(</span><span class="n">i_filename</span><span class="p">):</span></div>
 <div class="viewcode-block" id="read_samples"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.read_samples">[docs]</a>    <span class="sd">&quot;&quot;&quot;Reads the sample file (produced by SHAPEIT).</span>
 
-<span class="sd">    The expected format for this file is a tab separated file with a first</span>
-<span class="sd">    row containing the following columns: ::</span>
+<span class="sd">    Args:</span>
+<span class="sd">        i_filename (str): the name of the input file</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pandas.DataFrame: the list of samples</span>
+
+<span class="sd">    This file contains the list of samples that are contained in the</span>
+<span class="sd">    ``impute2`` file (with same order). The expected format for this file is a</span>
+<span class="sd">    tab separated file with a first row containing the following columns: ::</span>
 
 <span class="sd">        ID_1	ID_2	missing	father	mother	sex	plink_pheno</span>
 
@@ -302,10 +323,10 @@
 
 <span class="sd">        0	0	0 D	D	D	B</span>
 
-<span class="sd">    We are mostly interested in the sample IDs corresponding to the `ID_2`</span>
-<span class="sd">    column.</span>
-
-<span class="sd">    Their uniqueness is verified by pandas.</span>
+<span class="sd">    Notes</span>
+<span class="sd">    -----</span>
+<span class="sd">        We are mostly interested in the sample IDs corresponding to the</span>
+<span class="sd">        ``ID_2`` column. Their uniqueness is verified by pandas.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">samples</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">i_filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot; &quot;</span><span class="p">,</span> <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
@@ -317,10 +338,16 @@
 <span class="k">def</span> <span class="nf">skat_read_snp_set</span><span class="p">(</span><span class="n">i_filename</span><span class="p">):</span></div>
 <div class="viewcode-block" id="skat_read_snp_set"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.skat_read_snp_set">[docs]</a>    <span class="sd">&quot;&quot;&quot;Reads the SKAT SNP set file.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        i_filename (str): the name of the input file</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pandas.DataFrame: the SNP set for the SKAT analysis</span>
+
 <span class="sd">    This file has to be supplied by the user. The recognized columns are:</span>
-<span class="sd">    `variant, snp_set, weight`. The `weight` column is optional and can</span>
-<span class="sd">    be used to specify a custom weighting scheme for SKAT. If nothing is</span>
-<span class="sd">    specified, the default Beta weights are used.</span>
+<span class="sd">    ``variant``, ``snp_set`` and ``weight``. The ``weight`` column is optional</span>
+<span class="sd">    and can be used to specify a custom weighting scheme for SKAT. If nothing</span>
+<span class="sd">    is specified, the default Beta weights are used.</span>
 
 <span class="sd">    The file has to be tab delimited.</span>
 
@@ -342,25 +369,23 @@
 <span class="k">def</span> <span class="nf">read_sites_to_extract</span><span class="p">(</span><span class="n">i_filename</span><span class="p">):</span></div>
 <div class="viewcode-block" id="read_sites_to_extract"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.read_sites_to_extract">[docs]</a>    <span class="sd">&quot;&quot;&quot;Reads the list of sites to extract.</span>
 
-<span class="sd">    :param i_filename: The input filename containing the IDs of the variants</span>
-<span class="sd">                       to consider for the analysis.</span>
-<span class="sd">    :type i_filename: str</span>
+<span class="sd">    Args:</span>
+<span class="sd">        i_filename (str): The input filename containing the IDs of the variants</span>
+<span class="sd">                          to consider for the analysis.</span>
 
-<span class="sd">    :returns: A set containing the variants.</span>
-<span class="sd">    :rtype: set</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        set: A set containing the variants.</span>
 
 <span class="sd">    The expected file format is simply a list of variants. Every row should</span>
-<span class="sd">    correspond to a single variant identifier.</span>
-
-<span class="sd">    e.g. ::</span>
+<span class="sd">    correspond to a single variant identifier. ::</span>
 
 <span class="sd">        3:60069:t</span>
 <span class="sd">        rs123456:A</span>
 <span class="sd">        3:60322:A</span>
 
 <span class="sd">    Typically, this is used to analyze only variants that passed some QC</span>
-<span class="sd">    threshold. The _gwip_ pipeline generates this file at the &#39;merge_impute2&#39;</span>
-<span class="sd">    step.</span>
+<span class="sd">    threshold. The :py:mod:`gwip` pipeline generates this file at the</span>
+<span class="sd">    &#39;merge_impute2&#39; step.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">markers_to_extract</span> <span class="o">=</span> <span class="bp">None</span>
@@ -372,6 +397,16 @@
 <span class="k">def</span> <span class="nf">skat_parse_impute2</span><span class="p">(</span><span class="n">impute2_filename</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">markers_to_extract</span><span class="p">,</span></div>
 <div class="viewcode-block" id="skat_parse_impute2"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.skat_parse_impute2">[docs]</a>                       <span class="n">phenotypes</span><span class="p">,</span> <span class="n">remove_gender</span><span class="p">,</span> <span class="n">out_prefix</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Read the impute2 file and run the SKAT analysis.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        impute2_filename (str): the name of the input file</span>
+<span class="sd">        samples (pandas.DataFrame): the samples</span>
+<span class="sd">        markers_to_extract (set): the set of markers to analyse</span>
+<span class="sd">        phenotypes (pandas.DataFrame): the phenotypes</span>
+<span class="sd">        remove_gender (bool): whether or not to remove the gender column</span>
+<span class="sd">        out_prefix (str): the output prefix</span>
+<span class="sd">        args (argparse.Namespace): the options</span>
+
 
 <span class="sd">    This function does most of the &quot;dispatching&quot; to run SKAT. It writes the</span>
 <span class="sd">    input files to the disk, runs the generated R scripts to do the actual</span>
@@ -545,6 +580,13 @@
 <span class="k">def</span> <span class="nf">_skat_run_job</span><span class="p">(</span><span class="n">script_filename</span><span class="p">):</span></div>
     <span class="sd">&quot;&quot;&quot;Calls Rscript with the generated script and parses the results.</span>
 
+<span class="sd">    Args:</span>
+<span class="sd">        script_filename (str): the name of the script</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: two values: the *p-value* and the *q-value* (for SKAT-O, the</span>
+<span class="sd">               *q-value* is set to None)</span>
+
 <span class="sd">    The results should be somewhere in the standard output. The expected</span>
 <span class="sd">    format is: ::</span>
 
@@ -553,7 +595,7 @@
 
 <span class="sd">    If the template script is modified, this format should still be respected.</span>
 
-<span class="sd">    It is also noteworthy that this function uses `Rscript` to run the</span>
+<span class="sd">    It is also noteworthy that this function uses ``Rscript`` to run the</span>
 <span class="sd">    analysis. Hence, it should be in the path when using the imputed_stats</span>
 <span class="sd">    skat mode.</span>
 
@@ -593,15 +635,14 @@
 <span class="k">def</span> <span class="nf">_skat_generate_r_script</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="n">r_files</span><span class="p">,</span> <span class="n">args</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Uses jinja2 to generate an R script to do the SKAT analysis.</span>
 
-<span class="sd">    :param dir_name: The output directory name to write the scripts in.</span>
-<span class="sd">    :type dir_name: str</span>
+<span class="sd">    Args:</span>
+<span class="sd">        dir_name (str): the output directory name to write the scripts in</span>
+<span class="sd">        r_files (dict): contains the different input files required by the R</span>
+<span class="sd">                        script</span>
+<span class="sd">        args (argparse.Namespace): the parsed arguments</span>
 
-<span class="sd">    :param r_files: A dict containing the different input files required by</span>
-<span class="sd">                    the R script.</span>
-<span class="sd">    :type r_files: dict</span>
-
-<span class="sd">    :param args: The parsed arguments.</span>
-<span class="sd">    :type args: Namespace</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        list: the list of all script names</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">jinja_env</span> <span class="o">=</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span>
@@ -642,23 +683,20 @@
 <span class="k">def</span> <span class="nf">_skat_parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">markers_of_interest</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Parses a single line of the Impute2 file.</span>
 
-<span class="sd">    :param line: A line from the Impute2 file.</span>
-<span class="sd">    :type line: str</span>
+<span class="sd">    Args:</span>
+<span class="sd">        line (str): a line from the Impute2 file</span>
+<span class="sd">        markers_of_interest (set): a set of markers that are required for the</span>
+<span class="sd">                                   analysis</span>
+<span class="sd">        samples (pandas.DataFrame): contains the samples IDs (this is useful to</span>
+<span class="sd">                                    make sure we return a dosage vector with</span>
+<span class="sd">                                    the appropriate data)</span>
 
-<span class="sd">    :param markers_of_interest: A set of markers that are required for the</span>
-<span class="sd">                                analysis.</span>
-<span class="sd">    :type markers_of_interest: set</span>
-
-<span class="sd">    :param samples: A DataFrame containing the samples IDs. This is useful</span>
-<span class="sd">                    to make sure we return a dosage vector with the appropriate</span>
-<span class="sd">                    data.</span>
-<span class="sd">    :type samples: :py:class:`pandas.DataFrame`</span>
-
-<span class="sd">    :returns: Either None if the marker is not of interest or a tuple of `(name</span>
-<span class="sd">              , dosage_vector)` where `name` is a `str` representing the</span>
-<span class="sd">              variant ID and `dosage_vector` is a numpy array containing the</span>
-<span class="sd">              dosage values for every sample in the `samples` dataframe.</span>
-<span class="sd">    :rtype: tuple or None</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: Either None if the marker is not of interest or a tuple of</span>
+<span class="sd">               ``(name , dosage_vector)`` where ``name`` is a ``str``</span>
+<span class="sd">               representing the variant ID and ``dosage_vector`` is a numpy</span>
+<span class="sd">               array containing the dosage values for every sample in the</span>
+<span class="sd">               ``samples`` dataframe.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">line</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
@@ -689,19 +727,13 @@
 <span class="k">def</span> <span class="nf">_skat_write_marker</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">dosage</span><span class="p">,</span> <span class="n">snp_set</span><span class="p">,</span> <span class="n">genotype_files</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Write the dosage information to the appropriate genotype file.</span>
 
-<span class="sd">    :param name: The name of the marker.</span>
-<span class="sd">    :type name: str</span>
-
-<span class="sd">    :param dosage: The dosage vector.</span>
-<span class="sd">    :type dosage: :py:class:`numpy.ndarray`</span>
-
-<span class="sd">    :param snp_set: The dataframe that allows us to identify the correct SNP</span>
-<span class="sd">                    set for the specified variant.</span>
-<span class="sd">    :type snp_set: :py:class:`pandas.DataFrame`</span>
-
-<span class="sd">    :param genotype_files: The dict containing the opened CSV files for the</span>
-<span class="sd">                           genotypes.</span>
-<span class="sd">    :type genotype_files: dict</span>
+<span class="sd">    Args:</span>
+<span class="sd">        name (str): the name of the marker</span>
+<span class="sd">        dosage (numpy.array): the dosage vector</span>
+<span class="sd">        snp_set (pandas.DataFrame: the dataframe that allows us to identify the</span>
+<span class="sd">                                   correct SNP set for the specified variant</span>
+<span class="sd">        genotype_files (dict): a dictionary containing the opened CSV files for</span>
+<span class="sd">                               the genotypes</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Identify the correct SNP set.</span>
@@ -714,6 +746,15 @@
 <span class="k">def</span> <span class="nf">compute_statistics</span><span class="p">(</span><span class="n">impute2_filename</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">markers_to_extract</span><span class="p">,</span>
 <div class="viewcode-block" id="compute_statistics"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.compute_statistics">[docs]</a>                       <span class="n">phenotypes</span><span class="p">,</span> <span class="n">remove_gender</span><span class="p">,</span> <span class="n">out_prefix</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Parses IMPUTE2 file while computing statistics.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        impute2_filename (str): the name of the input file</span>
+<span class="sd">        samples (pandas.DataFrame): the list of samples</span>
+<span class="sd">        markers_to_extract (set): the set of markers to extract</span>
+<span class="sd">        phenotypes (pandas.DataFrame): the phenotypes</span>
+<span class="sd">        remove_gender (bool): whether or not to remove the gender column</span>
+<span class="sd">        out_prefix (str): the output prefix</span>
+<span class="sd">        options (argparse.Namespace): the options</span>
 
 <span class="sd">    This function takes care of parallelism. It reads the Impute2 file and</span>
 <span class="sd">    fills a queue that will trigger the analysis when full.</span>
@@ -836,7 +877,15 @@
 
 
 <span class="k">def</span> <span class="nf">process_impute2_site</span><span class="p">(</span><span class="n">site_info</span><span class="p">):</span></div>
-<div class="viewcode-block" id="process_impute2_site"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.process_impute2_site">[docs]</a>    <span class="sd">&quot;&quot;&quot;Process an IMPUTE2 site (a line in an IMPUTE2 file).&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="process_impute2_site"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.process_impute2_site">[docs]</a>    <span class="sd">&quot;&quot;&quot;Process an IMPUTE2 site (a line in an IMPUTE2 file).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        site_info (list): the impute2 line (split by space)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: the results of the analysis</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Getting the probability matrix and site information</span>
     <span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">),</span> <span class="n">geno</span> <span class="o">=</span> <span class="n">matrix_from_line</span><span class="p">(</span><span class="n">site_info</span><span class="o">.</span><span class="n">row</span><span class="p">)</span>
 
@@ -942,12 +991,37 @@
 
 
 <span class="k">def</span> <span class="nf">samples_with_hetero_calls</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">hetero_c</span><span class="p">):</span></div>
-<div class="viewcode-block" id="samples_with_hetero_calls"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.samples_with_hetero_calls">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gets male and heterozygous calls.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="samples_with_hetero_calls"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.samples_with_hetero_calls">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gets male and heterozygous calls.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data (pandas.DataFrame): the probability matrix</span>
+<span class="sd">        hetero_c (str): the name of the heterozygous column</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pandas.Index: samples where call is heterozygous</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="o">.</span><span class="n">idxmax</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="n">hetero_c</span><span class="p">]</span><span class="o">.</span><span class="n">index</span>
 
 
 <span class="k">def</span> <span class="nf">get_formula</span><span class="p">(</span><span class="n">phenotype</span><span class="p">,</span> <span class="n">covars</span><span class="p">,</span> <span class="n">interaction</span><span class="p">):</span></div>
-<div class="viewcode-block" id="get_formula"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.get_formula">[docs]</a>    <span class="sd">&quot;&quot;&quot;Creates the linear/logistic regression formula (for statsmodel).&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="get_formula"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.get_formula">[docs]</a>    <span class="sd">&quot;&quot;&quot;Creates the linear/logistic regression formula (for statsmodel).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        phenotype (str): the phenotype column</span>
+<span class="sd">        covars (list): the list of co variable columns</span>
+<span class="sd">        interaction (str): the interaction column</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: the formula for the statistical analysis</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        The phenotype column needs to be specified. The list of co variables</span>
+<span class="sd">        might be empty (if no co variables are necessary). The interaction</span>
+<span class="sd">        column can be set to ``None`` if there is no interaction.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># The phenotype and genetics</span>
     <span class="n">formula</span> <span class="o">=</span> <span class="s">&quot;{} ~ _GenoD&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">phenotype</span><span class="p">)</span>
 
@@ -963,14 +1037,39 @@
 
 
 <span class="k">def</span> <span class="nf">fit_cox</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">time_to_event</span><span class="p">,</span> <span class="n">censure</span><span class="p">,</span> <span class="n">result_col</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div>
-<div class="viewcode-block" id="fit_cox"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.fit_cox">[docs]</a>    <span class="sd">&quot;&quot;&quot;Fit a Cox&#39; proportional hazard to the data.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="fit_cox"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.fit_cox">[docs]</a>    <span class="sd">&quot;&quot;&quot;Fit a Cox&#39; proportional hazard to the data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data (pandas.DataFrame): the data to analyse</span>
+<span class="sd">        time_to_event (str): the time to event column for the survival analysis</span>
+<span class="sd">        censure (str): the censure column for the survival analysis</span>
+<span class="sd">        result_col (str): the column that will contain the results</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.array: the results from the survival analysis</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        The tie method used is ``Efron``. Normalization is set to ``False``.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">cf</span> <span class="o">=</span> <span class="n">CoxPHFitter</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">tie_method</span><span class="o">=</span><span class="s">&quot;Efron&quot;</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
     <span class="n">res</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">duration_col</span><span class="o">=</span><span class="n">time_to_event</span><span class="p">,</span> <span class="n">event_col</span><span class="o">=</span><span class="n">censure</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">result_col</span><span class="p">,</span> <span class="n">_COX_REQ_COLS</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
 
 <span class="k">def</span> <span class="nf">fit_linear</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">formula</span><span class="p">,</span> <span class="n">result_col</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div>
-<div class="viewcode-block" id="fit_linear"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.fit_linear">[docs]</a>    <span class="sd">&quot;&quot;&quot;Fit a linear regression to the data.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="fit_linear"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.fit_linear">[docs]</a>    <span class="sd">&quot;&quot;&quot;Fit a linear regression to the data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data (pandas.DataFrame): the data to analyse</span>
+<span class="sd">        formula (str): the formula for the linear regression</span>
+<span class="sd">        result_col (str): the column that will contain the results</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: the results from the linear regression</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_get_result_from_linear_logistic</span><span class="p">(</span>
         <span class="n">smf</span><span class="o">.</span><span class="n">ols</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(),</span>
         <span class="n">result_col</span><span class="o">=</span><span class="n">result_col</span><span class="p">,</span>
@@ -978,7 +1077,17 @@
 
 
 <span class="k">def</span> <span class="nf">fit_logistic</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">formula</span><span class="p">,</span> <span class="n">result_col</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div>
-<div class="viewcode-block" id="fit_logistic"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.fit_logistic">[docs]</a>    <span class="sd">&quot;&quot;&quot;Fit a logistic regression to the data.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="fit_logistic"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.fit_logistic">[docs]</a>    <span class="sd">&quot;&quot;&quot;Fit a logistic regression to the data.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        data (pandas.DataFrame): the data to analyse</span>
+<span class="sd">        formula (str): the formula for the logistic regression</span>
+<span class="sd">        result_col (str): the column that will contain the results</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: the results from the logistic regression</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">_get_result_from_linear_logistic</span><span class="p">(</span>
         <span class="n">smf</span><span class="o">.</span><span class="n">glm</span><span class="p">(</span><span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
                 <span class="n">family</span><span class="o">=</span><span class="n">sm</span><span class="o">.</span><span class="n">families</span><span class="o">.</span><span class="n">Binomial</span><span class="p">())</span><span class="o">.</span><span class="n">fit</span><span class="p">(),</span>
@@ -987,7 +1096,16 @@
 
 
 <span class="k">def</span> <span class="nf">_get_result_from_linear_logistic</span><span class="p">(</span><span class="n">fit_result</span><span class="p">,</span> <span class="n">result_col</span><span class="p">):</span></div>
-    <span class="sd">&quot;&quot;&quot;Gets results from either a linear or logistic regression.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Gets results from either a linear or logistic regression.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fit_result (RegressionResults): the results from the regression</span>
+<span class="sd">        result_col (str): the name of the result column</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: the regression results</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">conf_int</span> <span class="o">=</span> <span class="n">fit_result</span><span class="o">.</span><span class="n">conf_int</span><span class="p">()</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">result_col</span><span class="p">,</span> <span class="p">:]</span><span class="o">.</span><span class="n">values</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">conf_int</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
     <span class="k">return</span> <span class="p">[</span>
@@ -1004,7 +1122,16 @@
 
 
 <span class="k">def</span> <span class="nf">check_args</span><span class="p">(</span><span class="n">args</span><span class="p">):</span>
-<div class="viewcode-block" id="check_args"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.check_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Checks the arguments and options.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="check_args"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.check_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Checks the arguments and options.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        args (argparse.Namespace): the options to verify</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        If there is a problem, a :py:class:`gwip.error.ProgramError` is raised.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Checking if we have the requirements</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">==</span> <span class="s">&quot;cox&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_LIFELINES</span><span class="p">:</span>
@@ -1125,7 +1252,21 @@
 
 
 <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
-<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.parse_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Parses the command line options and arguments.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.parse_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Parses the command line options and arguments.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        parser (argparse.ArgumentParser): the argument parser</span>
+<span class="sd">        args (list): the list of arguments (if not taken from ``sys.argv``)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        argparse.Namespace: the list of options and arguments</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        The only check that is done here is by the parser itself. Values are</span>
+<span class="sd">        verified later by the :py:func:`check_args` function.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Adding the version option for the main parser</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s">&quot;-v&quot;</span><span class="p">,</span>

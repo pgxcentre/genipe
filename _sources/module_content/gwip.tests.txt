@@ -1,8 +1,19 @@
 gwip.tests package
 ===================
 
+
+Module contents
+----------------
+
+.. automodule:: gwip.tests
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 Submodules
 -----------
+
 
 gwip.tests.python_3_3_compatibility module
 -------------------------------------------
@@ -12,6 +23,7 @@ gwip.tests.python_3_3_compatibility module
     :undoc-members:
     :show-inheritance:
 
+
 gwip.tests.test_db module
 --------------------------
 
@@ -19,6 +31,7 @@ gwip.tests.test_db module
     :members:
     :undoc-members:
     :show-inheritance:
+
 
 gwip.tests.test_formats module
 -------------------------------
@@ -28,6 +41,7 @@ gwip.tests.test_formats module
     :undoc-members:
     :show-inheritance:
 
+
 gwip.tests.test_impute2_merger module
 --------------------------------------
 
@@ -35,6 +49,7 @@ gwip.tests.test_impute2_merger module
     :members:
     :undoc-members:
     :show-inheritance:
+
 
 gwip.tests.test_imputed_stats module
 -------------------------------------
@@ -44,6 +59,7 @@ gwip.tests.test_imputed_stats module
     :undoc-members:
     :show-inheritance:
 
+
 gwip.tests.test_launcher module
 --------------------------------
 
@@ -51,6 +67,7 @@ gwip.tests.test_launcher module
     :members:
     :undoc-members:
     :show-inheritance:
+
 
 gwip.tests.test_main_pipeline module
 -------------------------------------
@@ -60,6 +77,7 @@ gwip.tests.test_main_pipeline module
     :undoc-members:
     :show-inheritance:
 
+
 gwip.tests.test_reporting_utils module
 ---------------------------------------
 
@@ -68,11 +86,3 @@ gwip.tests.test_reporting_utils module
     :undoc-members:
     :show-inheritance:
 
-
-Module contents
-----------------
-
-.. automodule:: gwip.tests
-    :members:
-    :undoc-members:
-    :show-inheritance:

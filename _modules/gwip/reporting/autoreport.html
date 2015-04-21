@@ -101,7 +101,14 @@
 
 
 <span class="k">def</span> <span class="nf">generate_report</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">run_opts</span><span class="p">,</span> <span class="n">run_info</span><span class="p">):</span>
-<div class="viewcode-block" id="generate_report"><a class="viewcode-back" href="../../../module_content/gwip.reporting.html#gwip.reporting.autoreport.generate_report">[docs]</a>    <span class="sd">&quot;&quot;&quot;Generate the report.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="generate_report"><a class="viewcode-back" href="../../../module_content/gwip.reporting.html#gwip.reporting.autoreport.generate_report">[docs]</a>    <span class="sd">&quot;&quot;&quot;Generate the report.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        out_dir (str): the output directory for the report</span>
+<span class="sd">        run_opts (dict): the run options</span>
+<span class="sd">        run_info (dict): the run information</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Configuring Jinja2</span>
     <span class="n">jinja2_env</span> <span class="o">=</span> <span class="n">config_jinja2</span><span class="p">()</span>
 
@@ -161,7 +168,17 @@
 
 
 <span class="k">def</span> <span class="nf">_generate_background</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span> <span class="n">run_options</span><span class="p">,</span> <span class="n">run_information</span><span class="p">):</span></div>
-    <span class="sd">&quot;&quot;&quot;Generates the background section of the report.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Generates the background section of the report.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        templates (jinja2.Environment): the jinja2 template environment</span>
+<span class="sd">        run_options (dict): the run options</span>
+<span class="sd">        run_information (dict): the run information</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a string representation of the &quot;background&quot; section</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Loading the template</span>
     <span class="n">section_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;section_template.tex&quot;</span><span class="p">)</span>
     <span class="n">background</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;parts/background.tex&quot;</span><span class="p">)</span>
@@ -176,7 +193,17 @@
 
 
 <span class="k">def</span> <span class="nf">_generate_methods</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span> <span class="n">run_options</span><span class="p">,</span> <span class="n">run_information</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generate the method section of the report.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Generate the method section of the report.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        templates (jinja2.Environment): the jinja2 template environment</span>
+<span class="sd">        run_options (dict): the run options</span>
+<span class="sd">        run_information (dict): the run information</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a string representation of the &quot;methods&quot; section</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Some assertions</span>
     <span class="n">required_variables</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;shapeit_version&quot;</span><span class="p">,</span> <span class="s">&quot;impute2_version&quot;</span><span class="p">,</span>
                           <span class="s">&quot;plink_version&quot;</span><span class="p">,</span> <span class="s">&quot;initial_nb_markers&quot;</span><span class="p">,</span>
@@ -307,7 +334,17 @@
 
 
 <span class="k">def</span> <span class="nf">_generate_results</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span> <span class="n">run_options</span><span class="p">,</span> <span class="n">run_information</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generates the results section of the report.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Generates the results section of the report.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        templates (jinja2.Environment): the jinja2 template environment</span>
+<span class="sd">        run_options (dict): the run options</span>
+<span class="sd">        run_information (dict): the run information</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a string representation of the &quot;results&quot; section</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Some assertions</span>
     <span class="n">required_variables</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;cross_validation_final_nb_genotypes&quot;</span><span class="p">,</span>
                           <span class="s">&quot;cross_validation_nb_genotypes_chrom&quot;</span><span class="p">,</span>
@@ -488,7 +525,17 @@
 
 
 <span class="k">def</span> <span class="nf">_generate_conclusions</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span> <span class="n">run_options</span><span class="p">,</span> <span class="n">run_information</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generates the background section of the report.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Generates the background section of the report.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        templates (jinja2.Environment): the jinja2 template environment</span>
+<span class="sd">        run_options (dict): the run options</span>
+<span class="sd">        run_information (dict): the run information</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a string representation of the &quot;conclusions&quot; section</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Some assertions</span>
     <span class="n">required_variables</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;nb_good_sites&quot;</span><span class="p">,</span> <span class="s">&quot;prob_threshold&quot;</span><span class="p">,</span> <span class="s">&quot;rate_threshold&quot;</span><span class="p">,</span>
                           <span class="s">&quot;nb_genotyped&quot;</span><span class="p">]</span>
@@ -585,7 +632,17 @@
 
 
 <span class="k">def</span> <span class="nf">_generate_annex</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span> <span class="n">run_options</span><span class="p">,</span> <span class="n">run_information</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generates the annex section of the report (execution times).&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Generates the annex section of the report (execution times).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        templates (jinja2.Environment): the jinja2 template environment</span>
+<span class="sd">        run_options (dict): the run options</span>
+<span class="sd">        run_information (dict): the run information</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a string representation of the &quot;Annex&quot; section</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Some assertions</span>
     <span class="n">required_variables</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;plink_exclude_exec_time&quot;</span><span class="p">,</span>
                           <span class="s">&quot;shapeit_check_1_exec_time&quot;</span><span class="p">,</span>
@@ -718,7 +775,21 @@
 
 <span class="k">def</span> <span class="nf">_generate_time_float</span><span class="p">(</span><span class="n">task_name</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">tabular_t</span><span class="p">,</span> <span class="n">float_t</span><span class="p">,</span>
                          <span class="n">first_time_col</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Generates time tables (split one long table in two).&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Generates time tables (split one long table in two).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        task_name (str): the name of the task</span>
+<span class="sd">        label (str): the label for the float</span>
+<span class="sd">        table (list): the data for the float</span>
+<span class="sd">        header (str): the header for the tables</span>
+<span class="sd">        tabular_t (jinja2.Template): the template for the tabular</span>
+<span class="sd">        float_t (jinja2.Template): the template for the float</span>
+<span class="sd">        first_time_col (int): the first column containing time (base 0)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a LaTeX float</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">)</span> <span class="o">==</span> <span class="mi">22</span>
 
     <span class="c"># Adding the first table</span>
@@ -750,7 +821,16 @@
 
 
 <span class="k">def</span> <span class="nf">_format_time_columns</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">first_col</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Colorize the time in the table (columns 2 and up).&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Colorize the time in the table (columns 2 and up).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        table (list): the data for the tabular</span>
+<span class="sd">        first_col (int): the first column containing time</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: the same data, but with time column colorized</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">)):</span>
         <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">first_col</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
             <span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">colorize_time</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>

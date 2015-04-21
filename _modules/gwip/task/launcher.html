@@ -105,7 +105,18 @@
 
 <span class="k">def</span> <span class="nf">launch_tasks</span><span class="p">(</span><span class="n">to_process</span><span class="p">,</span> <span class="n">nb_threads</span><span class="p">,</span> <span class="n">check_rc</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">hpc</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
 <div class="viewcode-block" id="launch_tasks"><a class="viewcode-back" href="../../../module_content/gwip.task.html#gwip.task.launcher.launch_tasks">[docs]</a>                 <span class="n">hpc_options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Executes commands.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Executes commands.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        to_process (list): a list of tasks to process</span>
+<span class="sd">        nb_threads (int): the number of processes that is required</span>
+<span class="sd">        check_rc (bool): whether or not to check the return code of the task</span>
+<span class="sd">        hpc (bool): whether or not to execute the tasks on a cluster (DRMAA)</span>
+<span class="sd">        hpc_options (dict): the DRMAA options</span>
+<span class="sd">        out_dir (str): the output directory</span>
+<span class="sd">        preamble (str): the script preamble (for DRMAA)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Do we need to check the return code?</span>
     <span class="n">to_run</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">to_process</span><span class="p">)):</span>
@@ -204,7 +215,24 @@
 
 
 <span class="k">def</span> <span class="nf">_check_output_files</span><span class="p">(</span><span class="n">o_files</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span></div>
-    <span class="sd">&quot;&quot;&quot;Check that the files exist.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Check that the files exist.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        o_files (list): the list of files got check</span>
+<span class="sd">        task (str): the name of the task</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: ``True`` if all files exist, ``False`` otherwise</span>
+
+<span class="sd">    If the file to check is an impute2 file, and that this file is missing, we</span>
+<span class="sd">    check for further statistics using the :py:func:`_check_impute2_file`.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        If the file name ends with ``.impute2`` and the file doesn&#39;t exist, we</span>
+<span class="sd">        look for the compressed file (``.impute2.gz``) instead.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;.impute2&quot;</span><span class="p">):</span>
             <span class="c"># IMPUTE2 files might be gzipped</span>
@@ -221,7 +249,19 @@
 <span class="k">def</span> <span class="nf">_check_impute2_file</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">task</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Checks the summary to explain the absence of an .impute2 file.</span>
 
-<span class="sd">    :returns: True if it&#39;s normal, False otherwise.</span>
+<span class="sd">    Args:</span>
+<span class="sd">        fn (str): the name of the file to check</span>
+<span class="sd">        task (str): the name of the task</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: ``True`` if everything is normal, ``False`` otherwise.</span>
+
+<span class="sd">    This function looks for known message in the summary file. Three possible</span>
+<span class="sd">    ways that an impute2 file is missing:</span>
+
+<span class="sd">    1. there are no SNPs in the imputation interval;</span>
+<span class="sd">    2. there are no type 2 SNPs after applying the settings;</span>
+<span class="sd">    3. there are no SNPs for output.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># The name of the summary file</span>
@@ -277,7 +317,17 @@
 
 
 <span class="k">def</span> <span class="nf">_execute_command</span><span class="p">(</span><span class="n">command_info</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Executes a single command.&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Executes a single command.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        command_info (dict): information about the command</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: a tuple containing 4 entries: whether the task completed (bool),</span>
+<span class="sd">               the name of the task (str), the status of the run (str) and the</span>
+<span class="sd">               execution time in seconds (int)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Some assertions</span>
     <span class="k">assert</span> <span class="s">&quot;task_id&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
     <span class="k">assert</span> <span class="s">&quot;name&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
@@ -347,7 +397,22 @@
 
 
 <span class="k">def</span> <span class="nf">_execute_command_drmaa</span><span class="p">(</span><span class="n">command_info</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Executes a command using DRMAA (usually on a HPC).&quot;&quot;&quot;</span>
+    <span class="sd">&quot;&quot;&quot;Executes a command using DRMAA (usually on a HPC).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        command_info (dict): information about the command</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: a tuple containing 4 entries: whether the task completed (bool),</span>
+<span class="sd">               the name of the task (str), the status of the run (str) and the</span>
+<span class="sd">               execution time in seconds (int)</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        The preamble (if required) is inserted between the shebang line and the</span>
+<span class="sd">        actual command.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="kn">import</span> <span class="nn">drmaa</span>
 
     <span class="c"># Some assertions</span>

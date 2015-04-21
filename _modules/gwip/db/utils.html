@@ -99,11 +99,11 @@
 <span class="k">def</span> <span class="nf">create_task_db</span><span class="p">(</span><span class="n">out_dir</span><span class="p">):</span>
 <div class="viewcode-block" id="create_task_db"><a class="viewcode-back" href="../../../module_content/gwip.db.html#gwip.db.utils.create_task_db">[docs]</a>    <span class="sd">&quot;&quot;&quot;Creates a task DB.</span>
 
-<span class="sd">    :param out_dir: the directory where the DB will be saved</span>
-<span class="sd">    :type out_dir: str</span>
+<span class="sd">    Args:</span>
+<span class="sd">        out_dir (str): the directory where the DB will be saved</span>
 
-<span class="sd">    :returns: the name of the file containing the DB</span>
-<span class="sd">    :rtype: str</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        str: the name of the file containing the DB</span>
 
 <span class="sd">    A SQLITE database will be created in the ``out_dir`` directory (with the</span>
 <span class="sd">    name ``tasks.db``. The ``gwip_task`` table is automatically created.</span>
@@ -134,12 +134,12 @@
 <span class="k">def</span> <span class="nf">_create_db_connection</span><span class="p">(</span><span class="n">db_name</span><span class="p">):</span></div>
     <span class="sd">&quot;&quot;&quot;Creates a DB connection.</span>
 
-<span class="sd">    :param db_name: the name of the database (usually a file)</span>
-<span class="sd">    :type db_name: str</span>
+<span class="sd">    Args:</span>
+<span class="sd">        db_name (str): the name of the database (usually a file)</span>
 
-<span class="sd">    :returns: a tuple containing the connection object and a cursor to that</span>
-<span class="sd">              object</span>
-<span class="sd">    :rtype: tuple</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: a tuple containing the connection object and a cursor to that</span>
+<span class="sd">               object</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">conn</span> <span class="o">=</span> <span class="n">sqlite3</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span>
@@ -155,18 +155,16 @@
 <span class="k">def</span> <span class="nf">check_task_completion</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">):</span>
 <div class="viewcode-block" id="check_task_completion"><a class="viewcode-back" href="../../../module_content/gwip.db.html#gwip.db.utils.check_task_completion">[docs]</a>    <span class="sd">&quot;&quot;&quot;Checks if the task exists and if it&#39;s completed.</span>
 
-<span class="sd">    :param task_id: the ID of the task</span>
-<span class="sd">    :param db_name: the name of the database (usually a file)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        task_id (str): the ID of the task</span>
+<span class="sd">        db_name (str): the name of the database (usually a file)</span>
 
-<span class="sd">    :type task_id: str</span>
-<span class="sd">    :param db_name: str</span>
-
-<span class="sd">    :returns: ``True`` if the task exists **and** is completed, ``False``</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: ``True`` if the task exists **and** is completed, ``False``</span>
 <span class="sd">              otherwise</span>
-<span class="sd">    :rtype: boolean</span>
 
-<span class="sd">    .. note::</span>
-
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
 <span class="sd">        A task is completed if the column ``completed`` equals 1. It is not</span>
 <span class="sd">        completed otherwise.</span>
 
@@ -195,11 +193,9 @@
 <span class="k">def</span> <span class="nf">create_task_entry</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">):</span></div>
 <div class="viewcode-block" id="create_task_entry"><a class="viewcode-back" href="../../../module_content/gwip.db.html#gwip.db.utils.create_task_entry">[docs]</a>    <span class="sd">&quot;&quot;&quot;Creates (or updates) a task.</span>
 
-<span class="sd">    :param task_id: the ID of the task</span>
-<span class="sd">    :param db_name: the name of the database (usually a file)</span>
-
-<span class="sd">    :type task_id: str</span>
-<span class="sd">    :type db_name: str</span>
+<span class="sd">    Args:</span>
+<span class="sd">        task_id (str): the ID of the task</span>
+<span class="sd">        db_name (str): the name of the database (usually a file)</span>
 
 <span class="sd">    If the task ID doesn&#39;t exist in the DB, a new one will be created with the</span>
 <span class="sd">    current time as launch and start time.</span>
@@ -237,11 +233,9 @@
 <span class="k">def</span> <span class="nf">mark_task_completed</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">):</span></div>
 <div class="viewcode-block" id="mark_task_completed"><a class="viewcode-back" href="../../../module_content/gwip.db.html#gwip.db.utils.mark_task_completed">[docs]</a>    <span class="sd">&quot;&quot;&quot;Marks the task as completed.</span>
 
-<span class="sd">    :param task_id: the ID of the task</span>
-<span class="sd">    :param db_name: the name of the DB (usually a file)</span>
-
-<span class="sd">    :type task_id: str</span>
-<span class="sd">    :type db_name: str</span>
+<span class="sd">    Args:</span>
+<span class="sd">        task_id (str): the ID of the task</span>
+<span class="sd">        db_name (str): the name of the DB (usually a file)</span>
 
 <span class="sd">    The task entry is modified so that ``completed=1`` and the end time is</span>
 <span class="sd">    updated to the current time.</span>
@@ -260,11 +254,9 @@
 <span class="k">def</span> <span class="nf">mark_task_incomplete</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">):</span></div>
 <div class="viewcode-block" id="mark_task_incomplete"><a class="viewcode-back" href="../../../module_content/gwip.db.html#gwip.db.utils.mark_task_incomplete">[docs]</a>    <span class="sd">&quot;&quot;&quot;Marks a task as incomplete.</span>
 
-<span class="sd">    :param task_id: the ID of the task</span>
-<span class="sd">    :param db_name: the name of the DB (usually a file)</span>
-
-<span class="sd">    :type task_id: str</span>
-<span class="sd">    :type db_name: str</span>
+<span class="sd">    Args:</span>
+<span class="sd">        task_id (str): the ID of the task</span>
+<span class="sd">        db_name (str): the name of the DB (usually a file)</span>
 
 <span class="sd">    The task entry is set as incomplete by updating the ``completed`` value to</span>
 <span class="sd">    ``0``.</span>
@@ -283,17 +275,12 @@
 <div class="viewcode-block" id="mark_drmaa_task_completed"><a class="viewcode-back" href="../../../module_content/gwip.db.html#gwip.db.utils.mark_drmaa_task_completed">[docs]</a>                              <span class="n">db_name</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Marks a task run by DRMAA as completed (while updating times).</span>
 
-<span class="sd">    :param task_id: the ID of the task</span>
-<span class="sd">    :param launch_time: the launch time (according to DRMAA)</span>
-<span class="sd">    :param start_time: the start time (according to DRMAA)</span>
-<span class="sd">    :param end_time: the end time (according to DRMAA)</span>
-<span class="sd">    :param db_name: the name of the DB (usually a file)</span>
-
-<span class="sd">    :type task_id: str</span>
-<span class="sd">    :type launch_time: float</span>
-<span class="sd">    :type start_time: float </span>
-<span class="sd">    :type end_time: float</span>
-<span class="sd">    :type db_name: str</span>
+<span class="sd">    Args:</span>
+<span class="sd">        task_id (str): the ID of the task</span>
+<span class="sd">        launch_time (float): the launch time (according to DRMAA)</span>
+<span class="sd">        start_time (float): the start time (according to DRMAA)</span>
+<span class="sd">        end_time (float): the end time (according to DRMAA)</span>
+<span class="sd">        db_name (str): the name of the DB (usually a file)</span>
 
 <span class="sd">    The task entry is updated with the launch, start and end time. Those times</span>
 <span class="sd">    come from the DRMAA library. The launch time is the time at which the task</span>
@@ -320,14 +307,12 @@
 <span class="k">def</span> <span class="nf">get_task_runtime</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">):</span></div>
 <div class="viewcode-block" id="get_task_runtime"><a class="viewcode-back" href="../../../module_content/gwip.db.html#gwip.db.utils.get_task_runtime">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gets the task run time.</span>
 
-<span class="sd">    :param task_id: the ID of the task</span>
-<span class="sd">    :param db_name: the name of the DB (usually a file)</span>
+<span class="sd">    Args:</span>
+<span class="sd">        task_id (str): the ID of the task</span>
+<span class="sd">        db_name (str): the name of the DB (usually a file)</span>
 
-<span class="sd">    :type task_id: str</span>
-<span class="sd">    :tupe db_name: str</span>
-
-<span class="sd">    :returns: the execution time of the task (in seconds)</span>
-<span class="sd">    :rtype: int</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        int: the execution time of the task (in seconds)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">conn</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">_create_db_connection</span><span class="p">(</span><span class="n">db_name</span><span class="p">)</span>
@@ -344,11 +329,11 @@
 <span class="k">def</span> <span class="nf">get_all_runtimes</span><span class="p">(</span><span class="n">db_name</span><span class="p">):</span></div>
 <div class="viewcode-block" id="get_all_runtimes"><a class="viewcode-back" href="../../../module_content/gwip.db.html#gwip.db.utils.get_all_runtimes">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gets all tasks execution time.</span>
 
-<span class="sd">    :param db_name: the name of the DB (usually a file)</span>
-<span class="sd">    :type db_name: str</span>
+<span class="sd">    Args:</span>
+<span class="sd">        db_name (str): the name of the DB (usually a file)</span>
 
-<span class="sd">    :returns: the execution time (seconds) of all the tasks in the database</span>
-<span class="sd">    :rtype: dict</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: the execution time (seconds) of all the tasks in the database</span>
 
 <span class="sd">    This function returns a dictionary of task ID (keys) pointing to execution</span>
 <span class="sd">    time (in second) (int).</span>

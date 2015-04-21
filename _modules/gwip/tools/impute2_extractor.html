@@ -101,7 +101,14 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_extractor.main">[docs]</a>    <span class="sd">&quot;&quot;&quot;The main function.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_extractor.main">[docs]</a>    <span class="sd">&quot;&quot;&quot;The main function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        args (argparse.Namespace): the arguments to be parsed (if</span>
+<span class="sd">                                   :py:func:`main` is called by another</span>
+<span class="sd">                                   modulel)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Creating the option parser</span>
     <span class="n">desc</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Extract imputed markers located in a specific genomic region. &quot;</span>
             <span class="s">&quot;This script is part of the &#39;gwip&#39; package, version &quot;</span>
@@ -171,7 +178,16 @@
 
 
 <span class="k">def</span> <span class="nf">extract_markers</span><span class="p">(</span><span class="n">i_filenames</span><span class="p">,</span> <span class="n">to_extract</span><span class="p">,</span> <span class="n">out_prefix</span><span class="p">,</span> <span class="n">out_format</span><span class="p">,</span> <span class="n">prob_t</span><span class="p">):</span></div>
-<div class="viewcode-block" id="extract_markers"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_extractor.extract_markers">[docs]</a>    <span class="sd">&quot;&quot;&quot;Extracts according to names.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="extract_markers"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_extractor.extract_markers">[docs]</a>    <span class="sd">&quot;&quot;&quot;Extracts according to names.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        i_filenames (list): the list of input file names</span>
+<span class="sd">        to_extract (dict): the list of markers to extract for each input file</span>
+<span class="sd">        out_prefix (str): the output prefix</span>
+<span class="sd">        out_format (list): the output format(s)</span>
+<span class="sd">        prob_t (float): the probability threshold</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># The output files (probabilities)</span>
     <span class="n">o_files</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">suffix</span><span class="p">:</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_prefix</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">out_format</span>
@@ -226,7 +242,15 @@
 
 
 <span class="k">def</span> <span class="nf">print_data</span><span class="p">(</span><span class="n">o_files</span><span class="p">,</span> <span class="n">prob_t</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
-<div class="viewcode-block" id="print_data"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_extractor.print_data">[docs]</a>    <span class="sd">&quot;&quot;&quot;Prints an impute2 line.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="print_data"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_extractor.print_data">[docs]</a>    <span class="sd">&quot;&quot;&quot;Prints an impute2 line.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        o_files (dict): the output files</span>
+<span class="sd">        prob_t (float): the probability threshold</span>
+<span class="sd">        line (str): the impute2 line</span>
+<span class="sd">        row (list): the impute2 line, split by spaces</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Probabilities?</span>
     <span class="k">if</span> <span class="s">&quot;impute2&quot;</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">:</span>
         <span class="n">o_files</span><span class="p">[</span><span class="s">&quot;impute2&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
@@ -267,7 +291,25 @@
 
 
 <span class="k">def</span> <span class="nf">gather_extraction</span><span class="p">(</span><span class="n">i_filenames</span><span class="p">,</span> <span class="n">maf</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">extract_filename</span><span class="p">,</span> <span class="n">genomic_range</span><span class="p">):</span></div>
-<div class="viewcode-block" id="gather_extraction"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_extractor.gather_extraction">[docs]</a>    <span class="s">&quot;Gather positions that are required.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="gather_extraction"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_extractor.gather_extraction">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gather positions that are required.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        i_filenames (list): the list of input files</span>
+<span class="sd">        maf (float): the minor allele frequency threshold (might be ``None``)</span>
+<span class="sd">        rate (float): the call rate threshold (might be ``None``)</span>
+<span class="sd">        extract_filename (str): the name of the file containing marker names to</span>
+<span class="sd">                                extract (might be ``None``)</span>
+<span class="sd">        genomic_range (str): the genomic range for extraction</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: the list of markers to extract for each input file</span>
+
+<span class="sd">    If extraction by marker name is required, only those markers will be</span>
+<span class="sd">    extracted. Otherwise, ``maf``, ``rate`` or ``genomic_range`` can be</span>
+<span class="sd">    specified (alone or together) to extract markers according to minor allele</span>
+<span class="sd">    frequency, call rate and genomic location.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">to_extract</span> <span class="o">=</span> <span class="p">{}</span>
 
     <span class="k">for</span> <span class="n">i_filename</span> <span class="ow">in</span> <span class="n">i_filenames</span><span class="p">:</span>
@@ -343,7 +385,19 @@
 
 
 <span class="k">def</span> <span class="nf">get_file_prefix</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span></div>
-<div class="viewcode-block" id="get_file_prefix"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_extractor.get_file_prefix">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gets the filename prefix.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="get_file_prefix"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_extractor.get_file_prefix">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gets the filename prefix.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn (str): the name of the file from which the prefix is required</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: the prefix of the file</span>
+
+<span class="sd">    This function removes the extension from the file name, and return its</span>
+<span class="sd">    prefix (*e.g.* ``test.impute2`` returns ``test``, and</span>
+<span class="sd">    ``../test.impute2.gz`` returns ``../test``).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">fn</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">prefix</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">):</span>
         <span class="n">prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">splitext</span><span class="p">(</span><span class="n">prefix</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span>
@@ -351,7 +405,16 @@
 
 
 <span class="k">def</span> <span class="nf">check_args</span><span class="p">(</span><span class="n">args</span><span class="p">):</span></div>
-<div class="viewcode-block" id="check_args"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_extractor.check_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Checks the arguments and options.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="check_args"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_extractor.check_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Checks the arguments and options.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        args (argparse.Namespace): the options to verify</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        If there is a problem, a :py:class:`gwip.error.ProgramError` is raised.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Checking that the impute2 files exists</span>
     <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
@@ -429,7 +492,21 @@
 
 
 <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
-<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_extractor.parse_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Parses the command line options and arguments.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_extractor.parse_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Parses the command line options and arguments.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        parser (argparse.ArgumentParser): the argument parser</span>
+<span class="sd">        args (list): the list of arguments (if not taken from ``sys.argv``)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        argparse.Namespace: the list of options and arguments</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        The only check that is done here is by the parser itself. Values are</span>
+<span class="sd">        verified later by the :py:func:`check_args` function.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Adding the version option for the main parser</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s">&quot;-v&quot;</span><span class="p">,</span>
@@ -480,7 +557,8 @@
         <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
         <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;FLOAT&quot;</span><span class="p">,</span>
         <span class="n">default</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s">&quot;The probability threshold used when creating a dosage file.&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&quot;The probability threshold used when creating a file in the &quot;</span>
+             <span class="s">&quot;dosage or call format.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c"># What to extract</span>

@@ -100,7 +100,14 @@
 
 
 <span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_merger.main">[docs]</a>    <span class="sd">&quot;&quot;&quot;The main function.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_merger.main">[docs]</a>    <span class="sd">&quot;&quot;&quot;The main function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        args (argparse.Namespace): the arguments to be parsed (if</span>
+<span class="sd">                                   :py:func:`main` is called by another</span>
+<span class="sd">                                   modulel)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Creating the option parser</span>
     <span class="n">desc</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;Concatenate IMPUTE2 output files and retrieve some &quot;</span>
             <span class="s">&quot;statistics. This script is part of the &#39;gwip&#39; package, &quot;</span>
@@ -155,7 +162,51 @@
 
 
 <span class="k">def</span> <span class="nf">concatenate_files</span><span class="p">(</span><span class="n">i_filenames</span><span class="p">,</span> <span class="n">out_prefix</span><span class="p">,</span> <span class="n">real_chrom</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span></div>
-<div class="viewcode-block" id="concatenate_files"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_merger.concatenate_files">[docs]</a>    <span class="sd">&quot;&quot;&quot;Concatenates and extracts information from IMPUTE2 GEN file(s).&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="concatenate_files"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_merger.concatenate_files">[docs]</a>    <span class="sd">&quot;&quot;&quot;Concatenates and extracts information from IMPUTE2 GEN file(s).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        i_filenames (list): the list of input filenames (to concatenate)</span>
+<span class="sd">        out_prefix (str): the output prefix for the output files</span>
+<span class="sd">        real_chrom (str): the chromosome contained in all the input files</span>
+<span class="sd">        options (argparse.Namespace): the options</span>
+
+<span class="sd">    This function will create the following seven files:</span>
+
+<span class="sd">    +-----------------------+-------------------------------------------------+</span>
+<span class="sd">    | File name             | Description                                     |</span>
+<span class="sd">    +=======================+=================================================+</span>
+<span class="sd">    | ``.impute2``          | Imputation results (merged from all the input   |</span>
+<span class="sd">    |                       | files).                                         |</span>
+<span class="sd">    +-----------------------+-------------------------------------------------+</span>
+<span class="sd">    | ``.alleles``          | Description of the reference and alternative    |</span>
+<span class="sd">    |                       | allele at each sites.                           |</span>
+<span class="sd">    +-----------------------+-------------------------------------------------+</span>
+<span class="sd">    | ``.imputed_sites``    | List of imputed sites (excluding sites that     |</span>
+<span class="sd">    |                       | were previously genotyped in the study cohort). |</span>
+<span class="sd">    +-----------------------+-------------------------------------------------+</span>
+<span class="sd">    | ``.completion_rates`` | Number of missing values and completion rate    |</span>
+<span class="sd">    |                       | for all sites (using the probability threshold  |</span>
+<span class="sd">    |                       | set by the user, where the default is higher    |</span>
+<span class="sd">    |                       | and equal to 0.9).                              |</span>
+<span class="sd">    +-----------------------+-------------------------------------------------+</span>
+<span class="sd">    | ``.good_sites``       | List of sites which pass the completion rate    |</span>
+<span class="sd">    |                       | threshold (set by the user, where the default   |</span>
+<span class="sd">    |                       | is higher and equal to 0.98) using the          |</span>
+<span class="sd">    |                       | probability threshold (set by the user, where   |</span>
+<span class="sd">    |                       | the default is higher and equal to 0.9).        |</span>
+<span class="sd">    +-----------------------+-------------------------------------------------+</span>
+<span class="sd">    | ``.map``              | A map file describing the genomic location of   |</span>
+<span class="sd">    |                       | all sites.                                      |</span>
+<span class="sd">    +-----------------------+-------------------------------------------------+</span>
+<span class="sd">    | ``.maf``              | File containing the minor allele frequency      |</span>
+<span class="sd">    |                       | (along with minor allele identification) for    |</span>
+<span class="sd">    |                       | all sites using the probabilitty threshold of   |</span>
+<span class="sd">    |                       | 0.9. When no genotypes are available (because   |</span>
+<span class="sd">    |                       | they are all below the threshold), the MAF is   |</span>
+<span class="sd">    |                       | ``NA``.                                         |</span>
+<span class="sd">    +-----------------------+-------------------------------------------------+</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Opening output files</span>
     <span class="n">impute2_o_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_prefix</span> <span class="o">+</span> <span class="s">&quot;.impute2&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
     <span class="n">alleles_o_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_prefix</span> <span class="o">+</span> <span class="s">&quot;.alleles&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
@@ -287,7 +338,16 @@
 
 
 <span class="k">def</span> <span class="nf">check_args</span><span class="p">(</span><span class="n">args</span><span class="p">):</span></div>
-<div class="viewcode-block" id="check_args"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_merger.check_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Checks the arguments and options.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="check_args"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_merger.check_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Checks the arguments and options.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        args (argparse.Namespace): the options to verify</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        If there is a problem, a :py:class:`gwip.error.ProgramError` is raised.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Checking the input files</span>
     <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
@@ -310,7 +370,21 @@
 
 
 <span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
-<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_merger.parse_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Parses the command line options and arguments.&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.impute2_merger.parse_args">[docs]</a>    <span class="sd">&quot;&quot;&quot;Parses the command line options and arguments.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        parser (argparse.ArgumentParser): the argument parser</span>
+<span class="sd">        args (list): the list of arguments (if not taken from ``sys.argv``)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        argparse.Namespace: the list of options and arguments</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        The only check that is done here is by the parser itself. Values are</span>
+<span class="sd">        verified later by the :py:func:`check_args` function.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># The parser object</span>
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s">&quot;--version&quot;</span><span class="p">,</span>

@@ -97,18 +97,19 @@
 <span class="k">def</span> <span class="nf">matrix_from_line</span><span class="p">(</span><span class="n">impute2_line</span><span class="p">):</span>
 <div class="viewcode-block" id="matrix_from_line"><a class="viewcode-back" href="../../../module_content/gwip.formats.html#gwip.formats.impute2.matrix_from_line">[docs]</a>    <span class="sd">&quot;&quot;&quot;Generates the probability matrix from an IMPUTE2 line.</span>
 
-<span class="sd">    :param impute2_line: a single line from IMPUTE2&#39;s result (split by space)</span>
-<span class="sd">    :type impute2: list</span>
+<span class="sd">    Args:</span>
+<span class="sd">        impute2_line (list): a single line from IMPUTE2&#39;s result (split by</span>
+<span class="sd">                             space)</span>
 
-<span class="sd">    :returns: a tuple containing the marker&#39;s information (first five values of</span>
-<span class="sd">              the line) and the matrix probability (numpy array, float)</span>
-<span class="sd">    :rtype: tuple</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: a tuple containing the marker&#39;s information (first five values</span>
+<span class="sd">               of the line) and the matrix probability (numpy array, float)</span>
 
 <span class="sd">    The shape of the matrix is n x 3 where n is the number of samples.</span>
 <span class="sd">    The columns represent the probability for AA, AB and BB.</span>
 
-<span class="sd">    .. note::</span>
-
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
 <span class="sd">        The ``impute2_line`` variable is a list of str, corresponding to a line</span>
 <span class="sd">        from the IMPUTE2&#39;s result, split by space.</span>
 
@@ -122,15 +123,13 @@
 <span class="k">def</span> <span class="nf">get_good_probs</span><span class="p">(</span><span class="n">prob_matrix</span><span class="p">,</span> <span class="n">min_prob</span><span class="o">=</span><span class="mf">0.9</span><span class="p">):</span></div>
 <div class="viewcode-block" id="get_good_probs"><a class="viewcode-back" href="../../../module_content/gwip.formats.html#gwip.formats.impute2.get_good_probs">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gathers good imputed genotypes (&gt;= probability threshold).</span>
 
-<span class="sd">    :param prob_matrix: the probability matrix</span>
-<span class="sd">    :param min_prob: the probability threshold</span>
+<span class="sd">    Args:</span>
+<span class="sd">        prob_matrix (numpy.array): the probability matrix</span>
+<span class="sd">        min_prob (float): the probability threshold</span>
 
-<span class="sd">    :type prob_matrix: numpy.array</span>
-<span class="sd">    :type min_prob: float</span>
-
-<span class="sd">    :returns: a mask array containing the positions where the probabilities are</span>
-<span class="sd">              equal or higher to the threshold</span>
-<span class="sd">    :rtype: numpy.array</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.array: a mask array containing the positions where the</span>
+<span class="sd">                     probabilities are equal or higher to the threshold</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">prob_matrix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">min_prob</span>
@@ -139,21 +138,16 @@
 <span class="k">def</span> <span class="nf">maf_from_probs</span><span class="p">(</span><span class="n">prob_matrix</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">site_name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
 <div class="viewcode-block" id="maf_from_probs"><a class="viewcode-back" href="../../../module_content/gwip.formats.html#gwip.formats.impute2.maf_from_probs">[docs]</a>    <span class="sd">&quot;&quot;&quot;Computes MAF from a probability matrix (and gender if chromosome X).</span>
 
-<span class="sd">    :param prob_matrix: the probability matrix</span>
-<span class="sd">    :param a1: the first allele</span>
-<span class="sd">    :param a2: the second allele</span>
-<span class="sd">    :param gender: the gender of the samples</span>
-<span class="sd">    :param site_name: the name for this site</span>
+<span class="sd">    Args:</span>
+<span class="sd">        prob_matrix (numpy.array): the probability matrix</span>
+<span class="sd">        a1 (str): the first allele</span>
+<span class="sd">        a2 (str): the second allele</span>
+<span class="sd">        gender (numpy.array): the gender of the samples</span>
+<span class="sd">        site_name (str): the name for this site</span>
 
-<span class="sd">    :type prob_matrix: numpy.array</span>
-<span class="sd">    :type a1: str</span>
-<span class="sd">    :type a2: str</span>
-<span class="sd">    :type gender: numpy.array</span>
-<span class="sd">    :type site_name: str</span>
-
-<span class="sd">    :returns: a tuple containing three values: the minor allele frequency, the</span>
-<span class="sd">              minor and the major allele.</span>
-<span class="sd">    :rtype: tuple</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: a tuple containing three values: the minor allele frequency, the</span>
+<span class="sd">               minor and the major allele.</span>
 
 <span class="sd">    When &#39;gender&#39; is not None, we assume that the MAF on chromosome X is</span>
 <span class="sd">    required (hence, males count as 1, and females as 2 alleles). There is also</span>
@@ -214,16 +208,14 @@
 <span class="k">def</span> <span class="nf">dosage_from_probs</span><span class="p">(</span><span class="n">homo_probs</span><span class="p">,</span> <span class="n">hetero_probs</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">):</span></div>
 <div class="viewcode-block" id="dosage_from_probs"><a class="viewcode-back" href="../../../module_content/gwip.formats.html#gwip.formats.impute2.dosage_from_probs">[docs]</a>    <span class="sd">&quot;&quot;&quot;Computes dosage from probability matrix (for the minor allele).</span>
 
-<span class="sd">    :param homo_probs: the probabilities for the homozygous genotype</span>
-<span class="sd">    :param hetero_probs: the probabilities for the heterozygous genotype</span>
-<span class="sd">    :param scale: the scale value</span>
+<span class="sd">    Args:</span>
+<span class="sd">        homo_probs (numpy.array): the probabilities for the homozygous genotype</span>
+<span class="sd">        hetero_probs (numpy.array): the probabilities for the heterozygous</span>
+<span class="sd">                                    genotype</span>
+<span class="sd">        scale (int): the scale value</span>
 
-<span class="sd">    :type homo_probs: numpy.array</span>
-<span class="sd">    :type hetero_probs: numpy.array</span>
-<span class="sd">    :type scale: int</span>
-
-<span class="sd">    :returns: the dosage computed from the probabilities</span>
-<span class="sd">    :rtype: numpy.array</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.array: the dosage computed from the probabilities</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="p">(</span><span class="n">homo_probs</span> <span class="o">+</span> <span class="p">(</span><span class="n">hetero_probs</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">scale</span>
@@ -232,16 +224,13 @@
 <span class="k">def</span> <span class="nf">hard_calls_from_probs</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">probs</span><span class="p">):</span></div>
 <div class="viewcode-block" id="hard_calls_from_probs"><a class="viewcode-back" href="../../../module_content/gwip.formats.html#gwip.formats.impute2.hard_calls_from_probs">[docs]</a>    <span class="sd">&quot;&quot;&quot;Computes hard calls from probability matrix.</span>
 
-<span class="sd">    :param a1: the first allele</span>
-<span class="sd">    :param a2: the second allele</span>
-<span class="sd">    :param probs: the probability matrix</span>
+<span class="sd">    Arg:</span>
+<span class="sd">        a1 (str): the first allele</span>
+<span class="sd">        a2 (str): the second allele</span>
+<span class="sd">        probs (numpy.array): the probability matrix</span>
 
-<span class="sd">    :type a1: str</span>
-<span class="sd">    :type a2: str</span>
-<span class="sd">    :type probs: numpy.array</span>
-
-<span class="sd">    :returns: the hard calls computed from the probabilities</span>
-<span class="sd">    :rtype: numpy.array</span>
+<span class="sd">    Returns:</span>
+<span class="sd">        numpy.array: the hard calls computed from the probabilities</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">possible_geno</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>

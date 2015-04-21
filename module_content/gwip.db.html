@@ -62,9 +62,9 @@
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">gwip.db package</a><ul>
+<li><a class="reference internal" href="#module-gwip.db">Module contents</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-gwip.db.utils">gwip.db.utils module</a></li>
-<li><a class="reference internal" href="#module-gwip.db">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -105,6 +105,9 @@
             
   <div class="section" id="gwip-db-package">
 <h1>gwip.db package<a class="headerlink" href="#gwip-db-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-gwip.db">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gwip.db" title="Permalink to this headline">¶</a></h2>
+</div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -140,8 +143,7 @@ name <code class="docutils literal"><span class="pre">tasks.db</span></code>. Th
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>task_id</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the ID of the task</li>
-<li><strong>db_name</strong> &#8211; the name of the database (usually a file)</li>
-<li><strong>db_name</strong> &#8211; str</li>
+<li><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the database (usually a file)</li>
 </ul>
 </td>
 </tr>
@@ -149,7 +151,7 @@ name <code class="docutils literal"><span class="pre">tasks.db</span></code>. Th
 otherwise</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">boolean</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)">bool</a></p>
 </td>
 </tr>
 </tbody>
@@ -234,17 +236,14 @@ updated to the current time.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>task_id</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the ID of the task</li>
-<li><strong>db_name</strong> &#8211; the name of the DB (usually a file)</li>
+<li><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the DB (usually a file)</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Tupe db_name:</th><td class="field-body"><p class="first">str</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the execution time of the task (in seconds)</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the execution time of the task (in seconds)</p>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)">int</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)">int</a></p>
 </td>
 </tr>
 </tbody>
@@ -297,9 +296,6 @@ the scheduler started the job on the cluster. Finally, the end time is the
 time that the job was completed.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-gwip.db">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gwip.db" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

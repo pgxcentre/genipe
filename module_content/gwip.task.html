@@ -62,9 +62,9 @@
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">gwip.task package</a><ul>
+<li><a class="reference internal" href="#module-gwip.task">Module contents</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
 <li><a class="reference internal" href="#module-gwip.task.launcher">gwip.task.launcher module</a></li>
-<li><a class="reference internal" href="#module-gwip.task">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -105,6 +105,9 @@
             
   <div class="section" id="gwip-task-package">
 <h1>gwip.task package<a class="headerlink" href="#gwip-task-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-gwip.task">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gwip.task" title="Permalink to this headline">¶</a></h2>
+</div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
 </div>
@@ -114,11 +117,25 @@
 <dt id="gwip.task.launcher.launch_tasks">
 <code class="descclassname">gwip.task.launcher.</code><code class="descname">launch_tasks</code><span class="sig-paren">(</span><em>to_process</em>, <em>nb_threads</em>, <em>check_rc=True</em>, <em>hpc=False</em>, <em>hpc_options=None</em>, <em>out_dir=None</em>, <em>preamble=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/task/launcher.html#launch_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.task.launcher.launch_tasks" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes commands.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>to_process</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; a list of tasks to process</li>
+<li><strong>nb_threads</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a>) &#8211; the number of processes that is required</li>
+<li><strong>check_rc</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) &#8211; whether or not to check the return code of the task</li>
+<li><strong>hpc</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) &#8211; whether or not to execute the tasks on a cluster (DRMAA)</li>
+<li><strong>hpc_options</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) &#8211; the DRMAA options</li>
+<li><strong>out_dir</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the output directory</li>
+<li><strong>preamble</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the script preamble (for DRMAA)</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
-</div>
-<div class="section" id="module-gwip.task">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gwip.task" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 

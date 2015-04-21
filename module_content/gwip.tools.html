@@ -58,11 +58,10 @@
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">gwip.tools package</a><ul>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-gwip.tools">Module contents</a></li>
 <li><a class="reference internal" href="#module-gwip.tools.impute2_extractor">gwip.tools.impute2_extractor module</a></li>
 <li><a class="reference internal" href="#module-gwip.tools.impute2_merger">gwip.tools.impute2_merger module</a></li>
 <li><a class="reference internal" href="#module-gwip.tools.imputed_stats">gwip.tools.imputed_stats module</a></li>
-<li><a class="reference internal" href="#module-gwip.tools">Module contents</a></li>
 </ul>
 </li>
 </ul>
@@ -100,8 +99,8 @@
             
   <div class="section" id="gwip-tools-package">
 <h1>gwip.tools package<a class="headerlink" href="#gwip-tools-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="module-gwip.tools">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gwip.tools" title="Permalink to this headline">¶</a></h2>
 </div>
 <div class="section" id="module-gwip.tools.impute2_extractor">
 <span id="gwip-tools-impute2-extractor-module"></span><h2>gwip.tools.impute2_extractor module<a class="headerlink" href="#module-gwip.tools.impute2_extractor" title="Permalink to this headline">¶</a></h2>
@@ -109,42 +108,157 @@
 <dt id="gwip.tools.impute2_extractor.check_args">
 <code class="descclassname">gwip.tools.impute2_extractor.</code><code class="descname">check_args</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/impute2_extractor.html#check_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.impute2_extractor.check_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks the arguments and options.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) &#8211; the options to verify</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If there is a problem, a <a class="reference internal" href="gwip.html#gwip.error.ProgramError" title="gwip.error.ProgramError"><code class="xref py py-class docutils literal"><span class="pre">gwip.error.ProgramError</span></code></a> is raised.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.impute2_extractor.extract_markers">
 <code class="descclassname">gwip.tools.impute2_extractor.</code><code class="descname">extract_markers</code><span class="sig-paren">(</span><em>i_filenames</em>, <em>to_extract</em>, <em>out_prefix</em>, <em>out_format</em>, <em>prob_t</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/impute2_extractor.html#extract_markers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.impute2_extractor.extract_markers" title="Permalink to this definition">¶</a></dt>
 <dd><p>Extracts according to names.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>i_filenames</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the list of input file names</li>
+<li><strong>to_extract</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) &#8211; the list of markers to extract for each input file</li>
+<li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the output prefix</li>
+<li><strong>out_format</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the output format(s)</li>
+<li><strong>prob_t</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) &#8211; the probability threshold</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.impute2_extractor.gather_extraction">
 <code class="descclassname">gwip.tools.impute2_extractor.</code><code class="descname">gather_extraction</code><span class="sig-paren">(</span><em>i_filenames</em>, <em>maf</em>, <em>rate</em>, <em>extract_filename</em>, <em>genomic_range</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/impute2_extractor.html#gather_extraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.impute2_extractor.gather_extraction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gather positions that are required.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>i_filenames</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the list of input files</li>
+<li><strong>maf</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) &#8211; the minor allele frequency threshold (might be <code class="docutils literal"><span class="pre">None</span></code>)</li>
+<li><strong>rate</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) &#8211; the call rate threshold (might be <code class="docutils literal"><span class="pre">None</span></code>)</li>
+<li><strong>extract_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the file containing marker names to
+extract (might be <code class="docutils literal"><span class="pre">None</span></code>)</li>
+<li><strong>genomic_range</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the genomic range for extraction</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the list of markers to extract for each input file</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)">dict</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<p>If extraction by marker name is required, only those markers will be
+extracted. Otherwise, <code class="docutils literal"><span class="pre">maf</span></code>, <code class="docutils literal"><span class="pre">rate</span></code> or <code class="docutils literal"><span class="pre">genomic_range</span></code> can be
+specified (alone or together) to extract markers according to minor allele
+frequency, call rate and genomic location.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.impute2_extractor.get_file_prefix">
 <code class="descclassname">gwip.tools.impute2_extractor.</code><code class="descname">get_file_prefix</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/impute2_extractor.html#get_file_prefix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.impute2_extractor.get_file_prefix" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets the filename prefix.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the file from which the prefix is required</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the prefix of the file</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)">str</a></td>
+</tr>
+</tbody>
+</table>
+<p>This function removes the extension from the file name, and return its
+prefix (<em>e.g.</em> <code class="docutils literal"><span class="pre">test.impute2</span></code> returns <code class="docutils literal"><span class="pre">test</span></code>, and
+<code class="docutils literal"><span class="pre">../test.impute2.gz</span></code> returns <code class="docutils literal"><span class="pre">../test</span></code>).</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.impute2_extractor.main">
 <code class="descclassname">gwip.tools.impute2_extractor.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/impute2_extractor.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.impute2_extractor.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>The main function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) &#8211; the arguments to be parsed (if
+<a class="reference internal" href="#gwip.tools.impute2_extractor.main" title="gwip.tools.impute2_extractor.main"><code class="xref py py-func docutils literal"><span class="pre">main()</span></code></a> is called by another
+modulel)</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.impute2_extractor.parse_args">
 <code class="descclassname">gwip.tools.impute2_extractor.</code><code class="descname">parse_args</code><span class="sig-paren">(</span><em>parser</em>, <em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/impute2_extractor.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.impute2_extractor.parse_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses the command line options and arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.4)"><em>argparse.ArgumentParser</em></a>) &#8211; the argument parser</li>
+<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the list of arguments (if not taken from <code class="docutils literal"><span class="pre">sys.argv</span></code>)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the list of options and arguments</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)">argparse.Namespace</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The only check that is done here is by the parser itself. Values are
+verified later by the <a class="reference internal" href="#gwip.tools.impute2_extractor.check_args" title="gwip.tools.impute2_extractor.check_args"><code class="xref py py-func docutils literal"><span class="pre">check_args()</span></code></a> function.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.impute2_extractor.print_data">
 <code class="descclassname">gwip.tools.impute2_extractor.</code><code class="descname">print_data</code><span class="sig-paren">(</span><em>o_files</em>, <em>prob_t</em>, <em>*</em>, <em>line=None</em>, <em>row=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/impute2_extractor.html#print_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.impute2_extractor.print_data" title="Permalink to this definition">¶</a></dt>
 <dd><p>Prints an impute2 line.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>o_files</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) &#8211; the output files</li>
+<li><strong>prob_t</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) &#8211; the probability threshold</li>
+<li><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the impute2 line</li>
+<li><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the impute2 line, split by spaces</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 </div>
@@ -154,24 +268,134 @@
 <dt id="gwip.tools.impute2_merger.check_args">
 <code class="descclassname">gwip.tools.impute2_merger.</code><code class="descname">check_args</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/impute2_merger.html#check_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.impute2_merger.check_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks the arguments and options.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) &#8211; the options to verify</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If there is a problem, a <a class="reference internal" href="gwip.html#gwip.error.ProgramError" title="gwip.error.ProgramError"><code class="xref py py-class docutils literal"><span class="pre">gwip.error.ProgramError</span></code></a> is raised.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.impute2_merger.concatenate_files">
 <code class="descclassname">gwip.tools.impute2_merger.</code><code class="descname">concatenate_files</code><span class="sig-paren">(</span><em>i_filenames</em>, <em>out_prefix</em>, <em>real_chrom</em>, <em>options</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/impute2_merger.html#concatenate_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.impute2_merger.concatenate_files" title="Permalink to this definition">¶</a></dt>
 <dd><p>Concatenates and extracts information from IMPUTE2 GEN file(s).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>i_filenames</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the list of input filenames (to concatenate)</li>
+<li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the output prefix for the output files</li>
+<li><strong>real_chrom</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the chromosome contained in all the input files</li>
+<li><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) &#8211; the options</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
+<p>This function will create the following seven files:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">File name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">.impute2</span></code></td>
+<td>Imputation results (merged from all the input
+files).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.alleles</span></code></td>
+<td>Description of the reference and alternative
+allele at each sites.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed_sites</span></code></td>
+<td>List of imputed sites (excluding sites that
+were previously genotyped in the study cohort).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.completion_rates</span></code></td>
+<td>Number of missing values and completion rate
+for all sites (using the probability threshold
+set by the user, where the default is higher
+and equal to 0.9).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">.good_sites</span></code></td>
+<td>List of sites which pass the completion rate
+threshold (set by the user, where the default
+is higher and equal to 0.98) using the
+probability threshold (set by the user, where
+the default is higher and equal to 0.9).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.map</span></code></td>
+<td>A map file describing the genomic location of
+all sites.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">.maf</span></code></td>
+<td>File containing the minor allele frequency
+(along with minor allele identification) for
+all sites using the probabilitty threshold of
+0.9. When no genotypes are available (because
+they are all below the threshold), the MAF is
+<code class="docutils literal"><span class="pre">NA</span></code>.</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.impute2_merger.main">
 <code class="descclassname">gwip.tools.impute2_merger.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/impute2_merger.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.impute2_merger.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>The main function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) &#8211; the arguments to be parsed (if
+<a class="reference internal" href="#gwip.tools.impute2_merger.main" title="gwip.tools.impute2_merger.main"><code class="xref py py-func docutils literal"><span class="pre">main()</span></code></a> is called by another
+modulel)</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.impute2_merger.parse_args">
 <code class="descclassname">gwip.tools.impute2_merger.</code><code class="descname">parse_args</code><span class="sig-paren">(</span><em>parser</em>, <em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/impute2_merger.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.impute2_merger.parse_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses the command line options and arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.4)"><em>argparse.ArgumentParser</em></a>) &#8211; the argument parser</li>
+<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the list of arguments (if not taken from <code class="docutils literal"><span class="pre">sys.argv</span></code>)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the list of options and arguments</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)">argparse.Namespace</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The only check that is done here is by the parser itself. Values are
+verified later by the <a class="reference internal" href="#gwip.tools.impute2_merger.check_args" title="gwip.tools.impute2_merger.check_args"><code class="xref py py-func docutils literal"><span class="pre">check_args()</span></code></a> function.</p>
+</div>
 </dd></dl>
 
 </div>
@@ -181,12 +405,41 @@
 <dt id="gwip.tools.imputed_stats.check_args">
 <code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">check_args</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#check_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.check_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks the arguments and options.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) &#8211; the options to verify</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">If there is a problem, a <a class="reference internal" href="gwip.html#gwip.error.ProgramError" title="gwip.error.ProgramError"><code class="xref py py-class docutils literal"><span class="pre">gwip.error.ProgramError</span></code></a> is raised.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.imputed_stats.compute_statistics">
 <code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">compute_statistics</code><span class="sig-paren">(</span><em>impute2_filename</em>, <em>samples</em>, <em>markers_to_extract</em>, <em>phenotypes</em>, <em>remove_gender</em>, <em>out_prefix</em>, <em>options</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#compute_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.compute_statistics" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses IMPUTE2 file while computing statistics.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>impute2_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the input file</li>
+<li><strong>samples</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/dev/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.16.0)"><em>pandas.DataFrame</em></a>) &#8211; the list of samples</li>
+<li><strong>markers_to_extract</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#set" title="(in Python v3.4)"><em>set</em></a>) &#8211; the set of markers to extract</li>
+<li><strong>phenotypes</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/dev/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.16.0)"><em>pandas.DataFrame</em></a>) &#8211; the phenotypes</li>
+<li><strong>remove_gender</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) &#8211; whether or not to remove the gender column</li>
+<li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the output prefix</li>
+<li><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) &#8211; the options</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <p>This function takes care of parallelism. It reads the Impute2 file and
 fills a queue that will trigger the analysis when full.</p>
 <p>If the number of process to launch is 1, the rows are analyzed as they
@@ -197,51 +450,201 @@ come.</p>
 <dt id="gwip.tools.imputed_stats.fit_cox">
 <code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">fit_cox</code><span class="sig-paren">(</span><em>data</em>, <em>time_to_event</em>, <em>censure</em>, <em>result_col</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#fit_cox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.fit_cox" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit a Cox&#8217; proportional hazard to the data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/dev/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.16.0)"><em>pandas.DataFrame</em></a>) &#8211; the data to analyse</li>
+<li><strong>time_to_event</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the time to event column for the survival analysis</li>
+<li><strong>censure</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the censure column for the survival analysis</li>
+<li><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the column that will contain the results</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the results from the survival analysis</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)">numpy.array</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The tie method used is <code class="docutils literal"><span class="pre">Efron</span></code>. Normalization is set to <code class="docutils literal"><span class="pre">False</span></code>.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.imputed_stats.fit_linear">
 <code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">fit_linear</code><span class="sig-paren">(</span><em>data</em>, <em>formula</em>, <em>result_col</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#fit_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.fit_linear" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit a linear regression to the data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/dev/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.16.0)"><em>pandas.DataFrame</em></a>) &#8211; the data to analyse</li>
+<li><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the formula for the linear regression</li>
+<li><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the column that will contain the results</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the results from the linear regression</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)">list</a></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.imputed_stats.fit_logistic">
 <code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">fit_logistic</code><span class="sig-paren">(</span><em>data</em>, <em>formula</em>, <em>result_col</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#fit_logistic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.fit_logistic" title="Permalink to this definition">¶</a></dt>
 <dd><p>Fit a logistic regression to the data.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/dev/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.16.0)"><em>pandas.DataFrame</em></a>) &#8211; the data to analyse</li>
+<li><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the formula for the logistic regression</li>
+<li><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the column that will contain the results</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the results from the logistic regression</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)">list</a></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.imputed_stats.get_formula">
 <code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">get_formula</code><span class="sig-paren">(</span><em>phenotype</em>, <em>covars</em>, <em>interaction</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#get_formula"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.get_formula" title="Permalink to this definition">¶</a></dt>
 <dd><p>Creates the linear/logistic regression formula (for statsmodel).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>phenotype</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the phenotype column</li>
+<li><strong>covars</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the list of co variable columns</li>
+<li><strong>interaction</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the interaction column</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the formula for the statistical analysis</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)">str</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The phenotype column needs to be specified. The list of co variables
+might be empty (if no co variables are necessary). The interaction
+column can be set to <code class="docutils literal"><span class="pre">None</span></code> if there is no interaction.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.imputed_stats.main">
 <code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.main" title="Permalink to this definition">¶</a></dt>
 <dd><p>The main function.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) &#8211; the arguments to be parsed (if
+<a class="reference internal" href="#gwip.tools.imputed_stats.main" title="gwip.tools.imputed_stats.main"><code class="xref py py-func docutils literal"><span class="pre">main()</span></code></a> is called by another
+modulel)</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.imputed_stats.parse_args">
 <code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">parse_args</code><span class="sig-paren">(</span><em>parser</em>, <em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.parse_args" title="Permalink to this definition">¶</a></dt>
 <dd><p>Parses the command line options and arguments.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.4)"><em>argparse.ArgumentParser</em></a>) &#8211; the argument parser</li>
+<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the list of arguments (if not taken from <code class="docutils literal"><span class="pre">sys.argv</span></code>)</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the list of options and arguments</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)">argparse.Namespace</a></p>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The only check that is done here is by the parser itself. Values are
+verified later by the <a class="reference internal" href="#gwip.tools.imputed_stats.check_args" title="gwip.tools.imputed_stats.check_args"><code class="xref py py-func docutils literal"><span class="pre">check_args()</span></code></a> function.</p>
+</div>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.imputed_stats.process_impute2_site">
 <code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">process_impute2_site</code><span class="sig-paren">(</span><em>site_info</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#process_impute2_site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.process_impute2_site" title="Permalink to this definition">¶</a></dt>
 <dd><p>Process an IMPUTE2 site (a line in an IMPUTE2 file).</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_info</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the impute2 line (split by space)</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the results of the analysis</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)">list</a></td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.imputed_stats.read_phenotype">
 <code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">read_phenotype</code><span class="sig-paren">(</span><em>i_filename</em>, <em>opts</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#read_phenotype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.read_phenotype" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the phenotype file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>i_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the input file</li>
+<li><strong>opts</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) &#8211; the options</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the phenotypes</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/dev/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.16.0)">pandas.DataFrame</a></p>
+</td>
+</tr>
+</tbody>
+</table>
 <p>This file is expected to be a tab separated file of phenotypes and
-covariates. The columns to use will be determined by the <cite>&#8211;sample-column</cite>
-and the <cite>&#8211;covar</cite> options.</p>
+covariates. The columns to use will be determined by the
+<code class="docutils literal"><span class="pre">--sample-column</span></code> and the <code class="docutils literal"><span class="pre">--covar</span></code> options.</p>
 <p>For analysis including the X chromosome, the gender is automatically
 added as a covariate. The results are not shown to the user unless asked
 for.</p>
@@ -251,8 +654,21 @@ for.</p>
 <dt id="gwip.tools.imputed_stats.read_samples">
 <code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">read_samples</code><span class="sig-paren">(</span><em>i_filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#read_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.read_samples" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the sample file (produced by SHAPEIT).</p>
-<p>The expected format for this file is a tab separated file with a first
-row containing the following columns:</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>i_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the input file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the list of samples</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/dev/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.16.0)">pandas.DataFrame</a></td>
+</tr>
+</tbody>
+</table>
+<p>This file contains the list of samples that are contained in the
+<code class="docutils literal"><span class="pre">impute2</span></code> file (with same order). The expected format for this file is a
+tab separated file with a first row containing the following columns:</p>
 <div class="highlight-python"><div class="highlight"><pre>ID_1    ID_2    missing father  mother  sex     plink_pheno
 </pre></div>
 </div>
@@ -260,9 +676,9 @@ row containing the following columns:</p>
 <div class="highlight-python"><div class="highlight"><pre>0       0       0 D     D       D       B
 </pre></div>
 </div>
-<p>We are mostly interested in the sample IDs corresponding to the <cite>ID_2</cite>
-column.</p>
-<p>Their uniqueness is verified by pandas.</p>
+<p class="rubric">Notes</p>
+<p>We are mostly interested in the sample IDs corresponding to the
+<code class="docutils literal"><span class="pre">ID_2</span></code> column. Their uniqueness is verified by pandas.</p>
 </dd></dl>
 
 <dl class="function">
@@ -284,27 +700,61 @@ to consider for the analysis.</td>
 </table>
 <p>The expected file format is simply a list of variants. Every row should
 correspond to a single variant identifier.</p>
-<p>e.g.</p>
 <div class="highlight-python"><div class="highlight"><pre>3:60069:t
 rs123456:A
 3:60322:A
 </pre></div>
 </div>
 <p>Typically, this is used to analyze only variants that passed some QC
-threshold. The _gwip_ pipeline generates this file at the &#8216;merge_impute2&#8217;
-step.</p>
+threshold. The <a class="reference internal" href="gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> pipeline generates this file at the
+&#8216;merge_impute2&#8217; step.</p>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.imputed_stats.samples_with_hetero_calls">
 <code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">samples_with_hetero_calls</code><span class="sig-paren">(</span><em>data</em>, <em>hetero_c</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#samples_with_hetero_calls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.samples_with_hetero_calls" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gets male and heterozygous calls.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/dev/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.16.0)"><em>pandas.DataFrame</em></a>) &#8211; the probability matrix</li>
+<li><strong>hetero_c</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the heterozygous column</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">samples where call is heterozygous</p>
+</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/dev/generated/pandas.Index.html#pandas.Index" title="(in pandas v0.16.0)">pandas.Index</a></p>
+</td>
+</tr>
+</tbody>
+</table>
 </dd></dl>
 
 <dl class="function">
 <dt id="gwip.tools.imputed_stats.skat_parse_impute2">
 <code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">skat_parse_impute2</code><span class="sig-paren">(</span><em>impute2_filename</em>, <em>samples</em>, <em>markers_to_extract</em>, <em>phenotypes</em>, <em>remove_gender</em>, <em>out_prefix</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#skat_parse_impute2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.skat_parse_impute2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Read the impute2 file and run the SKAT analysis.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
+<li><strong>impute2_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the input file</li>
+<li><strong>samples</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/dev/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.16.0)"><em>pandas.DataFrame</em></a>) &#8211; the samples</li>
+<li><strong>markers_to_extract</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#set" title="(in Python v3.4)"><em>set</em></a>) &#8211; the set of markers to analyse</li>
+<li><strong>phenotypes</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/dev/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.16.0)"><em>pandas.DataFrame</em></a>) &#8211; the phenotypes</li>
+<li><strong>remove_gender</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) &#8211; whether or not to remove the gender column</li>
+<li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the output prefix</li>
+<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) &#8211; the options</li>
+</ul>
+</td>
+</tr>
+</tbody>
+</table>
 <p>This function does most of the &#8220;dispatching&#8221; to run SKAT. It writes the
 input files to the disk, runs the generated R scripts to do the actual
 analysis and then writes the results to disk.</p>
@@ -314,16 +764,25 @@ analysis and then writes the results to disk.</p>
 <dt id="gwip.tools.imputed_stats.skat_read_snp_set">
 <code class="descclassname">gwip.tools.imputed_stats.</code><code class="descname">skat_read_snp_set</code><span class="sig-paren">(</span><em>i_filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/gwip/tools/imputed_stats.html#skat_read_snp_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#gwip.tools.imputed_stats.skat_read_snp_set" title="Permalink to this definition">¶</a></dt>
 <dd><p>Reads the SKAT SNP set file.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>i_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the input file</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the SNP set for the SKAT analysis</td>
+</tr>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/dev/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.16.0)">pandas.DataFrame</a></td>
+</tr>
+</tbody>
+</table>
 <p>This file has to be supplied by the user. The recognized columns are:
-<cite>variant, snp_set, weight</cite>. The <cite>weight</cite> column is optional and can
-be used to specify a custom weighting scheme for SKAT. If nothing is
-specified, the default Beta weights are used.</p>
+<code class="docutils literal"><span class="pre">variant</span></code>, <code class="docutils literal"><span class="pre">snp_set</span></code> and <code class="docutils literal"><span class="pre">weight</span></code>. The <code class="docutils literal"><span class="pre">weight</span></code> column is optional
+and can be used to specify a custom weighting scheme for SKAT. If nothing
+is specified, the default Beta weights are used.</p>
 <p>The file has to be tab delimited.</p>
 </dd></dl>
 
-</div>
-<div class="section" id="module-gwip.tools">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-gwip.tools" title="Permalink to this headline">¶</a></h2>
 </div>
 </div>
 
