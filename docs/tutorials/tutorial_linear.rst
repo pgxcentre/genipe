@@ -1,10 +1,6 @@
 Linear Tutorial
 ================
 
-.. note::
-
-   Work on this tutorial is still in progress...
-
 
 Quick navigation
 -----------------
@@ -115,7 +111,8 @@ The following is an example of a phenotype file:
    ...
 
 We provide a *dummy* phenotype file (where values, except for ``Gender``, were
-randomly generated). The following command should download the phenotype file.
+randomly generated for 60 founders of the dataset). The following command
+should download the phenotype file.
 
 .. code-block:: bash
 
@@ -165,7 +162,7 @@ the linear regression analysis.
        --pheno phenotypes_linear.txt \
        --extract-sites ../gwip/chr22/final_impute2/chr22.imputed.good_sites \
        --nb-process 8 \
-       --nb-lines 3000 \
+       --nb-lines 6000 \
        --gender-column Gender \
        --covar Age,Var1,Gender \
        --sample-column SampleID \
@@ -175,6 +172,14 @@ For more information about the arguments and options, see the
 :ref:`lin-tut-usage` section. The number of process to use might differ
 according to the installation type and to the computer/server. See the
 :ref:`lin-tut-execution-time` section for more information.
+
+.. note::
+
+   Analysis will be performed only on samples whitout missing data (phenotype,
+   gender, variables, etc).
+
+   By default, the analysis is performed by removing low quality genotypes
+   (using a probability threshold of 0.9, the ``--prob`` option).
 
 
 .. _lin-tut-output-files:
@@ -292,10 +297,9 @@ The following figure shows the approximate execution time for different number
 of processes (the ``--nb-process`` option) with different installation methods
 (*pyvenv* in blue, versus *miniconda* in orange). This analysis was performed
 on a computer with an *Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz* (8 cores) and
-16Go of RAM. The analysis contained 30,000 imputed markers for 2,402 samples,
-and 6,000 lines were processed at a time. Each test was performed only one time
-(no repetition). The red line represent the execution time of the same analysis
-using *Plink* (which uses only one process).
+16Go of RAM. The analysis contained the 195,473 imputed markers and 90 samples
+from the previous command (where phenotypes were available for only 60 of the
+samples). Each test was performed only one time (no repetition).
 
 .. _linear_exec_time:
 
@@ -312,6 +316,28 @@ cores on the machine) and monitor the system load average. This is not true
 when using a *miniconda* installation, since all processes uses no more than
 100%.
 
+.. note::
+
+   Execution times between *Plink* and :py:mod:`gwip` were compared for this
+   analysis. When data processing is required prior to the statistical analysis
+   (*e.g.* removing poor quality genotypes and excluding the 60 samples without
+   phenotype), *Plink* was **significantly faster** than :py:mod:`gwip`, even
+   if the latter is using more than one processes. This is due to prior data
+   manipulation, which significantly increse computation time.
+
+   When no data processing is required (*i.e.* keeping bad quality genotypes
+   and keeping all samples), :py:mod:`gwip` was faster with two processes or
+   more (as in the figure below). Note that for this example (30,000 imputed
+   markers for 2,402 samples), all samples were used for the analysis because
+   they all had a phenotype.
+
+   .. _linear_exec_time_plink:
+
+   .. figure:: ../_static/images/Linear_Walltime_Plink.png
+       :align: center
+       :width: 60%
+       :alt: Linear regression execution time vs number of processes (Plink).
+
 
 .. _lin-tut-comparison:
 
@@ -322,15 +348,38 @@ The linear regression results from :py:mod:`gwip` and *Plink* were compared for
 validity. The following figure shows the comparison for, from left to right,
 the coefficients, the standard errors and the *p*-values. The *x* axis shows
 the results from :py:mod:`gwip`, and the *y* axis shows the results for
-*Plink*. The analysis contained 30,000 imputed markers for 2,402 samples.
+*Plink*. This comparison includes 163,670 "good" imputed markers, analyzed for
+60 samples (*i.e* results from this tutorial). Note that for this comparison,
+the **probability threshold** (``--prob``) **was changed from 0.9 to 0** to
+*imitate* *Plink* analysis (see note below for more information).
 
-.. figure:: ../_static/images/Linear_Diff.png
+.. figure:: ../_static/images/Linear_Diff_Prob0.png
    :align: center
    :width: 100%
-   :alt: Linear regression comparison between gwip and Plink
+   :alt: Linear regression comparison between gwip and Plink (probability of 0)
 
-The sign of the coefficients might be different when comparing :py:mod:`gwip`
-to *Plink*, since :py:mod:`gwip` computes the statistics on the rare allele,
-while *Plink* computes them on the second (alternative) allele. The alternative
-allele might not always be the rarest.
+.. note::
+
+   The sign of the coefficients might be different when comparing
+   :py:mod:`gwip` to *Plink*, since :py:mod:`gwip` computes the statistics on
+   the rare allele, while *Plink* computes them on the second (alternative)
+   allele. The alternative allele might not always be the rarest.
+
+.. note::
+
+   By default, :py:mod:`gwip` excludes samples with a maximum probability lower
+   than 0.9 (the ``--prob`` option), while *Plink* keeps all the samples for
+   the analysis. In order to get the same results as *Plink*, the analysis must
+   be done with a probability threshold of 0 (*i.e.* ``--prob 0``, keeping all
+   imputed genotypes including those with poor quality). This is what was done
+   for the previous figure.
+
+   The following figure shows the comparison between *Plink* and :py:mod:`gwip`
+   for the same analysis, but using the default probability threshold of 0.9
+   (excluding imputed genotypes with poor quality).
+
+   .. figure:: ../_static/images/Linear_Diff.png
+      :align: center
+      :width: 100%
+      :alt: Linear regression comparison between gwip and Plink
 
