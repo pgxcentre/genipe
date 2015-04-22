@@ -324,15 +324,48 @@ The logistic regression results from :py:mod:`gwip` and *Plink* were compared
 for validity. The following figure shows the comparison for, from left to
 right, the coefficients, the standard errors and the *p*-values. The *x* axis
 shows the results from :py:mod:`gwip`, and the *y* axis shows the results for
-*Plink*. The analysis contained 30,000 imputed markers for 2,402 samples.
+*Plink*. This comparison includes 58,769 "good" imputed markers with a MAF
+higher or equal to 10%, analyzed for 60 samples (*i.e* results from this
+tutorial). Note that for this comparison, the **probability threshold**
+(``--prob``) **was changed from 0.9 to 0** to *imitate* *Plink* analysis (see
+note below for more information).
 
-.. figure:: ../_static/images/Logistic_Diff.png
+.. note::
+
+   Only markers with minor allele frequency (MAF) higher or equal to 10% were
+   compared, since markers with lower MAF might have convergence issues (*e.g.*
+   all exposed samples are all cases *or* all controls). In that case, the
+   coefficient is large, and the odds ratio (:math:`e^{coef}`) gets too large.
+
+.. figure:: ../_static/images/Logistic_Diff_Prob0.png
    :align: center
    :width: 100%
-   :alt: Logistic regression comparison between gwip and Plink
+   :alt: Logistic regression comparison between gwip and Plink (prob. of 0)
 
-The sign of the coefficients might be different when comparing :py:mod:`gwip`
-to *Plink*, since :py:mod:`gwip` computes the statistics on the rare allele,
-while *Plink* computes them on the second (alternative) allele. The alternative
-allele might not always be the rarest.
+.. note::
+
+   The sign of the coefficients might be different when comparing
+   :py:mod:`gwip` to *Plink*, since :py:mod:`gwip` computes the statistics on
+   the rare allele, while *Plink* computes them on the second (alternative)
+   allele. The alternative allele might not always be the rarest.
+
+
+.. note::
+
+   By default, :py:mod:`gwip` excludes samples with a maximum probability lower
+   than 0.9 (the ``--prob`` option), while *Plink* keeps all the samples for
+   the analysis. In order to get the same results as *Plink*, the analysis must
+   be done with a probability threshold of 0 (*i.e.* ``--prob 0``, keeping all
+   imputed genotypes including those with poor quality). This is what was done
+   for the previous figure.
+
+   The following figure shows the comparison between *Plink* and :py:mod:`gwip`
+   for the same analysis, but using the default probability threshold of 0.9
+   (excluding imputed genotypes with poor quality). Hence, 5,887 markers were
+   compared.
+
+   .. figure:: ../_static/images/Logistic_Diff.png
+      :align: center
+      :width: 100%
+      :alt: Logistic regression comparison between gwip and Plink
 
