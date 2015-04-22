@@ -212,7 +212,8 @@ NA06994      129.562482664   48      20.2946857226   1
 </pre></div>
 </div>
 <p>We provide a <em>dummy</em> phenotype file (where values, except for <code class="docutils literal"><span class="pre">Gender</span></code>, were
-randomly generated). The following command should download the phenotype file.</p>
+randomly generated for 60 founders of the dataset). The following command
+should download the phenotype file.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/linear
 
 wget http://pgxcentre.github.io/gwip/_static/tutorial/phenotypes_linear.txt.bz2
@@ -253,7 +254,7 @@ imputed-stats linear <span class="se">\</span>
     --pheno phenotypes_linear.txt <span class="se">\</span>
     --extract-sites ../gwip/chr22/final_impute2/chr22.imputed.good_sites <span class="se">\</span>
     --nb-process <span class="m">8</span> <span class="se">\</span>
-    --nb-lines <span class="m">3000</span> <span class="se">\</span>
+    --nb-lines <span class="m">6000</span> <span class="se">\</span>
     --gender-column Gender <span class="se">\</span>
     --covar Age,Var1,Gender <span class="se">\</span>
     --sample-column SampleID <span class="se">\</span>
@@ -264,6 +265,13 @@ imputed-stats linear <span class="se">\</span>
 <a class="reference internal" href="#lin-tut-usage"><span>Usage</span></a> section. The number of process to use might differ
 according to the installation type and to the computer/server. See the
 <a class="reference internal" href="#lin-tut-execution-time"><span>Execution time</span></a> section for more information.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Analysis will be performed only on samples whitout missing data (phenotype,
+gender, variables, etc).</p>
+<p class="last">By default, the analysis is performed by removing low quality genotypes
+(using a probability threshold of 0.9, the <code class="docutils literal"><span class="pre">--prob</span></code> option).</p>
+</div>
 </div>
 <div class="section" id="output-files">
 <span id="lin-tut-output-files"></span><h3>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h3>
@@ -367,10 +375,9 @@ analysis in the console:</p>
 of processes (the <code class="docutils literal"><span class="pre">--nb-process</span></code> option) with different installation methods
 (<em>pyvenv</em> in blue, versus <em>miniconda</em> in orange). This analysis was performed
 on a computer with an <em>Intel(R) Core(TM) i7-3770 CPU &#64; 3.40GHz</em> (8 cores) and
-16Go of RAM. The analysis contained 30,000 imputed markers for 2,402 samples,
-and 6,000 lines were processed at a time. Each test was performed only one time
-(no repetition). The red line represent the execution time of the same analysis
-using <em>Plink</em> (which uses only one process).</p>
+16Go of RAM. The analysis contained the 195,473 imputed markers and 90 samples
+from the previous command (where phenotypes were available for only 60 of the
+samples). Each test was performed only one time (no repetition).</p>
 <div class="figure align-center" id="linear-exec-time">
 <a class="reference internal image-reference" href="../_images/Linear_Walltime.png"><img alt="Linear regression execution time vs number of processes." src="../_images/Linear_Walltime.png" style="width: 60%;" /></a>
 </div>
@@ -381,6 +388,23 @@ recommend testing with <em>n/2</em> processes (where <em>n</em> is the number of
 cores on the machine) and monitor the system load average. This is not true
 when using a <em>miniconda</em> installation, since all processes uses no more than
 100%.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Execution times between <em>Plink</em> and <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> were compared for this
+analysis. When data processing is required prior to the statistical analysis
+(<em>e.g.</em> removing poor quality genotypes and excluding the 60 samples without
+phenotype), <em>Plink</em> was <strong>significantly faster</strong> than <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>, even
+if the latter is using more than one processes. This is due to prior data
+manipulation, which significantly increse computation time.</p>
+<p>When no data processing is required (<em>i.e.</em> keeping bad quality genotypes
+and keeping all samples), <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> was faster with two processes or
+more (as in the figure below). Note that for this example (30,000 imputed
+markers for 2,402 samples), all samples were used for the analysis because
+they all had a phenotype.</p>
+<div class="last figure align-center" id="linear-exec-time-plink">
+<a class="reference internal image-reference" href="../_images/Linear_Walltime_Plink.png"><img alt="Linear regression execution time vs number of processes (Plink)." src="../_images/Linear_Walltime_Plink.png" style="width: 60%;" /></a>
+</div>
+</div>
 </div>
 <div class="section" id="results-comparison">
 <span id="lin-tut-comparison"></span><h3>Results comparison<a class="headerlink" href="#results-comparison" title="Permalink to this headline">¶</a></h3>
@@ -388,14 +412,35 @@ when using a <em>miniconda</em> installation, since all processes uses no more t
 validity. The following figure shows the comparison for, from left to right,
 the coefficients, the standard errors and the <em>p</em>-values. The <em>x</em> axis shows
 the results from <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>, and the <em>y</em> axis shows the results for
-<em>Plink</em>. The analysis contained 30,000 imputed markers for 2,402 samples.</p>
+<em>Plink</em>. This comparison includes 163,670 &#8220;good&#8221; imputed markers, analyzed for
+60 samples (<em>i.e</em> results from this tutorial). Note that for this comparison,
+the <strong>probability threshold</strong> (<code class="docutils literal"><span class="pre">--prob</span></code>) <strong>was changed from 0.9 to 0</strong> to
+<em>imitate</em> <em>Plink</em> analysis (see note below for more information).</p>
 <div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/Linear_Diff_Prob0.png"><img alt="Linear regression comparison between gwip and Plink (probability of 0)" src="../_images/Linear_Diff_Prob0.png" style="width: 100%;" /></a>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The sign of the coefficients might be different when comparing
+<a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> to <em>Plink</em>, since <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> computes the statistics on
+the rare allele, while <em>Plink</em> computes them on the second (alternative)
+allele. The alternative allele might not always be the rarest.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>By default, <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> excludes samples with a maximum probability lower
+than 0.9 (the <code class="docutils literal"><span class="pre">--prob</span></code> option), while <em>Plink</em> keeps all the samples for
+the analysis. In order to get the same results as <em>Plink</em>, the analysis must
+be done with a probability threshold of 0 (<em>i.e.</em> <code class="docutils literal"><span class="pre">--prob</span> <span class="pre">0</span></code>, keeping all
+imputed genotypes including those with poor quality). This is what was done
+for the previous figure.</p>
+<p>The following figure shows the comparison between <em>Plink</em> and <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>
+for the same analysis, but using the default probability threshold of 0.9
+(excluding imputed genotypes with poor quality).</p>
+<div class="last figure align-center">
 <a class="reference internal image-reference" href="../_images/Linear_Diff.png"><img alt="Linear regression comparison between gwip and Plink" src="../_images/Linear_Diff.png" style="width: 100%;" /></a>
 </div>
-<p>The sign of the coefficients might be different when comparing <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>
-to <em>Plink</em>, since <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> computes the statistics on the rare allele,
-while <em>Plink</em> computes them on the second (alternative) allele. The alternative
-allele might not always be the rarest.</p>
+</div>
 </div>
 </div>
 </div>
