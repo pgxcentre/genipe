@@ -367,22 +367,38 @@ regression analysis in the console:</p>
 of processes (the <code class="docutils literal"><span class="pre">--nb-process</span></code> option) with different installation methods
 (<em>pyvenv</em> in blue, versus <em>miniconda</em> in orange). This analysis was performed
 on a computer with an <em>Intel(R) Core(TM) i7-3770 CPU &#64; 3.40GHz</em> (8 cores) and
-16Go of RAM. The analysis contained 30,000 imputed markers for 2,402 samples,
-and 6,000 lines were processed at a time. Each test was performed only one time
-(no repetition). The red line represent the execution time of the same analysis
-using <em>Plink</em> (which uses only one process).</p>
+16Go of RAM. The analysis contained the 195,473 imputed markers and 90 samples
+from the previous command (where phenotypes were available for only 60 of the
+samples). Each test was performed only one time (no repetition).</p>
 <div class="figure align-center" id="logistic-exec-time">
 <a class="reference internal image-reference" href="../_images/Logistic_Walltime.png"><img alt="Logistic regression execution time vs number of processes." src="../_images/Logistic_Walltime.png" style="width: 60%;" /></a>
 </div>
-<p>Note that the logistic regression from <em>Statsmodels 0.6.1</em> (at least when
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Execution times between <em>Plink</em> and <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> were compared for this
+analysis. When data processing is required prior to the statistical analysis
+(<em>e.g.</em> removing poor quality genotypes and excluding the 60 samples without
+phenotype), <em>Plink</em> was <strong>significantly faster</strong> than <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>, even
+if the latter is using more than one processes. This is due to prior data
+manipulation, which significantly increse computation time.</p>
+<p>When no data processing is required (<em>i.e.</em> keeping bad quality genotypes
+and keeping all samples), <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> was faster with two processes or
+more (as show in the figure below). Note that for this example (30,000
+imputed markers for 2,402 samples), all samples were used for the analysis
+because they all had a phenotype.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/Logistic_Walltime_Plink.png"><img alt="Logistic regression execution time vs number of processes (Plink)." src="../_images/Logistic_Walltime_Plink.png" style="width: 60%;" /></a>
+</div>
+<p class="last">Note that the logistic regression from <em>Statsmodels 0.6.1</em> (at least when
 compiled on a modern Linux system, <em>i.e.</em> when <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> is installed
 using the <em>pyvenv</em> method) uses more than 100% of each process and much more
-memory. We couldn&#8217;t perform the analysis with more than 4 processes, as the
-system started to swap (due to lack of available memory). Hence we recommend
-testing with a lower number of processes and monitor the memory consumption and
-the system load average. This is not true when using a <em>miniconda</em>
-installation, since all processes uses no more than 100% and a normal amount of
-memory.</p>
+memory. We couldn&#8217;t perform the analysis with more than 50% of the
+processes, as the system started to swap (due to lack of available memory
+and the quantity of samples). Hence we recommend testing with a lower number
+of processes and monitor the memory consumption and the system load average.
+This is not true when using a <em>miniconda</em> installation, since all processes
+uses no more than 100% and a normal amount of memory.</p>
+</div>
 </div>
 <div class="section" id="results-comparison">
 <span id="logit-tut-comparison"></span><h3>Results comparison<a class="headerlink" href="#results-comparison" title="Permalink to this headline">¶</a></h3>
@@ -390,14 +406,44 @@ memory.</p>
 for validity. The following figure shows the comparison for, from left to
 right, the coefficients, the standard errors and the <em>p</em>-values. The <em>x</em> axis
 shows the results from <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>, and the <em>y</em> axis shows the results for
-<em>Plink</em>. The analysis contained 30,000 imputed markers for 2,402 samples.</p>
+<em>Plink</em>. This comparison includes 58,769 &#8220;good&#8221; imputed markers with a MAF
+higher or equal to 10%, analyzed for 60 samples (<em>i.e</em> results from this
+tutorial). Note that for this comparison, the <strong>probability threshold</strong>
+(<code class="docutils literal"><span class="pre">--prob</span></code>) <strong>was changed from 0.9 to 0</strong> to <em>imitate</em> <em>Plink</em> analysis (see
+note below for more information).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Only markers with minor allele frequency (MAF) higher or equal to 10% were
+compared, since markers with lower MAF might have convergence issues (<em>e.g.</em>
+all exposed samples are all cases <em>or</em> all controls). In that case, the
+coefficient is large, and the odds ratio (<span class="math">\(e^{coef}\)</span>) gets too large.</p>
+</div>
 <div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/Logistic_Diff_Prob0.png"><img alt="Logistic regression comparison between gwip and Plink (prob. of 0)" src="../_images/Logistic_Diff_Prob0.png" style="width: 100%;" /></a>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The sign of the coefficients might be different when comparing
+<a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> to <em>Plink</em>, since <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> computes the statistics on
+the rare allele, while <em>Plink</em> computes them on the second (alternative)
+allele. The alternative allele might not always be the rarest.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>By default, <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> excludes samples with a maximum probability lower
+than 0.9 (the <code class="docutils literal"><span class="pre">--prob</span></code> option), while <em>Plink</em> keeps all the samples for
+the analysis. In order to get the same results as <em>Plink</em>, the analysis must
+be done with a probability threshold of 0 (<em>i.e.</em> <code class="docutils literal"><span class="pre">--prob</span> <span class="pre">0</span></code>, keeping all
+imputed genotypes including those with poor quality). This is what was done
+for the previous figure.</p>
+<p>The following figure shows the comparison between <em>Plink</em> and <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>
+for the same analysis, but using the default probability threshold of 0.9
+(excluding imputed genotypes with poor quality). Hence, 5,887 markers were
+compared.</p>
+<div class="last figure align-center">
 <a class="reference internal image-reference" href="../_images/Logistic_Diff.png"><img alt="Logistic regression comparison between gwip and Plink" src="../_images/Logistic_Diff.png" style="width: 100%;" /></a>
 </div>
-<p>The sign of the coefficients might be different when comparing <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>
-to <em>Plink</em>, since <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> computes the statistics on the rare allele,
-while <em>Plink</em> computes them on the second (alternative) allele. The alternative
-allele might not always be the rarest.</p>
+</div>
 </div>
 </div>
 </div>

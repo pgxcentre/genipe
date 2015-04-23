@@ -88,6 +88,9 @@
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">chromosomes</span>
 <span class="kn">from</span> <span class="nn">..error</span> <span class="kn">import</span> <span class="n">ProgramError</span>
 
+<span class="k">if</span> <span class="n">HAS_PYFAIDX</span><span class="p">:</span>
+    <span class="kn">import</span> <span class="nn">pyfaidx</span>
+
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
 <span class="n">__copyright__</span> <span class="o">=</span> <span class="s">&quot;Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre&quot;</span>
@@ -175,8 +178,6 @@
                      <span class="s">&quot;optional requirement (pyfaidx) not satisfied&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">test_get_chrom_encoding</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <div class="viewcode-block" id="TestMainPipeline.test_get_chrom_encoding"><a class="viewcode-back" href="../../../module_content/gwip.tests.html#gwip.tests.test_main_pipeline.TestMainPipeline.test_get_chrom_encoding">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the &#39;get_chrom_encoding&#39; function.&quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">pyfaidx</span>
-
         <span class="c"># Creating the reference file (fasta file) and index (using samtools)</span>
         <span class="n">fasta_content</span> <span class="o">=</span> <span class="p">[[</span><span class="s">&quot;&gt;{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="s">&quot;ACGT&quot;</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">25</span><span class="p">)]</span>
         <span class="n">fasta_content</span><span class="o">.</span><span class="n">append</span><span class="p">([</span><span class="s">&quot;&gt;26&quot;</span><span class="p">,</span> <span class="s">&quot;ACGT&quot;</span><span class="p">])</span>
@@ -337,8 +338,6 @@
                      <span class="s">&quot;optional requirement (pyfaidx) not satisfied&quot;</span><span class="p">)</span>
     <span class="k">def</span> <span class="nf">test_is_reversed</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
 <div class="viewcode-block" id="TestMainPipeline.test_is_reversed"><a class="viewcode-back" href="../../../module_content/gwip.tests.html#gwip.tests.test_main_pipeline.TestMainPipeline.test_is_reversed">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the &#39;is_reversed&#39; function.&quot;&quot;&quot;</span>
-        <span class="kn">import</span> <span class="nn">pyfaidx</span>
-
         <span class="c"># Creating the reference file (fasta file) and index (using samtools)</span>
         <span class="n">fasta_content</span> <span class="o">=</span> <span class="p">(</span>
             <span class="s">&quot;&gt;1</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -924,7 +923,7 @@
             <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">ProgramError</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
                 <span class="n">check_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">&quot;{}: no such file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">reference</span><span class="p">),</span>
-                            <span class="nb">str</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">exception</span><span class="p">))</span>
+                             <span class="nb">str</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">exception</span><span class="p">))</span>
 
             <span class="c"># Setting the reference to None should fix everything</span>
             <span class="n">args</span><span class="o">.</span><span class="n">reference</span> <span class="o">=</span> <span class="bp">None</span>

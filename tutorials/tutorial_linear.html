@@ -377,13 +377,6 @@ samples). Each test was performed only one time (no repetition).</p>
 <div class="figure align-center" id="linear-exec-time">
 <a class="reference internal image-reference" href="../_images/Linear_Walltime.png"><img alt="Linear regression execution time vs number of processes." src="../_images/Linear_Walltime.png" style="width: 60%;" /></a>
 </div>
-<p>Note that the linear regression from <em>Statsmodels 0.6.1</em> (at least when
-compiled on a modern Linux system, <em>i.e.</em> when <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> is installed
-using the <em>pyvenv</em> method) uses more than 100% of each process, hence we
-recommend testing with <em>n/2</em> processes (where <em>n</em> is the number of processing
-cores on the machine) and monitor the system load average. This is not true
-when using a <em>miniconda</em> installation, since all processes uses no more than
-100%.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Execution times between <em>Plink</em> and <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> were compared for this
@@ -394,12 +387,21 @@ if the latter is using more than one processes. This is due to prior data
 manipulation, which significantly increse computation time.</p>
 <p>When no data processing is required (<em>i.e.</em> keeping bad quality genotypes
 and keeping all samples), <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> was faster with two processes or
-more (as in the figure below). Note that for this example (30,000 imputed
-markers for 2,402 samples), all samples were used for the analysis because
-they all had a phenotype.</p>
-<div class="last figure align-center" id="linear-exec-time-plink">
+more (as shown in the figure below). Note that for this example (30,000
+imputed markers for 2,402 samples), all samples were used for the analysis
+because they all had a phenotype.</p>
+<div class="figure align-center" id="linear-exec-time-plink">
 <a class="reference internal image-reference" href="../_images/Linear_Walltime_Plink.png"><img alt="Linear regression execution time vs number of processes (Plink)." src="../_images/Linear_Walltime_Plink.png" style="width: 60%;" /></a>
 </div>
+<p class="last">Note that the linear regression from <em>Statsmodels 0.6.1</em> (at least when
+compiled on a modern Linux system, <em>i.e.</em> when <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> is installed
+using the <em>pyvenv</em> method) uses more than 100% of each process when no data
+preprocessing is required. Hence, we recommend testing with <span class="math">\(n/2\)</span>
+processes (where <span class="math">\(n\)</span> is the number of processing cores on the machine)
+and monitor the system load average. This explains the increase in
+computation time with more than <span class="math">\(n/2\)</span> processes. This is not true when
+using a <em>miniconda</em> installation, since all processes uses no more than
+100%.</p>
 </div>
 </div>
 <div class="section" id="results-comparison">

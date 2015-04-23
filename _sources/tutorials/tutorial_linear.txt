@@ -308,14 +308,6 @@ samples). Each test was performed only one time (no repetition).
     :width: 60%
     :alt: Linear regression execution time vs number of processes.
 
-Note that the linear regression from *Statsmodels 0.6.1* (at least when
-compiled on a modern Linux system, *i.e.* when :py:mod:`gwip` is installed
-using the *pyvenv* method) uses more than 100% of each process, hence we
-recommend testing with *n/2* processes (where *n* is the number of processing
-cores on the machine) and monitor the system load average. This is not true
-when using a *miniconda* installation, since all processes uses no more than
-100%.
-
 .. note::
 
    Execution times between *Plink* and :py:mod:`gwip` were compared for this
@@ -327,9 +319,9 @@ when using a *miniconda* installation, since all processes uses no more than
 
    When no data processing is required (*i.e.* keeping bad quality genotypes
    and keeping all samples), :py:mod:`gwip` was faster with two processes or
-   more (as in the figure below). Note that for this example (30,000 imputed
-   markers for 2,402 samples), all samples were used for the analysis because
-   they all had a phenotype.
+   more (as shown in the figure below). Note that for this example (30,000
+   imputed markers for 2,402 samples), all samples were used for the analysis
+   because they all had a phenotype.
 
    .. _linear_exec_time_plink:
 
@@ -337,6 +329,16 @@ when using a *miniconda* installation, since all processes uses no more than
        :align: center
        :width: 60%
        :alt: Linear regression execution time vs number of processes (Plink).
+
+   Note that the linear regression from *Statsmodels 0.6.1* (at least when
+   compiled on a modern Linux system, *i.e.* when :py:mod:`gwip` is installed
+   using the *pyvenv* method) uses more than 100% of each process when no data
+   preprocessing is required. Hence, we recommend testing with :math:`n/2`
+   processes (where :math:`n` is the number of processing cores on the machine)
+   and monitor the system load average. This explains the increase in
+   computation time with more than :math:`n/2` processes. This is not true when
+   using a *miniconda* installation, since all processes uses no more than
+   100%.
 
 
 .. _lin-tut-comparison:
