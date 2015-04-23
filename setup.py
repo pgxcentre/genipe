@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 
 # How to build source distribution
-# python setup.py sdist --format bztar
-# python setup.py sdist --format gztar
-# python setup.py sdist --format zip
+#   - python setup.py sdist --format bztar
+#   - python setup.py sdist --format gztar
+#   - python setup.py sdist --format zip
+
+# How to build for conda
+#   - python setup.py bdist_conda
+#   - convert -p all .../gwip-0.1-py34_0.tar.bz2 -o dist
 
 
 import os
@@ -15,11 +19,16 @@ MINOR = 1
 VERSION = "{}.{}".format(MAJOR, MINOR)
 
 
-def write_version_file(fn=os.path.join("gwip", "version.py")):
-    content = """
-# THIS FILE WAS GENERATED AUTOMATICALLY BY GWIP SETUP.PY
-gwip_version = "{version}"
-"""
+def write_version_file(fn=None):
+    if fn is None:
+        fn = os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            os.path.join("gwip", "version.py"),
+        )
+
+    content = ("\n# THIS FILE WAS GENERATED AUTOMATICALLY BY GWIP SETUP.PY\n"
+               'gwip_version = "{version}"\n')
+
     a = open(fn, "w")
     try:
         a.write(content.format(version=VERSION))
