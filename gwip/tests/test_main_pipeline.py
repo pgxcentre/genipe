@@ -15,6 +15,9 @@ from ..pipeline import *
 from .. import chromosomes
 from ..error import ProgramError
 
+if HAS_PYFAIDX:
+    import pyfaidx
+
 
 __author__ = "Louis-Philippe Lemieux Perreault"
 __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
@@ -102,8 +105,6 @@ class TestMainPipeline(unittest.TestCase):
                      "optional requirement (pyfaidx) not satisfied")
     def test_get_chrom_encoding(self):
         """Tests the 'get_chrom_encoding' function."""
-        import pyfaidx
-
         # Creating the reference file (fasta file) and index (using samtools)
         fasta_content = [[">{}".format(i), "ACGT"] for i in range(1, 25)]
         fasta_content.append([">26", "ACGT"])
@@ -264,8 +265,6 @@ class TestMainPipeline(unittest.TestCase):
                      "optional requirement (pyfaidx) not satisfied")
     def test_is_reversed(self):
         """Tests the 'is_reversed' function."""
-        import pyfaidx
-
         # Creating the reference file (fasta file) and index (using samtools)
         fasta_content = (
             ">1\n"
@@ -851,7 +850,7 @@ class TestMainPipeline(unittest.TestCase):
             with self.assertRaises(ProgramError) as cm:
                 check_args(args)
             self.assertEqual("{}: no such file".format(args.reference),
-                            str(cm.exception))
+                             str(cm.exception))
 
             # Setting the reference to None should fix everything
             args.reference = None
