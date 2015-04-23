@@ -292,10 +292,9 @@ The following figure shows the approximate execution time for different number
 of processes (the ``--nb-process`` option) with different installation methods
 (*pyvenv* in blue, versus *miniconda* in orange). This analysis was performed
 on a computer with an *Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz* (8 cores) and
-16Go of RAM. The analysis contained 30,000 imputed markers for 2,402 samples,
-and 6,000 lines were processed at a time. Each test was performed only one time
-(no repetition). The red line represent the execution time of the same analysis
-using *Plink* (which uses only one process).
+16Go of RAM. The analysis contained the 195,473 imputed markers and 90 samples
+from the previous command (where phenotypes were available for only 60 of the
+samples). Each test was performed only one time (no repetition).
 
 .. _logistic_exec_time:
 
@@ -304,15 +303,35 @@ using *Plink* (which uses only one process).
     :width: 60%
     :alt: Logistic regression execution time vs number of processes.
 
-Note that the logistic regression from *Statsmodels 0.6.1* (at least when
-compiled on a modern Linux system, *i.e.* when :py:mod:`gwip` is installed
-using the *pyvenv* method) uses more than 100% of each process and much more
-memory. We couldn't perform the analysis with more than 4 processes, as the
-system started to swap (due to lack of available memory). Hence we recommend
-testing with a lower number of processes and monitor the memory consumption and
-the system load average. This is not true when using a *miniconda*
-installation, since all processes uses no more than 100% and a normal amount of
-memory.
+.. note::
+
+   Execution times between *Plink* and :py:mod:`gwip` were compared for this
+   analysis. When data processing is required prior to the statistical analysis
+   (*e.g.* removing poor quality genotypes and excluding the 60 samples without
+   phenotype), *Plink* was **significantly faster** than :py:mod:`gwip`, even
+   if the latter is using more than one processes. This is due to prior data
+   manipulation, which significantly increse computation time.
+
+   When no data processing is required (*i.e.* keeping bad quality genotypes
+   and keeping all samples), :py:mod:`gwip` was faster with two processes or
+   more (as show in the figure below). Note that for this example (30,000
+   imputed markers for 2,402 samples), all samples were used for the analysis
+   because they all had a phenotype.
+
+   .. figure:: ../_static/images/Logistic_Walltime_Plink.png
+       :align: center
+       :width: 60%
+       :alt: Logistic regression execution time vs number of processes (Plink).
+
+   Note that the logistic regression from *Statsmodels 0.6.1* (at least when
+   compiled on a modern Linux system, *i.e.* when :py:mod:`gwip` is installed
+   using the *pyvenv* method) uses more than 100% of each process and much more
+   memory. We couldn't perform the analysis with more than 50% of the
+   processes, as the system started to swap (due to lack of available memory
+   and the quantity of samples). Hence we recommend testing with a lower number
+   of processes and monitor the memory consumption and the system load average.
+   This is not true when using a *miniconda* installation, since all processes
+   uses no more than 100% and a normal amount of memory.
 
 
 .. _logit-tut-comparison:
