@@ -12,13 +12,16 @@ import platform
 import unittest
 from tempfile import TemporaryDirectory
 
-import patsy
 import numpy as np
 import pandas as pd
 from pkg_resources import resource_filename
 
 from ..tools.imputed_stats import *
 from ..tools.imputed_stats import _get_result_from_linear_logistic
+
+if HAS_STATSMODELS:
+    # patsy is installed only if statsmodels is
+    import patsy
 
 
 __author__ = ["Louis-Philippe Lemieux Perreault", "Marc-Andre Legault"]
