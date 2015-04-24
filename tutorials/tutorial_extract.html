@@ -61,6 +61,22 @@
   <ul>
 <li><a class="reference internal" href="#">Site Extraction Tutorial</a><ul>
 <li><a class="reference internal" href="#quick-navigation">Quick navigation</a></li>
+<li><a class="reference internal" href="#site-extraction">Site extraction</a><ul>
+<li><a class="reference internal" href="#input-files">Input files</a></li>
+<li><a class="reference internal" href="#executing-the-extraction">Executing the extraction</a><ul>
+<li><a class="reference internal" href="#extraction-by-id">Extraction by ID</a></li>
+<li><a class="reference internal" href="#extraction-by-characteristics">Extraction by characteristics</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#output-files">Output files</a><ul>
+<li><a class="reference internal" href="#impute2-file"><code class="docutils literal"><span class="pre">.impute2</span></code> file</a></li>
+<li><a class="reference internal" href="#dosage-file"><code class="docutils literal"><span class="pre">.dosage</span></code> file</a></li>
+<li><a class="reference internal" href="#calls-file"><code class="docutils literal"><span class="pre">.calls</span></code> file</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -103,6 +119,224 @@
 <h1>Site Extraction Tutorial<a class="headerlink" href="#site-extraction-tutorial" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="quick-navigation">
 <h2>Quick navigation<a class="headerlink" href="#quick-navigation" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><a class="reference internal" href="#extract-tut-input-files"><span>Input files</span></a></li>
+<li><a class="reference internal" href="#extract-tut-execute"><span>Executing the extraction</span></a></li>
+<li><a class="reference internal" href="#extract-tut-output-files"><span>Output files</span></a></li>
+<li><a class="reference internal" href="#extract-tut-usage"><span>Usage</span></a></li>
+</ol>
+</div>
+<div class="section" id="site-extraction">
+<h2>Site extraction<a class="headerlink" href="#site-extraction" title="Permalink to this headline">¶</a></h2>
+<p>Genome-wide imputation dataset might be huge. Often, it is required to extract
+a subset of imputed sites (<em>e.g.</em> specific markers, genomic location, or
+markers with a specific minor allele frequency). Also, different format might
+be required, depending of the underlying analysis (<em>e.g.</em> hard calls or dosage
+values). We provide an easy tool to perform site extraction of multiple
+<em>impute2</em> files using either marker identification number, or genomic location
+and/or minor allele frequency and/or call rate.</p>
+<p>We suppose that you have followed the main <a class="reference internal" href="tutorial_gwip.html#gwip-tut-page"><span>Pipeline Tutorial</span></a>. The following
+command will create the working directory for this tutorial.</p>
+<div class="highlight-bash"><div class="highlight"><pre>mkdir -p <span class="nv">$HOME</span>/gwip_tutorial/extraction
+</pre></div>
+</div>
+<div class="section" id="input-files">
+<span id="extract-tut-input-files"></span><h3>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h3>
+<p>After running the <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> pipeline, all the required files for the
+extraction tools are automatically created in the <code class="docutils literal"><span class="pre">final_impute2</span></code> directories
+(see the <a class="reference internal" href="tutorial_gwip.html#gwip-tut-output-files-final-impute2"><span>gwip/chrN/final_impute2 directories</span></a> section in the main
+<a class="reference internal" href="tutorial_gwip.html#gwip-tut-page"><span>Pipeline Tutorial</span></a>).</p>
+<p>The files that are required in these directories depends of what kind of
+extraction is required (by name, or by genomic location and/or by minor allele
+frequency and/or by calling rate).</p>
+<p>Once the required <em>impute2</em> files are provided to the tool, the other required
+files will be automatically fetched (if required).</p>
+</div>
+<div class="section" id="executing-the-extraction">
+<span id="extract-tut-execute"></span><h3>Executing the extraction<a class="headerlink" href="#executing-the-extraction" title="Permalink to this headline">¶</a></h3>
+<p>The first time the tool is used on a set of <em>impute2</em> files, indexation will
+automatically occur (to speed of the analysis for future extraction). There are
+two ways to extract markers: using their identification number (<code class="docutils literal"><span class="pre">--extract</span></code>),
+or properties (<code class="docutils literal"><span class="pre">--genomic</span></code>, <code class="docutils literal"><span class="pre">--maf</span></code> or <code class="docutils literal"><span class="pre">rate</span></code>).</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is possible to extract from multiple <em>impute2</em> files at the same time (by
+specifying multiple input files.</p>
+</div>
+<div class="section" id="extraction-by-id">
+<h4>Extraction by ID<a class="headerlink" href="#extraction-by-id" title="Permalink to this headline">¶</a></h4>
+<p>To extract markers using their identification number, you need a file
+containing the list of marker to extract (one marker per line).</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/extraction
+
+<span class="nb">echo</span> <span class="s2">&quot;rs76139713:51137523:C:T&quot;</span> &gt; marker_list.txt
+<span class="nb">echo</span> <span class="s2">&quot;rs372879164:17037188:A:G&quot;</span> &gt;&gt; marker_list.txt
+</pre></div>
+</div>
+<p>This <code class="docutils literal"><span class="pre">marker_list.txt</span></code> file will contain the following:</p>
+<div class="highlight-text"><div class="highlight"><pre>rs76139713:51137523:C:T
+rs372879164:17037188:A:G
+</pre></div>
+</div>
+<p>Then, the following command (using the <code class="docutils literal"><span class="pre">--extract</span></code> option will extract those
+two markers from the <em>impute2</em> file.</p>
+<div class="highlight-bash"><div class="highlight"><pre>impute2-extractor <span class="se">\</span>
+    --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
+    --extract marker_list.txt
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">To gather a list of marker identification numbers, refer to the file
+<code class="docutils literal"><span class="pre">chr22.imputed.map</span></code>, which contains the list of all sites in the <em>impute2</em>
+file.</p>
+</div>
+</div>
+<div class="section" id="extraction-by-characteristics">
+<h4>Extraction by characteristics<a class="headerlink" href="#extraction-by-characteristics" title="Permalink to this headline">¶</a></h4>
+<p>There are three ways to extract markers according to their characteristics. The
+first way is to specify the genomic location of the markers to extract (<em>i.e.</em>
+the <code class="docutils literal"><span class="pre">--genomic</span></code> option). The second way is to specify a minor allele
+frequency threshold (<em>i.e.</em> the <code class="docutils literal"><span class="pre">--maf</span></code> option). The third and final way is
+to specify a call rate threshold (<em>i.e.</em> the <code class="docutils literal"><span class="pre">--rate</span></code> option). Those three
+ways can be used at the same time (<em>e.g.</em> to get markers in a specific genomic
+range and a specific call rate).</p>
+<p>For example, to extract markers with a MAF <span class="math">\(\geq\)</span> 0.05 located in the
+<em>CYP2D6</em> gene, perform the following command:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/extraction
+
+impute2-extractor <span class="se">\</span>
+    --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
+    --genomic chr22:42522501-42526883 <span class="se">\</span>
+    --maf 0.05 <span class="se">\</span>
+    --out cyp2d6_common
+</pre></div>
+</div>
+<p>To gather all markers with a MAF <span class="math">\(\geq\)</span> 0.05 and a call rate <span class="math">\(\geq\)</span>
+0.99, perform the following command:</p>
+<div class="highlight-bash"><div class="highlight"><pre>impute2-extractor <span class="se">\</span>
+    --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
+    --maf 0.05 <span class="se">\</span>
+    --rate 0.99 <span class="se">\</span>
+    --out common_complete
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="output-files">
+<span id="extract-tut-output-files"></span><h3>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h3>
+<p>The output files will depend on the output format selected (the <code class="docutils literal"><span class="pre">--format</span></code>
+option). You can specify either <code class="docutils literal"><span class="pre">impute2</span></code>, <code class="docutils literal"><span class="pre">dosage</span></code> and/or <code class="docutils literal"><span class="pre">calls</span></code>, for
+the <em>impute2</em> format (<em>i.e.</em> three probabilities per sample), the <em>dosage</em>
+format (<em>i.e.</em> one value between 0 and 2 per sample), and hard calls (<em>i.e.</em>
+genotypes).</p>
+<div class="section" id="impute2-file">
+<h4><code class="docutils literal"><span class="pre">.impute2</span></code> file<a class="headerlink" href="#impute2-file" title="Permalink to this headline">¶</a></h4>
+<p>This file is generated when the <code class="docutils literal"><span class="pre">impute2</span></code> format is used. It has the same
+format as the original <em>impute2</em> file.</p>
+<p>The general structure of the file contains the following columns (which are
+space delimited): the chromosome, the name of the marker, its position and its
+two alleles. The subsequent columns correspond to the probabilities of each
+genotype (hence, there are three columns per sample). The first value
+correspond to the probability of being homozygous of the first allele. The
+second value correspond to the probability of being heterozygous. Finally, the
+third value correspond to the probability of being homozygous of the second
+allele.</p>
+<p>The following example shows two lines of the <code class="docutils literal"><span class="pre">.impute2</span></code> file.</p>
+<div class="highlight-text"><div class="highlight"><pre>22 rs7289830 16058758 C A 0 0 1 0 0 1 0 1 0 ...
+22 rs6423472 16087621 A G 0 1 0 1 0 0 0 1 0 ...
+</pre></div>
+</div>
+</div>
+<div class="section" id="dosage-file">
+<h4><code class="docutils literal"><span class="pre">.dosage</span></code> file<a class="headerlink" href="#dosage-file" title="Permalink to this headline">¶</a></h4>
+<p>This file contains the dosage computed from the <em>impute2</em> probabilities. The
+general structure of the file contains the following columns (which are
+tabulation separated): the chromosome, the position on the chromosome, its
+name, its minor and major allele and the dosage value. The dosage values vary
+between 0 and 2 (inclusively), where values close to 0 represent a higher
+chance of been homozygous of the major allele, values close to 1 represent a
+higher chance of been heterozygous, and values close to 2 represent a higher
+chance of been homozygous of the minor allele.</p>
+<p>The following example shows two lines of the <code class="docutils literal"><span class="pre">.dosage</span></code> file.</p>
+<div class="highlight-text"><div class="highlight"><pre>22   16058758        rs7289830       C       A       0.0     0.0     1.0     ...
+22   16087621        rs6423472       A       G       1.0     2.0     1.0     ...
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Dosage values computed from probabilities that are below the quality
+threshold (specified by the <code class="docutils literal"><span class="pre">--prob</span></code> option) will have a missing value of
+<code class="docutils literal"><span class="pre">nan</span></code>.</p>
+</div>
+</div>
+<div class="section" id="calls-file">
+<h4><code class="docutils literal"><span class="pre">.calls</span></code> file<a class="headerlink" href="#calls-file" title="Permalink to this headline">¶</a></h4>
+<p>This file contains the hard calls computed from the <em>impute2</em> probabilities. It
+has the same format as a transposed pedfile (from <em>Plink</em>). The general
+structure of the file contains the following columns (which are tabulation
+separated): the chromosome, the marker name, the genetic position, the genomic
+location, and the hard calls.</p>
+<p>The following example shows two lines of the <code class="docutils literal"><span class="pre">.calls</span></code> file.</p>
+<div class="highlight-text"><div class="highlight"><pre>22   rs7289830       0       16058758        A A     A A     C A     ...
+22   rs6423472       0       16087621        A G     A A     A G     ...
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Hard calls computed from probabilities that are below the quality threshold
+(specified by the <code class="docutils literal"><span class="pre">--prob</span></code> option) will have a missing value of <code class="docutils literal"><span class="pre">0</span> <span class="pre">0</span></code>.</p>
+</div>
+</div>
+</div>
+<div class="section" id="usage">
+<span id="extract-tut-usage"></span><h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
+<p>The following command will display the documentation for the extraction
+analysis in the console:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> impute2-extractor --help
+<span class="go">usage: impute2-extractor [-h] [-v] [--debug] --impute2 FILE [FILE ...]</span>
+<span class="go">                         [--out PREFIX] [--format FORMAT [FORMAT ...]]</span>
+<span class="go">                         [--prob FLOAT] [--extract FILE]</span>
+<span class="go">                         [--genomic CHR:START-END] [--maf FLOAT]</span>
+<span class="go">                         [--rate FLOAT]</span>
+
+<span class="go">Extract imputed markers located in a specific genomic region. This script is</span>
+<span class="go">part of the &#39;gwip&#39; package, version 0.1).</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -v, --version         show program&#39;s version number and exit</span>
+<span class="go">  --debug               set the logging level to debug</span>
+
+<span class="go">Input Files:</span>
+<span class="go">  --impute2 FILE [FILE ...]</span>
+<span class="go">                        The output from IMPUTE2.</span>
+
+<span class="go">Output Options:</span>
+<span class="go">  --out PREFIX          The prefix of the output files. [impute2_extractor]</span>
+<span class="go">  --format FORMAT [FORMAT ...]</span>
+<span class="go">                        The output format. Can specify either &#39;impute2&#39; for</span>
+<span class="go">                        probabilities (same as impute2 format, i.e. 3 values</span>
+<span class="go">                        per sample), &#39;dosage&#39; for dosage values (one value</span>
+<span class="go">                        between 0 and 2 by sample), or &#39;calls&#39; for hard calls.</span>
+<span class="go">                        [&#39;impute2&#39;]</span>
+<span class="go">  --prob FLOAT          The probability threshold used when creating a file in</span>
+<span class="go">                        the dosage or call format.</span>
+
+<span class="go">Extraction Options:</span>
+<span class="go">  --extract FILE        File containing marker names to extract.</span>
+<span class="go">  --genomic CHR:START-END</span>
+<span class="go">                        The range to extract (e.g. 22 1000000 1500000). Can be</span>
+<span class="go">                        use in combination with &#39;--rate&#39; and &#39;--maf&#39;.</span>
+<span class="go">  --maf FLOAT           Extract markers with a minor allele frequency equal or</span>
+<span class="go">                        higher than the specified threshold. Can be use in</span>
+<span class="go">                        combination with &#39;--rate&#39; and &#39;--genomic&#39;.</span>
+<span class="go">  --rate FLOAT          Extract markers with a completion rate equal or higher</span>
+<span class="go">                        to the specified threshold. Can be use in combination</span>
+<span class="go">                        with &#39;--maf&#39; and &#39;--genomic&#39;.</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 

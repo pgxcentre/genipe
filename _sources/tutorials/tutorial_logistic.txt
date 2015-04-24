@@ -1,10 +1,6 @@
 Logistic Tutorial
 ==================
 
-.. note::
-
-   Work on this tutorial is still in progress...
-
 
 Quick navigation
 -----------------
