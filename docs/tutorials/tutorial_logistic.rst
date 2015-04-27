@@ -168,9 +168,9 @@ the logistic regression analysis.
        --pheno-name Pheno2
 
 For more information about the arguments and options, see the
-:ref:`lin-tut-usage` section. The number of process to use might differ
+:ref:`logit-tut-usage` section. The number of process to use might differ
 according to the installation type and to the computer/server. See the
-:ref:`lin-tut-execution-time` section for more information.
+:ref:`logit-tut-execution-time` section for more information.
 
 
 .. _logit-tut-output-files:
