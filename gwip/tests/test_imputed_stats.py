@@ -76,7 +76,7 @@ def reverse_dosage(dosage):
 
 
 def create_input_files(i_filename, output_dirname, analysis_type,
-                       pheno_name="y", tte="y", censure="y_d",
+                       pheno_name="y", tte="y", event="y_d",
                        interaction=None, nb_process=None):
     """Creates input files for the imputed_stats script."""
     # Reading the data
@@ -136,7 +136,7 @@ def create_input_files(i_filename, output_dirname, analysis_type,
 
     # Is this Cox or linear?
     if analysis_type == "cox":
-        options.extend(["--time-to-event", tte, "--censure", censure])
+        options.extend(["--time-to-event", tte, "--event", event])
     else:
         options.extend(["--pheno-name", pheno_name])
 
@@ -171,7 +171,7 @@ class TestImputedStats(unittest.TestCase):
 
         # The content of the phenotype file
         phenotype_content = (
-            "sample_id\tTime_To_Event\tCensure\tC1\tC2\tC3\tC4\tGender\t"
+            "sample_id\tTime_To_Event\tEvent\tC1\tC2\tC3\tC4\tGender\t"
             "Pheno_Lin\tPheno_Logit\tInter\n"
             "sample_1\t10\t0\t0.3\t0.2\t0.45\t0.01\t1\t0.01\t0\t0.00001\n"
             "sample_2\t2\t1\t0.9\t0.1\t0.42\t0.012\t2\t0.15\t1\t0.00332\n"
@@ -188,7 +188,7 @@ class TestImputedStats(unittest.TestCase):
         args.covar = ["C1", "C2", "C3", "Gender"]
         args.analysis_type = "cox"
         args.tte = "Time_To_Event"
-        args.censure = "Censure"
+        args.event = "Event"
         args.interaction = None
         args.chrx = False
         args.gender_column = "Gender"
@@ -196,14 +196,14 @@ class TestImputedStats(unittest.TestCase):
         # The expected value
         expected_shape = (3, 6)
         expected_columns = {"C1", "C2", "C3", "Gender", "Time_To_Event",
-                            "Censure"}
+                            "Event"}
         expected_index = ["sample_1", "sample_2", "sample_3"]
         expected_c1 = np.array([0.3, 0.9, 0.4], dtype=float)
         expected_c2 = np.array([0.2, 0.1, 0.67], dtype=float)
         expected_c3 = np.array([0.45, 0.42, 999], dtype=float)
         expected_gender = np.array([1, 2, 1], dtype=int)
         expected_tte = np.array([10, 2, 8], dtype=int)
-        expected_censure = np.array([0, 1, 1], dtype=int)
+        expected_event = np.array([0, 1, 1], dtype=int)
         expected_remove_g = False
 
         # The observed values
@@ -219,7 +219,7 @@ class TestImputedStats(unittest.TestCase):
         self.assertTrue(
             (expected_tte == observed_p.Time_To_Event.values).all()
         )
-        self.assertTrue((expected_censure == observed_p.Censure.values).all())
+        self.assertTrue((expected_event == observed_p.Event.values).all())
         self.assertEqual(expected_remove_g, observed_remove_g)
 
         # Modifying the missing value to 999
@@ -244,7 +244,7 @@ class TestImputedStats(unittest.TestCase):
             (expected_tte[:-1] == observed_p.Time_To_Event.values).all()
         )
         self.assertTrue(
-            (expected_censure[:-1] == observed_p.Censure.values).all()
+            (expected_event[:-1] == observed_p.Event.values).all()
         )
         self.assertEqual(expected_remove_g, observed_remove_g)
 
@@ -252,7 +252,7 @@ class TestImputedStats(unittest.TestCase):
         args.missing_value = None
         args.analysis_type = "linear"
         del args.tte
-        del args.censure
+        del args.event
         args.pheno_name = "Pheno_Lin"
 
         # The expected results
@@ -632,7 +632,7 @@ class TestImputedStatsCox(unittest.TestCase):
         observed = fit_cox(
             data=data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
-            censure="y_d",
+            event="y_d",
             result_col="snp1",
         )
         self.assertEqual(6, len(observed))
@@ -664,7 +664,7 @@ class TestImputedStatsCox(unittest.TestCase):
         observed = fit_cox(
             data=data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
-            censure="y_d",
+            event="y_d",
             result_col="snp2",
         )
         self.assertEqual(6, len(observed))
@@ -696,7 +696,7 @@ class TestImputedStatsCox(unittest.TestCase):
         observed = fit_cox(
             data=data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
-            censure="y_d",
+            event="y_d",
             result_col="snp3",
         )
         self.assertEqual(6, len(observed))
@@ -740,7 +740,7 @@ class TestImputedStatsCox(unittest.TestCase):
         observed = fit_cox(
             data=data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
-            censure="y_d",
+            event="y_d",
             result_col="interaction",
         )
         self.assertEqual(6, len(observed))
@@ -770,7 +770,7 @@ class TestImputedStatsCox(unittest.TestCase):
             output_dirname=self.output_dir.name,
             analysis_type="cox",
             tte="y",
-            censure="y_d",
+            event="y_d",
         )
 
         # Executing the tool
@@ -881,7 +881,7 @@ class TestImputedStatsCox(unittest.TestCase):
             output_dirname=self.output_dir.name,
             analysis_type="cox",
             tte="y",
-            censure="y_d",
+            event="y_d",
             nb_process=2,
         )
 
@@ -991,7 +991,7 @@ class TestImputedStatsCox(unittest.TestCase):
             output_dirname=self.output_dir.name,
             analysis_type="cox",
             tte="y",
-            censure="y_d",
+            event="y_d",
             interaction="gender",
         )
 
