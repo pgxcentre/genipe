@@ -72,7 +72,7 @@ HAS_SKAT = _has_skat() if HAS_R else False
 
 # An IMPUTE2 row to process
 _Row = namedtuple("_Row", ("row", "samples", "pheno", "pheno_name", "formula",
-                           "time_to_event", "censure", "inter_c", "is_chrx",
+                           "time_to_event", "event", "inter_c", "is_chrx",
                            "gender_c", "del_g", "scale", "maf_t", "prob_t",
                            "analysis_type", "number_to_print"))
 
@@ -202,7 +202,7 @@ def read_phenotype(i_filename, opts):
     # Finding the required column
     required_columns = opts.covar.copy()
     if opts.analysis_type == "cox":
-        required_columns.extend([opts.tte, opts.censure])
+        required_columns.extend([opts.tte, opts.event])
     else:
         required_columns.append(opts.pheno_name)
 
@@ -747,7 +747,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
                 pheno_name=vars(options).get("pheno_name", None),
                 formula=formula,
                 time_to_event=vars(options).get("tte", None),
-                censure=vars(options).get("censure", None),
+                event=vars(options).get("event", None),
                 inter_c=options.interaction,
                 is_chrx=options.chrx,
                 gender_c=options.gender_column,
@@ -904,7 +904,7 @@ def process_impute2_site(site_info):
     results = _fit_map[site_info.analysis_type](
         data=data,
         time_to_event=site_info.time_to_event,
-        censure=site_info.censure,
+        event=site_info.event,
         formula=site_info.formula,
         result_col=result_from_column,
     )
@@ -963,13 +963,13 @@ def get_formula(phenotype, covars, interaction):
     return formula
 
 
-def fit_cox(data, time_to_event, censure, result_col, **kwargs):
+def fit_cox(data, time_to_event, event, result_col, **kwargs):
     """Fit a Cox' proportional hazard to the data.
 
     Args:
         data (pandas.DataFrame): the data to analyse
         time_to_event (str): the time to event column for the survival analysis
-        censure (str): the censure column for the survival analysis
+        event (str): the event column for the survival analysis
         result_col (str): the column that will contain the results
 
     Returns:
@@ -981,7 +981,7 @@ def fit_cox(data, time_to_event, censure, result_col, **kwargs):
 
     """
     cf = CoxPHFitter(alpha=0.95, tie_method="Efron", normalize=False)
-    res = cf.fit(data, duration_col=time_to_event, event_col=censure)
+    res = cf.fit(data, duration_col=time_to_event, event_col=event)
     return cf.summary.loc[result_col, _COX_REQ_COLS].values
 
 
@@ -1125,7 +1125,7 @@ def check_args(args):
     # Checking the required columns
     variables_to_check = None
     if args.analysis_type == "cox":
-        variables_to_check = {args.tte, args.censure}
+        variables_to_check = {args.tte, args.event}
     else:
         variables_to_check = {args.pheno_name}
     for variable in variables_to_check:
@@ -1382,11 +1382,11 @@ def parse_args(parser, args=None):
         help="The time to event variable (in the pheno file).",
     )
     group.add_argument(
-        "--censure",
+        "--event",
         type=str,
         metavar="NAME",
         required=True,
-        help="The censure value (1 if observed, 0 if censored)",
+        help="The event variable (1 if observed, 0 if not observed)",
     )
 
     # The linear parser
