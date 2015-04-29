@@ -339,7 +339,7 @@ The logistic regression results from :py:mod:`gwip` and *Plink* were compared
 for validity. The following figure shows the comparison for, from left to
 right, the coefficients, the standard errors and the *p*-values. The *x* axis
 shows the results from :py:mod:`gwip`, and the *y* axis shows the results for
-*Plink*. This comparison includes 58,769 "good" imputed markers with a MAF
+*Plink*. This comparison includes 58,871 "good" imputed markers with a MAF
 higher or equal to 10%, analyzed for 60 samples (*i.e* results from this
 tutorial). Note that for this comparison, the **probability threshold**
 (``--prob``) **was changed from 0.9 to 0** to *imitate* *Plink* analysis (see
@@ -376,7 +376,7 @@ note below for more information).
 
    The following figure shows the comparison between *Plink* and :py:mod:`gwip`
    for the same analysis, but using the default probability threshold of 0.9
-   (excluding imputed genotypes with poor quality). Hence, 5,887 markers were
+   (excluding imputed genotypes with poor quality). Hence, 58,769 markers were
    compared.
 
    .. figure:: ../_static/images/Logistic_Diff.png
