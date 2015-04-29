@@ -145,7 +145,7 @@
 
 <span class="c"># An IMPUTE2 row to process</span>
 <span class="n">_Row</span> <span class="o">=</span> <span class="n">namedtuple</span><span class="p">(</span><span class="s">&quot;_Row&quot;</span><span class="p">,</span> <span class="p">(</span><span class="s">&quot;row&quot;</span><span class="p">,</span> <span class="s">&quot;samples&quot;</span><span class="p">,</span> <span class="s">&quot;pheno&quot;</span><span class="p">,</span> <span class="s">&quot;pheno_name&quot;</span><span class="p">,</span> <span class="s">&quot;formula&quot;</span><span class="p">,</span>
-                           <span class="s">&quot;time_to_event&quot;</span><span class="p">,</span> <span class="s">&quot;censure&quot;</span><span class="p">,</span> <span class="s">&quot;inter_c&quot;</span><span class="p">,</span> <span class="s">&quot;is_chrx&quot;</span><span class="p">,</span>
+                           <span class="s">&quot;time_to_event&quot;</span><span class="p">,</span> <span class="s">&quot;event&quot;</span><span class="p">,</span> <span class="s">&quot;inter_c&quot;</span><span class="p">,</span> <span class="s">&quot;is_chrx&quot;</span><span class="p">,</span>
                            <span class="s">&quot;gender_c&quot;</span><span class="p">,</span> <span class="s">&quot;del_g&quot;</span><span class="p">,</span> <span class="s">&quot;scale&quot;</span><span class="p">,</span> <span class="s">&quot;maf_t&quot;</span><span class="p">,</span> <span class="s">&quot;prob_t&quot;</span><span class="p">,</span>
                            <span class="s">&quot;analysis_type&quot;</span><span class="p">,</span> <span class="s">&quot;number_to_print&quot;</span><span class="p">))</span>
 
@@ -275,7 +275,7 @@
     <span class="c"># Finding the required column</span>
     <span class="n">required_columns</span> <span class="o">=</span> <span class="n">opts</span><span class="o">.</span><span class="n">covar</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">==</span> <span class="s">&quot;cox&quot;</span><span class="p">:</span>
-        <span class="n">required_columns</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">opts</span><span class="o">.</span><span class="n">tte</span><span class="p">,</span> <span class="n">opts</span><span class="o">.</span><span class="n">censure</span><span class="p">])</span>
+        <span class="n">required_columns</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="n">opts</span><span class="o">.</span><span class="n">tte</span><span class="p">,</span> <span class="n">opts</span><span class="o">.</span><span class="n">event</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">required_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">opts</span><span class="o">.</span><span class="n">pheno_name</span><span class="p">)</span>
 
@@ -820,7 +820,7 @@
                 <span class="n">pheno_name</span><span class="o">=</span><span class="nb">vars</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;pheno_name&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
                 <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">,</span>
                 <span class="n">time_to_event</span><span class="o">=</span><span class="nb">vars</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;tte&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-                <span class="n">censure</span><span class="o">=</span><span class="nb">vars</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;censure&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+                <span class="n">event</span><span class="o">=</span><span class="nb">vars</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;event&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
                 <span class="n">inter_c</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">interaction</span><span class="p">,</span>
                 <span class="n">is_chrx</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">chrx</span><span class="p">,</span>
                 <span class="n">gender_c</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">gender_column</span><span class="p">,</span>
@@ -977,7 +977,7 @@
     <span class="n">results</span> <span class="o">=</span> <span class="n">_fit_map</span><span class="p">[</span><span class="n">site_info</span><span class="o">.</span><span class="n">analysis_type</span><span class="p">](</span>
         <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
         <span class="n">time_to_event</span><span class="o">=</span><span class="n">site_info</span><span class="o">.</span><span class="n">time_to_event</span><span class="p">,</span>
-        <span class="n">censure</span><span class="o">=</span><span class="n">site_info</span><span class="o">.</span><span class="n">censure</span><span class="p">,</span>
+        <span class="n">event</span><span class="o">=</span><span class="n">site_info</span><span class="o">.</span><span class="n">event</span><span class="p">,</span>
         <span class="n">formula</span><span class="o">=</span><span class="n">site_info</span><span class="o">.</span><span class="n">formula</span><span class="p">,</span>
         <span class="n">result_col</span><span class="o">=</span><span class="n">result_from_column</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1036,13 +1036,13 @@
     <span class="k">return</span> <span class="n">formula</span>
 
 
-<span class="k">def</span> <span class="nf">fit_cox</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">time_to_event</span><span class="p">,</span> <span class="n">censure</span><span class="p">,</span> <span class="n">result_col</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div>
+<span class="k">def</span> <span class="nf">fit_cox</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">time_to_event</span><span class="p">,</span> <span class="n">event</span><span class="p">,</span> <span class="n">result_col</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">):</span></div>
 <div class="viewcode-block" id="fit_cox"><a class="viewcode-back" href="../../../module_content/gwip.tools.html#gwip.tools.imputed_stats.fit_cox">[docs]</a>    <span class="sd">&quot;&quot;&quot;Fit a Cox&#39; proportional hazard to the data.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        data (pandas.DataFrame): the data to analyse</span>
 <span class="sd">        time_to_event (str): the time to event column for the survival analysis</span>
-<span class="sd">        censure (str): the censure column for the survival analysis</span>
+<span class="sd">        event (str): the event column for the survival analysis</span>
 <span class="sd">        result_col (str): the column that will contain the results</span>
 
 <span class="sd">    Returns:</span>
@@ -1054,7 +1054,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">cf</span> <span class="o">=</span> <span class="n">CoxPHFitter</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">tie_method</span><span class="o">=</span><span class="s">&quot;Efron&quot;</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
-    <span class="n">res</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">duration_col</span><span class="o">=</span><span class="n">time_to_event</span><span class="p">,</span> <span class="n">event_col</span><span class="o">=</span><span class="n">censure</span><span class="p">)</span>
+    <span class="n">res</span> <span class="o">=</span> <span class="n">cf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">duration_col</span><span class="o">=</span><span class="n">time_to_event</span><span class="p">,</span> <span class="n">event_col</span><span class="o">=</span><span class="n">event</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">result_col</span><span class="p">,</span> <span class="n">_COX_REQ_COLS</span><span class="p">]</span><span class="o">.</span><span class="n">values</span>
 
 
@@ -1198,7 +1198,7 @@
     <span class="c"># Checking the required columns</span>
     <span class="n">variables_to_check</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">==</span> <span class="s">&quot;cox&quot;</span><span class="p">:</span>
-        <span class="n">variables_to_check</span> <span class="o">=</span> <span class="p">{</span><span class="n">args</span><span class="o">.</span><span class="n">tte</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">censure</span><span class="p">}</span>
+        <span class="n">variables_to_check</span> <span class="o">=</span> <span class="p">{</span><span class="n">args</span><span class="o">.</span><span class="n">tte</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">event</span><span class="p">}</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">variables_to_check</span> <span class="o">=</span> <span class="p">{</span><span class="n">args</span><span class="o">.</span><span class="n">pheno_name</span><span class="p">}</span>
     <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">variables_to_check</span><span class="p">:</span>
@@ -1455,11 +1455,11 @@
         <span class="n">help</span><span class="o">=</span><span class="s">&quot;The time to event variable (in the pheno file).&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s">&quot;--censure&quot;</span><span class="p">,</span>
+        <span class="s">&quot;--event&quot;</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
         <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;NAME&quot;</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-        <span class="n">help</span><span class="o">=</span><span class="s">&quot;The censure value (1 if observed, 0 if censored)&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&quot;The event variable (1 if observed, 0 if not observed)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="c"># The linear parser</span>

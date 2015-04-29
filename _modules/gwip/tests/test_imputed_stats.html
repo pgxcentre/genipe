@@ -149,7 +149,7 @@
 
 
 <span class="k">def</span> <span class="nf">create_input_files</span><span class="p">(</span><span class="n">i_filename</span><span class="p">,</span> <span class="n">output_dirname</span><span class="p">,</span> <span class="n">analysis_type</span><span class="p">,</span>
-                       <span class="n">pheno_name</span><span class="o">=</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">tte</span><span class="o">=</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">censure</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
+                       <span class="n">pheno_name</span><span class="o">=</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">tte</span><span class="o">=</span><span class="s">&quot;y&quot;</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
                        <span class="n">interaction</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nb_process</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Creates input files for the imputed_stats script.&quot;&quot;&quot;</span>
     <span class="c"># Reading the data</span>
@@ -209,7 +209,7 @@
 
     <span class="c"># Is this Cox or linear?</span>
     <span class="k">if</span> <span class="n">analysis_type</span> <span class="o">==</span> <span class="s">&quot;cox&quot;</span><span class="p">:</span>
-        <span class="n">options</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s">&quot;--time-to-event&quot;</span><span class="p">,</span> <span class="n">tte</span><span class="p">,</span> <span class="s">&quot;--censure&quot;</span><span class="p">,</span> <span class="n">censure</span><span class="p">])</span>
+        <span class="n">options</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s">&quot;--time-to-event&quot;</span><span class="p">,</span> <span class="n">tte</span><span class="p">,</span> <span class="s">&quot;--event&quot;</span><span class="p">,</span> <span class="n">event</span><span class="p">])</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">options</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s">&quot;--pheno-name&quot;</span><span class="p">,</span> <span class="n">pheno_name</span><span class="p">])</span>
 
@@ -244,7 +244,7 @@
 
         <span class="c"># The content of the phenotype file</span>
         <span class="n">phenotype_content</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s">&quot;sample_id</span><span class="se">\t</span><span class="s">Time_To_Event</span><span class="se">\t</span><span class="s">Censure</span><span class="se">\t</span><span class="s">C1</span><span class="se">\t</span><span class="s">C2</span><span class="se">\t</span><span class="s">C3</span><span class="se">\t</span><span class="s">C4</span><span class="se">\t</span><span class="s">Gender</span><span class="se">\t</span><span class="s">&quot;</span>
+            <span class="s">&quot;sample_id</span><span class="se">\t</span><span class="s">Time_To_Event</span><span class="se">\t</span><span class="s">Event</span><span class="se">\t</span><span class="s">C1</span><span class="se">\t</span><span class="s">C2</span><span class="se">\t</span><span class="s">C3</span><span class="se">\t</span><span class="s">C4</span><span class="se">\t</span><span class="s">Gender</span><span class="se">\t</span><span class="s">&quot;</span>
             <span class="s">&quot;Pheno_Lin</span><span class="se">\t</span><span class="s">Pheno_Logit</span><span class="se">\t</span><span class="s">Inter</span><span class="se">\n</span><span class="s">&quot;</span>
             <span class="s">&quot;sample_1</span><span class="se">\t</span><span class="s">10</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">0.3</span><span class="se">\t</span><span class="s">0.2</span><span class="se">\t</span><span class="s">0.45</span><span class="se">\t</span><span class="s">0.01</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">0.01</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">0.00001</span><span class="se">\n</span><span class="s">&quot;</span>
             <span class="s">&quot;sample_2</span><span class="se">\t</span><span class="s">2</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">0.9</span><span class="se">\t</span><span class="s">0.1</span><span class="se">\t</span><span class="s">0.42</span><span class="se">\t</span><span class="s">0.012</span><span class="se">\t</span><span class="s">2</span><span class="se">\t</span><span class="s">0.15</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">0.00332</span><span class="se">\n</span><span class="s">&quot;</span>
@@ -261,7 +261,7 @@
         <span class="n">args</span><span class="o">.</span><span class="n">covar</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;C1&quot;</span><span class="p">,</span> <span class="s">&quot;C2&quot;</span><span class="p">,</span> <span class="s">&quot;C3&quot;</span><span class="p">,</span> <span class="s">&quot;Gender&quot;</span><span class="p">]</span>
         <span class="n">args</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">=</span> <span class="s">&quot;cox&quot;</span>
         <span class="n">args</span><span class="o">.</span><span class="n">tte</span> <span class="o">=</span> <span class="s">&quot;Time_To_Event&quot;</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">censure</span> <span class="o">=</span> <span class="s">&quot;Censure&quot;</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="s">&quot;Event&quot;</span>
         <span class="n">args</span><span class="o">.</span><span class="n">interaction</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="n">args</span><span class="o">.</span><span class="n">chrx</span> <span class="o">=</span> <span class="bp">False</span>
         <span class="n">args</span><span class="o">.</span><span class="n">gender_column</span> <span class="o">=</span> <span class="s">&quot;Gender&quot;</span>
@@ -269,14 +269,14 @@
         <span class="c"># The expected value</span>
         <span class="n">expected_shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
         <span class="n">expected_columns</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;C1&quot;</span><span class="p">,</span> <span class="s">&quot;C2&quot;</span><span class="p">,</span> <span class="s">&quot;C3&quot;</span><span class="p">,</span> <span class="s">&quot;Gender&quot;</span><span class="p">,</span> <span class="s">&quot;Time_To_Event&quot;</span><span class="p">,</span>
-                            <span class="s">&quot;Censure&quot;</span><span class="p">}</span>
+                            <span class="s">&quot;Event&quot;</span><span class="p">}</span>
         <span class="n">expected_index</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;sample_1&quot;</span><span class="p">,</span> <span class="s">&quot;sample_2&quot;</span><span class="p">,</span> <span class="s">&quot;sample_3&quot;</span><span class="p">]</span>
         <span class="n">expected_c1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.4</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="n">expected_c2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.67</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="n">expected_c3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.42</span><span class="p">,</span> <span class="mi">999</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
         <span class="n">expected_gender</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">expected_tte</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-        <span class="n">expected_censure</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">expected_event</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">expected_remove_g</span> <span class="o">=</span> <span class="bp">False</span>
 
         <span class="c"># The observed values</span>
@@ -292,7 +292,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span>
             <span class="p">(</span><span class="n">expected_tte</span> <span class="o">==</span> <span class="n">observed_p</span><span class="o">.</span><span class="n">Time_To_Event</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
         <span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">((</span><span class="n">expected_censure</span> <span class="o">==</span> <span class="n">observed_p</span><span class="o">.</span><span class="n">Censure</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">((</span><span class="n">expected_event</span> <span class="o">==</span> <span class="n">observed_p</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_remove_g</span><span class="p">,</span> <span class="n">observed_remove_g</span><span class="p">)</span>
 
         <span class="c"># Modifying the missing value to 999</span>
@@ -317,7 +317,7 @@
             <span class="p">(</span><span class="n">expected_tte</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">observed_p</span><span class="o">.</span><span class="n">Time_To_Event</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span>
-            <span class="p">(</span><span class="n">expected_censure</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">observed_p</span><span class="o">.</span><span class="n">Censure</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
+            <span class="p">(</span><span class="n">expected_event</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="n">observed_p</span><span class="o">.</span><span class="n">Event</span><span class="o">.</span><span class="n">values</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">()</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_remove_g</span><span class="p">,</span> <span class="n">observed_remove_g</span><span class="p">)</span>
 
@@ -325,7 +325,7 @@
         <span class="n">args</span><span class="o">.</span><span class="n">missing_value</span> <span class="o">=</span> <span class="bp">None</span>
         <span class="n">args</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">=</span> <span class="s">&quot;linear&quot;</span>
         <span class="k">del</span> <span class="n">args</span><span class="o">.</span><span class="n">tte</span>
-        <span class="k">del</span> <span class="n">args</span><span class="o">.</span><span class="n">censure</span>
+        <span class="k">del</span> <span class="n">args</span><span class="o">.</span><span class="n">event</span>
         <span class="n">args</span><span class="o">.</span><span class="n">pheno_name</span> <span class="o">=</span> <span class="s">&quot;Pheno_Lin&quot;</span>
 
         <span class="c"># The expected results</span>
@@ -705,7 +705,7 @@
         <span class="n">observed</span> <span class="o">=</span> <span class="n">fit_cox</span><span class="p">(</span>
             <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">columns_to_keep</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
             <span class="n">time_to_event</span><span class="o">=</span><span class="s">&quot;y&quot;</span><span class="p">,</span>
-            <span class="n">censure</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
+            <span class="n">event</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
             <span class="n">result_col</span><span class="o">=</span><span class="s">&quot;snp1&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed</span><span class="p">))</span>
@@ -737,7 +737,7 @@
         <span class="n">observed</span> <span class="o">=</span> <span class="n">fit_cox</span><span class="p">(</span>
             <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">columns_to_keep</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
             <span class="n">time_to_event</span><span class="o">=</span><span class="s">&quot;y&quot;</span><span class="p">,</span>
-            <span class="n">censure</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
+            <span class="n">event</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
             <span class="n">result_col</span><span class="o">=</span><span class="s">&quot;snp2&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed</span><span class="p">))</span>
@@ -769,7 +769,7 @@
         <span class="n">observed</span> <span class="o">=</span> <span class="n">fit_cox</span><span class="p">(</span>
             <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">columns_to_keep</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
             <span class="n">time_to_event</span><span class="o">=</span><span class="s">&quot;y&quot;</span><span class="p">,</span>
-            <span class="n">censure</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
+            <span class="n">event</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
             <span class="n">result_col</span><span class="o">=</span><span class="s">&quot;snp3&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed</span><span class="p">))</span>
@@ -813,7 +813,7 @@
         <span class="n">observed</span> <span class="o">=</span> <span class="n">fit_cox</span><span class="p">(</span>
             <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="n">columns_to_keep</span><span class="p">]</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
             <span class="n">time_to_event</span><span class="o">=</span><span class="s">&quot;y&quot;</span><span class="p">,</span>
-            <span class="n">censure</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
+            <span class="n">event</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
             <span class="n">result_col</span><span class="o">=</span><span class="s">&quot;interaction&quot;</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed</span><span class="p">))</span>
@@ -843,7 +843,7 @@
             <span class="n">output_dirname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">analysis_type</span><span class="o">=</span><span class="s">&quot;cox&quot;</span><span class="p">,</span>
             <span class="n">tte</span><span class="o">=</span><span class="s">&quot;y&quot;</span><span class="p">,</span>
-            <span class="n">censure</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
+            <span class="n">event</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="c"># Executing the tool</span>
@@ -954,7 +954,7 @@
             <span class="n">output_dirname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">analysis_type</span><span class="o">=</span><span class="s">&quot;cox&quot;</span><span class="p">,</span>
             <span class="n">tte</span><span class="o">=</span><span class="s">&quot;y&quot;</span><span class="p">,</span>
-            <span class="n">censure</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
+            <span class="n">event</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
             <span class="n">nb_process</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
         <span class="p">)</span>
 
@@ -1064,7 +1064,7 @@
             <span class="n">output_dirname</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
             <span class="n">analysis_type</span><span class="o">=</span><span class="s">&quot;cox&quot;</span><span class="p">,</span>
             <span class="n">tte</span><span class="o">=</span><span class="s">&quot;y&quot;</span><span class="p">,</span>
-            <span class="n">censure</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
+            <span class="n">event</span><span class="o">=</span><span class="s">&quot;y_d&quot;</span><span class="p">,</span>
             <span class="n">interaction</span><span class="o">=</span><span class="s">&quot;gender&quot;</span><span class="p">,</span>
         <span class="p">)</span>
 

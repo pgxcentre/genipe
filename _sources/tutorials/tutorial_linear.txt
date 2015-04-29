@@ -378,7 +378,8 @@ the **probability threshold** (``--prob``) **was changed from 0.9 to 0** to
 
    The following figure shows the comparison between *Plink* and :py:mod:`gwip`
    for the same analysis, but using the default probability threshold of 0.9
-   (excluding imputed genotypes with poor quality).
+   (excluding imputed genotypes with poor quality). Hence, 163,670 markers
+   were compared.
 
    .. figure:: ../_static/images/Linear_Diff.png
       :align: center

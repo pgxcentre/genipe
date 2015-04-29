@@ -257,9 +257,9 @@ imputed-stats logistic <span class="se">\</span>
 </pre></div>
 </div>
 <p>For more information about the arguments and options, see the
-<a class="reference internal" href="tutorial_linear.html#lin-tut-usage"><span>Usage</span></a> section. The number of process to use might differ
+<a class="reference internal" href="#logit-tut-usage"><span>Usage</span></a> section. The number of process to use might differ
 according to the installation type and to the computer/server. See the
-<a class="reference internal" href="tutorial_linear.html#lin-tut-execution-time"><span>Execution time</span></a> section for more information.</p>
+<a class="reference internal" href="#logit-tut-execution-time"><span>Execution time</span></a> section for more information.</p>
 </div>
 <div class="section" id="output-files">
 <span id="logit-tut-output-files"></span><h3>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h3>
@@ -402,7 +402,7 @@ uses no more than 100% and a normal amount of memory.</p>
 for validity. The following figure shows the comparison for, from left to
 right, the coefficients, the standard errors and the <em>p</em>-values. The <em>x</em> axis
 shows the results from <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>, and the <em>y</em> axis shows the results for
-<em>Plink</em>. This comparison includes 58,769 &#8220;good&#8221; imputed markers with a MAF
+<em>Plink</em>. This comparison includes 58,871 &#8220;good&#8221; imputed markers with a MAF
 higher or equal to 10%, analyzed for 60 samples (<em>i.e</em> results from this
 tutorial). Note that for this comparison, the <strong>probability threshold</strong>
 (<code class="docutils literal"><span class="pre">--prob</span></code>) <strong>was changed from 0.9 to 0</strong> to <em>imitate</em> <em>Plink</em> analysis (see
@@ -434,7 +434,7 @@ imputed genotypes including those with poor quality). This is what was done
 for the previous figure.</p>
 <p>The following figure shows the comparison between <em>Plink</em> and <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>
 for the same analysis, but using the default probability threshold of 0.9
-(excluding imputed genotypes with poor quality). Hence, 5,887 markers were
+(excluding imputed genotypes with poor quality). Hence, 58,769 markers were
 compared.</p>
 <div class="last figure align-center">
 <a class="reference internal image-reference" href="../_images/Logistic_Diff.png"><img alt="Logistic regression comparison between gwip and Plink" src="../_images/Logistic_Diff.png" style="width: 100%;" /></a>
