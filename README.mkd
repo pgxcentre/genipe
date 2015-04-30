@@ -1,4 +1,6 @@
 [![Build Status](https://travis-ci.org/pgxcentre/gwip.svg?branch=master)](https://travis-ci.org/pgxcentre/gwip)
+[![PyPI version](https://badge.fury.io/py/gwip.svg)](http://badge.fury.io/py/gwip)
+
 
 # gwip - A Python module to perform genome-wide imputation analysis
 
