@@ -24,7 +24,18 @@ __all__ = ["create_task_db", "check_task_completion", "create_task_entry",
 
 
 def create_task_db(out_dir):
-    """Creates a task DB."""
+    """Creates a task DB.
+
+    Args:
+        out_dir (str): the directory where the DB will be saved
+
+    Returns:
+        str: the name of the file containing the DB
+
+    A SQLITE database will be created in the ``out_dir`` directory (with the
+    name ``tasks.db``. The ``gwip_task`` table is automatically created.
+
+    """
     # The name
     db_name = os.path.join(out_dir, "tasks.db")
     logging.info("Connecting to DB '{}'".format(db_name))
@@ -48,7 +59,16 @@ def create_task_db(out_dir):
 
 
 def _create_db_connection(db_name):
-    """Creates a DB connection."""
+    """Creates a DB connection.
+
+    Args:
+        db_name (str): the name of the database (usually a file)
+
+    Returns:
+        tuple: a tuple containing the connection object and a cursor to that
+               object
+
+    """
     conn = sqlite3.connect(
         db_name,
         timeout=360,
@@ -60,7 +80,22 @@ def _create_db_connection(db_name):
 
 
 def check_task_completion(task_id, db_name):
-    """Checks if the task exists and is completed."""
+    """Checks if the task exists and if it's completed.
+
+    Args:
+        task_id (str): the ID of the task
+        db_name (str): the name of the database (usually a file)
+
+    Returns:
+        bool: ``True`` if the task exists **and** is completed, ``False``
+              otherwise
+
+    Note
+    ----
+        A task is completed if the column ``completed`` equals 1. It is not
+        completed otherwise.
+
+    """
     conn, c = _create_db_connection(db_name)
 
     # Retrieving the task information
@@ -83,7 +118,20 @@ def check_task_completion(task_id, db_name):
 
 
 def create_task_entry(task_id, db_name):
-    """Creates a update a task entry."""
+    """Creates (or updates) a task.
+
+    Args:
+        task_id (str): the ID of the task
+        db_name (str): the name of the database (usually a file)
+
+    If the task ID doesn't exist in the DB, a new one will be created with the
+    current time as launch and start time.
+
+    If the task ID already exist, it is presumed that the task will be
+    relaunched, hence the database entry is updated to the current time (for
+    launch and start time) and ``completed`` is set to ``0``.
+
+    """
     conn, c = _create_db_connection(db_name)
 
     # Checking if the entry already exists
@@ -110,7 +158,16 @@ def create_task_entry(task_id, db_name):
 
 
 def mark_task_completed(task_id, db_name):
-    """Marks the task as completed."""
+    """Marks the task as completed.
+
+    Args:
+        task_id (str): the ID of the task
+        db_name (str): the name of the DB (usually a file)
+
+    The task entry is modified so that ``completed=1`` and the end time is
+    updated to the current time.
+
+    """
     conn, c = _create_db_connection(db_name)
 
     # Updating the end time
@@ -122,7 +179,16 @@ def mark_task_completed(task_id, db_name):
 
 
 def mark_task_incomplete(task_id, db_name):
-    """Marks a task as incomplete."""
+    """Marks a task as incomplete.
+
+    Args:
+        task_id (str): the ID of the task
+        db_name (str): the name of the DB (usually a file)
+
+    The task entry is set as incomplete by updating the ``completed`` value to
+    ``0``.
+
+    """
     conn, c = _create_db_connection(db_name)
 
     # Setting the completion to 0 for this task
@@ -134,7 +200,22 @@ def mark_task_incomplete(task_id, db_name):
 
 def mark_drmaa_task_completed(task_id, launch_time, start_time, end_time,
                               db_name):
-    """Marks a task run by DRMAA as completed (while updating times)."""
+    """Marks a task run by DRMAA as completed (while updating times).
+
+    Args:
+        task_id (str): the ID of the task
+        launch_time (float): the launch time (according to DRMAA)
+        start_time (float): the start time (according to DRMAA)
+        end_time (float): the end time (according to DRMAA)
+        db_name (str): the name of the DB (usually a file)
+
+    The task entry is updated with the launch, start and end time. Those times
+    come from the DRMAA library. The launch time is the time at which the task
+    was launched to the scheduler. The start time correspond to the time that
+    the scheduler started the job on the cluster. Finally, the end time is the
+    time that the job was completed.
+
+    """
     conn, c = _create_db_connection(db_name)
 
     # The time
@@ -151,7 +232,16 @@ def mark_drmaa_task_completed(task_id, launch_time, start_time, end_time,
 
 
 def get_task_runtime(task_id, db_name):
-    """Gets the task run time."""
+    """Gets the task run time.
+
+    Args:
+        task_id (str): the ID of the task
+        db_name (str): the name of the DB (usually a file)
+
+    Returns:
+        int: the execution time of the task (in seconds)
+
+    """
     conn, c = _create_db_connection(db_name)
 
     # Getting the start and end time
@@ -164,7 +254,18 @@ def get_task_runtime(task_id, db_name):
 
 
 def get_all_runtimes(db_name):
-    """Gets all tasks execution time."""
+    """Gets all tasks execution time.
+
+    Args:
+        db_name (str): the name of the DB (usually a file)
+
+    Returns:
+        dict: the execution time (seconds) of all the tasks in the database
+
+    This function returns a dictionary of task ID (keys) pointing to execution
+    time (in second) (int).
+
+    """
     conn, c = _create_db_connection(db_name)
 
     # Getting the start and end time

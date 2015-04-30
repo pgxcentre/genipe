@@ -12,7 +12,7 @@ import shutil
 import unittest
 from tempfile import TemporaryDirectory
 
-from ..task.launcher import _check_output_files
+from ..task.launcher import _check_output_files, _check_impute2_file
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -45,18 +45,28 @@ class TestLauncher(unittest.TestCase):
         for filename in filenames:
             with open(filename, "w") as o_file:
                 pass
-        self.assertTrue(_check_output_files(filenames))
+        self.assertTrue(_check_output_files(filenames, "dummy_task_id"))
 
         # Adding an 'impute2' file
         filenames.append(os.path.join(self.output_dir.name, "test.impute2"))
         with open(filenames[-1], "w") as o_file:
             pass
-        self.assertTrue(_check_output_files(filenames))
+        self.assertTrue(_check_output_files(filenames, "dummy_task_id"))
 
         # 'Compressing' the file
         shutil.move(filenames[-1], filenames[-1] + ".gz")
-        self.assertTrue(_check_output_files(filenames))
+        self.assertTrue(_check_output_files(filenames, "dummy_task_id"))
 
         # Deleting a file
         os.remove(filenames[0])
-        self.assertFalse(_check_output_files(filenames))
+        self.assertFalse(_check_output_files(filenames, "dummy_task_id"))
+
+    @unittest.skip("Test not implemented")
+    def test_check_missing_impute2(self):
+        """Tests the '_check_output_files' for missing impute2 file."""
+        self.fail("Test not implemented")
+
+    @unittest.skip("Test not implemented")
+    def test_check_impute2_file(self):
+        """Tests the '_check_impute2_file' function."""
+        self.fail("Test not implemented")

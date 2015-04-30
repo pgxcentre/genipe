@@ -14,18 +14,14 @@ import logging
 import argparse
 import platform
 import traceback
+from shutil import which
 from multiprocessing import Pool
 from subprocess import Popen, PIPE
 from collections import namedtuple
 
+import jinja2
 import numpy as np
 import pandas as pd
-from lifelines import CoxPHFitter
-
-import statsmodels.api as sm
-import statsmodels.formula.api as smf
-
-import jinja2
 
 from .. import __version__
 from ..formats.impute2 import *
@@ -37,9 +33,46 @@ __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
 __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
+# Check if lifelines is installed
+try:
+    from lifelines import CoxPHFitter
+    HAS_LIFELINES = True
+except ImportError:
+    HAS_LIFELINES = False
+
+# Check if statsmodels is installed
+try:
+    import statsmodels.api as sm
+    import statsmodels.formula.api as smf
+    HAS_STATSMODELS = True
+except ImportError:
+    HAS_STATSMODELS = False
+
+
+def _has_skat():
+    """Checks if the SKAT R library is installed.
+
+    Returns:
+        bool: True if SKAT is installed, False otherwise.
+
+    """
+    proc = Popen(
+        ["Rscript", "-e", 'is.element("SKAT", installed.packages()[,1])'],
+        stdout=PIPE,
+    )
+    out = proc.communicate()[0].decode().strip()
+
+    return out.endswith("TRUE")
+
+
+# Check if R and SKAT is installed
+HAS_R = which("Rscript") is not None
+HAS_SKAT = _has_skat() if HAS_R else False
+
+
 # An IMPUTE2 row to process
 _Row = namedtuple("_Row", ("row", "samples", "pheno", "pheno_name", "formula",
-                           "time_to_event", "censure", "inter_c", "is_chrx",
+                           "time_to_event", "event", "inter_c", "is_chrx",
                            "gender_c", "del_g", "scale", "maf_t", "prob_t",
                            "analysis_type", "number_to_print"))
 
@@ -48,7 +81,14 @@ _COX_REQ_COLS = ["coef", "se(coef)", "lower 0.95", "upper 0.95", "z", "p"]
 
 
 def main(args=None):
-    """The main function."""
+    """The main function.
+
+    Args:
+        args (argparse.Namespace): the arguments to be parsed (if
+                                   :py:func:`main` is called by another
+                                   modulel)
+
+    """
     # Creating the option parser
     desc = ("Performs statistical analysis on imputed data (either SKAT "
             "analysis, or linear, logistic or survival regression). This "
@@ -76,6 +116,7 @@ def main(args=None):
             handlers=[logging.StreamHandler(), logging_fh]
         )
         logging.info("Logging everything into '{}'".format(log_file))
+        logging.info("Program arguments: '{}'".format(" ".join(sys.argv[1:])))
 
         # Checking the options
         check_args(args)
@@ -137,9 +178,16 @@ def main(args=None):
 def read_phenotype(i_filename, opts):
     """Reads the phenotype file.
 
+    Args:
+        i_filename (str): the name of the input file
+        opts (argparse.Namespace): the options
+
+    Returns:
+        pandas.DataFrame: the phenotypes
+
     This file is expected to be a tab separated file of phenotypes and
-    covariates. The columns to use will be determined by the `--sample-column`
-    and the `--covar` options.
+    covariates. The columns to use will be determined by the
+    ``--sample-column`` and the ``--covar`` options.
 
     For analysis including the X chromosome, the gender is automatically
     added as a covariate. The results are not shown to the user unless asked
@@ -148,12 +196,13 @@ def read_phenotype(i_filename, opts):
     """
     # Reading the data (and setting the index)
     pheno = pd.read_csv(i_filename, sep="\t", na_values=opts.missing_value)
+    pheno[opts.sample_column] = pheno[opts.sample_column].astype(str)
     pheno = pheno.set_index(opts.sample_column, verify_integrity=True)
 
     # Finding the required column
     required_columns = opts.covar.copy()
     if opts.analysis_type == "cox":
-        required_columns.extend([opts.tte, opts.censure])
+        required_columns.extend([opts.tte, opts.event])
     else:
         required_columns.append(opts.pheno_name)
 
@@ -185,8 +234,15 @@ def read_phenotype(i_filename, opts):
 def read_samples(i_filename):
     """Reads the sample file (produced by SHAPEIT).
 
-    The expected format for this file is a tab separated file with a first
-    row containing the following columns: ::
+    Args:
+        i_filename (str): the name of the input file
+
+    Returns:
+        pandas.DataFrame: the list of samples
+
+    This file contains the list of samples that are contained in the
+    ``impute2`` file (with same order). The expected format for this file is a
+    tab separated file with a first row containing the following columns: ::
 
         ID_1	ID_2	missing	father	mother	sex	plink_pheno
 
@@ -194,24 +250,31 @@ def read_samples(i_filename):
 
         0	0	0 D	D	D	B
 
-    We are mostly interested in the sample IDs corresponding to the `ID_2`
-    column.
-
-    Their uniqueness is verified by pandas.
+    Notes
+    -----
+        We are mostly interested in the sample IDs corresponding to the
+        ``ID_2`` column. Their uniqueness is verified by pandas.
 
     """
     samples = pd.read_csv(i_filename, sep=" ", usecols=[0, 1])
     samples = samples.drop(samples.index[0], axis=0)
+    samples["ID_2"] = samples["ID_2"].astype(str)
     return samples.set_index("ID_2", verify_integrity=True)
 
 
 def skat_read_snp_set(i_filename):
     """Reads the SKAT SNP set file.
 
+    Args:
+        i_filename (str): the name of the input file
+
+    Returns:
+        pandas.DataFrame: the SNP set for the SKAT analysis
+
     This file has to be supplied by the user. The recognized columns are:
-    `variant, snp_set, weight`. The `weight` column is optional and can
-    be used to specify a custom weighting scheme for SKAT. If nothing is
-    specified, the default Beta weights are used.
+    ``variant``, ``snp_set`` and ``weight``. The ``weight`` column is optional
+    and can be used to specify a custom weighting scheme for SKAT. If nothing
+    is specified, the default Beta weights are used.
 
     The file has to be tab delimited.
 
@@ -233,25 +296,23 @@ def skat_read_snp_set(i_filename):
 def read_sites_to_extract(i_filename):
     """Reads the list of sites to extract.
 
-    :param i_filename: The input filename containing the IDs of the variants
-                       to consider for the analysis.
-    :type i_filename: str
+    Args:
+        i_filename (str): The input filename containing the IDs of the variants
+                          to consider for the analysis.
 
-    :returns: A set containing the variants.
-    :rtype: set
+    Returns:
+        set: A set containing the variants.
 
     The expected file format is simply a list of variants. Every row should
-    correspond to a single variant identifier.
-
-    e.g. ::
+    correspond to a single variant identifier. ::
 
         3:60069:t
         rs123456:A
         3:60322:A
 
     Typically, this is used to analyze only variants that passed some QC
-    threshold. The _gwip_ pipeline generates this file at the 'merge_impute2'
-    step.
+    threshold. The :py:mod:`gwip` pipeline generates this file at the
+    'merge_impute2' step.
 
     """
     markers_to_extract = None
@@ -263,6 +324,16 @@ def read_sites_to_extract(i_filename):
 def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
                        phenotypes, remove_gender, out_prefix, args):
     """Read the impute2 file and run the SKAT analysis.
+
+    Args:
+        impute2_filename (str): the name of the input file
+        samples (pandas.DataFrame): the samples
+        markers_to_extract (set): the set of markers to analyse
+        phenotypes (pandas.DataFrame): the phenotypes
+        remove_gender (bool): whether or not to remove the gender column
+        out_prefix (str): the output prefix
+        args (argparse.Namespace): the options
+
 
     This function does most of the "dispatching" to run SKAT. It writes the
     input files to the disk, runs the generated R scripts to do the actual
@@ -351,6 +422,13 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
             written_markers.add(name)
             _skat_write_marker(name, dosage, snp_set, genotype_files)
 
+    # We will warn the user if some variants were not found.
+    number_missing = len(markers_of_interest) - len(written_markers)
+
+    if number_missing > 0:
+        logging.warning("{} markers of interest were not found in the Impute2 "
+                        "file.".format(number_missing))
+
     i_file.close()
 
     # Close the genotype files.
@@ -390,19 +468,16 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
         args.nb_process, len(snp_sets)
     ))
 
+    results = []
     if args.nb_process > 1:
-        pool = Pool(processes=args.nb_process)
-        results = pool.map(_skat_run_job, r_scripts)
+        with Pool(processes=args.nb_process) as pool:
+            results = pool.map(_skat_run_job, r_scripts)
     else:
-        results = []
         for script in r_scripts:
             results.append(_skat_run_job(script))
 
     # Finally, write the SKAT output to disk.
-    output_filename = os.path.join(
-        dir_name,
-        "{}.skat.dosage".format(args.out)
-    )
+    output_filename = args.out + ".skat.dosage"
 
     logging.info("SKAT completed, writing the results to disk ({}).".format(
         output_filename
@@ -410,7 +485,10 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
 
     with open(output_filename, "w") as f:
         # Write the header.
-        print("snp_set_id", "p_value", sep="\t", file=f)
+        if args.skat_o:
+            print("snp_set_id", "p_value", sep="\t", file=f)
+        else:
+            print("snp_set_id", "p_value", "q_value", sep="\t", file=f)
 
         # The order in the snp_sets list should have been consistent
         # across the whole analysis. We just want to make sure that we
@@ -418,22 +496,33 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
         assert len(snp_sets) == len(results)
 
         # Write a tab separated file containing the set and p-values.
-        for i, p_value in enumerate(results):
+        for i, (p_value, q_value) in enumerate(results):
             set_id = snp_sets[i]
-            print(set_id, p_value, sep="\t", file=f)
+            if args.skat_o:
+                print(set_id, p_value, sep="\t", file=f)
+            else:
+                print(set_id, p_value, q_value, sep="\t", file=f)
 
 
 def _skat_run_job(script_filename):
     """Calls Rscript with the generated script and parses the results.
 
+    Args:
+        script_filename (str): the name of the script
+
+    Returns:
+        tuple: two values: the *p-value* and the *q-value* (for SKAT-O, the
+               *q-value* is set to None)
+
     The results should be somewhere in the standard output. The expected
     format is: ::
 
+        _PYTHON_HOOK_QVAL:[0.123]
         _PYTHON_HOOK_PVAL:[0.123]
 
     If the template script is modified, this format should still be respected.
 
-    It is also noteworthy that this function uses `Rscript` to run the
+    It is also noteworthy that this function uses ``Rscript`` to run the
     analysis. Hence, it should be in the path when using the imputed_stats
     skat mode.
 
@@ -445,29 +534,42 @@ def _skat_run_job(script_filename):
         stderr=PIPE,
     )
     out, err = proc.communicate()
-    logging.info("SKAT Warning: " + err.decode("utf-8"))
+    if err:
+        logging.info("SKAT Warning: " + err.decode("utf-8"))
 
+    # Decoding
     out = out.decode("utf-8")
-    match = re.search(r"_PYTHON_HOOK_PVAL:\[(.+)\]", out)
-    if match is None:
+
+    # Getting the p value
+    p_match = re.search(r"_PYTHON_HOOK_PVAL:\[(.+)\]", out)
+    if p_match is None:
         raise ProgramError("SKAT did not return properly. See script "
                            "'{}' for details.".format(script_filename))
 
-    return float(match.group(1))
+    # Getting the Q value
+    q_match = re.search(r"_PYTHON_HOOK_QVAL:\[(.+)\]", out)
+    if q_match is None:
+        raise ProgramError("SKAT did not return properly. See script "
+                           "'{}' for details.".format(script_filename))
+
+    if q_match.group(1) == "NA":
+        # For SKAT-O, the Q will be set to NA.
+        return float(p_match.group(1)), None
+    else:
+        return float(p_match.group(1)), float(q_match.group(1))
 
 
 def _skat_generate_r_script(dir_name, r_files, args):
     """Uses jinja2 to generate an R script to do the SKAT analysis.
 
-    :param dir_name: The output directory name to write the scripts in.
-    :type dir_name: str
+    Args:
+        dir_name (str): the output directory name to write the scripts in
+        r_files (dict): contains the different input files required by the R
+                        script
+        args (argparse.Namespace): the parsed arguments
 
-    :param r_files: A dict containing the different input files required by
-                    the R script.
-    :type r_files: dict
-
-    :param args: The parsed arguments.
-    :type args: Namespace
+    Returns:
+        list: the list of all script names
 
     """
     jinja_env = jinja2.Environment(
@@ -508,23 +610,20 @@ def _skat_generate_r_script(dir_name, r_files, args):
 def _skat_parse_line(line, markers_of_interest, samples, gender=None):
     """Parses a single line of the Impute2 file.
 
-    :param line: A line from the Impute2 file.
-    :type line: str
+    Args:
+        line (str): a line from the Impute2 file
+        markers_of_interest (set): a set of markers that are required for the
+                                   analysis
+        samples (pandas.DataFrame): contains the samples IDs (this is useful to
+                                    make sure we return a dosage vector with
+                                    the appropriate data)
 
-    :param markers_of_interest: A set of markers that are required for the
-                                analysis.
-    :type markers_of_interest: set
-
-    :param samples: A DataFrame containing the samples IDs. This is useful
-                    to make sure we return a dosage vector with the appropriate
-                    data.
-    :type samples: :py:class:`pandas.DataFrame`
-
-    :returns: Either None if the marker is not of interest or a tuple of `(name
-              , dosage_vector)` where `name` is a `str` representing the
-              variant ID and `dosage_vector` is a numpy array containing the
-              dosage values for every sample in the `samples` dataframe.
-    :rtype: tuple or None
+    Returns:
+        tuple: Either None if the marker is not of interest or a tuple of
+               ``(name , dosage_vector)`` where ``name`` is a ``str``
+               representing the variant ID and ``dosage_vector`` is a numpy
+               array containing the dosage values for every sample in the
+               ``samples`` dataframe.
 
     """
     line = line.split(" ")
@@ -541,15 +640,11 @@ def _skat_parse_line(line, markers_of_interest, samples, gender=None):
     # We need to compute the dosage vector.
     # This is given wrt to the minor and major alleles, so we need to get the
     # MAF to identify those.
-    maf, minor, major = maf_from_probs(proba_matrix, a1, a2, gender, name)
-
-    # The minor allele columns could be either the first or the third.
-    # We identify it here.
-    minor_allele_col = 0 if a1 == minor else 2
+    maf, minor_i, major_i = maf_from_probs(proba_matrix, 0, 2, gender, name)
 
     # We don't pass a scale parameter, because we want additive coding.
     dosage = dosage_from_probs(
-        homo_probs=proba_matrix[:, minor_allele_col],
+        homo_probs=proba_matrix[:, minor_i],
         hetero_probs=proba_matrix[:, 1],
     )
 
@@ -559,19 +654,13 @@ def _skat_parse_line(line, markers_of_interest, samples, gender=None):
 def _skat_write_marker(name, dosage, snp_set, genotype_files):
     """Write the dosage information to the appropriate genotype file.
 
-    :param name: The name of the marker.
-    :type name: str
-
-    :param dosage: The dosage vector.
-    :type dosage: :py:class:`numpy.ndarray`
-
-    :param snp_set: The dataframe that allows us to identify the correct SNP
-                    set for the specified variant.
-    :type snp_set: :py:class:`pandas.DataFrame`
-
-    :param genotype_files: The dict containing the opened CSV files for the
-                           genotypes.
-    :type genotype_files: dict
+    Args:
+        name (str): the name of the marker
+        dosage (numpy.array): the dosage vector
+        snp_set (pandas.DataFrame: the dataframe that allows us to identify the
+                                   correct SNP set for the specified variant
+        genotype_files (dict): a dictionary containing the opened CSV files for
+                               the genotypes
 
     """
     # Identify the correct SNP set.
@@ -584,6 +673,15 @@ def _skat_write_marker(name, dosage, snp_set, genotype_files):
 def compute_statistics(impute2_filename, samples, markers_to_extract,
                        phenotypes, remove_gender, out_prefix, options):
     """Parses IMPUTE2 file while computing statistics.
+
+    Args:
+        impute2_filename (str): the name of the input file
+        samples (pandas.DataFrame): the list of samples
+        markers_to_extract (set): the set of markers to extract
+        phenotypes (pandas.DataFrame): the phenotypes
+        remove_gender (bool): whether or not to remove the gender column
+        out_prefix (str): the output prefix
+        options (argparse.Namespace): the options
 
     This function takes care of parallelism. It reads the Impute2 file and
     fills a queue that will trigger the analysis when full.
@@ -649,7 +747,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
                 pheno_name=vars(options).get("pheno_name", None),
                 formula=formula,
                 time_to_event=vars(options).get("tte", None),
-                censure=vars(options).get("censure", None),
+                event=vars(options).get("event", None),
                 inter_c=options.interaction,
                 is_chrx=options.chrx,
                 gender_c=options.gender_column,
@@ -706,7 +804,15 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
 
 
 def process_impute2_site(site_info):
-    """Process an IMPUTE2 site (a line in an IMPUTE2 file)."""
+    """Process an IMPUTE2 site (a line in an IMPUTE2 file).
+
+    Args:
+        site_info (list): the impute2 line (split by space)
+
+    Returns:
+        list: the results of the analysis
+
+    """
     # Getting the probability matrix and site information
     (chrom, name, pos, a1, a2), geno = matrix_from_line(site_info.row)
 
@@ -798,7 +904,7 @@ def process_impute2_site(site_info):
     results = _fit_map[site_info.analysis_type](
         data=data,
         time_to_event=site_info.time_to_event,
-        censure=site_info.censure,
+        event=site_info.event,
         formula=site_info.formula,
         result_col=result_from_column,
     )
@@ -812,12 +918,37 @@ def process_impute2_site(site_info):
 
 
 def samples_with_hetero_calls(data, hetero_c):
-    """Gets male and heterozygous calls."""
+    """Gets male and heterozygous calls.
+
+    Args:
+        data (pandas.DataFrame): the probability matrix
+        hetero_c (str): the name of the heterozygous column
+
+    Returns:
+        pandas.Index: samples where call is heterozygous
+
+    """
     return data[data.idxmax(axis=1) == hetero_c].index
 
 
 def get_formula(phenotype, covars, interaction):
-    """Creates the linear/logistic regression formula (for statsmodel)."""
+    """Creates the linear/logistic regression formula (for statsmodel).
+
+    Args:
+        phenotype (str): the phenotype column
+        covars (list): the list of co variable columns
+        interaction (str): the interaction column
+
+    Returns:
+        str: the formula for the statistical analysis
+
+    Note
+    ----
+        The phenotype column needs to be specified. The list of co variables
+        might be empty (if no co variables are necessary). The interaction
+        column can be set to ``None`` if there is no interaction.
+
+    """
     # The phenotype and genetics
     formula = "{} ~ _GenoD".format(phenotype)
 
@@ -832,15 +963,40 @@ def get_formula(phenotype, covars, interaction):
     return formula
 
 
-def fit_cox(data, time_to_event, censure, result_col, **kwargs):
-    """Fit a Cox' proportional hazard to the data."""
+def fit_cox(data, time_to_event, event, result_col, **kwargs):
+    """Fit a Cox' proportional hazard to the data.
+
+    Args:
+        data (pandas.DataFrame): the data to analyse
+        time_to_event (str): the time to event column for the survival analysis
+        event (str): the event column for the survival analysis
+        result_col (str): the column that will contain the results
+
+    Returns:
+        numpy.array: the results from the survival analysis
+
+    Note
+    ----
+        The tie method used is ``Efron``. Normalization is set to ``False``.
+
+    """
     cf = CoxPHFitter(alpha=0.95, tie_method="Efron", normalize=False)
-    res = cf.fit(data, duration_col=time_to_event, event_col=censure)
+    res = cf.fit(data, duration_col=time_to_event, event_col=event)
     return cf.summary.loc[result_col, _COX_REQ_COLS].values
 
 
 def fit_linear(data, formula, result_col, **kwargs):
-    """Fit a linear regression to the data."""
+    """Fit a linear regression to the data.
+
+    Args:
+        data (pandas.DataFrame): the data to analyse
+        formula (str): the formula for the linear regression
+        result_col (str): the column that will contain the results
+
+    Returns:
+        list: the results from the linear regression
+
+    """
     return _get_result_from_linear_logistic(
         smf.ols(formula=formula, data=data).fit(),
         result_col=result_col,
@@ -848,7 +1004,17 @@ def fit_linear(data, formula, result_col, **kwargs):
 
 
 def fit_logistic(data, formula, result_col, **kwargs):
-    """Fit a logistic regression to the data."""
+    """Fit a logistic regression to the data.
+
+    Args:
+        data (pandas.DataFrame): the data to analyse
+        formula (str): the formula for the logistic regression
+        result_col (str): the column that will contain the results
+
+    Returns:
+        list: the results from the logistic regression
+
+    """
     return _get_result_from_linear_logistic(
         smf.glm(formula=formula, data=data,
                 family=sm.families.Binomial()).fit(),
@@ -857,7 +1023,16 @@ def fit_logistic(data, formula, result_col, **kwargs):
 
 
 def _get_result_from_linear_logistic(fit_result, result_col):
-    """Gets results from either a linear or logistic regression."""
+    """Gets results from either a linear or logistic regression.
+
+    Args:
+        fit_result (RegressionResults): the results from the regression
+        result_col (str): the name of the result column
+
+    Returns:
+        list: the regression results
+
+    """
     conf_int = fit_result.conf_int().loc[result_col, :].values
     assert len(conf_int) == 2
     return [
@@ -874,7 +1049,31 @@ _fit_map = {"cox": fit_cox, "linear": fit_linear, "logistic": fit_logistic}
 
 
 def check_args(args):
-    """Checks the arguments and options."""
+    """Checks the arguments and options.
+
+    Args:
+        args (argparse.Namespace): the options to verify
+
+    Note
+    ----
+        If there is a problem, a :py:class:`gwip.error.ProgramError` is raised.
+
+    """
+    # Checking if we have the requirements
+    if args.analysis_type == "cox":
+        if not HAS_LIFELINES:
+            raise ProgramError("missing optional module: lifelines")
+
+    elif args.analysis_type in {"linear", "logistic"}:
+        if not HAS_STATSMODELS:
+            raise ProgramError("missing optional module: statsmodels")
+
+    elif args.analysis_type == "skat":
+        if not HAS_R:
+            raise ProgramError("R is not installed")
+        if not HAS_SKAT:
+            raise ProgramError("R library missing: SKAT")
+
     # Checking the required input files
     for filename in [args.impute2, args.sample, args.pheno]:
         if not os.path.isfile(filename):
@@ -926,7 +1125,7 @@ def check_args(args):
     # Checking the required columns
     variables_to_check = None
     if args.analysis_type == "cox":
-        variables_to_check = {args.tte, args.censure}
+        variables_to_check = {args.tte, args.event}
     else:
         variables_to_check = {args.pheno_name}
     for variable in variables_to_check:
@@ -980,7 +1179,21 @@ def check_args(args):
 
 
 def parse_args(parser, args=None):
-    """Parses the command line options and arguments."""
+    """Parses the command line options and arguments.
+
+    Args:
+        parser (argparse.ArgumentParser): the argument parser
+        args (list): the list of arguments (if not taken from ``sys.argv``)
+
+    Returns:
+        argparse.Namespace: the list of options and arguments
+
+    Note
+    ----
+        The only check that is done here is by the parser itself. Values are
+        verified later by the :py:func:`check_args` function.
+
+    """
     # Adding the version option for the main parser
     parser.add_argument(
         "-v",
@@ -1169,11 +1382,11 @@ def parse_args(parser, args=None):
         help="The time to event variable (in the pheno file).",
     )
     group.add_argument(
-        "--censure",
+        "--event",
         type=str,
         metavar="NAME",
         required=True,
-        help="The censure value (1 if observed, 0 if censored)",
+        help="The event variable (1 if observed, 0 if not observed)",
     )
 
     # The linear parser

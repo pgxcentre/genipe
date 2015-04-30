@@ -11,11 +11,12 @@ import os
 import unittest
 from tempfile import TemporaryDirectory
 
-import pyfaidx
-
 from ..pipeline import *
 from .. import chromosomes
 from ..error import ProgramError
+
+if HAS_PYFAIDX:
+    import pyfaidx
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -100,6 +101,8 @@ class TestMainPipeline(unittest.TestCase):
             get_chromosome_length(self.output_dir.name)
         self.assertEqual("missing chromosomes: 12, 9", e.exception.message)
 
+    @unittest.skipIf(not HAS_PYFAIDX,
+                     "optional requirement (pyfaidx) not satisfied")
     def test_get_chrom_encoding(self):
         """Tests the 'get_chrom_encoding' function."""
         # Creating the reference file (fasta file) and index (using samtools)
@@ -258,6 +261,8 @@ class TestMainPipeline(unittest.TestCase):
         self.assertEqual(log_m, cm.output)
         reference.close()
 
+    @unittest.skipIf(not HAS_PYFAIDX,
+                     "optional requirement (pyfaidx) not satisfied")
     def test_is_reversed(self):
         """Tests the 'is_reversed' function."""
         # Creating the reference file (fasta file) and index (using samtools)
@@ -623,6 +628,9 @@ class TestMainPipeline(unittest.TestCase):
                 pass
         args.reference = reference
 
+        # bgzip
+        args.bgzip = False
+
         # Testing begins
         # Everything should work
         self.assertTrue(check_args(args))
@@ -745,6 +753,16 @@ class TestMainPipeline(unittest.TestCase):
             self.assertTrue(check_args(args))
         args.plink_bin = original_value
 
+        # If bgzip is not in the path, it should raise an error
+        args.bgzip = True
+        if which("bgzip") is None:
+            with self.assertRaises(ProgramError) as cm:
+                check_args(args)
+            self.assertEqual("bgzip: no installed", str(cm.exception))
+        else:
+            self.assertTrue(check_args(args))
+        args.bgzip = False
+
         # Modifying the segment length
         original_value = args.segment_length
         for value in [-1, 0, 1e3 - 1, 5e6 + 1]:
@@ -816,25 +834,29 @@ class TestMainPipeline(unittest.TestCase):
             pass
 
         # Removing the reference index file should raise an exception
-        os.remove(args.reference + ".fai")
-        self.assertFalse(os.path.isfile(args.reference + ".fai"))
-        with self.assertRaises(ProgramError) as cm:
-            check_args(args)
-        self.assertEqual(
-            "{}: should be indexed using FAIDX".format(args.reference),
-            str(cm.exception),
-        )
+        if HAS_PYFAIDX:
+            os.remove(args.reference + ".fai")
+            self.assertFalse(os.path.isfile(args.reference + ".fai"))
+            with self.assertRaises(ProgramError) as cm:
+                check_args(args)
+            self.assertEqual(
+                "{}: should be indexed using FAIDX".format(args.reference),
+                str(cm.exception),
+            )
 
-        # Removing the reference file should raise an exception
-        os.remove(args.reference)
-        self.assertFalse(os.path.isfile(args.reference))
-        with self.assertRaises(ProgramError) as cm:
-            check_args(args)
-        self.assertEqual("{}: no such file".format(args.reference),
-                         str(cm.exception))
+            # Removing the reference file should raise an exception
+            os.remove(args.reference)
+            self.assertFalse(os.path.isfile(args.reference))
+            with self.assertRaises(ProgramError) as cm:
+                check_args(args)
+            self.assertEqual("{}: no such file".format(args.reference),
+                             str(cm.exception))
 
-        # Setting the reference to None should fix everything
-        args.reference = None
+            # Setting the reference to None should fix everything
+            args.reference = None
+
+        else:
+            self.assertTrue(args.reference is None)
 
         # Final check
         self.assertTrue(check_args(args))

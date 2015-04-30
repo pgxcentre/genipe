@@ -15,7 +15,7 @@ except ImportError:
 
 __author__ = "Louis-Philippe Lemieux Perreault"
 __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
-__credits__ = ["Louis-Philippe Lemieux Perreault", "Ian Mongrain"]
+__credits__ = ["Louis-Philippe Lemieux Perreault", "Marc-Andre Legault"]
 __license__ = "CC BY-NC 4.0"
 __maintainer__ = "Louis-Philippe Lemieux Perreault"
 __email__ = "louis-philippe.lemieux.perreault@statgen.org"
@@ -25,8 +25,16 @@ __status__ = "Development"
 chromosomes = range(1, 23)
 
 
-def test():
-    """The test functions of gwip."""
+def test(verbosity=1):
+    """Executes all the tests for gwip.
+
+    Args:
+        verbosity (int): the verbosity level
+
+    Just set ``verbosity`` to an integer higher than 1 to have more information
+    about the tests.
+
+    """
     import logging
     import unittest
     from .tests import test_suite
@@ -34,7 +42,7 @@ def test():
     # Disabling the INFO logging
     logging.disable(logging.INFO)
 
-    unittest.TextTestRunner().run(test_suite)
+    unittest.TextTestRunner(verbosity=verbosity).run(test_suite)
 
     # Enabling back the logging
     logging.disable(logging.NOTSET)

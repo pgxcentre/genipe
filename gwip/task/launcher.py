@@ -8,6 +8,7 @@
 
 
 import os
+import re
 import sys
 import shlex
 import logging
@@ -31,7 +32,18 @@ __all__ = ["launch_tasks", ]
 
 def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
                  hpc_options=None, out_dir=None, preamble=""):
-    """Executes commands."""
+    """Executes commands.
+
+    Args:
+        to_process (list): a list of tasks to process
+        nb_threads (int): the number of processes that is required
+        check_rc (bool): whether or not to check the return code of the task
+        hpc (bool): whether or not to execute the tasks on a cluster (DRMAA)
+        hpc_options (dict): the DRMAA options
+        out_dir (str): the output directory
+        preamble (str): the script preamble (for DRMAA)
+
+    """
     # Do we need to check the return code?
     to_run = []
     for i in range(len(to_process)):
@@ -47,7 +59,7 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
 
         # Checking if we need to run this task
         if check_task_completion(task_id, db_name):
-            if _check_output_files(o_files):
+            if _check_output_files(o_files, task_id):
                 run_time = get_task_runtime(task_id, db_name)
                 logging.info("Task '{}': already performed in {:,d} "
                              "seconds".format(task_name, run_time))
@@ -129,13 +141,31 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
                 raise ProgramError("problem executing {}".format(data["name"]))
 
 
-def _check_output_files(o_files):
-    """Check that the files exist."""
+def _check_output_files(o_files, task):
+    """Check that the files exist.
+
+    Args:
+        o_files (list): the list of files got check
+        task (str): the name of the task
+
+    Returns:
+        bool: ``True`` if all files exist, ``False`` otherwise
+
+    If the file to check is an impute2 file, and that this file is missing, we
+    check for further statistics using the :py:func:`_check_impute2_file`.
+
+    Note
+    ----
+        If the file name ends with ``.impute2`` and the file doesn't exist, we
+        look for the compressed file (``.impute2.gz``) instead.
+
+    """
     for filename in o_files:
         if filename.endswith(".impute2"):
             # IMPUTE2 files might be gzipped
             if not (isfile(filename) or isfile(filename + ".gz")):
-                return False
+                if not _check_impute2_file(filename, task):
+                    return False
 
         elif not isfile(filename):
             return False
@@ -143,8 +173,88 @@ def _check_output_files(o_files):
     return True
 
 
+def _check_impute2_file(fn, task=None):
+    """Checks the summary to explain the absence of an .impute2 file.
+
+    Args:
+        fn (str): the name of the file to check
+        task (str): the name of the task
+
+    Returns:
+        bool: ``True`` if everything is normal, ``False`` otherwise.
+
+    This function looks for known message in the summary file. Three possible
+    ways that an impute2 file is missing:
+
+    1. there are no SNPs in the imputation interval;
+    2. there are no type 2 SNPs after applying the settings;
+    3. there are no SNPs for output.
+
+    """
+    # The name of the summary file
+    summary_fn = fn + "_summary"
+    if not os.path.isfile(summary_fn):
+        # The summary file doesn't exists...
+        return False
+
+    # Reading the file content
+    summary = None
+    with open(summary_fn, "r") as i_file:
+        summary = i_file.read()
+
+    # Checking if there are no SNPs in the imputation interval?
+    match = re.search(
+        r"\sThere are no SNPs in the imputation interval, so there is "
+        "nothing for IMPUTE2 to analyze; the program will quit now.",
+        summary,
+    )
+    if match:
+        if task:
+            logging.warning("{}: there are no SNPs in the imputation "
+                            "interval".format(task))
+        return True
+
+    # Checking if there are not type 2 SNPs
+    match = re.search(
+        r"\sERROR: There are no type 2 SNPs after applying the command-line "
+        "settings for this run, which makes it impossible to perform "
+        "imputation.",
+        summary,
+    )
+    if match:
+        if task:
+            logging.warning("{}: there are no type 2 SNPs for this "
+                            "run".format(task))
+        return True
+
+    # Checking if there are no output SNPs
+    match = re.search(
+        r"\sYour current command-line settings imply that there will not be "
+        "any SNPs in the output file, so IMPUTE2 will not perform any "
+        "analysis or print output files.",
+        summary,
+    )
+    if match:
+        if task:
+            logging.warning("{}: no SNPs in the output file".format(task))
+        return True
+
+    # If attained, there is a problem
+    return False
+
+
 def _execute_command(command_info):
-    """Executes a single command."""
+    """Executes a single command.
+
+    Args:
+        command_info (dict): information about the command
+
+    Returns:
+        tuple: a tuple containing 4 entries: whether the task completed (bool),
+               the name of the task (str), the status of the run (str) and the
+               execution time in seconds (int)
+
+    """
     # Some assertions
     assert "task_id" in command_info
     assert "name" in command_info
@@ -163,7 +273,7 @@ def _execute_command(command_info):
     logging.debug("Checking status for '{}'".format(task_id))
     # Checking if the command was completed
     if check_task_completion(task_id, db_name):
-        if _check_output_files(command_info["o_files"]):
+        if _check_output_files(command_info["o_files"], task_id):
             logging.debug("'{}' completed".format(task_id))
             runtime = get_task_runtime(task_id, db_name)
             return True, name, "already performed", runtime
@@ -183,7 +293,25 @@ def _execute_command(command_info):
     outs, errs = proc.communicate()
     rc = proc.returncode
     if check_rc and rc != 0:
-        # There was a problem...
+        if not task_id.startswith("impute2"):
+            # There was a problem...
+            logging.debug("'{}' exit status problem".format(task_id))
+            return False, name, "problem", None
+
+        else:
+            # Task is IMPUTE2, and it might be normal according to message in
+            # the summary file
+            impute2_fn = None
+            for fn in command_info["o_files"]:
+                if fn.endswith(".impute2"):
+                    impute2_fn = fn
+                    break
+            if not _check_impute2_file(impute2_fn):
+                logging.debug("'{}' exit status problem".format(task_id))
+                return False, name, "problem", None
+
+    # Checking all the required files were generated
+    if not _check_output_files(command_info["o_files"], task_id):
         logging.debug("'{}' exit status problem".format(task_id))
         return False, name, "problem", None
 
@@ -196,7 +324,22 @@ def _execute_command(command_info):
 
 
 def _execute_command_drmaa(command_info):
-    """Executes a command using DRMAA (usually on a HPC)."""
+    """Executes a command using DRMAA (usually on a HPC).
+
+    Args:
+        command_info (dict): information about the command
+
+    Returns:
+        tuple: a tuple containing 4 entries: whether the task completed (bool),
+               the name of the task (str), the status of the run (str) and the
+               execution time in seconds (int)
+
+    Note
+    ----
+        The preamble (if required) is inserted between the shebang line and the
+        actual command.
+
+    """
     import drmaa
 
     # Some assertions
@@ -223,7 +366,7 @@ def _execute_command_drmaa(command_info):
     # Checking if the command was completed
     logging.debug("Checking status for '{}'".format(task_id))
     if check_task_completion(task_id, db_name):
-        if _check_output_files(command_info["o_files"]):
+        if _check_output_files(command_info["o_files"], task_id):
             logging.debug("'{}' completed".format(task_id))
             runtime = get_task_runtime(task_id, db_name)
             return True, name, "already performed", runtime
@@ -277,14 +420,21 @@ def _execute_command_drmaa(command_info):
     job_id = s.runJob(job)
 
     # Waiting for the job
-    ret_val = s.wait(job_id, drmaa.Session.TIMEOUT_WAIT_FOREVER)
+    ret_val = None
+    try:
+        ret_val = s.wait(job_id, drmaa.Session.TIMEOUT_WAIT_FOREVER)
+
+    except KeyboardInterrupt:
+        s.control(job_id, drmaa.JobControlAction.TERMINATE)
+        logging.warning("{}: terminated".format(task_id))
+        raise
+
+    finally:
+        s.deleteJobTemplate(job)
+        s.exit()
+
+    # The job is done
     logging.debug("'{}' finished".format(task_id))
-
-    # Deleting the job
-    s.deleteJobTemplate(job)
-
-    # Closing the connection
-    s.exit()
 
     # Removing the temporary file
     os.remove(tmp_file.name)
@@ -298,7 +448,27 @@ def _execute_command_drmaa(command_info):
             ret_val.hasSignal,
         ))
         return False, name, "problem", None
+
     if check_rc and ret_val.exitStatus != 0:
+        if not task_id.startswith("impute2"):
+            # There was a problem...
+            logging.debug("'{}' exit status problem".format(task_id))
+            return False, name, "problem", None
+
+        else:
+            # Task is IMPUTE2, and it might be normal according to message in
+            # the summary file
+            impute2_fn = None
+            for fn in command_info["o_files"]:
+                if fn.endswith(".impute2"):
+                    impute2_fn = fn
+                    break
+            if not _check_impute2_file(impute2_fn):
+                logging.debug("'{}' exit status problem".format(task_id))
+                return False, name, "problem", None
+
+    # Checking all the required files were generated
+    if not _check_output_files(command_info["o_files"], task_id):
         logging.debug("'{}' exit status problem".format(task_id))
         return False, name, "problem", None
 

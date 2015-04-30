@@ -1,32 +1,31 @@
 [![Build Status](https://travis-ci.org/pgxcentre/gwip.svg?branch=master)](https://travis-ci.org/pgxcentre/gwip)
+[![PyPI version](https://badge.fury.io/py/gwip.svg)](http://badge.fury.io/py/gwip)
+
 
 # gwip - A Python module to perform genome-wide imputation analysis
 
-*Version 0.1*
+*Version 1.0.0*
 
 The `gwip` module includes a script (named `gwip-launcher`) that automatically
 runs a genome-wide imputation pipeline using *Plink*, *shapeit* and *impute2*.
 
+Full documentation is available at
+[http://pgxcentre.github.io/gwip/](http://pgxcentre.github.io/gwip/).
+
 
 ## Installation
 
-We recommend installing the package in a Python (version 3) virtual
-environment. To create such an environment and to activate it, perform the
-following commands:
+We recommend installing the package in a Python 3 virtual environment. There
+are two ways to install: `pip` or `conda`.
 
-```console
-$ pyvenv $HOME/python3_gwip_virt
-$ source $HOME/python3_gwip_virt/bin/activate
+```bash
+# Using pip
+pip install gwip
 ```
 
-Download (or clone) the package from
-[GitHub](https://github.com/pgxcentre/gwip) and install it using `pip` (in the
-virtual python 3 environment, once activated). For example, when cloning the
-package directly from GitHub:
-
-```console
-$ git clone https://github.com/pgxcentre/gwip.git
-$ pip install ./gwip
+```bash
+# Using conda
+conda install gwip -c http://statgen.org/wp-content/uploads/Softwares/gwip
 ```
 
 The installation process should install all required dependencies, which are
@@ -42,7 +41,6 @@ the following modules:
 * `jinja2` version 2.7.3 and latest
 * `pandas` version 0.15.2 and latest
 * `setuptools` version 12.0.5 and latest
-* `pyfaidx` version 0.3.7 and latest
 
 The tool requires the binaries for
 [Plink](http://pngu.mgh.harvard.edu/~purcell/plink/download.shtml),
@@ -53,8 +51,14 @@ A tool is provided to perform statistical analysis using the imputation results
 (linear, logistic and Cox's regressions). This tool requires the following
 Python modules:
 
+* `scipy` version 0.15.1 or latest (required by `statsmodels`)
 * `lifelines` version 0.7.0.0 and latest
 * `statsmodels` version 0.6.1 and latest
+
+Other packages are optional:
+
+* `Matplotlib` version 1.4.2
+* `Biopython` version 1.65 or latest
 
 Finally, the tool requires a LaTeX installation to compile the automatically
 generated report in PDF format.
@@ -85,9 +89,10 @@ The following options are available when launching a genome-wide imputation
 analysis.
 
 ```console
-$ gwip-launcher --helpusage: gwip-launcher [-h] [-v] [--debug] [--thread THREAD] --bfile PREFIX
-                     [--reference FILE] [--output-dir DIR] [--use-drmaa]
-                     [--drmaa-config FILE] [--preamble FILE]
+$ gwip-launcher --help
+usage: gwip-launcher [-h] [-v] [--debug] [--thread THREAD] --bfile PREFIX
+                     [--reference FILE] [--output-dir DIR] [--bgzip]
+                     [--use-drmaa] [--drmaa-config FILE] [--preamble FILE]
                      [--shapeit-bin BINARY] [--shapeit-thread INT]
                      [--plink-bin BINARY] [--impute2-bin BINARY]
                      [--segment-length BP] --hap-template TEMPLATE
@@ -98,7 +103,7 @@ $ gwip-launcher --helpusage: gwip-launcher [-h] [-v] [--debug] [--thread THREAD]
                      [--report-author AUTHOR]
 
 Execute the genome-wide imputation pipeline. This script is part of the 'gwip'
-package, version 0.1.
+package, version 1.0.0.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -114,6 +119,7 @@ Input Options:
 
 Output Options:
   --output-dir DIR      The name of the output directory. [gwip]
+  --bgzip               Use bgzip to compress the impute2 files.
 
 HPC Options:
   --use-drmaa           Launch tasks using DRMAA.
@@ -168,244 +174,8 @@ Automatic Report Options:
 
 ### Real life example
 
-The following directory tree is an example of a common imputation project.
-
-```text
-imputation_project/
-├── genetic_data.bed
-├── genetic_data.bim
-├── genetic_data.fam
-├── gwip.ini
-├── preamble.sh
-└── impute2_files/
-    └── 1000GP_Phase3
-        ├── 1000GP_Phase3_chr1.hap.gz
-        ├── 1000GP_Phase3_chr1.legend.gz
-        ├── 1000GP_Phase3_chr2.hap.gz
-        ├── 1000GP_Phase3_chr2.legend.gz
-        ├── ...
-        ├── 1000GP_Phase3.sample
-        ├── genetic_map_chr1_combined_b37.txt
-        ├── genetic_map_chr2_combined_b37.txt
-        └── ...
-```
-
-The `genetic_data.*` files are Plink's binary data containing the genotyped
-samples. The directory `impute2_files` contains IMPUTE2's reference files. The
-file `gwip.ini` contains the DRMAA configuration. Finally, the file
-`preamble.txt` contains information to *load* before launching an external
-command (*e.g.* environment variables). Sections below describes the input
-files in details.
-
-The following command would launch the complete analysis (when the working
-directory is `imputation_project`):
-
-```console
-$ gwip-launcher \
->     --use-drmaa \
->     --drmaa-config gwip.ini \
->     --thread 22 \
->     --preamble preamble.sh \
->     --bfile genetic_data \
->     --legend-template impute2_files/1000GP_Phase3/1000GP_Phase3_chr{chrom}.legend.gz \
->     --hap-template impute2_files/1000GP_Phase3/1000GP_Phase3_chr{chrom}.hap.gz \
->     --map-template impute2_files/1000GP_Phase3/genetic_map_chr{chrom}_combined_b37.txt \
->     --sample-file impute2_files/1000GP_Phase3/1000GP_Phase3.sample \
->     --report-title "Genome-wide imputation" \
->     --report-number "12345" \
->     --report-author "John Doe"
-[2015-02-13 13:38:38 INFO] Logging everything into 'gwip/gwip.log'
-[2015-02-13 13:38:38 INFO] Task will be launched with DRMAA
-[2015-02-13 13:38:38 INFO] Connecting to DB 'gwip/tasks.db'
-[2015-02-13 13:38:38 INFO] Will be using SHAPEIT version v2.r790
-[2015-02-13 13:38:38 INFO] Will be using IMPUTE2 version 2.3.1
-[2015-02-13 13:38:38 INFO] Will be using Plink version v1.07
-[2015-02-13 13:38:38 INFO] Finding markers to exclude
-[2015-02-13 13:38:39 INFO]   - 2,829 special markers
-[2015-02-13 13:38:39 INFO]   - 15,493 ambiguous markers removed
-[2015-02-13 13:38:39 INFO]   - 0 duplicated markers removed
-[2015-02-13 13:38:39 INFO]   - 123,379 markers kept
-[2015-02-13 13:38:39 INFO] Excluding and splitting markers
-...
-```
-
-By default, all results are save in the `gwip` directory. There will be one
-directory for each chromosome. The directory `gwip/missing` will contain
-missing rates for all genotyped markers.
-
-If there were no error, the directory `gwip/report` will contain the report
-automatically generated by the software (in *TeX* format). To compile the
-report in PDF format, just perform the following command:
-
-```console
-$ cd gwip/report
-$ make
-```
-
-If there were errors (for example, a task exceeded the execution time required
-by some servers), the DRMAA configuration file `gwip.ini` can be modified to
-increase the execution time of a specific task.
-
-Since imputation is performed by segments, each output directory will contain a
-directory called `final_impute2`, containing merged output files and imputation
-statistics.
-
-
-### Input files
-
-Genotypes format are in Plink's binary pedfiles (*i.e.* three files with
-`.bed`, `.bim` and `.fam` extensions). Those files are generated by Plink.
-
-The `preamble` file (optional) contains environment variables and command to be
-run before any task. The preamble is inserted between the *shebang*
-(`#!/usr/bin/env bash`) and the task command line. The following file is an
-example:
-
-```bash
-# Loading the required module
-module load gcc/4.8.2
-
-# The python virtual environment
-source $HOME/softwares/python_env/bin/activate
-```
-
-The configuration file (`.ini`) describes the DRMAA task options. It is
-required to specify execution time and number of nodes to be used on a HPC. By
-default (*i.e.* if the file is empty), the `walltime` is 15 minutes, and 1 node
-with 1 processor is used. If changes are required (*e.g.* longer execution time
-is required), this is specified in the `.ini` file. Each task corresponds to a
-section where a general execution time can be set (`walltime` variable) along
-with the number of nodes (`nodes` variable) and process per node (`ppn`
-variable). If a specific chromosome require more time, this can be set using
-the `chrN_walltime` variable (where `N` is the required chromosome). Finally,
-segment specific execution time can be set for the imputation task (`impute2`
-section). For more example, see the `.ini` file below.
-
-```ini
-[plink_exclude]
-walltime = 00:10:00
-nodes    = 1
-ppn      = 1
-
-[plink_missing_rate]
-walltime = 00:10:00
-nodes    = 1
-ppn      = 1
-
-[shapeit_check_1]
-walltime = 00:10:00
-nodes    = 1
-ppn      = 1
-
-[plink_flip]
-walltime = 00:10:00
-nodes    = 1
-ppn      = 1
-
-[shapeit_check_2]
-walltime = 00:10:00
-nodes    = 1
-ppn      = 1
-
-[plink_final_exclude]
-walltime = 00:10:00
-nodes    = 1
-ppn      = 1
-
-[shapeit_phase]
-nodes          = 1
-ppn            = 1
-chr1_walltime  = 04:00:00
-chr2_walltime  = 05:00:00
-chr3_walltime  = 04:00:00
-chr4_walltime  = 04:00:00
-chr5_walltime  = 04:00:00
-chr6_walltime  = 04:00:00
-chr7_walltime  = 03:00:00
-chr8_walltime  = 03:00:00
-chr9_walltime  = 03:00:00
-chr10_walltime = 03:00:00
-chr11_walltime = 03:00:00
-chr12_walltime = 03:00:00
-chr13_walltime = 03:00:00
-chr14_walltime = 02:00:00
-chr15_walltime = 02:00:00
-chr16_walltime = 02:00:00
-chr17_walltime = 02:00:00
-chr18_walltime = 02:00:00
-chr19_walltime = 02:00:00
-chr20_walltime = 02:00:00
-chr21_walltime = 01:00:00
-chr22_walltime = 01:00:00
-
-[impute2]
-walltime = 03:00:00
-nodes    = 1
-ppn      = 1
-# chr1_10000001_15000000 = 10:00:00
-
-[merge_impute2]
-nodes          = 1
-ppn            = 1
-chr1_walltime  = 03:00:00
-chr2_walltime  = 03:00:00
-chr3_walltime  = 03:00:00
-chr4_walltime  = 03:00:00
-chr5_walltime  = 03:00:00
-chr6_walltime  = 03:00:00
-chr7_walltime  = 02:30:00
-chr8_walltime  = 02:30:00
-chr9_walltime  = 02:00:00
-chr10_walltime = 02:00:00
-chr11_walltime = 02:00:00
-chr12_walltime = 02:00:00
-chr13_walltime = 01:30:00
-chr14_walltime = 01:30:00
-chr15_walltime = 01:30:00
-chr16_walltime = 01:30:00
-chr17_walltime = 01:30:00
-chr18_walltime = 01:30:00
-chr19_walltime = 01:00:00
-chr20_walltime = 01:00:00
-chr21_walltime = 01:00:00
-chr22_walltime = 01:00:00
-```
-
-
-### Output files
-
-There will be one directory for each chromosome in the output directory. This
-directory will contain the `*.impute2` files (one for each segment) and a
-`final_impute2` directory containing all the merged `*.impute2` files. The
-directory tree below shows the content of such a directory for chromosome 22.
-
-```text
-chr22
-├── ...
-└── final_impute2
-    ├── chr22.imputed.alleles
-    ├── chr22.imputed.completion_rates
-    ├── chr22.imputed.good_sites
-    ├── chr22.imputed.impute2
-    ├── chr22.imputed.imputed_sites
-    ├── chr22.imputed.log
-    └── chr22.imputed.map
-```
-
-Here is the description of the output files in the `final_impute2` directory:
-
-* `*.imputed.alleles`: contains the two alleles for each sites located on this
-  chromosome.
-* `*.completion_rates`: includes the completion rate (when considering a
-  certain probability threshold) for all sites (the `--probability` option).
-* `*.good_sites`: contains the sites with a certain completion rate (using a
-  certain probability threshold) that are complete enough to use in a
-  downstream analysis (the `--completion` option).
-* `*.impute2`: contains the merge imputation for this particular chromosome.
-* `*.imputed_sites`: contains the list of imputed sites (*i.e.* the sites that
-  were not genotyped. It is important to note that genotyped sites were indeed
-  imputed (their missing calls were imputed).
-* `*.map`: the mapping information for all sites on the chromosome.
+The documentation provides a quick and easy tutorial for the complete pipeline.
+Refer to [this page](http://pgxcentre.github.io/gwip/tutorial.html)
 
 
 ### Automatic report
@@ -433,10 +203,11 @@ script named `imputed-stats`.
 
 ```console
 $ imputed-stats --help
-usage: imputed-stats [-h] [-v] {cox,linear,logistic} ...
+usage: imputed-stats [-h] [-v] {cox,linear,logistic,skat} ...
 
-Performs statistical analysis on imputed data (either linear, logistic or
-survival regression). This script is part of the 'gwip' package, version 0.1).
+Performs statistical analysis on imputed data (either SKAT analysis, or
+linear, logistic or survival regression). This script is part of the 'gwip'
+package, version 1.0.0).
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -445,50 +216,12 @@ optional arguments:
 Statistical Analysis Type:
   The type of statistical analysis to be performed on the imputed data.
 
-  {cox,linear,logistic}
+  {cox,linear,logistic,skat}
     cox                 Cox's proportional hazard model (survival regression).
     linear              Linear regression (ordinary least squares).
     logistic            Logistic regression (GLM with binomial distribution).
+    skat                SKAT analysis.
 ```
 
-The `--help` option provides information on each of the available statistical
-analysis:
-
-```console
-$ imputed-stats cox --help
-usage: imputed-stats cox [-h] [-v] [--debug] --impute2 FILE --sample FILE
-                         --pheno FILE [--extract-sites FILE] [--out FILE]
-                         [--nb-process INT] [--nb-lines INT] [--chrx]
-                         [--gender-column NAME] [--scale INT] [--prob FLOAT]
-                         [--maf FLOAT] [--covar NAME] [--missing-value NAME]
-                         [--sample-column NAME] [--interaction NAME]
-                         --time-to-event NAME --censure NAME
-
-Performs a survival regression on imputed data using Cox's proportional hazard
-model. This script is part of the 'gwip' package, version 0.1).
-...
-$ imputed-stats linear --help
-usage: imputed-stats linear [-h] [-v] [--debug] --impute2 FILE --sample FILE
-                            --pheno FILE [--extract-sites FILE] [--out FILE]
-                            [--nb-process INT] [--nb-lines INT] [--chrx]
-                            [--gender-column NAME] [--scale INT]
-                            [--prob FLOAT] [--maf FLOAT] [--covar NAME]
-                            [--missing-value NAME] [--sample-column NAME]
-                            [--interaction NAME] --pheno-name NAME
-
-Performs a linear regression (ordinary least squares) on imputed data. This
-script is part of the 'gwip' package, version 0.1).
-...
-$ imputed-stats logistic --help
-usage: imputed-stats logistic [-h] [-v] [--debug] --impute2 FILE --sample FILE
-                              --pheno FILE [--extract-sites FILE] [--out FILE]
-                              [--nb-process INT] [--nb-lines INT] [--chrx]
-                              [--gender-column NAME] [--scale INT]
-                              [--prob FLOAT] [--maf FLOAT] [--covar NAME]
-                              [--missing-value NAME] [--sample-column NAME]
-                              [--interaction NAME] --pheno-name NAME
-
-Performs a logistic regression on imputed data using a GLM with a binomial
-distribution. This script is part of the 'gwip' package, version 0.1).
-...
-```
+See the tutorials for more information:
+[http://pgxcentre.github.io/gwip/tutorial.html](http://pgxcentre.github.io/gwip/tutorial.html)

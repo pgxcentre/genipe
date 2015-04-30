@@ -28,7 +28,14 @@ __all__ = ["generate_report", ]
 
 
 def generate_report(out_dir, run_opts, run_info):
-    """Generate the report."""
+    """Generate the report.
+
+    Args:
+        out_dir (str): the output directory for the report
+        run_opts (dict): the run options
+        run_info (dict): the run information
+
+    """
     # Configuring Jinja2
     jinja2_env = config_jinja2()
 
@@ -88,7 +95,17 @@ def generate_report(out_dir, run_opts, run_info):
 
 
 def _generate_background(templates, run_options, run_information):
-    """Generates the background section of the report."""
+    """Generates the background section of the report.
+
+    Args:
+        templates (jinja2.Environment): the jinja2 template environment
+        run_options (dict): the run options
+        run_information (dict): the run information
+
+    Returns:
+        str: a string representation of the "background" section
+
+    """
     # Loading the template
     section_template = templates.get_template("section_template.tex")
     background = templates.get_template("parts/background.tex")
@@ -103,7 +120,17 @@ def _generate_background(templates, run_options, run_information):
 
 
 def _generate_methods(templates, run_options, run_information):
-    """Generate the method section of the report."""
+    """Generate the method section of the report.
+
+    Args:
+        templates (jinja2.Environment): the jinja2 template environment
+        run_options (dict): the run options
+        run_information (dict): the run information
+
+    Returns:
+        str: a string representation of the "methods" section
+
+    """
     # Some assertions
     required_variables = ["shapeit_version", "impute2_version",
                           "plink_version", "initial_nb_markers",
@@ -234,7 +261,17 @@ def _generate_methods(templates, run_options, run_information):
 
 
 def _generate_results(templates, run_options, run_information):
-    """Generates the results section of the report."""
+    """Generates the results section of the report.
+
+    Args:
+        templates (jinja2.Environment): the jinja2 template environment
+        run_options (dict): the run options
+        run_information (dict): the run information
+
+    Returns:
+        str: a string representation of the "results" section
+
+    """
     # Some assertions
     required_variables = ["cross_validation_final_nb_genotypes",
                           "cross_validation_nb_genotypes_chrom",
@@ -415,7 +452,17 @@ def _generate_results(templates, run_options, run_information):
 
 
 def _generate_conclusions(templates, run_options, run_information):
-    """Generates the background section of the report."""
+    """Generates the background section of the report.
+
+    Args:
+        templates (jinja2.Environment): the jinja2 template environment
+        run_options (dict): the run options
+        run_information (dict): the run information
+
+    Returns:
+        str: a string representation of the "conclusions" section
+
+    """
     # Some assertions
     required_variables = ["nb_good_sites", "prob_threshold", "rate_threshold",
                           "nb_genotyped"]
@@ -512,14 +559,25 @@ def _generate_conclusions(templates, run_options, run_information):
 
 
 def _generate_annex(templates, run_options, run_information):
-    """Generates the annex section of the report (execution times)."""
+    """Generates the annex section of the report (execution times).
+
+    Args:
+        templates (jinja2.Environment): the jinja2 template environment
+        run_options (dict): the run options
+        run_information (dict): the run information
+
+    Returns:
+        str: a string representation of the "Annex" section
+
+    """
     # Some assertions
     required_variables = ["plink_exclude_exec_time",
                           "shapeit_check_1_exec_time",
                           "shapeit_check_2_exec_time",
                           "plink_missing_exec_time", "plink_flip_exec_time",
                           "plink_final_exec_time", "shapeit_phase_exec_time",
-                          "merge_impute2_exec_time", "impute2_exec_time"]
+                          "merge_impute2_exec_time", "impute2_exec_time",
+                          "bgzip_exec_time"]
     for required_variable in required_variables:
         assert required_variable in run_information, required_variable
 
@@ -628,12 +686,37 @@ def _generate_annex(templates, run_options, run_information):
         float_t=float_template,
     )
 
+    # The last table (bgzip_chr*) only if present
+    if run_information["bgzip_exec_time"]:
+        content += _generate_time_float(
+            table=run_information["bgzip_exec_time"],
+            header=table_header,
+            task_name="bgzip_chr*",
+            label="bgzip_exec_time",
+            tabular_t=tabular_template,
+            float_t=float_template,
+        )
+
     return content
 
 
 def _generate_time_float(task_name, label, table, header, tabular_t, float_t,
                          first_time_col=1):
-    """Generates time tables (split one long table in two)."""
+    """Generates time tables (split one long table in two).
+
+    Args:
+        task_name (str): the name of the task
+        label (str): the label for the float
+        table (list): the data for the float
+        header (str): the header for the tables
+        tabular_t (jinja2.Template): the template for the tabular
+        float_t (jinja2.Template): the template for the float
+        first_time_col (int): the first column containing time (base 0)
+
+    Returns:
+        str: a LaTeX float
+
+    """
     assert len(table) == 22
 
     # Adding the first table
@@ -665,7 +748,16 @@ def _generate_time_float(task_name, label, table, header, tabular_t, float_t,
 
 
 def _format_time_columns(table, first_col):
-    """Colorize the time in the table (columns 2 and up)."""
+    """Colorize the time in the table (columns 2 and up).
+
+    Args:
+        table (list): the data for the tabular
+        first_col (int): the first column containing time
+
+    Returns:
+        list: the same data, but with time column colorized
+
+    """
     for i in range(len(table)):
         for j in range(first_col, len(table[i])):
             table[i][j] = colorize_time(table[i][j])

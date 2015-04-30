@@ -21,13 +21,26 @@ __all__ = ["parse_drmaa_config", ]
 
 
 def parse_drmaa_config(configfile):
-    """Parses the tasks' configuration file for DRMAA."""
+    """Parses the tasks' configuration file for DRMAA.
+
+    Args:
+        configfile (str): the name of the configuration file
+
+    Returns:
+        dict: the DRMAA configuration for each task
+
+    """
     # This will save the final DRMAA configuration
     final_config = {}
 
     # Loading the configuration file
     drmaa_config = configparser.ConfigParser()
     drmaa_config.read(configfile)
+
+    # Is SKIP is set?
+    if "main" in drmaa_config:
+        if drmaa_config["main"].get("skip_drmaa_config", "no") == "yes":
+            return {"skip_drmaa_config": True}
 
     # First is 'plink_exclude'
     config = _generate_default_values("plink_exclude", drmaa_config)
@@ -68,12 +81,30 @@ def parse_drmaa_config(configfile):
     config = _generate_default_values("merge_impute2", drmaa_config)
     final_config.update(config)
 
+    # Tenth is 'bgzip'
+    config = _generate_default_values("bgzip", drmaa_config)
+    final_config.update(config)
+
     return final_config
 
 
 def _generate_default_values(task_name, config, walltime="00:15:00", nodes="1",
                              ppn="1", only_one=False, template=None):
-    """Generates default values for missing DRMAA configuration."""
+    """Generates default values for missing DRMAA configuration.
+
+    Args:
+        task_name (str): the name of the task
+        config (dict): the configuration
+        walltime (str): the default execution time
+        nodes (str): the default number of nodes
+        ppn (str): the default number of processes
+        only_one (bool): if there is only on task (and not one per chromosome)
+        template (str): task name template (for each chromosome)
+
+    Returns:
+        dict: the final configuration for this task
+
+    """
     # The final tool configuration
     final_tool_config = {}
 

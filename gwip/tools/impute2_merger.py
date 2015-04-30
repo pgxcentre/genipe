@@ -27,7 +27,14 @@ __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
 def main(args=None):
-    """The main function."""
+    """The main function.
+
+    Args:
+        args (argparse.Namespace): the arguments to be parsed (if
+                                   :py:func:`main` is called by another
+                                   modulel)
+
+    """
     # Creating the option parser
     desc = ("Concatenate IMPUTE2 output files and retrieve some "
             "statistics. This script is part of the 'gwip' package, "
@@ -54,6 +61,7 @@ def main(args=None):
             handlers=[logging.StreamHandler(), logging_fh]
         )
         logging.info("Logging everything into '{}'".format(log_file))
+        logging.info("Program arguments: '{}'".format(" ".join(sys.argv[1:])))
 
         # Checking the options
         check_args(args)
@@ -81,7 +89,51 @@ def main(args=None):
 
 
 def concatenate_files(i_filenames, out_prefix, real_chrom, options):
-    """Concatenates and extracts information from IMPUTE2 GEN file(s)."""
+    """Concatenates and extracts information from IMPUTE2 GEN file(s).
+
+    Args:
+        i_filenames (list): the list of input filenames (to concatenate)
+        out_prefix (str): the output prefix for the output files
+        real_chrom (str): the chromosome contained in all the input files
+        options (argparse.Namespace): the options
+
+    This function will create the following seven files:
+
+    +-----------------------+-------------------------------------------------+
+    | File name             | Description                                     |
+    +=======================+=================================================+
+    | ``.impute2``          | Imputation results (merged from all the input   |
+    |                       | files).                                         |
+    +-----------------------+-------------------------------------------------+
+    | ``.alleles``          | Description of the reference and alternative    |
+    |                       | allele at each sites.                           |
+    +-----------------------+-------------------------------------------------+
+    | ``.imputed_sites``    | List of imputed sites (excluding sites that     |
+    |                       | were previously genotyped in the study cohort). |
+    +-----------------------+-------------------------------------------------+
+    | ``.completion_rates`` | Number of missing values and completion rate    |
+    |                       | for all sites (using the probability threshold  |
+    |                       | set by the user, where the default is higher    |
+    |                       | and equal to 0.9).                              |
+    +-----------------------+-------------------------------------------------+
+    | ``.good_sites``       | List of sites which pass the completion rate    |
+    |                       | threshold (set by the user, where the default   |
+    |                       | is higher and equal to 0.98) using the          |
+    |                       | probability threshold (set by the user, where   |
+    |                       | the default is higher and equal to 0.9).        |
+    +-----------------------+-------------------------------------------------+
+    | ``.map``              | A map file describing the genomic location of   |
+    |                       | all sites.                                      |
+    +-----------------------+-------------------------------------------------+
+    | ``.maf``              | File containing the minor allele frequency      |
+    |                       | (along with minor allele identification) for    |
+    |                       | all sites using the probabilitty threshold of   |
+    |                       | 0.9. When no genotypes are available (because   |
+    |                       | they are all below the threshold), the MAF is   |
+    |                       | ``NA``.                                         |
+    +-----------------------+-------------------------------------------------+
+
+    """
     # Opening output files
     impute2_o_file = open(out_prefix + ".impute2", "w")
     alleles_o_file = open(out_prefix + ".alleles", "w")
@@ -213,7 +265,16 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
 
 
 def check_args(args):
-    """Checks the arguments and options."""
+    """Checks the arguments and options.
+
+    Args:
+        args (argparse.Namespace): the options to verify
+
+    Note
+    ----
+        If there is a problem, a :py:class:`gwip.error.ProgramError` is raised.
+
+    """
     # Checking the input files
     for filename in args.impute2:
         if not os.path.isfile(filename):
@@ -236,7 +297,21 @@ def check_args(args):
 
 
 def parse_args(parser, args=None):
-    """Parses the command line options and arguments."""
+    """Parses the command line options and arguments.
+
+    Args:
+        parser (argparse.ArgumentParser): the argument parser
+        args (list): the list of arguments (if not taken from ``sys.argv``)
+
+    Returns:
+        argparse.Namespace: the list of options and arguments
+
+    Note
+    ----
+        The only check that is done here is by the parser itself. Values are
+        verified later by the :py:func:`check_args` function.
+
+    """
     # The parser object
     parser.add_argument(
         "--version",

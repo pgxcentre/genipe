@@ -10,16 +10,18 @@
 import random
 import platform
 import unittest
-from shutil import which
 from tempfile import TemporaryDirectory
 
-import patsy
 import numpy as np
 import pandas as pd
 from pkg_resources import resource_filename
 
 from ..tools.imputed_stats import *
 from ..tools.imputed_stats import _get_result_from_linear_logistic
+
+if HAS_STATSMODELS:
+    # patsy is installed only if statsmodels is
+    import patsy
 
 
 __author__ = ["Louis-Philippe Lemieux Perreault", "Marc-Andre Legault"]
@@ -29,10 +31,6 @@ __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 __all__ = ["TestImputedStats", "TestImputedStatsCox", "TestImputedStatsLinear",
            "TestImputedStatsLogistic"]
-
-
-# SKAT temporary directories
-skat_temp_directories = []
 
 
 def clean_logging_handlers():
@@ -78,7 +76,7 @@ def reverse_dosage(dosage):
 
 
 def create_input_files(i_filename, output_dirname, analysis_type,
-                       pheno_name="y", tte="y", censure="y_d",
+                       pheno_name="y", tte="y", event="y_d",
                        interaction=None, nb_process=None):
     """Creates input files for the imputed_stats script."""
     # Reading the data
@@ -121,7 +119,7 @@ def create_input_files(i_filename, output_dirname, analysis_type,
         print(file=o_file)
 
     # The prefix of the output files
-    o_prefix = os.path.join(output_dirname, "test_imputed_stats_linear")
+    o_prefix = os.path.join(output_dirname, "test_imputed_stats")
 
     # The tool's options
     options = [
@@ -138,7 +136,7 @@ def create_input_files(i_filename, output_dirname, analysis_type,
 
     # Is this Cox or linear?
     if analysis_type == "cox":
-        options.extend(["--time-to-event", tte, "--censure", censure])
+        options.extend(["--time-to-event", tte, "--event", event])
     else:
         options.extend(["--pheno-name", pheno_name])
 
@@ -173,7 +171,7 @@ class TestImputedStats(unittest.TestCase):
 
         # The content of the phenotype file
         phenotype_content = (
-            "sample_id\tTime_To_Event\tCensure\tC1\tC2\tC3\tC4\tGender\t"
+            "sample_id\tTime_To_Event\tEvent\tC1\tC2\tC3\tC4\tGender\t"
             "Pheno_Lin\tPheno_Logit\tInter\n"
             "sample_1\t10\t0\t0.3\t0.2\t0.45\t0.01\t1\t0.01\t0\t0.00001\n"
             "sample_2\t2\t1\t0.9\t0.1\t0.42\t0.012\t2\t0.15\t1\t0.00332\n"
@@ -190,7 +188,7 @@ class TestImputedStats(unittest.TestCase):
         args.covar = ["C1", "C2", "C3", "Gender"]
         args.analysis_type = "cox"
         args.tte = "Time_To_Event"
-        args.censure = "Censure"
+        args.event = "Event"
         args.interaction = None
         args.chrx = False
         args.gender_column = "Gender"
@@ -198,14 +196,14 @@ class TestImputedStats(unittest.TestCase):
         # The expected value
         expected_shape = (3, 6)
         expected_columns = {"C1", "C2", "C3", "Gender", "Time_To_Event",
-                            "Censure"}
+                            "Event"}
         expected_index = ["sample_1", "sample_2", "sample_3"]
         expected_c1 = np.array([0.3, 0.9, 0.4], dtype=float)
         expected_c2 = np.array([0.2, 0.1, 0.67], dtype=float)
         expected_c3 = np.array([0.45, 0.42, 999], dtype=float)
         expected_gender = np.array([1, 2, 1], dtype=int)
         expected_tte = np.array([10, 2, 8], dtype=int)
-        expected_censure = np.array([0, 1, 1], dtype=int)
+        expected_event = np.array([0, 1, 1], dtype=int)
         expected_remove_g = False
 
         # The observed values
@@ -221,7 +219,7 @@ class TestImputedStats(unittest.TestCase):
         self.assertTrue(
             (expected_tte == observed_p.Time_To_Event.values).all()
         )
-        self.assertTrue((expected_censure == observed_p.Censure.values).all())
+        self.assertTrue((expected_event == observed_p.Event.values).all())
         self.assertEqual(expected_remove_g, observed_remove_g)
 
         # Modifying the missing value to 999
@@ -246,7 +244,7 @@ class TestImputedStats(unittest.TestCase):
             (expected_tte[:-1] == observed_p.Time_To_Event.values).all()
         )
         self.assertTrue(
-            (expected_censure[:-1] == observed_p.Censure.values).all()
+            (expected_event[:-1] == observed_p.Event.values).all()
         )
         self.assertEqual(expected_remove_g, observed_remove_g)
 
@@ -254,7 +252,7 @@ class TestImputedStats(unittest.TestCase):
         args.missing_value = None
         args.analysis_type = "linear"
         del args.tte
-        del args.censure
+        del args.event
         args.pheno_name = "Pheno_Lin"
 
         # The expected results
@@ -593,6 +591,8 @@ class TestImputedStats(unittest.TestCase):
         self.fail("Test not implemented")
 
 
+@unittest.skipIf(not HAS_LIFELINES,
+                 "optional requirement (lifelines) not satisfied")
 class TestImputedStatsCox(unittest.TestCase):
 
     def setUp(self):
@@ -632,7 +632,7 @@ class TestImputedStatsCox(unittest.TestCase):
         observed = fit_cox(
             data=data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
-            censure="y_d",
+            event="y_d",
             result_col="snp1",
         )
         self.assertEqual(6, len(observed))
@@ -664,7 +664,7 @@ class TestImputedStatsCox(unittest.TestCase):
         observed = fit_cox(
             data=data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
-            censure="y_d",
+            event="y_d",
             result_col="snp2",
         )
         self.assertEqual(6, len(observed))
@@ -696,7 +696,7 @@ class TestImputedStatsCox(unittest.TestCase):
         observed = fit_cox(
             data=data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
-            censure="y_d",
+            event="y_d",
             result_col="snp3",
         )
         self.assertEqual(6, len(observed))
@@ -740,7 +740,7 @@ class TestImputedStatsCox(unittest.TestCase):
         observed = fit_cox(
             data=data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
-            censure="y_d",
+            event="y_d",
             result_col="interaction",
         )
         self.assertEqual(6, len(observed))
@@ -770,7 +770,7 @@ class TestImputedStatsCox(unittest.TestCase):
             output_dirname=self.output_dir.name,
             analysis_type="cox",
             tte="y",
-            censure="y_d",
+            event="y_d",
         )
 
         # Executing the tool
@@ -881,7 +881,7 @@ class TestImputedStatsCox(unittest.TestCase):
             output_dirname=self.output_dir.name,
             analysis_type="cox",
             tte="y",
-            censure="y_d",
+            event="y_d",
             nb_process=2,
         )
 
@@ -991,7 +991,7 @@ class TestImputedStatsCox(unittest.TestCase):
             output_dirname=self.output_dir.name,
             analysis_type="cox",
             tte="y",
-            censure="y_d",
+            event="y_d",
             interaction="gender",
         )
 
@@ -1090,6 +1090,8 @@ class TestImputedStatsCox(unittest.TestCase):
                                    places=place)
 
 
+@unittest.skipIf(not HAS_STATSMODELS,
+                 "optional requirement (statsmodels) not satisfied")
 class TestImputedStatsLinear(unittest.TestCase):
 
     def setUp(self):
@@ -1557,6 +1559,8 @@ class TestImputedStatsLinear(unittest.TestCase):
                                    places=10)
 
 
+@unittest.skipIf(not HAS_STATSMODELS,
+                 "optional requirement (statsmodels) not satisfied")
 class TestImputedStatsLogistic(unittest.TestCase):
 
     def setUp(self):
@@ -2062,59 +2066,165 @@ class TestImputedStatsLogistic(unittest.TestCase):
                                    places=place)
 
 
+@unittest.skipIf(not HAS_SKAT, "SKAT is not installed")
 class TestImputedStatsSkat(unittest.TestCase):
 
-    def __init__(self, *args, **kwargs):
-        global skat_temp_directories
+    tmp_dir = None
+    args = None
 
-        self.output_dir = TemporaryDirectory(prefix="gwip_test_")
-        skat_temp_directories.append(self.output_dir)
-        self.args = self.setup_skat_files()
-        super().__init__(*args, **kwargs)
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp_dir = TemporaryDirectory(prefix="gwip_test_")
+        cls.args = cls.setup_skat_files(cls.tmp_dir.name)
 
     @classmethod
     def tearDownClass(cls):
-        """Finishes the test."""
-        # Deleting the output directory
-        for directory in skat_temp_directories:
-            directory.cleanup()
+        # Cleaning the temporary directory
+        cls.tmp_dir.cleanup()
 
-    @unittest.skipIf(which("Rscript") is None, "R not installed")
     def test_continuous(self):
+        o_prefix = os.path.join(self.tmp_dir.name, "skat_test_continuous")
         args = self.args + [
             "--pheno-name", "outcome_continuous",
-            "--outcome-type", "continuous"
+            "--outcome-type", "continuous",
+            "--out", o_prefix,
         ]
+
+        # Executing the tool
         main(args=args)
 
-        results_filename = os.path.join(
-            self.output_dir.name,
-            "skat_test.skat.dosage"
-        )
+        # Cleaning the handlers
+        clean_logging_handlers()
 
-        p = pd.read_csv(results_filename, header=0, sep="\t")["p_value"][0]
-        self.assertAlmostEqual(np.log10(0.002877041), np.log10(p), places=10)
+        # The observed values
+        results_filename = o_prefix + ".skat.dosage"
+        observed = pd.read_csv(results_filename, header=0, sep="\t")
+        self.assertEqual((3, 3), observed.shape)
 
-    @unittest.skipIf(which("Rscript") is None, "R not installed")
+        # The SNP set ID
+        expected = ["set1", "set2", "set3"]
+        for expected_id, observed_id in zip(expected, observed.snp_set_id):
+            self.assertEqual(expected_id, observed_id)
+
+        # The p values
+        expected = [0.002877041, 0.09319144, 0.002877041]
+        for expected_p, observed_p in zip(expected, observed.p_value):
+            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                                   places=10)
+
+        # The Q statistics
+        expected = [298041.5, 24870.14, 298041.5]
+        for expected_q, observed_q in zip(expected, observed.q_value):
+            self.assertAlmostEqual(expected_q, observed_q, places=10)
+
     def test_discrete(self):
+        o_prefix = os.path.join(self.tmp_dir.name, "skat_test_discrete")
         args = self.args + [
             "--pheno-name", "outcome_discrete",
-            "--outcome-type", "discrete"
+            "--outcome-type", "discrete",
+            "--out", o_prefix,
         ]
+
+        # Executing the tool
         main(args=args)
 
-        results_filename = os.path.join(
-            self.output_dir.name,
-            "skat_test.skat.dosage"
-        )
+        # Cleaning the handlers
+        clean_logging_handlers()
 
-        p = pd.read_csv(results_filename, header=0, sep="\t")["p_value"][0]
-        self.assertAlmostEqual(np.log10(0.1401991), np.log10(p), places=10)
+        # The observed values
+        results_filename = o_prefix + ".skat.dosage"
+        observed = pd.read_csv(results_filename, header=0, sep="\t")
+        self.assertEqual((3, 3), observed.shape)
 
-    def setup_skat_files(self):
+        # The SNP set ID
+        expected = ["set1", "set2", "set3"]
+        for expected_id, observed_id in zip(expected, observed.snp_set_id):
+            self.assertEqual(expected_id, observed_id)
+
+        # The p values
+        expected = [0.1401991, 0.5868036, 0.1401991]
+        for expected_p, observed_p in zip(expected, observed.p_value):
+            self.assertAlmostEqual(expected_p, observed_p, places=10)
+
+        # The Q statistics
+        expected = [34934.79, 2776.797, 34934.79]
+        for expected_q, observed_q in zip(expected, observed.q_value):
+            self.assertAlmostEqual(expected_q, observed_q, places=10)
+
+    def test_continuous_multiprocess(self):
+        o_prefix = os.path.join(self.tmp_dir.name, "skat_test_continuous_mp")
+        args = self.args + [
+            "--pheno-name", "outcome_continuous",
+            "--outcome-type", "continuous",
+            "--nb-process", "2",
+            "--out", o_prefix,
+        ]
+
+        # Executing the tool
+        main(args=args)
+
+        # Cleaning the handlers
+        clean_logging_handlers()
+
+        # The observed values
+        results_filename = o_prefix + ".skat.dosage"
+        observed = pd.read_csv(results_filename, header=0, sep="\t")
+        self.assertEqual((3, 3), observed.shape)
+
+        # The SNP set ID
+        expected = ["set1", "set2", "set3"]
+        for expected_id, observed_id in zip(expected, observed.snp_set_id):
+            self.assertEqual(expected_id, observed_id)
+
+        # The p values
+        expected = [0.002877041, 0.09319144, 0.002877041]
+        for expected_p, observed_p in zip(expected, observed.p_value):
+            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                                   places=10)
+
+        # The Q statistics
+        expected = [298041.5, 24870.14, 298041.5]
+        for expected_q, observed_q in zip(expected, observed.q_value):
+            self.assertAlmostEqual(expected_q, observed_q, places=10)
+
+    def test_discrete_multiprocess(self):
+        o_prefix = os.path.join(self.tmp_dir.name, "skat_test_discrete_mp")
+        args = self.args + [
+            "--pheno-name", "outcome_discrete",
+            "--outcome-type", "discrete",
+            "--nb-process", "2",
+            "--out", o_prefix,
+        ]
+
+        # Executing the tool
+        main(args=args)
+
+        # Cleaning the handlers
+        clean_logging_handlers()
+
+        # The observed values
+        results_filename = o_prefix + ".skat.dosage"
+        observed = pd.read_csv(results_filename, header=0, sep="\t")
+        self.assertEqual((3, 3), observed.shape)
+
+        # The SNP set ID
+        expected = ["set1", "set2", "set3"]
+        for expected_id, observed_id in zip(expected, observed.snp_set_id):
+            self.assertEqual(expected_id, observed_id)
+
+        # The p values
+        expected = [0.1401991, 0.5868036, 0.1401991]
+        for expected_p, observed_p in zip(expected, observed.p_value):
+            self.assertAlmostEqual(expected_p, observed_p, places=10)
+
+        # The Q statistics
+        expected = [34934.79, 2776.797, 34934.79]
+        for expected_q, observed_q in zip(expected, observed.q_value):
+            self.assertAlmostEqual(expected_q, observed_q, places=10)
+
+    @staticmethod
+    def setup_skat_files(out_directory):
         """Parses the SKAT example files into the format expected by gwip."""
-        out_directory = self.output_dir.name
-
         # Read the SKAT example files.
         skat_x = pd.read_csv(  # Covariates
             resource_filename(
@@ -2167,7 +2277,7 @@ class TestImputedStatsSkat(unittest.TestCase):
 
                 chrom = random.randint(1, 22)
                 pos = random.randint(1000, 90000000)
-                a1, a2 = [random.choice("ATGC") for i in range(2)]
+                a1, a2 = random.sample("ATGC", 2)
 
                 variant_name = "{chrom}:{pos}:{a2}".format(
                     chrom=chrom, pos=pos, a2=a2
@@ -2196,11 +2306,21 @@ class TestImputedStatsSkat(unittest.TestCase):
                 print(row, *dosage_list, sep=" ", file=output_file)
 
         # Create the snp set file.
-        filename = os.path.join(out_directory, "snp_set.txt")
+        filename = os.path.join(out_directory, "snp_sets.txt")
         with open(filename, "w") as output_file:
             print("variant", "snp_set", sep="\t", file=output_file)
+            # The first SNP set
             for variant in variants:
                 print(variant, "set1", sep="\t", file=output_file)
+
+            # The second SNP set (which contains only the first 10 markers, and
+            # the last 10)
+            for variant in variants[:10] + [variants[30]] + variants[-10:]:
+                print(variant, "set2", sep="\t", file=output_file)
+
+            # The last SNP set (which is the same as the first one)
+            for variant in variants:
+                print(variant, "set3", sep="\t", file=output_file)
 
         # Create a list of samples.
         samples = ["sample_{}".format(i + 1) for i in range(skat_z.shape[0])]
@@ -2237,8 +2357,7 @@ class TestImputedStatsSkat(unittest.TestCase):
             "--impute2", os.path.join(out_directory, "impute2.txt"),
             "--sample", os.path.join(out_directory, "samples.txt"),
             "--pheno", os.path.join(out_directory, "phenotypes.txt"),
-            "--out", os.path.join(out_directory, "skat_test"),
-            "--snp-set", os.path.join(out_directory, "snp_set.txt"),
+            "--snp-set", os.path.join(out_directory, "snp_sets.txt"),
             "--covar", "covar_discrete,covar_continuous",
             "--sample-column", "sample",
             "--gender-column", "None",
