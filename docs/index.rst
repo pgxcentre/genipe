@@ -53,7 +53,7 @@ Usage
                         [--report-author AUTHOR]
 
    Execute the genome-wide imputation pipeline. This script is part of the 'gwip'
-   package, version 0.1.
+   package, version 1.0.0.
 
    optional arguments:
      -h, --help            show this help message and exit

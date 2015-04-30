@@ -154,7 +154,7 @@ the logistic regression analysis.
 .. code-block:: bash
 
    cd $HOME/gwip_tutorial/logistic
-   
+
    imputed-stats logistic \
        --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz \
        --sample ../gwip/chr22/final_impute2/chr22.imputed.sample \
@@ -227,25 +227,25 @@ regression analysis in the console:
                                  [--prob FLOAT] [--maf FLOAT] [--covar NAME]
                                  [--missing-value NAME] [--sample-column NAME]
                                  [--interaction NAME] --pheno-name NAME
-   
+
    Performs a logistic regression on imputed data using a GLM with a binomial
-   distribution. This script is part of the 'gwip' package, version 0.1).
-   
+   distribution. This script is part of the 'gwip' package, version 1.0.0).
+
    optional arguments:
      -h, --help            show this help message and exit
      -v, --version         show program's version number and exit
      --debug               set the logging level to debug
-   
+
    Input Files:
      --impute2 FILE        The output from IMPUTE2.
      --sample FILE         The sample file (the order should be the same as in
                            the IMPUTE2 files).
      --pheno FILE          The file containing phenotypes and co variables.
      --extract-sites FILE  A list of sites to extract for analysis (optional).
-   
+
    Output Options:
      --out FILE            The prefix for the output files. [imputed_stats]
-   
+
    General Options:
      --nb-process INT      The number of process to use. [1]
      --nb-lines INT        The number of line to read at a time. [1000]
@@ -257,7 +257,7 @@ regression analysis in the console:
      --gender-column NAME  The name of the gender column (use to exclude samples
                            with unknown gender (i.e. not 1, male, or 2, female).
                            If gender not available, use 'None'. [Gender]
-   
+
    Dosage Options:
      --scale INT           Scale dosage so that values are in [0, n] (possible
                            values are 1 (no scaling) or 2). [2]
@@ -265,7 +265,7 @@ regression analysis in the console:
                            considered. [>=0.9]
      --maf FLOAT           Minor allele frequency threshold for which marker will
                            be skipped. [<0.01]
-   
+
    Phenotype Options:
      --covar NAME          The co variable names (in the phenotype file),
                            separated by coma.
@@ -274,7 +274,7 @@ regression analysis in the console:
                            file). [sample_id]
      --interaction NAME    Add an interaction between the genotype and this
                            variable.
-   
+
    Logistic Regression Options:
      --pheno-name NAME     The phenotype.
 
