@@ -1,44 +1,44 @@
 Installation
 =============
 
+
+Quick navigation
+-----------------
+
+1. :ref:`install-requirements`
+2. :ref:`install-virt`
+3. :ref:`install-test`
+4. :ref:`install-update`
+
+
+.. _install-requirements:
+
+Requirements
+-------------
+
 The tools require a standard Python 3 installation with the following modules:
 
 * ``numpy`` version 1.8.2 or latest
 * ``jinja2`` version 2.7.3 or latest
 * ``pandas`` version 0.15.2 or latest
 * ``setuptools`` version 12.0.5 or latest
-* ``pyfaidx`` version 0.3.7 or latest
 
 The following modules are optional (required for statistical analysis and data
 management):
 
-* ``lifelines`` version 0.7.0 or latest
+* ``matplotlib`` version 1.4.2
+* ``scipy`` version 0.15.1 or latest (required by ``statsmodels``)
 * ``statsmodels`` version 0.6.1 or latest
+* ``lifelines`` version 0.7.0 or latest
 * ``biopython`` version 1.65 or latest
+* ``pyfaidx`` version 0.3.7 or latest
 
 .. note::
 
    Only Python versions 3.3 and higher are supported for now.
 
 
-Download
----------
-
-Since the module is still in development, it is recommended to simply clone the
-directory directly from `github <https://github.com/pgxcentre/gwip>`_. Once
-official releases are available, they will be located
-`here <https://github.com/pgxcentre/gwip/releases>`_.
-
-.. code-block:: bash
-
-   git clone https://github.com/pgxcentre/gwip.git $HOME/gwip
-
-For simplicity of use, we recommend to install the :py:mod:`gwip` module using
-a Python virtual environment. There are two possible ways to create such an
-environment: using Python's ``pyvenv`` command, or using
-`Miniconda <http://conda.pydata.org/miniconda.html>`_. The latter is easier to
-use since it doesn't require any compilation.
-
+.. _install-virt:
 
 Virtual environment
 --------------------
@@ -57,12 +57,12 @@ activate it, as long as Python 3 was previously installed on the machine.
    # Activating the environment
    source $HOME/gwip_pyvenv/bin/activate
 
-Then, install the package (and all its dependencies) using the following
-command:
+Then, install the :py:mod:`gwip` package (and all its dependencies) using the
+following command:
 
 .. code-block:: bash
 
-   pip install $HOME/gwip
+   pip install gwip
 
 If required, the optional dependencies can be installed using the following
 command:
@@ -72,6 +72,8 @@ command:
    pip install statsmodels
    pip install lifelines
    pip install biopython
+   pip install pyfaidx
+   pip install matplotlib
 
 
 Using Miniconda
@@ -93,26 +95,24 @@ doesn't required a previous Python 3 installation.
    # Activating the environment
    source $HOME/miniconda/bin/activate gwip_pyvenv
 
-It is recommended to install the dependencies using ``conda`` instead of
-``pip`` when available (before installing :py:mod:`gwip`).
+Then, install the :py:mod:`gwip` package (and all its dependencies) using the
+following command:
 
 .. code-block:: bash
 
-   conda install numpy
-   conda install jinja2
-   conda install pandas
-   conda install matplotlib
-   conda install setuptools
-   conda install statsmodels
-   conda install biopython
+   conda install gwip -c http://statgen.org/wp-content/uploads/Softwares/gwip
 
-Finally, using ``pip``, install the missing dependencies and :py:mod:`gwip`:
+If required, the optional dependencies can be installed using the following
+command:
 
 .. code-block:: bash
 
+   conda install -y scipy
+   conda install -y statsmodels
+   conda install -y biopython
+   conda install -y matplotlib
    pip install --no-deps pyfaidx
    pip install --no-deps lifelines
-   pip install --no-deps $HOME/gwip
 
 
 .. _gwip-pyvenv-activation:
@@ -147,6 +147,8 @@ following command to activate it.
    source $HOME/miniconda/bin/activate gwip_pyvenv
 
 
+.. _install-test:
+
 Testing the installation
 -------------------------
 
@@ -155,11 +157,37 @@ Then, launch python and use the following commands:
 
 .. code-block:: python
 
-    >>> import gwip
-    >>> gwip.test()
-    .....................ss.ss........................ss...s.s.........
-    ----------------------------------------------------------------------
-    Ran 67 tests in 76.401s
+   >>> import gwip
+   >>> gwip.test()
+   ......................ss.ss.......................ss...ss...s.s.........
+   ----------------------------------------------------------------------
+   Ran 72 tests in 107.268s
+   
+   OK (skipped=10)
 
-    OK (skipped=8)
+
+.. _install-update:
+
+Updating the package
+---------------------
+
+If there is a new :py:mod:`gwip` release, perform one of the following command
+(depending of the installation method). Don't forget to first activate the
+python virtual environment.
+
+
+Pyvenv
+^^^^^^^
+
+.. code-block:: bash
+
+   pip install -U gwip
+
+
+Miniconda
+^^^^^^^^^^
+
+.. code-block:: bash
+
+   conda update gwip -c http://statgen.org/wp-content/uploads/Softwares/gwip
 
