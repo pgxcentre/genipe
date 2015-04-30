@@ -155,7 +155,7 @@ the linear regression analysis.
 .. code-block:: bash
 
    cd $HOME/gwip_tutorial/linear
-   
+
    imputed-stats linear \
        --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz \
        --sample ../gwip/chr22/final_impute2/chr22.imputed.sample \
@@ -238,7 +238,7 @@ analysis in the console:
                                [--interaction NAME] --pheno-name NAME
 
    Performs a linear regression (ordinary least squares) on imputed data. This
-   script is part of the 'gwip' package, version 0.1).
+   script is part of the 'gwip' package, version 1.0.0).
 
    optional arguments:
      -h, --help            show this help message and exit

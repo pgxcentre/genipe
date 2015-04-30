@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; gwip 0.1 documentation</title>
+    <title>Installation &mdash; gwip 1.0.0 documentation</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '0.1',
+        VERSION:     '1.0.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="gwip 0.1 documentation" href="index.html" />
+    <link rel="top" title="gwip 1.0.0 documentation" href="index.html" />
     <link rel="next" title="Short Tutorials" href="tutorial.html" />
     <link rel="prev" title="Genome-Wide Imputation Pipeline" href="index.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -50,7 +50,7 @@
         <li class="right" >
           <a href="index.html" title="Genome-Wide Imputation Pipeline"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">gwip 0.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">gwip 1.0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -58,18 +58,24 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#download">Download</a></li>
+<li><a class="reference internal" href="#quick-navigation">Quick navigation</a></li>
+<li><a class="reference internal" href="#requirements">Requirements</a></li>
 <li><a class="reference internal" href="#virtual-environment">Virtual environment</a><ul>
 <li><a class="reference internal" href="#using-pyvenv">Using pyvenv</a></li>
 <li><a class="reference internal" href="#using-miniconda">Using Miniconda</a></li>
 <li><a class="reference internal" href="#virtual-environment-activation">Virtual environment activation</a><ul>
 <li><a class="reference internal" href="#pyvenv">Pyvenv</a></li>
-<li><a class="reference internal" href="#id1">Miniconda</a></li>
+<li><a class="reference internal" href="#miniconda">Miniconda</a></li>
 </ul>
 </li>
 </ul>
 </li>
 <li><a class="reference internal" href="#testing-the-installation">Testing the installation</a></li>
+<li><a class="reference internal" href="#updating-the-package">Updating the package</a><ul>
+<li><a class="reference internal" href="#id1">Pyvenv</a></li>
+<li><a class="reference internal" href="#id2">Miniconda</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -110,42 +116,41 @@
             
   <div class="section" id="installation">
 <h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="quick-navigation">
+<h2>Quick navigation<a class="headerlink" href="#quick-navigation" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><a class="reference internal" href="#install-requirements"><span>Requirements</span></a></li>
+<li><a class="reference internal" href="#install-virt"><span>Virtual environment</span></a></li>
+<li><a class="reference internal" href="#install-test"><span>Testing the installation</span></a></li>
+<li><a class="reference internal" href="#install-update"><span>Updating the package</span></a></li>
+</ol>
+</div>
+<div class="section" id="requirements">
+<span id="install-requirements"></span><h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <p>The tools require a standard Python 3 installation with the following modules:</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">numpy</span></code> version 1.8.2 or latest</li>
 <li><code class="docutils literal"><span class="pre">jinja2</span></code> version 2.7.3 or latest</li>
 <li><code class="docutils literal"><span class="pre">pandas</span></code> version 0.15.2 or latest</li>
 <li><code class="docutils literal"><span class="pre">setuptools</span></code> version 12.0.5 or latest</li>
-<li><code class="docutils literal"><span class="pre">pyfaidx</span></code> version 0.3.7 or latest</li>
 </ul>
 <p>The following modules are optional (required for statistical analysis and data
 management):</p>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">lifelines</span></code> version 0.7.0 or latest</li>
+<li><code class="docutils literal"><span class="pre">matplotlib</span></code> version 1.4.2</li>
+<li><code class="docutils literal"><span class="pre">scipy</span></code> version 0.15.1 or latest (required by <code class="docutils literal"><span class="pre">statsmodels</span></code>)</li>
 <li><code class="docutils literal"><span class="pre">statsmodels</span></code> version 0.6.1 or latest</li>
+<li><code class="docutils literal"><span class="pre">lifelines</span></code> version 0.7.0 or latest</li>
 <li><code class="docutils literal"><span class="pre">biopython</span></code> version 1.65 or latest</li>
+<li><code class="docutils literal"><span class="pre">pyfaidx</span></code> version 0.3.7 or latest</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Only Python versions 3.3 and higher are supported for now.</p>
 </div>
-<div class="section" id="download">
-<h2>Download<a class="headerlink" href="#download" title="Permalink to this headline">¶</a></h2>
-<p>Since the module is still in development, it is recommended to simply clone the
-directory directly from <a class="reference external" href="https://github.com/pgxcentre/gwip">github</a>. Once
-official releases are available, they will be located
-<a class="reference external" href="https://github.com/pgxcentre/gwip/releases">here</a>.</p>
-<div class="highlight-bash"><div class="highlight"><pre>git clone https://github.com/pgxcentre/gwip.git <span class="nv">$HOME</span>/gwip
-</pre></div>
-</div>
-<p>For simplicity of use, we recommend to install the <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> module using
-a Python virtual environment. There are two possible ways to create such an
-environment: using Python&#8217;s <code class="docutils literal"><span class="pre">pyvenv</span></code> command, or using
-<a class="reference external" href="http://conda.pydata.org/miniconda.html">Miniconda</a>. The latter is easier to
-use since it doesn&#8217;t require any compilation.</p>
 </div>
 <div class="section" id="virtual-environment">
-<h2>Virtual environment<a class="headerlink" href="#virtual-environment" title="Permalink to this headline">¶</a></h2>
+<span id="install-virt"></span><h2>Virtual environment<a class="headerlink" href="#virtual-environment" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="using-pyvenv">
 <h3>Using pyvenv<a class="headerlink" href="#using-pyvenv" title="Permalink to this headline">¶</a></h3>
 <p>The following commands should successfully create a virtual environment and
@@ -157,9 +162,9 @@ pyvenv <span class="nv">$HOME</span>/gwip_pyvenv
 <span class="nb">source</span> <span class="nv">$HOME</span>/gwip_pyvenv/bin/activate
 </pre></div>
 </div>
-<p>Then, install the package (and all its dependencies) using the following
-command:</p>
-<div class="highlight-bash"><div class="highlight"><pre>pip install <span class="nv">$HOME</span>/gwip
+<p>Then, install the <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> package (and all its dependencies) using the
+following command:</p>
+<div class="highlight-bash"><div class="highlight"><pre>pip install gwip
 </pre></div>
 </div>
 <p>If required, the optional dependencies can be installed using the following
@@ -167,6 +172,8 @@ command:</p>
 <div class="highlight-bash"><div class="highlight"><pre>pip install statsmodels
 pip install lifelines
 pip install biopython
+pip install pyfaidx
+pip install matplotlib
 </pre></div>
 </div>
 </div>
@@ -186,21 +193,19 @@ bash miniconda.sh -b -p <span class="nv">$HOME</span>/miniconda
 <span class="nb">source</span> <span class="nv">$HOME</span>/miniconda/bin/activate gwip_pyvenv
 </pre></div>
 </div>
-<p>It is recommended to install the dependencies using <code class="docutils literal"><span class="pre">conda</span></code> instead of
-<code class="docutils literal"><span class="pre">pip</span></code> when available (before installing <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>).</p>
-<div class="highlight-bash"><div class="highlight"><pre>conda install numpy
-conda install jinja2
-conda install pandas
-conda install matplotlib
-conda install setuptools
-conda install statsmodels
-conda install biopython
+<p>Then, install the <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> package (and all its dependencies) using the
+following command:</p>
+<div class="highlight-bash"><div class="highlight"><pre>conda install gwip -c http://statgen.org/wp-content/uploads/Softwares/gwip
 </pre></div>
 </div>
-<p>Finally, using <code class="docutils literal"><span class="pre">pip</span></code>, install the missing dependencies and <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>:</p>
-<div class="highlight-bash"><div class="highlight"><pre>pip install --no-deps pyfaidx
+<p>If required, the optional dependencies can be installed using the following
+command:</p>
+<div class="highlight-bash"><div class="highlight"><pre>conda install -y scipy
+conda install -y statsmodels
+conda install -y biopython
+conda install -y matplotlib
+pip install --no-deps pyfaidx
 pip install --no-deps lifelines
-pip install --no-deps <span class="nv">$HOME</span>/gwip
 </pre></div>
 </div>
 </div>
@@ -217,8 +222,8 @@ command to activate it.</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="id1">
-<h4>Miniconda<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h4>
+<div class="section" id="miniconda">
+<h4>Miniconda<a class="headerlink" href="#miniconda" title="Permalink to this headline">¶</a></h4>
 <p>If the module was installed into a <em>Miniconda</em> environment, perform the
 following command to activate it.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nb">source</span> <span class="nv">$HOME</span>/miniconda/bin/activate gwip_pyvenv
@@ -228,17 +233,35 @@ following command to activate it.</p>
 </div>
 </div>
 <div class="section" id="testing-the-installation">
-<h2>Testing the installation<a class="headerlink" href="#testing-the-installation" title="Permalink to this headline">¶</a></h2>
+<span id="install-test"></span><h2>Testing the installation<a class="headerlink" href="#testing-the-installation" title="Permalink to this headline">¶</a></h2>
 <p>To test the installation, make sure that the virtual environment is activated.
 Then, launch python and use the following commands:</p>
 <div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">gwip</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">gwip</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
-<span class="go">.....................ss.ss........................ss...s.s.........</span>
+<span class="go">......................ss.ss.......................ss...ss...s.s.........</span>
 <span class="go">----------------------------------------------------------------------</span>
-<span class="go">Ran 67 tests in 76.401s</span>
+<span class="go">Ran 72 tests in 107.268s</span>
 
-<span class="go">OK (skipped=8)</span>
+<span class="go">OK (skipped=10)</span>
 </pre></div>
+</div>
+</div>
+<div class="section" id="updating-the-package">
+<span id="install-update"></span><h2>Updating the package<a class="headerlink" href="#updating-the-package" title="Permalink to this headline">¶</a></h2>
+<p>If there is a new <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> release, perform one of the following command
+(depending of the installation method). Don&#8217;t forget to first activate the
+python virtual environment.</p>
+<div class="section" id="id1">
+<h3>Pyvenv<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre>pip install -U gwip
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h3>Miniconda<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre>conda update gwip -c http://statgen.org/wp-content/uploads/Softwares/gwip
+</pre></div>
+</div>
 </div>
 </div>
 </div>
@@ -264,7 +287,7 @@ Then, launch python and use the following commands:</p>
         <li class="right" >
           <a href="index.html" title="Genome-Wide Imputation Pipeline"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">gwip 0.1 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">gwip 1.0.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

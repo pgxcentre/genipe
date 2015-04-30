@@ -229,25 +229,25 @@ in the console:
                             [--maf FLOAT] [--covar NAME] [--missing-value NAME]
                             [--sample-column NAME] [--interaction NAME]
                             --time-to-event NAME --event NAME
-   
+
    Performs a survival regression on imputed data using Cox's proportional hazard
-   model. This script is part of the 'gwip' package, version 0.1).
-   
+   model. This script is part of the 'gwip' package, version 1.0.0).
+
    optional arguments:
      -h, --help            show this help message and exit
      -v, --version         show program's version number and exit
      --debug               set the logging level to debug
-   
+
    Input Files:
      --impute2 FILE        The output from IMPUTE2.
      --sample FILE         The sample file (the order should be the same as in
                            the IMPUTE2 files).
      --pheno FILE          The file containing phenotypes and co variables.
      --extract-sites FILE  A list of sites to extract for analysis (optional).
-   
+
    Output Options:
      --out FILE            The prefix for the output files. [imputed_stats]
-   
+
    General Options:
      --nb-process INT      The number of process to use. [1]
      --nb-lines INT        The number of line to read at a time. [1000]
@@ -259,7 +259,7 @@ in the console:
      --gender-column NAME  The name of the gender column (use to exclude samples
                            with unknown gender (i.e. not 1, male, or 2, female).
                            If gender not available, use 'None'. [Gender]
-   
+
    Dosage Options:
      --scale INT           Scale dosage so that values are in [0, n] (possible
                            values are 1 (no scaling) or 2). [2]
@@ -267,7 +267,7 @@ in the console:
                            considered. [>=0.9]
      --maf FLOAT           Minor allele frequency threshold for which marker will
                            be skipped. [<0.01]
-   
+
    Phenotype Options:
      --covar NAME          The co variable names (in the phenotype file),
                            separated by coma.
@@ -276,7 +276,7 @@ in the console:
                            file). [sample_id]
      --interaction NAME    Add an interaction between the genotype and this
                            variable.
-   
+
    Cox's Proportional Hazard Model Options:
      --time-to-event NAME  The time to event variable (in the pheno file).
      --event NAME          The event variable (1 if observed, 0 if not observed)

@@ -236,7 +236,7 @@ analysis in the console:
                             [--rate FLOAT]
 
    Extract imputed markers located in a specific genomic region. This script is
-   part of the 'gwip' package, version 0.1).
+   part of the 'gwip' package, version 1.0.0).
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -256,7 +256,7 @@ analysis in the console:
                            between 0 and 2 by sample), or 'calls' for hard calls.
                            ['impute2']
      --prob FLOAT          The probability threshold used when creating a file in
-                           the dosage or call format.
+                           the dosage or call format. [0.9]
 
    Extraction Options:
      --extract FILE        File containing marker names to extract.
