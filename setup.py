@@ -4,19 +4,22 @@
 #   - python setup.py sdist --format bztar
 #   - python setup.py sdist --format gztar
 #   - python setup.py sdist --format zip
+#   - python setup.py bdist_wheel
 
 # How to build for conda
 #   - python setup.py bdist_conda
-#   - convert -p all .../gwip-0.1-py34_0.tar.bz2 -o dist
+#   - conda convert -p all .../gwip-0.1-py34_0.tar.bz2 -o dist
+#   - cd dist && conda index win-* osx-64 linux-*
 
 
 import os
 from setuptools import setup
 
 
-MAJOR = 0
-MINOR = 1
-VERSION = "{}.{}".format(MAJOR, MINOR)
+MAJOR = 1
+MINOR = 0
+MICRO = 0
+VERSION = "{}.{}.{}".format(MAJOR, MINOR, MICRO)
 
 
 def write_version_file(fn=None):
@@ -43,10 +46,17 @@ def setup_package():
     setup(
         name="gwip",
         version=VERSION,
-        description="PGx Genome-Wide Imputation Pipeline.",
+        description="An automatic genome-wide imputation pipeline.",
+        long_description=("This package provides tools to automatically "
+                          "perform a genome-wide imputation analysis, "
+                          "including the different imputation steps using "
+                          "well known softwares, as well as downstream "
+                          "statistical analysis. It also provides an "
+                          "automatic report (using LaTeX), showing different "
+                          "quality metrics about the imputation process."),
         author="Louis-Philippe Lemieux Perreault",
         author_email="louis-philippe.lemieux.perreault@statgen.org",
-        url="http://www.statgen.org",
+        url="https://github.com/pgxcentre/gwip",
         license="CC BY-NC 4.0",
         entry_points={
             "console_scripts": [
@@ -67,9 +77,17 @@ def setup_package():
                       "gwip.tests": ["data/*"],
                       "gwip": ["script_templates/*"]},
         test_suite="gwip.tests.test_suite",
-        classifiers=["Operating System :: Linux",
+        classifiers=["Development Status :: 5 - Production/Stable",
+                     "Intended Audience :: Science/Research",
+                     "License :: Free for non-commercial use",
+                     "Operating System :: Unix",
+                     "Operating System :: POSIX :: Linux",
+                     "Operating System :: MacOS :: MacOS X",
                      "Programming Language :: Python",
-                     "Programming Language :: Python :: 3", ],
+                     "Programming Language :: Python :: 3.3",
+                     "Programming Language :: Python :: 3.4",
+                     "Topic :: Scientific/Engineering :: Bio-Informatics"],
+        keywords="bioinformatics imputation pipeline analysis",
     )
 
     return
