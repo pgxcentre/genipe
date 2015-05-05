@@ -71,10 +71,11 @@ HAS_SKAT = _has_skat() if HAS_R else False
 
 
 # An IMPUTE2 row to process
-_Row = namedtuple("_Row", ("row", "samples", "pheno", "pheno_name", "formula",
-                           "time_to_event", "event", "inter_c", "is_chrx",
-                           "gender_c", "del_g", "scale", "maf_t", "prob_t",
-                           "analysis_type", "number_to_print"))
+_Row = namedtuple("_Row", ("row", "samples", "pheno", "pheno_name",
+                           "categorical", "groups", "formula", "time_to_event",
+                           "event", "inter_c", "is_chrx", "gender_c", "del_g",
+                           "scale", "maf_t", "prob_t", "analysis_type",
+                           "number_to_print"))
 
 # The Cox's regression required values
 _COX_REQ_COLS = ["coef", "se(coef)", "lower 0.95", "upper 0.95", "z", "p"]
@@ -203,6 +204,8 @@ def read_phenotype(i_filename, opts):
     required_columns = opts.covar.copy()
     if opts.analysis_type == "cox":
         required_columns.extend([opts.tte, opts.event])
+    elif opts.analysis_type == "mixedlm":
+        required_columns.extend([opts.pheno_name, opts.groups])
     else:
         required_columns.append(opts.pheno_name)
 
@@ -385,7 +388,7 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
         print("", *samples.index, sep=",", file=genotype_files[set_id])
 
     # The markers of interest are the markers we want to include in the
-    # analysis. Concretly they are the markers that were included in the snp
+    # analysis. Concretely, they are the markers that were included in the snp
     # sets. If a list of markers to extract is provided by the user, we also
     # look at this to filter ou undesired markers.
     #
@@ -700,6 +703,8 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
             phenotype=options.pheno_name,
             covars=options.covar,
             interaction=options.interaction,
+            gender_c=options.gender_column,
+            categorical=options.categorical,
         )
         logging.info("Using: {}".format(formula))
 
@@ -745,6 +750,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
                 samples=samples,
                 pheno=phenotypes,
                 pheno_name=vars(options).get("pheno_name", None),
+                groups=vars(options).get("groups", None),
                 formula=formula,
                 time_to_event=vars(options).get("tte", None),
                 event=vars(options).get("event", None),
@@ -757,6 +763,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
                 prob_t=options.prob,
                 analysis_type=options.analysis_type,
                 number_to_print=len(header),
+                categorical=options.categorical,
             )
 
             # Is there more than one process
@@ -893,16 +900,31 @@ def process_impute2_site(site_info):
         unwanted_columns.append(site_info.gender_c)
     data = data.drop(unwanted_columns, axis=1)
 
+    # The groups column (for mixedlm)
+    groups_column = None
+    if site_info.analysis_type == "mixedlm":
+        groups_column = data[site_info.groups]
+
     # The column to get the result from
     result_from_column = "_GenoD"
     if site_info.inter_c is not None:
-        result_from_column = "_GenoD:" + site_info.inter_c
+        if ((site_info.inter_c == site_info.gender_c) or
+                (site_info.inter_c in site_info.categorical)):
+            result_from_column = "_GenoD:C({})[T.{}]".format(
+                site_info.inter_c,
+                sorted(data[site_info.inter_c].unique())[-1],
+            )
+        else:
+            result_from_column = "_GenoD:" + site_info.inter_c
+
+        # Cox is the _Inter column
         if site_info.analysis_type == "cox":
             result_from_column = "_Inter"
 
     # Fitting
     results = _fit_map[site_info.analysis_type](
         data=data,
+        groups=groups_column,
         time_to_event=site_info.time_to_event,
         event=site_info.event,
         formula=site_info.formula,
@@ -931,7 +953,7 @@ def samples_with_hetero_calls(data, hetero_c):
     return data[data.idxmax(axis=1) == hetero_c].index
 
 
-def get_formula(phenotype, covars, interaction):
+def get_formula(phenotype, covars, interaction, gender_c, categorical):
     """Creates the linear/logistic regression formula (for statsmodel).
 
     Args:
@@ -948,16 +970,25 @@ def get_formula(phenotype, covars, interaction):
         might be empty (if no co variables are necessary). The interaction
         column can be set to ``None`` if there is no interaction.
 
+    Note
+    ----
+        The gender column should be categorical (hence, the formula requires
+        the gender to be included into ``C()``, *e.g.* ``C(Gender)``).
+
     """
     # The phenotype and genetics
     formula = "{} ~ _GenoD".format(phenotype)
 
     # Are there any covars?
-    if len(covars) > 0:
-        formula += " + " + " + ".join(covars)
+    for covar in covars:
+        if (covar == gender_c) or (covar in categorical):
+            covar = "C({})".format(covar)
+        formula += " + " + covar
 
     # Is there an interaction term?
     if interaction is not None:
+        if (interaction == gender_c) or (interaction in categorical):
+            interaction = "C({})".format(interaction)
         formula += " + _GenoD*{}".format(interaction)
 
     return formula
@@ -997,7 +1028,7 @@ def fit_linear(data, formula, result_col, **kwargs):
         list: the results from the linear regression
 
     """
-    return _get_result_from_linear_logistic(
+    return _get_result_from_linear_logistic_mixedlm(
         smf.ols(formula=formula, data=data).fit(),
         result_col=result_col,
     )
@@ -1015,15 +1046,42 @@ def fit_logistic(data, formula, result_col, **kwargs):
         list: the results from the logistic regression
 
     """
-    return _get_result_from_linear_logistic(
+    return _get_result_from_linear_logistic_mixedlm(
         smf.glm(formula=formula, data=data,
                 family=sm.families.Binomial()).fit(),
         result_col=result_col,
     )
 
 
-def _get_result_from_linear_logistic(fit_result, result_col):
-    """Gets results from either a linear or logistic regression.
+def fit_mixedlm(data, formula, groups, result_col, **kwargs):
+    """Fit a linear mixed effects model to the data.
+
+    Args:
+        data (pandas.DataFrame): the data to analyse
+        formula (str): the formula for the linear mixed effects model
+        groups (str): the column containing the groups
+        result_col (str): the column that will contain the results
+
+    Returns:
+        list: the results from the linear mixed effects model
+
+    """
+    return _get_result_from_linear_logistic_mixedlm(
+        smf.mixedlm(formula=formula, data=data, groups=groups).fit(),
+        result_col=result_col,
+    )
+
+
+_fit_map = {
+    "cox": fit_cox,
+    "linear": fit_linear,
+    "logistic": fit_logistic,
+    "mixedlm": fit_mixedlm,
+}
+
+
+def _get_result_from_linear_logistic_mixedlm(fit_result, result_col):
+    """Gets results from either a linear, a logistic or a mixedlm regression.
 
     Args:
         fit_result (RegressionResults): the results from the regression
@@ -1045,9 +1103,6 @@ def _get_result_from_linear_logistic(fit_result, result_col):
     ]
 
 
-_fit_map = {"cox": fit_cox, "linear": fit_linear, "logistic": fit_logistic}
-
-
 def check_args(args):
     """Checks the arguments and options.
 
@@ -1064,7 +1119,7 @@ def check_args(args):
         if not HAS_LIFELINES:
             raise ProgramError("missing optional module: lifelines")
 
-    elif args.analysis_type in {"linear", "logistic"}:
+    elif args.analysis_type in {"linear", "logistic", "mixedlm"}:
         if not HAS_STATSMODELS:
             raise ProgramError("missing optional module: statsmodels")
 
@@ -1126,6 +1181,8 @@ def check_args(args):
     variables_to_check = None
     if args.analysis_type == "cox":
         variables_to_check = {args.tte, args.event}
+    elif args.analysis_type == "mixedlm":
+        variables_to_check = {args.pheno_name, args.groups}
     else:
         variables_to_check = {args.pheno_name}
     for variable in variables_to_check:
@@ -1135,6 +1192,21 @@ def check_args(args):
                 variable,
                 args.analysis_type,
             ))
+
+    # The categorical variables
+    categorical_set = set()
+    if args.categorical != "":
+        categorical_set = set(args.categorical.split(","))
+    for name in categorical_set:
+        if name not in header:
+            raise ProgramError("{}: {}: missing categorical value".format(
+                args.pheno,
+                name,
+            ))
+        if args.pheno_name in categorical_set:
+            raise ProgramError("{}: {}: should not be in categorical "
+                               "list".format(args.pheno, args.pheno_name))
+    args.categorical = categorical_set
 
     # Checking the co-variables
     covar_list = []
@@ -1174,6 +1246,9 @@ def check_args(args):
                     args.interaction,
                 )
             )
+        if args.interaction in args.categorical:
+            logging.warning("{}: interaction term is categorical: the last "
+                            "category will used in the rsults")
 
     return True
 
@@ -1331,6 +1406,15 @@ def parse_args(parser, args=None):
              "coma.",
     )
     group.add_argument(
+        "--categorical",
+        type=str,
+        metavar="NAME",
+        default="",
+        help="The name of the variables that are categorical (note that the "
+             "gender is always categorical). The variables are separated by "
+             "coma.",
+    )
+    group.add_argument(
         "--missing-value",
         type=str,
         metavar="NAME",
@@ -1427,6 +1511,35 @@ def parse_args(parser, args=None):
         metavar="NAME",
         required=True,
         help="The phenotype.",
+    )
+
+    # The mixed effect model parser
+    mixedlm_parser = subparsers.add_parser(
+        "mixedlm",
+        help="Linear mixed effect model (random intercept).",
+        description="Performs a linear mixed effects regression on imputed "
+                    "data using a random intercept for each group. This "
+                    "script is part of the 'gwip' package, version "
+                    "{}).".format(__version__),
+        parents=[p_parser],
+    )
+
+    # The phenotype options for the mixed effect model
+    group = mixedlm_parser.add_argument_group("Linear Mixed Effects Options")
+    group.add_argument(
+        "--pheno-name",
+        type=str,
+        metavar="NAME",
+        required=True,
+        help="The phenotype.",
+    )
+
+    group.add_argument(
+        "--groups",
+        type=str,
+        metavar="NAME",
+        required=True,
+        help="The variable containing the groups."
     )
 
     # The SKAT parser.

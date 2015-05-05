@@ -17,7 +17,7 @@ import pandas as pd
 from pkg_resources import resource_filename
 
 from ..tools.imputed_stats import *
-from ..tools.imputed_stats import _get_result_from_linear_logistic
+from ..tools.imputed_stats import _get_result_from_linear_logistic_mixedlm
 
 if HAS_STATSMODELS:
     # patsy is installed only if statsmodels is
@@ -552,32 +552,59 @@ class TestImputedStats(unittest.TestCase):
         """Tests the 'get_formula' function."""
         # Testing with only one phenotype (no covars, no interaction)
         expected = "pheno ~ _GenoD"
-        observed = get_formula("pheno", [], None)
+        observed = get_formula("pheno", [], None, "None", set())
         self.assertEqual(expected, observed)
 
         # Testing with one covar, no interaction
         expected = "pheno ~ _GenoD + C1"
-        observed = get_formula("pheno", ["C1"], None)
+        observed = get_formula("pheno", ["C1"], None, "None", set())
         self.assertEqual(expected, observed)
 
         # Testing with more than one covar, no interaction
         expected = "pheno ~ _GenoD + C1 + C2 + C3"
-        observed = get_formula("pheno", ["C1", "C2", "C3"], None)
+        observed = get_formula("pheno", ["C1", "C2", "C3"], None, "None",
+                               set())
+        self.assertEqual(expected, observed)
+
+        # Testing with more than one covar (with gender), no interaction
+        expected = "pheno ~ _GenoD + C1 + C2 + C3 + C(Gender)"
+        observed = get_formula("pheno", ["C1", "C2", "C3", "Gender"], None,
+                               "Gender", set())
         self.assertEqual(expected, observed)
 
         # Testing with without covar, but with interaction
         expected = "pheno ~ _GenoD + _GenoD*inter"
-        observed = get_formula("pheno", [], "inter")
+        observed = get_formula("pheno", [], "inter", "None", set())
         self.assertEqual(expected, observed)
 
         # Testing with one covar and interaction
         expected = "pheno ~ _GenoD + inter + _GenoD*inter"
-        observed = get_formula("pheno", ["inter"], "inter")
+        observed = get_formula("pheno", ["inter"], "inter", "None", set())
         self.assertEqual(expected, observed)
 
         # Testing with more than one covar and interaction
         expected = "pheno ~ _GenoD + C1 + C2 + C3 + inter + _GenoD*inter"
-        observed = get_formula("pheno", ["C1", "C2", "C3", "inter"], "inter")
+        observed = get_formula("pheno", ["C1", "C2", "C3", "inter"], "inter",
+                               "None", set())
+        self.assertEqual(expected, observed)
+
+        # Testing with more than one covar and interaction and Gender
+        expected = ("pheno ~ _GenoD + C1 + C2 + C3 + C(Gender) + "
+                    "_GenoD*C(Gender)")
+        observed = get_formula("pheno", ["C1", "C2", "C3", "Gender"], "Gender",
+                               "Gender", set())
+        self.assertEqual(expected, observed)
+
+        # Testing with categorical values
+        expected = ("pheno ~ _GenoD + C1 + C2 + C3 + C(Treatment) + "
+                    "C(Population) + C(Gender) + _GenoD*C(Treatment)")
+        observed = get_formula(
+            "pheno",
+            ["C1", "C2", "C3", "Treatment", "Population", "Gender"],
+            "Treatment",
+            "Gender",
+            {"Treatment", "Population"},
+        )
         self.assertEqual(expected, observed)
 
     @unittest.skip("Test not implemented")
@@ -774,10 +801,12 @@ class TestImputedStatsCox(unittest.TestCase):
         )
 
         # Executing the tool
-        main(args=options)
-
-        # Cleaning the handlers
-        clean_logging_handlers()
+        try:
+            main(args=options)
+        except:
+            raise
+        finally:
+            clean_logging_handlers()
 
         # Making sure the output file exists
         self.assertTrue(os.path.isfile(o_prefix + ".cox.dosage"))
@@ -886,10 +915,12 @@ class TestImputedStatsCox(unittest.TestCase):
         )
 
         # Executing the tool
-        main(args=options)
-
-        # Cleaning the handlers
-        clean_logging_handlers()
+        try:
+            main(args=options)
+        except:
+            raise
+        finally:
+            clean_logging_handlers()
 
         # Making sure the output file exists
         self.assertTrue(os.path.isfile(o_prefix + ".cox.dosage"))
@@ -996,10 +1027,12 @@ class TestImputedStatsCox(unittest.TestCase):
         )
 
         # Executing the tool
-        main(args=options)
-
-        # Cleaning the handlers
-        clean_logging_handlers()
+        try:
+            main(args=options)
+        except:
+            raise
+        finally:
+            clean_logging_handlers()
 
         # Making sure the output file exists
         self.assertTrue(os.path.isfile(o_prefix + ".cox.dosage"))
@@ -1285,10 +1318,12 @@ class TestImputedStatsLinear(unittest.TestCase):
         )
 
         # Executing the tool
-        main(args=options)
-
-        # Cleaning the handlers
-        clean_logging_handlers()
+        try:
+            main(args=options)
+        except:
+            raise
+        finally:
+            clean_logging_handlers()
 
         # Making sure the output file exists
         self.assertTrue(os.path.isfile(o_prefix + ".linear.dosage"))
@@ -1383,10 +1418,12 @@ class TestImputedStatsLinear(unittest.TestCase):
         )
 
         # Executing the tool
-        main(args=options)
-
-        # Cleaning the handlers
-        clean_logging_handlers()
+        try:
+            main(args=options)
+        except:
+            raise
+        finally:
+            clean_logging_handlers()
 
         # Making sure the output file exists
         self.assertTrue(os.path.isfile(o_prefix + ".linear.dosage"))
@@ -1479,10 +1516,12 @@ class TestImputedStatsLinear(unittest.TestCase):
         )
 
         # Executing the tool
-        main(args=options)
-
-        # Cleaning the handlers
-        clean_logging_handlers()
+        try:
+            main(args=options)
+        except:
+            raise
+        finally:
+            clean_logging_handlers()
 
         # Making sure the output file exists
         self.assertTrue(os.path.isfile(o_prefix + ".linear.dosage"))
@@ -1748,10 +1787,12 @@ class TestImputedStatsLogistic(unittest.TestCase):
         )
 
         # Executing the tool
-        main(args=options)
-
-        # Cleaning the handlers
-        clean_logging_handlers()
+        try:
+            main(args=options)
+        except:
+            raise
+        finally:
+            clean_logging_handlers()
 
         # Making sure the output file exists
         self.assertTrue(os.path.isfile(o_prefix + ".logistic.dosage"))
@@ -1861,10 +1902,12 @@ class TestImputedStatsLogistic(unittest.TestCase):
         )
 
         # Executing the tool
-        main(args=options)
-
-        # Cleaning the handlers
-        clean_logging_handlers()
+        try:
+            main(args=options)
+        except:
+            raise
+        finally:
+            clean_logging_handlers()
 
         # Making sure the output file exists
         self.assertTrue(os.path.isfile(o_prefix + ".logistic.dosage"))
@@ -1972,10 +2015,12 @@ class TestImputedStatsLogistic(unittest.TestCase):
         )
 
         # Executing the tool
-        main(args=options)
-
-        # Cleaning the handlers
-        clean_logging_handlers()
+        try:
+            main(args=options)
+        except:
+            raise
+        finally:
+            clean_logging_handlers()
 
         # Making sure the output file exists
         self.assertTrue(os.path.isfile(o_prefix + ".logistic.dosage"))
@@ -2091,10 +2136,12 @@ class TestImputedStatsSkat(unittest.TestCase):
         ]
 
         # Executing the tool
-        main(args=args)
-
-        # Cleaning the handlers
-        clean_logging_handlers()
+        try:
+            main(args=args)
+        except:
+            raise
+        finally:
+            clean_logging_handlers()
 
         # The observed values
         results_filename = o_prefix + ".skat.dosage"
@@ -2126,10 +2173,12 @@ class TestImputedStatsSkat(unittest.TestCase):
         ]
 
         # Executing the tool
-        main(args=args)
-
-        # Cleaning the handlers
-        clean_logging_handlers()
+        try:
+            main(args=args)
+        except:
+            raise
+        finally:
+            clean_logging_handlers()
 
         # The observed values
         results_filename = o_prefix + ".skat.dosage"
@@ -2161,10 +2210,12 @@ class TestImputedStatsSkat(unittest.TestCase):
         ]
 
         # Executing the tool
-        main(args=args)
-
-        # Cleaning the handlers
-        clean_logging_handlers()
+        try:
+            main(args=args)
+        except:
+            raise
+        finally:
+            clean_logging_handlers()
 
         # The observed values
         results_filename = o_prefix + ".skat.dosage"
@@ -2197,10 +2248,12 @@ class TestImputedStatsSkat(unittest.TestCase):
         ]
 
         # Executing the tool
-        main(args=args)
-
-        # Cleaning the handlers
-        clean_logging_handlers()
+        try:
+            main(args=args)
+        except:
+            raise
+        finally:
+            clean_logging_handlers()
 
         # The observed values
         results_filename = o_prefix + ".skat.dosage"
