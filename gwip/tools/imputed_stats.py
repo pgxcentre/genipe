@@ -72,9 +72,9 @@ HAS_SKAT = _has_skat() if HAS_R else False
 
 # An IMPUTE2 row to process
 _Row = namedtuple("_Row", ("row", "samples", "pheno", "pheno_name",
-                           "categorical", "groups", "formula", "time_to_event",
-                           "event", "inter_c", "is_chrx", "gender_c", "del_g",
-                           "scale", "maf_t", "prob_t", "analysis_type",
+                           "categorical", "formula", "time_to_event", "event",
+                           "inter_c", "is_chrx", "gender_c", "del_g", "scale",
+                           "maf_t", "prob_t", "analysis_type",
                            "number_to_print"))
 
 # The Cox's regression required values
@@ -124,16 +124,30 @@ def main(args=None):
 
         # Reading the phenotype file
         logging.info("Reading phenotype file")
-        phenotypes, remove_gender = read_phenotype(args.pheno, args)
+        phenotypes, remove_gender = read_phenotype(
+            args.pheno,
+            args,
+            check_duplicated=args.analysis_type != "mixedlm",
+        )
+        logging.info("  - {:,d} samples with phenotype".format(
+            len(phenotypes.index.unique()),
+        ))
 
         # Reading the sample file
         logging.info("Reading the sample file")
         samples = read_samples(args.sample)
+        logging.info("  - {:,d} samples with imputation data".format(
+            len(samples),
+        ))
 
         # Reading the sites to extract (if required)
         sites_to_extract = None
         if args.extract_sites is not None:
+            logging.info("Reading the sites to extract for analysis")
             sites_to_extract = read_sites_to_extract(args.extract_sites)
+            logging.info("  - {:,d} sites to extract".format(
+                len(sites_to_extract),
+            ))
 
         # Computing the statistics
         if args.analysis_type != "skat":
@@ -157,6 +171,8 @@ def main(args=None):
                 args=args,
             )
 
+        logging.info("Analysis completed")
+
     # Catching the Ctrl^C
     except KeyboardInterrupt:
         logging.info("Cancelled by user")
@@ -176,12 +192,13 @@ def main(args=None):
             logging_fh.close()
 
 
-def read_phenotype(i_filename, opts):
+def read_phenotype(i_filename, opts, check_duplicated=True):
     """Reads the phenotype file.
 
     Args:
         i_filename (str): the name of the input file
         opts (argparse.Namespace): the options
+        check_duplicated (bool): whether or not to check for duplicated samples
 
     Returns:
         pandas.DataFrame: the phenotypes
@@ -198,14 +215,13 @@ def read_phenotype(i_filename, opts):
     # Reading the data (and setting the index)
     pheno = pd.read_csv(i_filename, sep="\t", na_values=opts.missing_value)
     pheno[opts.sample_column] = pheno[opts.sample_column].astype(str)
-    pheno = pheno.set_index(opts.sample_column, verify_integrity=True)
+    pheno = pheno.set_index(opts.sample_column,
+                            verify_integrity=check_duplicated)
 
     # Finding the required column
     required_columns = opts.covar.copy()
     if opts.analysis_type == "cox":
         required_columns.extend([opts.tte, opts.event])
-    elif opts.analysis_type == "mixedlm":
-        required_columns.extend([opts.pheno_name, opts.groups])
     else:
         required_columns.append(opts.pheno_name)
 
@@ -706,7 +722,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
             gender_c=options.gender_column,
             categorical=options.categorical,
         )
-        logging.info("Using: {}".format(formula))
+        logging.info("{}: '{}'".format(options.analysis_type, formula))
 
     # Reading the IMPUTE2 file one line (site) at a time, creating a subprocess
     # if required
@@ -737,6 +753,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
         sites_to_process = []
 
         # Reading the file
+        nb_processed = 0
         for line in i_file:
             row = line.decode().rstrip("\r\n").split(" ")
 
@@ -750,7 +767,6 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
                 samples=samples,
                 pheno=phenotypes,
                 pheno_name=vars(options).get("pheno_name", None),
-                groups=vars(options).get("groups", None),
                 formula=formula,
                 time_to_event=vars(options).get("tte", None),
                 event=vars(options).get("event", None),
@@ -776,6 +792,12 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
                     for result in pool.map(process_impute2_site,
                                            sites_to_process):
                         print(*result, sep="\t", file=o_file)
+
+                    # Logging
+                    nb_processed += len(sites_to_process)
+                    logging.info("Processed {:,d} lines".format(nb_processed))
+
+                    # Resetting the sites to process
                     sites_to_process = []
 
             else:
@@ -900,11 +922,6 @@ def process_impute2_site(site_info):
         unwanted_columns.append(site_info.gender_c)
     data = data.drop(unwanted_columns, axis=1)
 
-    # The groups column (for mixedlm)
-    groups_column = None
-    if site_info.analysis_type == "mixedlm":
-        groups_column = data[site_info.groups]
-
     # The column to get the result from
     result_from_column = "_GenoD"
     if site_info.inter_c is not None:
@@ -924,7 +941,7 @@ def process_impute2_site(site_info):
     # Fitting
     results = _fit_map[site_info.analysis_type](
         data=data,
-        groups=groups_column,
+        groups=data.index.values,
         time_to_event=site_info.time_to_event,
         event=site_info.event,
         formula=site_info.formula,
@@ -1181,8 +1198,6 @@ def check_args(args):
     variables_to_check = None
     if args.analysis_type == "cox":
         variables_to_check = {args.tte, args.event}
-    elif args.analysis_type == "mixedlm":
-        variables_to_check = {args.pheno_name, args.groups}
     else:
         variables_to_check = {args.pheno_name}
     for variable in variables_to_check:
@@ -1532,14 +1547,6 @@ def parse_args(parser, args=None):
         metavar="NAME",
         required=True,
         help="The phenotype.",
-    )
-
-    group.add_argument(
-        "--groups",
-        type=str,
-        metavar="NAME",
-        required=True,
-        help="The variable containing the groups."
     )
 
     # The SKAT parser.
