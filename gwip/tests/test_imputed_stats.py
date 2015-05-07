@@ -2246,6 +2246,49 @@ class TestImputedStatsMixedLM(unittest.TestCase):
                 result_col="snp4",
             )
 
+    def test_fit_mixedlm_interaction(self):
+        """Tests the 'fit_mixedlm' function with interaction."""
+        # Reading the data
+        data_filename = resource_filename(
+            __name__,
+            "data/regression_mixedlm.txt.bz2",
+        )
+
+        # This dataset contains 3 markers + 5 covariables
+        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
+
+        # The formula for the first marker
+        formula = "y ~ snp1 + C1 + C2 + C3 + age + C(gender) + snp1*C(gender)"
+        columns_to_keep = ["y", "snp1", "C1", "C2", "C3", "age", "gender"]
+
+        # The expected results for the first marker (according to R)
+        expected_coef = -0.04619683922092099
+        expected_se = 0.08342819867401344
+        expected_min_ci = -0.20968434904114919
+        expected_max_ci = 0.11729067060054199
+        expected_z = -0.5537317112818183
+        expected_p = 0.5797624694538319190
+
+        # The observed results
+        observed = fit_mixedlm(
+            data=data[columns_to_keep],
+            formula=formula,
+            groups=data.SampleID.values,
+            result_col="snp1:C(gender)[T.2]",
+        )
+        self.assertEqual(6, len(observed))
+        observed_coef, observed_se, observed_min_ci, observed_max_ci, \
+            observed_z, observed_p = observed
+
+        # Comparing the results
+        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_se, observed_se, places=10)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
+        self.assertAlmostEqual(expected_z, observed_z, places=10)
+        self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                               places=10)
+
 
 @unittest.skipIf(not HAS_SKAT, "SKAT is not installed")
 class TestImputedStatsSkat(unittest.TestCase):
