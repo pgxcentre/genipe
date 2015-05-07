@@ -870,34 +870,42 @@ def process_impute2_site(site_info):
         get_good_probs(data[dosage_columns].values, site_info.prob_t)
     ]
 
+    # Keeping only the good markers
+    samples = samples.loc[data.index.unique(), dosage_columns]
+    if site_info.analysis_type == "mixedlm":
+        samples["_gender"] = data[site_info.gender_c].groupby(level=0).last()
+    else:
+        samples["_gender"] = data[site_info.gender_c]
+
     # Checking gender if required
     gender = None
     if site_info.is_chrx:
         # We want to exclude males with heterozygous calls for the rest of the
         # analysis
         invalid_rows = samples_with_hetero_calls(
-            data.loc[data[site_info.gender_c] == 1, dosage_columns],
+            samples.loc[samples._gender == 1, dosage_columns],
             dosage_columns[1]
         )
         if len(invalid_rows) > 0:
             logging.warning("There were {:,d} males with heterozygous "
                             "calls for {}".format(len(invalid_rows), name))
-            logging.debug(data.shape)
+            logging.debug(samples.shape[0])
+            samples = samples.drop(invalid_rows, axis=0)
             data = data.drop(invalid_rows, axis=0)
-            logging.debug(data.shape)
-            logging.debug(invalid_rows.isin(data.index))
+            logging.debug(samples.shape[0])
+            logging.debug(invalid_rows.isin(samples.index))
 
         # Getting the genders
-        gender = data[site_info.gender_c].values
+        gender = samples._gender.values
 
     # Computing the frequency
-    maf, minor, major = maf_from_probs(data[dosage_columns].values,
+    maf, minor, major = maf_from_probs(samples[dosage_columns].values,
                                        dosage_columns[0], dosage_columns[-1],
                                        gender, name)
 
     # What we want to print
     to_return = [chrom, pos, name, allele_encoding[major],
-                 allele_encoding[minor], maf, data.shape[0]]
+                 allele_encoding[minor], maf, samples.shape[0]]
 
     # If the marker is too rare, we continue with the rest
     if (maf == "NA") or (maf < site_info.maf_t):
