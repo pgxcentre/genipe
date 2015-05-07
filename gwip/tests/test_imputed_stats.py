@@ -11,6 +11,7 @@ import random
 import platform
 import unittest
 from tempfile import TemporaryDirectory
+from itertools import zip_longest as zip
 
 import numpy as np
 import pandas as pd
@@ -30,7 +31,7 @@ __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
 __all__ = ["TestImputedStats", "TestImputedStatsCox", "TestImputedStatsLinear",
-           "TestImputedStatsLogistic"]
+           "TestImputedStatsLogistic", "TestImputedStatsMixedLM"]
 
 
 def clean_logging_handlers():
@@ -77,45 +78,70 @@ def reverse_dosage(dosage):
 
 def create_input_files(i_filename, output_dirname, analysis_type,
                        pheno_name="y", tte="y", event="y_d",
-                       interaction=None, nb_process=None):
+                       interaction=None, nb_process=None, sample_col=None):
     """Creates input files for the imputed_stats script."""
     # Reading the data
     data = pd.read_csv(i_filename, sep="\t", compression="bz2")
 
     # Adding a sample column
-    data["sample_id"] = ["sample_{}".format(i+1) for i in range(len(data))]
+    if sample_col is None:
+        data["sample_id"] = ["sample_{}".format(i+1) for i in range(len(data))]
+        sample_col = "sample_id"
+    else:
+        assert sample_col in data.columns
 
     # Saving the phenotypes to file
     pheno_filename = os.path.join(output_dirname, "phenotypes.txt")
     data.to_csv(pheno_filename, sep="\t", index=False, na_rep="999999")
 
-    # Creating the sample file
+    # Creating the sample file (watch out for duplicated data)
+    seen_samples = {}
     sample_filename = os.path.join(output_dirname, "samples.txt")
     with open(sample_filename, "w") as o_file:
         print("ID_1 ID_2 missing father mother sex plink_pheno", file=o_file)
         print("0 0 0 D D D B", file=o_file)
-        for sample, gender in data[["sample_id", "gender"]].values:
-            print(sample, sample, "0", "0", "0", gender, "-9", file=o_file)
+        for sample, gender in data[[sample_col, "gender"]].values:
+            if sample in seen_samples:
+                assert gender == seen_samples[sample]
+                continue
 
-    # Creating the IMPUTE2 file
+            print(sample, sample, "0", "0", "0", gender, "-9", file=o_file)
+            seen_samples[sample] = gender
+
+    # Creating the IMPUTE2 file (watch out for duplicated data)
     impute2_filename = os.path.join(output_dirname, "impute2.txt")
     with open(impute2_filename, "w") as o_file:
+        seen_samples = {}
         print("22 marker_1 1 T C", end="", file=o_file)
-        for dosage in data.snp1.values:
+        for sample, dosage in data[[sample_col, "snp1"]].values:
+            if sample in seen_samples:
+                continue
+
             d1, d2, d3 = reverse_dosage(dosage)
             print("", d1, d2, d3, sep=" ", end="", file=o_file)
+            seen_samples[sample] = dosage
         print(file=o_file)
 
+        seen_samples = {}
         print("22 marker_2 2 G A", end="", file=o_file)
-        for dosage in data.snp2.values:
+        for sample, dosage in data[[sample_col, "snp2"]].values:
+            if sample in seen_samples:
+                continue
+
             d1, d2, d3 = reverse_dosage(dosage)
             print("", d1, d2, d3, sep=" ", end="", file=o_file)
+            seen_samples[sample] = dosage
         print(file=o_file)
 
+        seen_samples = {}
         print("22 marker_3 3 AT A", end="", file=o_file)
-        for dosage in data.snp3.values:
+        for sample, dosage in data[[sample_col, "snp3"]].values:
+            if sample in seen_samples:
+                continue
+
             d1, d2, d3 = reverse_dosage(dosage)
             print("", d1, d2, d3, sep=" ", end="", file=o_file)
+            seen_samples[sample] = dosage
         print(file=o_file)
 
     # The prefix of the output files
@@ -131,7 +157,7 @@ def create_input_files(i_filename, output_dirname, analysis_type,
         "--gender-column", "gender",
         "--covar", "C1,C2,C3,age,gender",
         "--missing-value", "999999",
-        "--sample-column", "sample_id",
+        "--sample-column", sample_col,
     ]
 
     # Is this Cox or linear?
@@ -2135,6 +2161,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # This dataset contains 3 markers + 5 covariables
         data = pd.read_csv(data_filename, sep="\t", compression="bz2")
+        data = data[data.gender != 0].set_index("SampleID").dropna(axis=0)
 
         # The formula for the first marker
         formula = "y ~ snp1 + C1 + C2 + C3 + age + C(gender)"
@@ -2150,9 +2177,9 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # The observed results for the first marker
         observed = fit_mixedlm(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=data[columns_to_keep],
             formula=formula,
-            groups=data.SampleID.values,
+            groups=data.index.values,
             result_col="snp1",
         )
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
@@ -2181,9 +2208,9 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # The observed results for the first marker
         observed = fit_mixedlm(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=data[columns_to_keep],
             formula=formula,
-            groups=data.SampleID.values,
+            groups=data.index.values,
             result_col="snp2",
         )
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
@@ -2212,9 +2239,9 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # The observed results for the first marker
         observed = fit_mixedlm(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=data[columns_to_keep],
             formula=formula,
-            groups=data.SampleID.values,
+            groups=data.index.values,
             result_col="snp3",
         )
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
@@ -2234,7 +2261,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             fit_mixedlm(
                 data=data[columns_to_keep].dropna(axis=0),
                 formula=formula,
-                groups=data.SampleID.values,
+                groups=data.index.values,
                 result_col="unknown",
             )
 
@@ -2242,7 +2269,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             fit_mixedlm(
                 data=data[columns_to_keep].dropna(axis=0),
                 formula=formula + " + unknown",
-                groups=data.SampleID.values,
+                groups=data.index.values,
                 result_col="snp4",
             )
 
@@ -2256,6 +2283,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # This dataset contains 3 markers + 5 covariables
         data = pd.read_csv(data_filename, sep="\t", compression="bz2")
+        data = data[data.gender != 0].set_index("SampleID").dropna(axis=0)
 
         # The formula for the first marker
         formula = "y ~ snp1 + C1 + C2 + C3 + age + C(gender) + snp1*C(gender)"
@@ -2273,7 +2301,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         observed = fit_mixedlm(
             data=data[columns_to_keep],
             formula=formula,
-            groups=data.SampleID.values,
+            groups=data.index.values,
             result_col="snp1:C(gender)[T.2]",
         )
         self.assertEqual(6, len(observed))
@@ -2288,6 +2316,118 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         self.assertAlmostEqual(expected_z, observed_z, places=10)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=10)
+
+    def test_full_fit_mixedlm(self):
+        """Tests the full pipeline for mixed effect model."""
+        # Reading the data
+        data_filename = resource_filename(
+            __name__,
+            "data/regression_mixedlm.txt.bz2",
+        )
+
+        # Creating the input files
+        o_prefix, options = create_input_files(
+            i_filename=data_filename,
+            output_dirname=self.output_dir.name,
+            analysis_type="mixedlm",
+            pheno_name="y",
+            sample_col="SampleID",
+        )
+
+        # Executing the tool
+        try:
+            main(args=options)
+        except:
+            raise
+        finally:
+            clean_logging_handlers()
+
+        # Making sure the output file exists
+        self.assertTrue(os.path.isfile(o_prefix + ".mixedlm.dosage"))
+
+        # Reading the data
+        observed = pd.read_csv(o_prefix + ".mixedlm.dosage", sep="\t")
+
+        # Checking all columns are present
+        self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
+                          "coef", "se", "lower", "upper", "z", "p"],
+                         list(observed.columns))
+
+        # Chromosomes
+        self.assertEqual([22], observed.chr.unique())
+
+        # Positions
+        self.assertEqual([1, 2, 3], list(observed.pos))
+
+        # Marker names
+        self.assertEqual(["marker_1", "marker_2", "marker_3"],
+                         list(observed.snp))
+
+        # Major alleles
+        self.assertEqual(["T", "G", "AT"], list(observed.major))
+
+        # Minor alleles
+        self.assertEqual(["C", "A", "A"], list(observed.minor))
+
+        # Minor allele frequency
+        expected = [1724 / 11526, 4605 / 11528, 1379 / 11528]
+        for expected_maf, observed_maf in zip(expected, observed.maf):
+            self.assertAlmostEqual(expected_maf, observed_maf, places=10)
+
+        # The number of samples
+        expected = [5763, 5764, 5764]
+        for expected_n, observed_n in zip(expected, observed.n):
+            self.assertEqual(expected_n, observed_n)
+
+        # The coefficients
+        expected = [0.12265168980987724, 0.007931606465841023,
+                    -0.15449981039313940]
+        places = [10, 9, 10]
+        zipped = zip(expected, observed.coef, places)
+        for expected_coef, observed_coef, place in zipped:
+            self.assertAlmostEqual(expected_coef, observed_coef, places=place)
+
+        # The standard error
+        expected = [0.041715401481444134, 0.030464140147980882,
+                    0.04583966116454336]
+        zipped = zip(expected, observed.se)
+        for expected_se, observed_se in zipped:
+            self.assertAlmostEqual(expected_se, observed_se, places=10)
+
+        # The lower CI
+        expected = [0.04090301809382547, -0.05176823980480887,
+                    -0.24433069717817782]
+        places = [4, 4, 4]
+        zipped = zip(expected, observed.lower, places)
+        for expected_min_ci, observed_min_ci, place in zipped:
+            self.assertAlmostEqual(expected_min_ci, observed_min_ci,
+                                   places=place)
+
+        # The upper CI
+        expected = [0.20440036152516114, 0.06763145273676965,
+                    -0.06466892360820460]
+        places = [4, 4, 4]
+        zipped = zip(expected, observed.upper, places)
+        for expected_max_ci, observed_max_ci, place in zipped:
+            self.assertAlmostEqual(expected_max_ci, observed_max_ci,
+                                   places=place)
+
+        # The Z statistics
+        expected = [2.9402015911182162, 0.2603587833863980,
+                    -3.3704396251655511]
+        places = [9, 8, 8]
+        zipped = zip(expected, observed.z, places)
+        for expected_z, observed_z, place in zipped:
+            self.assertAlmostEqual(expected_z, observed_z, places=place)
+
+        # The p values
+        expected = [3.279987709238652e-03, 7.945870329397586e-01,
+                    7.504834930376347e-04]
+        places = [9, 8, 8]
+        zipped = zip(expected, observed.p, places)
+        for expected_p, observed_p, place in zipped:
+            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                                   places=place)
 
 
 @unittest.skipIf(not HAS_SKAT, "SKAT is not installed")
