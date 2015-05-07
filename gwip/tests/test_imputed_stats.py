@@ -2111,6 +2111,142 @@ class TestImputedStatsLogistic(unittest.TestCase):
                                    places=place)
 
 
+@unittest.skipIf(not HAS_STATSMODELS,
+                 "optional requirement (statsmodels) not satisfied")
+class TestImputedStatsMixedLM(unittest.TestCase):
+
+    def setUp(self):
+        """Setup the tests."""
+        # Creating the temporary directory
+        self.output_dir = TemporaryDirectory(prefix="gwip_test_")
+
+    def tearDown(self):
+        """Finishes the test."""
+        # Deleting the output directory
+        self.output_dir.cleanup()
+
+    def test_fit_mixedlm(self):
+        """Tests the 'fit_mixedlm' function."""
+        # Reading the data
+        data_filename = resource_filename(
+            __name__,
+            "data/regression_mixedlm.txt.bz2",
+        )
+
+        # This dataset contains 3 markers + 5 covariables
+        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
+
+        # The formula for the first marker
+        formula = "y ~ snp1 + C1 + C2 + C3 + age + C(gender)"
+        columns_to_keep = ["y", "snp1", "C1", "C2", "C3", "age", "gender"]
+
+        # The expected results for the first marker (according to R)
+        expected_coef = 0.12265168980987724
+        expected_se = 0.041715401481444134
+        expected_min_ci = 0.04090301809382547
+        expected_max_ci = 0.20440036152516114
+        expected_z = 2.9402015911182162
+        expected_p = 3.279987709238652e-03
+
+        # The observed results for the first marker
+        observed = fit_mixedlm(
+            data=data[columns_to_keep].dropna(axis=0),
+            formula=formula,
+            groups=data.SampleID.values,
+            result_col="snp1",
+        )
+        observed_coef, observed_se, observed_min_ci, observed_max_ci, \
+            observed_z, observed_p, = observed
+
+        # Comparing the results
+        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_se, observed_se, places=10)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
+        self.assertAlmostEqual(expected_z, observed_z, places=8)
+        self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                               places=8)
+
+        # The formula for the second marker
+        formula = "y ~ snp2 + C1 + C2 + C3 + age + C(gender)"
+        columns_to_keep = ["y", "snp2", "C1", "C2", "C3", "age", "gender"]
+
+        # The expected results for the second marker (according to R)
+        expected_coef = 0.007945559606616614
+        expected_se = 0.030465888551648834
+        expected_min_ci = -0.05175771144653040
+        expected_max_ci = 0.06764883066030558
+        expected_z = 0.2608018339313000
+        expected_p = 7.942453301062471e-01
+
+        # The observed results for the first marker
+        observed = fit_mixedlm(
+            data=data[columns_to_keep].dropna(axis=0),
+            formula=formula,
+            groups=data.SampleID.values,
+            result_col="snp2",
+        )
+        observed_coef, observed_se, observed_min_ci, observed_max_ci, \
+            observed_z, observed_p, = observed
+
+        # Comparing the results
+        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_se, observed_se, places=10)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
+        self.assertAlmostEqual(expected_z, observed_z, places=8)
+        self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                               places=9)
+
+        # The formula for the third (and last) marker
+        formula = "y ~ snp3 + C1 + C2 + C3 + age + C(gender)"
+        columns_to_keep = ["y", "snp3", "C1", "C2", "C3", "age", "gender"]
+
+        # The expected results for the second marker (according to R)
+        expected_coef = -0.15454491556451655
+        expected_se = 0.045842987304696339
+        expected_min_ci = -0.24438231821546189
+        expected_max_ci = -0.06470751291475632
+        expected_z = -3.3711789883440764
+        expected_p = 7.484721142754225e-04
+
+        # The observed results for the first marker
+        observed = fit_mixedlm(
+            data=data[columns_to_keep].dropna(axis=0),
+            formula=formula,
+            groups=data.SampleID.values,
+            result_col="snp3",
+        )
+        observed_coef, observed_se, observed_min_ci, observed_max_ci, \
+            observed_z, observed_p, = observed
+
+        # Comparing the results
+        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_se, observed_se, places=10)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
+        self.assertAlmostEqual(expected_z, observed_z, places=8)
+        self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                               places=8)
+
+        # Asking for an invalid column should raise a KeyError
+        with self.assertRaises(KeyError) as cm:
+            fit_mixedlm(
+                data=data[columns_to_keep].dropna(axis=0),
+                formula=formula,
+                groups=data.SampleID.values,
+                result_col="unknown",
+            )
+
+        with self.assertRaises(patsy.PatsyError) as cm:
+            fit_mixedlm(
+                data=data[columns_to_keep].dropna(axis=0),
+                formula=formula + " + unknown",
+                groups=data.SampleID.values,
+                result_col="snp4",
+            )
+
+
 @unittest.skipIf(not HAS_SKAT, "SKAT is not installed")
 class TestImputedStatsSkat(unittest.TestCase):
 
