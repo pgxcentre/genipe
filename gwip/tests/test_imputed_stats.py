@@ -1166,7 +1166,7 @@ class TestImputedStatsLinear(unittest.TestCase):
         data = pd.read_csv(data_filename, sep="\t", compression="bz2")
 
         # The formula for the first marker
-        formula = "y ~ snp1 + C1 + C2 + C3 + age + gender"
+        formula = "y ~ snp1 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y", "snp1", "C1", "C2", "C3", "age", "gender"]
 
         # The expected results for the first marker (according to R)
@@ -1198,7 +1198,7 @@ class TestImputedStatsLinear(unittest.TestCase):
                                places=10)
 
         # The formula for the second marker
-        formula = "y ~ snp2 + C1 + C2 + C3 + age + gender"
+        formula = "y ~ snp2 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y", "snp2", "C1", "C2", "C3", "age", "gender"]
 
         # The expected results for the second marker (according to R)
@@ -1230,7 +1230,7 @@ class TestImputedStatsLinear(unittest.TestCase):
                                places=10)
 
         # The formula for the third (and last) marker
-        formula = "y ~ snp3 + C1 + C2 + C3 + age + gender"
+        formula = "y ~ snp3 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y", "snp3", "C1", "C2", "C3", "age", "gender"]
 
         # The expected results for the second marker (according to R)
@@ -1288,7 +1288,7 @@ class TestImputedStatsLinear(unittest.TestCase):
         data = pd.read_csv(data_filename, sep="\t", compression="bz2")
 
         # The formula for the first marker
-        formula = "y ~ snp1 + C1 + C2 + C3 + age + gender + snp1*gender"
+        formula = "y ~ snp1 + C1 + C2 + C3 + age + C(gender) + snp1*C(gender)"
         columns_to_keep = ["y", "snp1", "C1", "C2", "C3", "age", "gender"]
 
         # The expected results for the first marker (according to R)
@@ -1304,7 +1304,7 @@ class TestImputedStatsLinear(unittest.TestCase):
         observed = fit_linear(
             data=data[columns_to_keep].dropna(axis=0),
             formula=formula,
-            result_col="snp1:gender",
+            result_col="snp1:C(gender)[T.2]",
         )
         self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
@@ -1644,7 +1644,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
         data = pd.read_csv(data_filename, sep="\t", compression="bz2")
 
         # The formula for the first marker
-        formula = "y_d ~ snp1 + C1 + C2 + C3 + age + gender"
+        formula = "y_d ~ snp1 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y_d", "snp1", "C1", "C2", "C3", "age", "gender"]
 
         # The expected results for the first marker (according to R)
@@ -1675,7 +1675,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
                                places=5)
 
         # The formula for the second marker
-        formula = "y_d ~ snp2 + C1 + C2 + C3 + age + gender"
+        formula = "y_d ~ snp2 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y_d", "snp2", "C1", "C2", "C3", "age", "gender"]
 
         # The expected results for the second marker (according to R)
@@ -1706,7 +1706,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
                                places=5)
 
         # The formula for the third (and last) marker
-        formula = "y_d ~ snp3 + C1 + C2 + C3 + age + gender"
+        formula = "y_d ~ snp3 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y_d", "snp3", "C1", "C2", "C3", "age", "gender"]
 
         # The expected results for the second marker (according to R)
@@ -1763,7 +1763,8 @@ class TestImputedStatsLogistic(unittest.TestCase):
         data = pd.read_csv(data_filename, sep="\t", compression="bz2")
 
         # The formula for the first marker
-        formula = "y_d ~ snp1 + C1 + C2 + C3 + age + gender + snp1*gender"
+        formula = ("y_d ~ snp1 + C1 + C2 + C3 + age + C(gender) + "
+                   "snp1*C(gender)")
         columns_to_keep = ["y_d", "snp1", "C1", "C2", "C3", "age", "gender"]
 
         # The expected results for the first marker (according to R)
@@ -1778,7 +1779,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
         observed = fit_logistic(
             data=data[columns_to_keep],
             formula=formula,
-            result_col="snp1:gender",
+            result_col="snp1:C(gender)[T.2]",
         )
         self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
