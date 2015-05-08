@@ -829,8 +829,6 @@ class TestImputedStatsCox(unittest.TestCase):
         # Executing the tool
         try:
             main(args=options)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
@@ -888,20 +886,14 @@ class TestImputedStatsCox(unittest.TestCase):
         # The lower CI
         expected = [-1.11581171866669093, -0.0288633077397084936,
                     0.991018277865296726]
-        places = [4, 4, 4]
-        zipped = zip(expected, observed.lower, places)
-        for expected_min_ci, observed_min_ci, place in zipped:
-            self.assertAlmostEqual(expected_min_ci, observed_min_ci,
-                                   places=place)
+        for expected_min_ci, observed_min_ci in zip(expected, observed.lower):
+            self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
 
         # The upper CI
         expected = [-0.86272820359807223, 0.12868017534409637,
                     1.23844610941499611]
-        places = [4, 4, 4]
-        zipped = zip(expected, observed.upper, places)
-        for expected_max_ci, observed_max_ci, place in zipped:
-            self.assertAlmostEqual(expected_max_ci, observed_max_ci,
-                                   places=place)
+        for expected_max_ci, observed_max_ci in zip(expected, observed.upper):
+            self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
 
         # The Z statistics
         expected = [-15.32247957186071652, 1.241799798536472599,
@@ -943,8 +935,6 @@ class TestImputedStatsCox(unittest.TestCase):
         # Executing the tool
         try:
             main(args=options)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
@@ -1002,20 +992,14 @@ class TestImputedStatsCox(unittest.TestCase):
         # The lower CI
         expected = [-1.11581171866669093, -0.0288633077397084936,
                     0.991018277865296726]
-        places = [4, 4, 4]
-        zipped = zip(expected, observed.lower, places)
-        for expected_min_ci, observed_min_ci, place in zipped:
-            self.assertAlmostEqual(expected_min_ci, observed_min_ci,
-                                   places=place)
+        for expected_min_ci, observed_min_ci in zip(expected, observed.lower):
+            self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
 
         # The upper CI
         expected = [-0.86272820359807223, 0.12868017534409637,
                     1.23844610941499611]
-        places = [4, 4, 4]
-        zipped = zip(expected, observed.upper, places)
-        for expected_max_ci, observed_max_ci, place in zipped:
-            self.assertAlmostEqual(expected_max_ci, observed_max_ci,
-                                   places=place)
+        for expected_max_ci, observed_max_ci in zip(expected, observed.upper):
+            self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
 
         # The Z statistics
         expected = [-15.32247957186071652, 1.241799798536472599,
@@ -1055,8 +1039,6 @@ class TestImputedStatsCox(unittest.TestCase):
         # Executing the tool
         try:
             main(args=options)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
@@ -1346,8 +1328,6 @@ class TestImputedStatsLinear(unittest.TestCase):
         # Executing the tool
         try:
             main(args=options)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
@@ -1446,8 +1426,6 @@ class TestImputedStatsLinear(unittest.TestCase):
         # Executing the tool
         try:
             main(args=options)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
@@ -1544,8 +1522,6 @@ class TestImputedStatsLinear(unittest.TestCase):
         # Executing the tool
         try:
             main(args=options)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
@@ -1815,8 +1791,6 @@ class TestImputedStatsLogistic(unittest.TestCase):
         # Executing the tool
         try:
             main(args=options)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
@@ -1902,11 +1876,9 @@ class TestImputedStatsLogistic(unittest.TestCase):
         # The p values
         expected = [7.53729612963125518e-06, 6.48319240531214813e-01,
                     2.23198061422581463e-08]
-        places = [5, 5, 5]
-        zipped = zip(expected, observed.p, places)
-        for expected_p, observed_p, place in zipped:
+        for expected_p, observed_p in zip(expected, observed.p):
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                                   places=place)
+                                   places=5)
 
     @unittest.skipIf(platform.system() == "Darwin",
                      "multiprocessing not supported with Mac OS")
@@ -1930,8 +1902,6 @@ class TestImputedStatsLogistic(unittest.TestCase):
         # Executing the tool
         try:
             main(args=options)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
@@ -2017,11 +1987,9 @@ class TestImputedStatsLogistic(unittest.TestCase):
         # The p values
         expected = [7.53729612963125518e-06, 6.48319240531214813e-01,
                     2.23198061422581463e-08]
-        places = [5, 5, 5]
-        zipped = zip(expected, observed.p, places)
-        for expected_p, observed_p, place in zipped:
+        for expected_p, observed_p in zip(expected, observed.p):
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                                   places=place)
+                                   places=5)
 
     def test_full_fit_logistic_interaction(self):
         """Tests the full pipeline for logistic regression with interaction."""
@@ -2043,8 +2011,6 @@ class TestImputedStatsLogistic(unittest.TestCase):
         # Executing the tool
         try:
             main(args=options)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
@@ -2104,11 +2070,8 @@ class TestImputedStatsLogistic(unittest.TestCase):
         # The lower CI
         expected = [-0.9779101205637230620, 0.140220059149237547,
                     -0.544942749175234886]
-        places = [2, 2, 2]
-        zipped = zip(expected, observed.lower, places)
-        for expected_min_ci, observed_min_ci, place in zipped:
-            self.assertAlmostEqual(expected_min_ci, observed_min_ci,
-                                   places=place)
+        for expected_min_ci, observed_min_ci in zip(expected, observed.lower):
+            self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=2)
 
         # The upper CI
         expected = [-0.0263169240328645603, 0.819710161131259829,
@@ -2337,8 +2300,6 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # Executing the tool
         try:
             main(args=options)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
@@ -2397,20 +2358,14 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The lower CI
         expected = [0.04090301809382547, -0.05176823980480887,
                     -0.24433069717817782]
-        places = [4, 4, 4]
-        zipped = zip(expected, observed.lower, places)
-        for expected_min_ci, observed_min_ci, place in zipped:
-            self.assertAlmostEqual(expected_min_ci, observed_min_ci,
-                                   places=place)
+        for expected_min_ci, observed_min_ci in zip(expected, observed.lower):
+            self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
 
         # The upper CI
         expected = [0.20440036152516114, 0.06763145273676965,
                     -0.06466892360820460]
-        places = [4, 4, 4]
-        zipped = zip(expected, observed.upper, places)
-        for expected_max_ci, observed_max_ci, place in zipped:
-            self.assertAlmostEqual(expected_max_ci, observed_max_ci,
-                                   places=place)
+        for expected_max_ci, observed_max_ci in zip(expected, observed.upper):
+            self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
 
         # The Z statistics
         expected = [2.9402015911182162, 0.2603587833863980,
@@ -2452,8 +2407,6 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # Executing the tool
         try:
             main(args=options)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
@@ -2512,20 +2465,14 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The lower CI
         expected = [0.04090301809382547, -0.05176823980480887,
                     -0.24433069717817782]
-        places = [4, 4, 4]
-        zipped = zip(expected, observed.lower, places)
-        for expected_min_ci, observed_min_ci, place in zipped:
-            self.assertAlmostEqual(expected_min_ci, observed_min_ci,
-                                   places=place)
+        for expected_min_ci, observed_min_ci in zip(expected, observed.lower):
+            self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
 
         # The upper CI
         expected = [0.20440036152516114, 0.06763145273676965,
                     -0.06466892360820460]
-        places = [4, 4, 4]
-        zipped = zip(expected, observed.upper, places)
-        for expected_max_ci, observed_max_ci, place in zipped:
-            self.assertAlmostEqual(expected_max_ci, observed_max_ci,
-                                   places=place)
+        for expected_max_ci, observed_max_ci in zip(expected, observed.upper):
+            self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
 
         # The Z statistics
         expected = [2.9402015911182162, 0.2603587833863980,
@@ -2565,8 +2512,6 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # Executing the tool
         try:
             main(args=options)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
@@ -2618,28 +2563,20 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The standard error
         expected = [0.08342819867401344, 0.060927215816902323,
                     0.091755870420978478]
-        places = [10, 10, 10]
-        zipped = zip(expected, observed.se, places)
-        for expected_se, observed_se, place in zipped:
-            self.assertAlmostEqual(expected_se, observed_se, places=place)
+        for expected_se, observed_se in zip(expected, observed.se):
+            self.assertAlmostEqual(expected_se, observed_se, places=10)
 
         # The lower CI
         expected = [-0.20968434904114919, -0.10798427523465945,
                     -0.18302499859617510]
-        places = [4, 4, 4]
-        zipped = zip(expected, observed.lower, places)
-        for expected_min_ci, observed_min_ci, place in zipped:
-            self.assertAlmostEqual(expected_min_ci, observed_min_ci,
-                                   places=place)
+        for expected_min_ci, observed_min_ci in zip(expected, observed.lower):
+            self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
 
         # The upper CI
         expected = [0.11729067060054199, 0.13080403032042959,
                     0.17658816488845774]
-        places = [4, 4, 4]
-        zipped = zip(expected, observed.upper, places)
-        for expected_max_ci, observed_max_ci, place in zipped:
-            self.assertAlmostEqual(expected_max_ci, observed_max_ci,
-                                   places=place)
+        for expected_max_ci, observed_max_ci in zip(expected, observed.upper):
+            self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
 
         # The Z statistics
         expected = [-0.5537317112818183, 0.18727062101360839,
@@ -2686,8 +2623,6 @@ class TestImputedStatsSkat(unittest.TestCase):
         # Executing the tool
         try:
             main(args=args)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
@@ -2723,8 +2658,6 @@ class TestImputedStatsSkat(unittest.TestCase):
         # Executing the tool
         try:
             main(args=args)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
@@ -2760,8 +2693,6 @@ class TestImputedStatsSkat(unittest.TestCase):
         # Executing the tool
         try:
             main(args=args)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
@@ -2798,8 +2729,6 @@ class TestImputedStatsSkat(unittest.TestCase):
         # Executing the tool
         try:
             main(args=args)
-        except:
-            raise
         finally:
             clean_logging_handlers()
 
