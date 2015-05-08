@@ -794,7 +794,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
                         print(*result, sep="\t", file=o_file)
 
                     # Logging
-                    nb_processed += len(sites_to_process)
+                    nb_processed += options.nb_lines
                     logging.info("Processed {:,d} lines".format(nb_processed))
 
                     # Resetting the sites to process
@@ -807,6 +807,10 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
         if len(sites_to_process) > 0:
             for result in pool.map(process_impute2_site, sites_to_process):
                 print(*result, sep="\t", file=o_file)
+
+            # Logging
+            nb_processed += len(sites_to_process)
+            logging.info("Processed {:,d} lines".format(nb_processed))
 
     except Exception as e:
         if pool is not None:
@@ -870,12 +874,14 @@ def process_impute2_site(site_info):
         get_good_probs(data[dosage_columns].values, site_info.prob_t)
     ]
 
-    # Keeping only the good markers
-    samples = samples.loc[data.index.unique(), dosage_columns]
+    # FIXME: Quick and dirty fix for mixedlm...
+    # If the analysis type is not MixedLM, then t_data is just a pointer to the
+    # real data. Otherwise, t_data is the grouped values (first occurrence,
+    # which shouldn't cause a problem, since gender and probabilities are the
+    # same for each measurement).
+    t_data = data
     if site_info.analysis_type == "mixedlm":
-        samples["_gender"] = data[site_info.gender_c].groupby(level=0).last()
-    else:
-        samples["_gender"] = data[site_info.gender_c]
+        t_data = data.groupby(level=0).first()
 
     # Checking gender if required
     gender = None
@@ -883,29 +889,28 @@ def process_impute2_site(site_info):
         # We want to exclude males with heterozygous calls for the rest of the
         # analysis
         invalid_rows = samples_with_hetero_calls(
-            samples.loc[samples._gender == 1, dosage_columns],
+            t_data.loc[t_data[site_info.gender_c] == 1, dosage_columns],
             dosage_columns[1]
         )
         if len(invalid_rows) > 0:
             logging.warning("There were {:,d} males with heterozygous "
                             "calls for {}".format(len(invalid_rows), name))
-            logging.debug(samples.shape[0])
-            samples = samples.drop(invalid_rows, axis=0)
+            logging.debug(t_data.shape)
             data = data.drop(invalid_rows, axis=0)
-            logging.debug(samples.shape[0])
-            logging.debug(invalid_rows.isin(samples.index))
+            t_data = t_data.drop(invalid_rows, axis=0)
+            logging.debug(t_data.shape)
 
         # Getting the genders
-        gender = samples._gender.values
+        gender = t_data[site_info.gender_c].values
 
     # Computing the frequency
-    maf, minor, major = maf_from_probs(samples[dosage_columns].values,
+    maf, minor, major = maf_from_probs(t_data[dosage_columns].values,
                                        dosage_columns[0], dosage_columns[-1],
                                        gender, name)
 
     # What we want to print
     to_return = [chrom, pos, name, allele_encoding[major],
-                 allele_encoding[minor], maf, samples.shape[0]]
+                 allele_encoding[minor], maf, t_data.shape[0]]
 
     # If the marker is too rare, we continue with the rest
     if (maf == "NA") or (maf < site_info.maf_t):
