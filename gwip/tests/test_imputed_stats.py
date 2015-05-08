@@ -838,6 +838,9 @@ class TestImputedStatsCox(unittest.TestCase):
         # Reading the data
         observed = pd.read_csv(o_prefix + ".cox.dosage", sep="\t")
 
+        # Checking the shape
+        self.assertEqual((3, 13), observed.shape)
+
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
                           "coef", "se", "lower", "upper", "z", "p"],
@@ -944,6 +947,9 @@ class TestImputedStatsCox(unittest.TestCase):
         # Reading the data
         observed = pd.read_csv(o_prefix + ".cox.dosage", sep="\t")
 
+        # Checking the shape
+        self.assertEqual((3, 13), observed.shape)
+
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
                           "coef", "se", "lower", "upper", "z", "p"],
@@ -1047,6 +1053,9 @@ class TestImputedStatsCox(unittest.TestCase):
 
         # Reading the data
         observed = pd.read_csv(o_prefix + ".cox.dosage", sep="\t")
+
+        # Checking the shape
+        self.assertEqual((3, 13), observed.shape)
 
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
@@ -1337,6 +1346,9 @@ class TestImputedStatsLinear(unittest.TestCase):
         # Reading the data
         observed = pd.read_csv(o_prefix + ".linear.dosage", sep="\t")
 
+        # Checking the shape
+        self.assertEqual((3, 13), observed.shape)
+
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
                           "coef", "se", "lower", "upper", "t", "p"],
@@ -1435,6 +1447,9 @@ class TestImputedStatsLinear(unittest.TestCase):
         # Reading the data
         observed = pd.read_csv(o_prefix + ".linear.dosage", sep="\t")
 
+        # Checking the shape
+        self.assertEqual((3, 13), observed.shape)
+
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
                           "coef", "se", "lower", "upper", "t", "p"],
@@ -1530,6 +1545,9 @@ class TestImputedStatsLinear(unittest.TestCase):
 
         # Reading the data
         observed = pd.read_csv(o_prefix + ".linear.dosage", sep="\t")
+
+        # Checking the shape
+        self.assertEqual((3, 13), observed.shape)
 
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
@@ -1643,6 +1661,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
             formula=formula,
             result_col="snp1",
         )
+        self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
             observed_z, observed_p, = observed
 
@@ -1673,6 +1692,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
             formula=formula,
             result_col="snp2",
         )
+        self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
             observed_z, observed_p, = observed
 
@@ -1703,6 +1723,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
             formula=formula,
             result_col="snp3",
         )
+        self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
             observed_z, observed_p, = observed
 
@@ -1799,6 +1820,9 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
         # Reading the data
         observed = pd.read_csv(o_prefix + ".logistic.dosage", sep="\t")
+
+        # Checking the shape
+        self.assertEqual((3, 13), observed.shape)
 
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
@@ -1911,6 +1935,9 @@ class TestImputedStatsLogistic(unittest.TestCase):
         # Reading the data
         observed = pd.read_csv(o_prefix + ".logistic.dosage", sep="\t")
 
+        # Checking the shape
+        self.assertEqual((3, 13), observed.shape)
+
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
                           "coef", "se", "lower", "upper", "z", "p"],
@@ -2019,6 +2046,9 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
         # Reading the data
         observed = pd.read_csv(o_prefix + ".logistic.dosage", sep="\t")
+
+        # Checking the shape
+        self.assertEqual((3, 13), observed.shape)
 
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
@@ -2145,6 +2175,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             groups=data.index.values,
             result_col="snp1",
         )
+        self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
             observed_z, observed_p, = observed
 
@@ -2176,6 +2207,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             groups=data.index.values,
             result_col="snp2",
         )
+        self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
             observed_z, observed_p, = observed
 
@@ -2207,6 +2239,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             groups=data.index.values,
             result_col="snp3",
         )
+        self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
             observed_z, observed_p, = observed
 
@@ -2308,6 +2341,9 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # Reading the data
         observed = pd.read_csv(o_prefix + ".mixedlm.dosage", sep="\t")
+
+        # Checking the shape
+        self.assertEqual((3, 13), observed.shape)
 
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
@@ -2416,6 +2452,9 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # Reading the data
         observed = pd.read_csv(o_prefix + ".mixedlm.dosage", sep="\t")
 
+        # Checking the shape
+        self.assertEqual((3, 13), observed.shape)
+
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
                           "coef", "se", "lower", "upper", "z", "p"],
@@ -2520,6 +2559,9 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # Reading the data
         observed = pd.read_csv(o_prefix + ".mixedlm.dosage", sep="\t")
+
+        # Checking the shape
+        self.assertEqual((3, 13), observed.shape)
 
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
