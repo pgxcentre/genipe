@@ -20,5 +20,6 @@ install:
   - "conda install -q statsmodels"
   - "pip install --no-deps pyfaidx"
   - "pip install --no-deps lifelines"
+  - "python setup.py install"
   - "conda list"
-script: "source activate test-environment && python setup.py test"
+script: "python -c 'import gwip; gwip.test(verbosity=2)"
