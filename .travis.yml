@@ -22,4 +22,4 @@ install:
   - "pip install --no-deps lifelines"
   - "python setup.py install"
   - "conda list"
-script: "python -c 'import gwip; gwip.test(verbosity=2)"
+script: "python -c 'import gwip; gwip.test(verbosity=2)'"
