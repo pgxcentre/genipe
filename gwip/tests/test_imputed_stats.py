@@ -2215,7 +2215,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             observed_z, observed_p, = observed
 
         # Comparing the results
-        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_coef, observed_coef, places=9)
         self.assertAlmostEqual(expected_se, observed_se, places=10)
         self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
         self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
@@ -2413,7 +2413,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The Z statistics
         expected = [2.9402015911182162, 0.2603587833863980,
                     -3.3704396251655511]
-        places = [9, 8, 8]
+        places = [8, 8, 8]
         zipped = zip(expected, observed.z, places)
         for expected_z, observed_z, place in zipped:
             self.assertAlmostEqual(expected_z, observed_z, places=place)
@@ -2523,7 +2523,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The Z statistics
         expected = [2.9402015911182162, 0.2603587833863980,
                     -3.3704396251655511]
-        places = [9, 8, 8]
+        places = [8, 8, 8]
         zipped = zip(expected, observed.z, places)
         for expected_z, observed_z, place in zipped:
             self.assertAlmostEqual(expected_z, observed_z, places=place)
