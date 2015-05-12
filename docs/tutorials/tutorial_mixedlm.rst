@@ -245,7 +245,7 @@ effects analysis in the console:
                                 [--prob FLOAT] [--maf FLOAT] [--covar NAME]
                                 [--categorical NAME] [--missing-value NAME]
                                 [--sample-column NAME] [--interaction NAME]
-                                --pheno-name NAME
+                                --pheno-name NAME [--use-ml]
 
    Performs a linear mixed effects regression on imputed data using a random
    intercept for each group. This script is part of the 'gwip' package, version
@@ -300,6 +300,8 @@ effects analysis in the console:
 
    Linear Mixed Effects Options:
      --pheno-name NAME     The phenotype.
+     --use-ml              Fit the standard likelihood using maximum likelihood
+                           (ML) estimation instead of REML (default is REML).
 
 
 .. _mixedlm-tut-execution-time:

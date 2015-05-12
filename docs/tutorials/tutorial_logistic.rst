@@ -118,7 +118,7 @@ randomly generated). The following command should download the phenotype file.
    cd $HOME/gwip_tutorial/logistic
 
    wget http://pgxcentre.github.io/gwip/_static/tutorial/phenotypes_logistic.txt.bz2
-   bunzip2 phenotypes_logistic.txt.bz2 
+   bunzip2 phenotypes_logistic.txt.bz2
 
 .. note::
 
@@ -225,11 +225,12 @@ regression analysis in the console:
                                  [--nb-process INT] [--nb-lines INT] [--chrx]
                                  [--gender-column NAME] [--scale INT]
                                  [--prob FLOAT] [--maf FLOAT] [--covar NAME]
-                                 [--missing-value NAME] [--sample-column NAME]
-                                 [--interaction NAME] --pheno-name NAME
+                                 [--categorical NAME] [--missing-value NAME]
+                                 [--sample-column NAME] [--interaction NAME]
+                                 --pheno-name NAME
 
    Performs a logistic regression on imputed data using a GLM with a binomial
-   distribution. This script is part of the 'gwip' package, version 1.0.0).
+   distribution. This script is part of the 'gwip' package, version 1.1.0).
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -269,6 +270,9 @@ regression analysis in the console:
    Phenotype Options:
      --covar NAME          The co variable names (in the phenotype file),
                            separated by coma.
+     --categorical NAME    The name of the variables that are categorical (note
+                           that the gender is always categorical). The variables
+                           are separated by coma.
      --missing-value NAME  The missing value in the phenotype file.
      --sample-column NAME  The name of the sample ID column (in the phenotype
                            file). [sample_id]

@@ -119,7 +119,7 @@ should download the phenotype file.
    cd $HOME/gwip_tutorial/linear
 
    wget http://pgxcentre.github.io/gwip/_static/tutorial/phenotypes_linear.txt.bz2
-   bunzip2 phenotypes_linear.txt.bz2 
+   bunzip2 phenotypes_linear.txt.bz2
 
 .. note::
 
@@ -234,11 +234,12 @@ analysis in the console:
                                [--nb-process INT] [--nb-lines INT] [--chrx]
                                [--gender-column NAME] [--scale INT]
                                [--prob FLOAT] [--maf FLOAT] [--covar NAME]
-                               [--missing-value NAME] [--sample-column NAME]
-                               [--interaction NAME] --pheno-name NAME
+                               [--categorical NAME] [--missing-value NAME]
+                               [--sample-column NAME] [--interaction NAME]
+                               --pheno-name NAME
 
    Performs a linear regression (ordinary least squares) on imputed data. This
-   script is part of the 'gwip' package, version 1.0.0).
+   script is part of the 'gwip' package, version 1.1.0).
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -278,6 +279,9 @@ analysis in the console:
    Phenotype Options:
      --covar NAME          The co variable names (in the phenotype file),
                            separated by coma.
+     --categorical NAME    The name of the variables that are categorical (note
+                           that the gender is always categorical). The variables
+                           are separated by coma.
      --missing-value NAME  The missing value in the phenotype file.
      --sample-column NAME  The name of the sample ID column (in the phenotype
                            file). [sample_id]
