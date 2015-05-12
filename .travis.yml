@@ -2,7 +2,7 @@ language: python
 python:
   - "3.3"
   - "3.4"
-install:
+before_install:
   - "wget http://repo.continuum.io/miniconda/Miniconda3-3.4.2-Linux-x86_64.sh -O miniconda.sh"
   - "bash miniconda.sh -b -p $HOME/miniconda"
   - "export PATH=$HOME/miniconda/bin:$PATH"
@@ -14,12 +14,13 @@ install:
   - "conda update -q --all"
   - "conda info -a"
   - "python --version"
-  - "conda install -q jinja2=2.7.3"
-  - "conda install -q numpy=1.8.2"
-  - "conda install -q pandas=0.15.2"
+install:
+  - "conda install -q jinja2"
+  - "conda install -q numpy"
+  - "conda install -q pandas"
+  - "conda install -q scipy"
   - "conda install -q statsmodels"
   - "pip install --no-deps pyfaidx"
   - "pip install --no-deps lifelines"
-  - "python setup.py install"
   - "conda list"
-script: "python -c 'import gwip; gwip.test(verbosity=2)'"
+script: "python setup.py test"
