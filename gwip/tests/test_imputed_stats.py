@@ -2221,7 +2221,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
         self.assertAlmostEqual(expected_z, observed_z, places=8)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=9)
+                               places=8)
 
         # The formula for the third (and last) marker
         formula = "y ~ snp3 + C1 + C2 + C3 + age + C(gender)"
@@ -2421,7 +2421,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The p values
         expected = [3.279987709238652e-03, 7.945870329397586e-01,
                     7.504834930376347e-04]
-        places = [9, 8, 8]
+        places = [8, 8, 8]
         zipped = zip(expected, observed.p, places)
         for expected_p, observed_p, place in zipped:
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
@@ -2531,7 +2531,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The p values
         expected = [3.279987709238652e-03, 7.945870329397586e-01,
                     7.504834930376347e-04]
-        places = [9, 8, 8]
+        places = [8, 8, 8]
         zipped = zip(expected, observed.p, places)
         for expected_p, observed_p, place in zipped:
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
