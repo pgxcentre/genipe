@@ -21,4 +21,4 @@ install:
   - "pip install --no-deps pyfaidx"
   - "pip install --no-deps lifelines"
   - "conda list"
-script: "python setup.py test"
+script: "source activate test-environment && python setup.py test"
