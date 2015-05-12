@@ -71,7 +71,7 @@ HAS_SKAT = _has_skat() if HAS_R else False
 
 
 # An IMPUTE2 row to process
-_Row = namedtuple("_Row", ("row", "samples", "pheno", "pheno_name",
+_Row = namedtuple("_Row", ("row", "samples", "pheno", "pheno_name", "use_ml",
                            "categorical", "formula", "time_to_event", "event",
                            "inter_c", "is_chrx", "gender_c", "del_g", "scale",
                            "maf_t", "prob_t", "analysis_type",
@@ -766,6 +766,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
                 row=row,
                 samples=samples,
                 pheno=phenotypes,
+                use_ml=vars(options).get("use_ml", None),
                 pheno_name=vars(options).get("pheno_name", None),
                 formula=formula,
                 time_to_event=vars(options).get("tte", None),
@@ -959,6 +960,7 @@ def process_impute2_site(site_info):
         event=site_info.event,
         formula=site_info.formula,
         result_col=result_from_column,
+        use_ml=site_info.use_ml,
     )
 
     # Extending the list to return
@@ -1083,12 +1085,13 @@ def fit_logistic(data, formula, result_col, **kwargs):
     )
 
 
-def fit_mixedlm(data, formula, groups, result_col, **kwargs):
+def fit_mixedlm(data, formula, use_ml, groups, result_col, **kwargs):
     """Fit a linear mixed effects model to the data.
 
     Args:
         data (pandas.DataFrame): the data to analyse
         formula (str): the formula for the linear mixed effects model
+        use_ml (bool): whether to use ML instead of REML
         groups (str): the column containing the groups
         result_col (str): the column that will contain the results
 
@@ -1097,7 +1100,8 @@ def fit_mixedlm(data, formula, groups, result_col, **kwargs):
 
     """
     return _get_result_from_linear_logistic_mixedlm(
-        smf.mixedlm(formula=formula, data=data, groups=groups).fit(),
+        smf.mixedlm(formula=formula, data=data,
+                    groups=groups).fit(reml=not use_ml),
         result_col=result_col,
     )
 
@@ -1560,6 +1564,13 @@ def parse_args(parser, args=None):
         metavar="NAME",
         required=True,
         help="The phenotype.",
+    )
+
+    group.add_argument(
+        "--use-ml",
+        action="store_true",
+        help="Fit the standard likelihood using maximum likelihood (ML) "
+             "estimation instead of REML (default is REML).",
     )
 
     # The SKAT parser.

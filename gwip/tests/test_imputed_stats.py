@@ -2175,6 +2175,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             formula=formula,
             groups=data.index.values,
             result_col="snp1",
+            use_ml=False,
         )
         self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
@@ -2207,6 +2208,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             formula=formula,
             groups=data.index.values,
             result_col="snp2",
+            use_ml=False,
         )
         self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
@@ -2239,6 +2241,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             formula=formula,
             groups=data.index.values,
             result_col="snp3",
+            use_ml=False,
         )
         self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
@@ -2260,6 +2263,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
                 formula=formula,
                 groups=data.index.values,
                 result_col="unknown",
+                use_ml=False,
             )
 
         with self.assertRaises(patsy.PatsyError) as cm:
@@ -2268,6 +2272,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
                 formula=formula + " + unknown",
                 groups=data.index.values,
                 result_col="snp4",
+                use_ml=False,
             )
 
     def test_fit_mixedlm_interaction(self):
@@ -2300,6 +2305,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             formula=formula,
             groups=data.index.values,
             result_col="snp1:C(gender)[T.2]",
+            use_ml=False,
         )
         self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
