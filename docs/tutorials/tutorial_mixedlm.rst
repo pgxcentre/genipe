@@ -132,7 +132,13 @@ should download the phenotype file.
 .. note::
 
    Note that the gender is encoded such that males are ``1`` and females are
-   ``2``. Missing gender is encoded as ``0``.
+   ``2``. Samples with missing gender (encoded as ``0``) will be excluded only
+   if gender is in the covariable list.
+
+.. note::
+
+   Categorical variables should be specified using the ``--categorical``
+   option.
 
 .. warning::
 
