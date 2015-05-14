@@ -2339,14 +2339,14 @@ def parse_args(parser):
         "--report-number",
         type=str,
         metavar="NB",
-        default="GENIP automatic report",
+        default="genip automatic report",
         help="The report number. [%(default)s]",
     )
     group.add_argument(
         "--report-title",
         type=str,
         metavar="TITLE",
-        default="GENIP: Automatic genome-wide imputation",
+        default="genip: Automatic genome-wide imputation",
         help="The report title. [%(default)s]",
     )
     group.add_argument(

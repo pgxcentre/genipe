@@ -6,8 +6,9 @@
 
 *Version 1.0.0*
 
-The `genip` module includes a script (named `genip-launcher`) that automatically
-runs a genome-wide imputation pipeline using *Plink*, *shapeit* and *impute2*.
+The `genip` module (standing for **GEN**ome-wide **I**mputation **P**ipeline)
+includes a script (named `genip-launcher`) that automatically runs a
+genome-wide imputation pipeline using *Plink*, *shapeit* and *impute2*.
 
 Full documentation is available at
 [http://pgxcentre.github.io/genip/](http://pgxcentre.github.io/genip/).
