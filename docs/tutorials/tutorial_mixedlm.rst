@@ -1,38 +1,39 @@
-Linear Tutorial
-================
+Linear Mixed Effects Model Tutorial
+====================================
 
 
 Quick navigation
 -----------------
 
-1. :ref:`lin-tut-input-files`
-2. :ref:`lin-tut-execute`
-3. :ref:`lin-tut-output-files`
-4. :ref:`lin-tut-usage`
-5. :ref:`lin-tut-execution-time`
-6. :ref:`lin-tut-comparison`
+1. :ref:`mixedlm-tut-input-files`
+2. :ref:`mixedlm-tut-execute`
+3. :ref:`mixedlm-tut-output-files`
+4. :ref:`mixedlm-tut-usage`
+5. :ref:`mixedlm-tut-execution-time`
+6. :ref:`mixedlm-tut-comparison`
 
 
-Linear regression
-------------------
+Linear mixed effects model
+---------------------------
 
-Linear regressions are commonly used to perform genome-wide association
-studies. It is possible to perform such an analysis using imputation data
-(dosage format), where each imputed genotypes varies between 0 and 2
-(inclusively). A value close to 0 means that a homozygous genotype of the most
-frequent allele is the most probable. A value close to 2 means that a
-homozygous genotype of the rare allele is the most probable. Finally, a value
-close to 1 means that a heterozygous genotype is the most probable.
+Linear mixed effects models are commonly used for regression analyses involving
+repeated measurements made on each subject (*i.e* dependent data). It is
+possible to perform such an analysis using imputation data (dosage format),
+where each imputed genotypes varies between 0 and 2 (inclusively). A value
+close to 0 means that a homozygous genotype of the most frequent allele is the
+most probable. A value close to 2 means that a homozygous genotype of the rare
+allele is the most probable. Finally, a value close to 1 means that a
+heterozygous genotype is the most probable.
 
 We suppose that you have followed the main :ref:`gwip-tut-page`. The following
 command will create the working directory for this tutorial.
 
 .. code-block:: bash
 
-   mkdir -p $HOME/gwip_tutorial/linear
+   mkdir -p $HOME/gwip_tutorial/mixedlm
 
 
-.. _lin-tut-input-files:
+.. _mixedlm-tut-input-files:
 
 Input files
 ^^^^^^^^^^^^
@@ -96,18 +97,25 @@ The first two rows are part of the format and should be as is.
 Phenotype file
 """""""""""""""
 
-This file describes the phenotype and variables used to perform the linear
-regression. The file is *tab* separated and contains one row per sample, one
-column per phenotype/variable.
+This file describes the phenotype and variables used to perform the analysis.
+The file is *tab* separated and contains one row per sample, one column per
+phenotype/variable.
 
-The following is an example of a phenotype file:
+The following is an example of a phenotype file (where there are three
+measurements per sample):
 
 .. code-block:: text
 
-   SampleID	Pheno1	Age	Var1	Gender
-   NA06985	58.6923101992	53	48.0104314206	2
+   SampleID	Pheno3	Age	Var1	Gender
+   NA06985	58.6923101992	53	48.01043142060001	2
+   NA06985	79.18026839086532	53	48.01043142060001	2
+   NA06985	97.6831921953767	53	48.01043142060001	2
    NA06993	64.8981628053	47	23.7615117523	1
+   NA06993	81.26389783395985	47	23.7615117523	1
+   NA06993	100.71531297841553	47	23.7615117523	1
    NA06994	129.562482664	48	20.2946857226	1
+   NA06994	144.2513248255908	48	20.2946857226	1
+   NA06994	161.94488318622535	48	20.2946857226	1
    ...
 
 We provide a *dummy* phenotype file (where values, except for ``Gender``, were
@@ -116,10 +124,10 @@ should download the phenotype file.
 
 .. code-block:: bash
 
-   cd $HOME/gwip_tutorial/linear
+   cd $HOME/gwip_tutorial/mixedlm
 
-   wget http://pgxcentre.github.io/gwip/_static/tutorial/phenotypes_linear.txt.bz2
-   bunzip2 phenotypes_linear.txt.bz2
+   wget http://pgxcentre.github.io/gwip/_static/tutorial/phenotypes_mixedlm.txt.bz2
+   bunzip2 phenotypes_mixedlm.txt.bz2 
 
 .. note::
 
@@ -135,7 +143,8 @@ should download the phenotype file.
 .. warning::
 
    The sample identification numbers should match the ones in the sample file
-   (see above). Those numbers should be unique for each sample. Only the
+   (see above). Those numbers should be unique for each sample. There should be
+   multiple rows for each sample, one for each repeated measurement. Only the
    samples that are **both** in the sample and phenotype files will be kept for
    analysis. The order of the samples in the phenotype file is not important.
 
@@ -150,29 +159,29 @@ number per line) to keep for the analysis. This file might be the
 :ref:`gwip-tut-page`).
 
 
-.. _lin-tut-execute:
+.. _mixedlm-tut-execute:
 
 Executing the analysis
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 If you followed the :ref:`gwip-tut-page`, the following commands should execute
-the linear regression analysis.
+the linear mixed effects analysis.
 
 .. code-block:: bash
 
-   cd $HOME/gwip_tutorial/linear
+   cd $HOME/gwip_tutorial/mixedlm
 
-   imputed-stats linear \
+   imputed-stats mixedlm \
        --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz \
        --sample ../gwip/chr22/final_impute2/chr22.imputed.sample \
-       --pheno phenotypes_linear.txt \
+       --pheno phenotypes_mixedlm.txt \
        --extract-sites ../gwip/chr22/final_impute2/chr22.imputed.good_sites \
        --nb-process 8 \
        --nb-lines 6000 \
        --gender-column Gender \
        --covar Age,Var1,Gender \
        --sample-column SampleID \
-       --pheno-name Pheno1
+       --pheno-name Pheno3
 
 For more information about the arguments and options, see the
 :ref:`lin-tut-usage` section. The number of process to use might differ
@@ -188,20 +197,20 @@ according to the installation type and to the computer/server. See the
    (using a probability threshold of 0.9, the ``--prob`` option).
 
 
-.. _lin-tut-output-files:
+.. _mixedlm-tut-output-files:
 
 Output files
 ^^^^^^^^^^^^^
 
-There will be two output files: ``.linear.dosage`` will contain the statistics,
+There will be two output files: ``.mixedlm.dosage`` will contain the statistics,
 and ``.log`` will contain the execution log.
 
 
-``.linear.dosage`` file
+``.mixedlm.dosage`` file
 """"""""""""""""""""""""
 
-This file contains the results from the linear regression. It shows the
-following information:
+This file contains the results from the linear mixed effects analysis. It shows
+the following information:
 
 * ``chr``: the chromosome.
 * ``pos``: the position on the chromosome.
@@ -214,7 +223,7 @@ following information:
 * ``se``: the standard error.
 * ``lower``: the lower value of the 95% confidence interval.
 * ``upper``: the upper value of the 95% confidence interval.
-* ``t``: the *t*-statistic.
+* ``z``: the *z*-statistic.
 * ``p``: the *p*-value.
 
 .. note::
@@ -224,28 +233,29 @@ following information:
    To modify this behavior, use the ``--maf`` option.
 
 
-.. _lin-tut-usage:
+.. _mixedlm-tut-usage:
 
 Usage
 ^^^^^^
 
-The following command will display the documentation for the linear regression
-analysis in the console:
+The following command will display the documentation for the linear mixed
+effects analysis in the console:
 
 .. code-block:: console
 
-   $ imputed-stats linear --help
-   usage: imputed-stats linear [-h] [-v] [--debug] --impute2 FILE --sample FILE
-                               --pheno FILE [--extract-sites FILE] [--out FILE]
-                               [--nb-process INT] [--nb-lines INT] [--chrx]
-                               [--gender-column NAME] [--scale INT]
-                               [--prob FLOAT] [--maf FLOAT] [--covar NAME]
-                               [--categorical NAME] [--missing-value NAME]
-                               [--sample-column NAME] [--interaction NAME]
-                               --pheno-name NAME
+   $ imputed-stats mixedlm --help
+   usage: imputed-stats mixedlm [-h] [-v] [--debug] --impute2 FILE --sample FILE
+                                --pheno FILE [--extract-sites FILE] [--out FILE]
+                                [--nb-process INT] [--nb-lines INT] [--chrx]
+                                [--gender-column NAME] [--scale INT]
+                                [--prob FLOAT] [--maf FLOAT] [--covar NAME]
+                                [--categorical NAME] [--missing-value NAME]
+                                [--sample-column NAME] [--interaction NAME]
+                                --pheno-name NAME [--use-ml]
 
-   Performs a linear regression (ordinary least squares) on imputed data. This
-   script is part of the 'gwip' package, version 1.1.0).
+   Performs a linear mixed effects regression on imputed data using a random
+   intercept for each group. This script is part of the 'gwip' package, version
+   1.1.0).
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -294,11 +304,13 @@ analysis in the console:
      --interaction NAME    Add an interaction between the genotype and this
                            variable.
 
-   Linear Regression Options:
+   Linear Mixed Effects Options:
      --pheno-name NAME     The phenotype.
+     --use-ml              Fit the standard likelihood using maximum likelihood
+                           (ML) estimation instead of REML (default is REML).
 
 
-.. _lin-tut-execution-time:
+.. _mixedlm-tut-execution-time:
 
 Execution time
 ^^^^^^^^^^^^^^^
@@ -311,88 +323,56 @@ on a computer with an *Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz* (8 cores) and
 from the previous command (where phenotypes were available for only 60 of the
 samples). Each test was performed only one time (no repetition).
 
-.. _linear_exec_time:
+.. _mixedlm_exec_time:
 
-.. figure:: ../_static/images/Linear_Walltime.png
+.. figure:: ../_static/images/MixedLM_Walltime.png
     :align: center
     :width: 60%
-    :alt: Linear regression execution time vs number of processes.
-
-.. note::
-
-   Execution times between *Plink* and :py:mod:`gwip` were compared for this
-   analysis. When data processing is required prior to the statistical analysis
-   (*e.g.* removing poor quality genotypes and excluding the 60 samples without
-   phenotype), *Plink* was **significantly faster** than :py:mod:`gwip`, even
-   if the latter is using more than one processes. This is due to prior data
-   manipulation, which significantly increse computation time.
-
-   When no data processing is required (*i.e.* keeping bad quality genotypes
-   and keeping all samples), :py:mod:`gwip` was faster with two processes or
-   more (as shown in the figure below). Note that for this example (30,000
-   imputed markers for 2,402 samples), all samples were used for the analysis
-   because they all had a phenotype.
-
-   .. _linear_exec_time_plink:
-
-   .. figure:: ../_static/images/Linear_Walltime_Plink.png
-       :align: center
-       :width: 60%
-       :alt: Linear regression execution time vs number of processes (Plink).
-
-   Note that the linear regression from *Statsmodels 0.6.1* (at least when
-   compiled on a modern Linux system, *i.e.* when :py:mod:`gwip` is installed
-   using the *pyvenv* method) uses more than 100% of each process when no data
-   preprocessing is required. Hence, we recommend testing with :math:`n/2`
-   processes (where :math:`n` is the number of processing cores on the machine)
-   and monitor the system load average. This explains the increase in
-   computation time with more than :math:`n/2` processes. This is not true when
-   using a *miniconda* installation, since all processes uses no more than
-   100%.
+    :alt: Linear mixed effects execution time vs number of processes.
 
 
-.. _lin-tut-comparison:
+.. _mixedlm-tut-comparison:
 
 Results comparison
 ^^^^^^^^^^^^^^^^^^^
 
-The linear regression results from :py:mod:`gwip` and *Plink* were compared for
-validity. The following figure shows the comparison for, from left to right,
-the coefficients, the standard errors and the *p*-values. The *x* axis shows
-the results from :py:mod:`gwip`, and the *y* axis shows the results for
-*Plink*. This comparison includes 163,670 "good" imputed markers, analyzed for
-60 samples (*i.e* results from this tutorial). Note that for this comparison,
-the **probability threshold** (``--prob``) **was changed from 0.9 to 0** to
-*imitate* *Plink* analysis (see note below for more information).
+The linear mixed effects analysis results from :py:mod:`gwip` and *R* were
+compared for validity. The following figure shows the comparison for, from left
+to right, the coefficients, the standard errors and the *p*-values. The *x*
+axis shows the results from :py:mod:`gwip`, and the *y* axis shows the results
+for *R*. This comparison includes 163,670 "good" imputed markers, analyzed
+for 60 samples (*i.e* results from this tutorial). Note that for this
+comparison, the **probability threshold** (``--prob``) **was changed from 0.9
+to 0** to *imitate* *R* analysis (see note below for more information).
 
-.. figure:: ../_static/images/Linear_Diff_Prob0.png
+.. figure:: ../_static/images/MixedLM_Diff_Prob0.png
    :align: center
    :width: 100%
-   :alt: Linear regression comparison between gwip and Plink (probability of 0)
+   :alt: Linear mixed effects comparison between gwip and R (probability of 0)
 
 .. note::
 
    The sign of the coefficients might be different when comparing
-   :py:mod:`gwip` to *Plink*, since :py:mod:`gwip` computes the statistics on
-   the rare allele, while *Plink* computes them on the second (alternative)
-   allele. The alternative allele might not always be the rarest.
+   :py:mod:`gwip` to *R*, since :py:mod:`gwip` computes the statistics on the
+   rare allele, while *R* computes them on the second (alternative) allele. The
+   alternative allele might not always be the rarest.
 
 .. note::
 
    By default, :py:mod:`gwip` excludes samples with a maximum probability lower
-   than 0.9 (the ``--prob`` option), while *Plink* keeps all the samples for
-   the analysis. In order to get the same results as *Plink*, the analysis must
-   be done with a probability threshold of 0 (*i.e.* ``--prob 0``, keeping all
-   imputed genotypes including those with poor quality). This is what was done
-   for the previous figure.
+   than 0.9 (the ``--prob`` option), while *R* keeps all the samples for the
+   analysis. In order to get the same results as *R*, the analysis must be done
+   with a probability threshold of 0 (*i.e.* ``--prob 0``, keeping all imputed
+   genotypes including those with poor quality). This is what was done for the
+   previous figure.
 
-   The following figure shows the comparison between *Plink* and :py:mod:`gwip`
-   for the same analysis, but using the default probability threshold of 0.9
-   (excluding imputed genotypes with poor quality). Hence, 163,670 markers
-   were compared.
+   The following figure shows the comparison between *R* and :py:mod:`gwip` for
+   the same analysis, but using the default probability threshold of 0.9
+   (excluding imputed genotypes with poor quality). Hence, 163,670 markers were
+   compared.
 
-   .. figure:: ../_static/images/Linear_Diff.png
+   .. figure:: ../_static/images/MixedLM_Diff.png
       :align: center
       :width: 100%
-      :alt: Linear regression comparison between gwip and Plink
+      :alt: Linear mixed effects comparison between gwip and R
 

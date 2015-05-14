@@ -69,6 +69,7 @@ command:
 
 .. code-block:: bash
 
+   pip install scipy
    pip install statsmodels
    pip install lifelines
    pip install biopython

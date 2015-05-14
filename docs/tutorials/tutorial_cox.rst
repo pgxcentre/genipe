@@ -119,12 +119,13 @@ randomly generated). The following command should download the phenotype file.
    cd $HOME/gwip_tutorial/survival
 
    wget http://pgxcentre.github.io/gwip/_static/tutorial/phenotypes_survival.txt.bz2
-   bunzip2 phenotypes_survival.txt.bz2 
+   bunzip2 phenotypes_survival.txt.bz2
 
 .. note::
 
    Note that the gender is encoded such that males are ``1`` and females are
-   ``2``. Missing gender is encoded as ``0``.
+   ``2``. Samples with missing gender (encoded as ``0``) will be excluded only
+   if gender is in the covariable list.
 
 .. warning::
 
@@ -155,7 +156,7 @@ the survival analysis.
 .. code-block:: bash
 
    cd $HOME/gwip_tutorial/survival
-   
+
    imputed-stats cox \
        --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz \
        --sample ../gwip/chr22/final_impute2/chr22.imputed.sample \
@@ -226,12 +227,13 @@ in the console:
                             --pheno FILE [--extract-sites FILE] [--out FILE]
                             [--nb-process INT] [--nb-lines INT] [--chrx]
                             [--gender-column NAME] [--scale INT] [--prob FLOAT]
-                            [--maf FLOAT] [--covar NAME] [--missing-value NAME]
-                            [--sample-column NAME] [--interaction NAME]
-                            --time-to-event NAME --event NAME
+                            [--maf FLOAT] [--covar NAME] [--categorical NAME]
+                            [--missing-value NAME] [--sample-column NAME]
+                            [--interaction NAME] --time-to-event NAME --event
+                            NAME
 
    Performs a survival regression on imputed data using Cox's proportional hazard
-   model. This script is part of the 'gwip' package, version 1.0.0).
+   model. This script is part of the 'gwip' package, version 1.1.0).
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -271,6 +273,9 @@ in the console:
    Phenotype Options:
      --covar NAME          The co variable names (in the phenotype file),
                            separated by coma.
+     --categorical NAME    The name of the variables that are categorical (note
+                           that the gender is always categorical). The variables
+                           are separated by coma.
      --missing-value NAME  The missing value in the phenotype file.
      --sample-column NAME  The name of the sample ID column (in the phenotype
                            file). [sample_id]

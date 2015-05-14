@@ -11,6 +11,8 @@ statistical analysis or data management.
 3. :ref:`skat-tut`
 4. :ref:`linear-tut`
 5. :ref:`logistic-tut`
+6. :ref:`mixedlm-tut`
+7. :ref:`extraction-tut`
 
 
 .. _gwip-tut:
@@ -85,6 +87,20 @@ detail the expected input and output file.
    :maxdepth: 3
 
    tutorials/tutorial_logistic
+
+
+.. _mixedlm-tut:
+
+Linear mixed effects tutorial
+------------------------------
+
+This tutorial walks through a full example of a linear mixed effects analysis.
+It describes in detail the expected input and output files.
+
+.. toctree::
+   :maxdepth: 3
+
+   tutorials/tutorial_mixedlm
 
 
 .. _extraction-tut:

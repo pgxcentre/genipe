@@ -26,7 +26,7 @@ provides a useful standalone tool to perform statistical analysis on imputed
    :maxdepth: 2
 
    installation
-   tutorial
+   tutorials
    input_files
    output_files
    implementation
@@ -53,7 +53,7 @@ Usage
                         [--report-author AUTHOR]
 
    Execute the genome-wide imputation pipeline. This script is part of the 'gwip'
-   package, version 1.0.0.
+   package, version 1.1.0.
 
    optional arguments:
      -h, --help            show this help message and exit
