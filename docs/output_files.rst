@@ -1,16 +1,16 @@
 Output Files
-============
+=============
 
-The :py:mod:`gwip` pipeline generates output files for each of the autosomal
+The :py:mod:`genip` pipeline generates output files for each of the autosomal
 chromosome (from 1 to 22). To get a description of those file, refer to the
-:ref:`gwip-tut-output-files` section of the tutorial.
+:ref:`genip-tut-output-files` section of the tutorial.
 
 In summary, here is the structure of the output files. Again, refer to the
-:ref:`gwip-tut-output-files` section of the tutorial for more information.
+:ref:`genip-tut-output-files` section of the tutorial for more information.
 
 .. code-block:: text
 
-   gwip/
+   genip/
    │
    ├── chr1/
    │   ├── chr1.1_5000000.impute2
@@ -47,7 +47,7 @@ In summary, here is the structure of the output files. Again, refer to the
    │
    ├── chromosome_lengths.txt
    ├── frequency_pie.pdf
-   ├── gwip.log
+   ├── genip.log
    ├── markers_to_exclude.txt
    ├── markers_to_flip.txt
    │

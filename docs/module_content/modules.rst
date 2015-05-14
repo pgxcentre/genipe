@@ -1,7 +1,7 @@
-gwip
-=====
+genip
+======
 
 .. toctree::
    :maxdepth: 4
 
-   gwip
+   genip
