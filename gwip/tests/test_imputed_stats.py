@@ -2358,7 +2358,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=5)
         self.assertAlmostEqual(expected_z, observed_z, places=8)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=9)
+                               places=8)
 
         # The formula for the third (and last) marker
         formula = "y ~ snp3 + C1 + C2 + C3 + age + C(gender)"
