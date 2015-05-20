@@ -22,12 +22,12 @@ values). We provide an easy tool to perform site extraction of multiple
 *impute2* files using either marker identification number, or genomic location
 and/or minor allele frequency and/or call rate.
 
-We suppose that you have followed the main :ref:`gwip-tut-page`. The following
+We suppose that you have followed the main :ref:`genip-tut-page`. The following
 command will create the working directory for this tutorial.
 
 .. code-block:: bash
 
-   mkdir -p $HOME/gwip_tutorial/extraction
+   mkdir -p $HOME/genip_tutorial/extraction
 
 
 .. _extract-tut-input-files:
@@ -35,10 +35,10 @@ command will create the working directory for this tutorial.
 Input files
 ^^^^^^^^^^^^
 
-After running the :py:mod:`gwip` pipeline, all the required files for the
+After running the :py:mod:`genip` pipeline, all the required files for the
 extraction tools are automatically created in the ``final_impute2`` directories
-(see the :ref:`gwip-tut-output-files-final_impute2` section in the main
-:ref:`gwip-tut-page`).
+(see the :ref:`genip-tut-output-files-final_impute2` section in the main
+:ref:`genip-tut-page`).
 
 The files that are required in these directories depends of what kind of
 extraction is required (by name, or by genomic location and/or by minor allele
@@ -72,7 +72,7 @@ containing the list of marker to extract (one marker per line).
 
 .. code-block:: bash
 
-   cd $HOME/gwip_tutorial/extraction
+   cd $HOME/genip_tutorial/extraction
 
    echo "rs76139713:51137523:C:T" > marker_list.txt
    echo "rs372879164:17037188:A:G" >> marker_list.txt
@@ -90,7 +90,7 @@ two markers from the *impute2* file.
 .. code-block:: bash
 
    impute2-extractor \
-       --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz \
+       --impute2 ../genip/chr22/final_impute2/chr22.imputed.impute2.gz \
        --extract marker_list.txt
 
 .. note::
@@ -116,10 +116,10 @@ For example, to extract markers with a MAF :math:`\geq` 0.05 located in the
 
 .. code-block:: bash
 
-   cd $HOME/gwip_tutorial/extraction
+   cd $HOME/genip_tutorial/extraction
 
    impute2-extractor \
-       --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz \
+       --impute2 ../genip/chr22/final_impute2/chr22.imputed.impute2.gz \
        --genomic chr22:42522501-42526883 \
        --maf 0.05 \
        --out cyp2d6_common
@@ -130,7 +130,7 @@ To gather all markers with a MAF :math:`\geq` 0.05 and a call rate :math:`\geq`
 .. code-block:: bash
 
    impute2-extractor \
-       --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz \
+       --impute2 ../genip/chr22/final_impute2/chr22.imputed.impute2.gz \
        --maf 0.05 \
        --rate 0.99 \
        --out common_complete
@@ -236,7 +236,7 @@ analysis in the console:
                             [--rate FLOAT]
 
    Extract imputed markers located in a specific genomic region. This script is
-   part of the 'gwip' package, version 1.1.0).
+   part of the 'genip' package, version 1.1.0).
 
    optional arguments:
      -h, --help            show this help message and exit

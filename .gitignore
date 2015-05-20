@@ -8,4 +8,4 @@ test
 docs/_build
 conda_dist
 
-gwip/version.py
+genip/version.py
