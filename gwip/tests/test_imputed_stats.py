@@ -2829,6 +2829,119 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                    places=place)
 
+    @unittest.skipIf(platform.system() == "Darwin",
+                     "multiprocessing not supported with Mac OS")
+    def test_full_fit_mixedlm_multiprocess_use_ml(self):
+        """Tests the full pipeline, mixed linear with >1 processes (ML)."""
+        # Reading the data
+        data_filename = resource_filename(
+            __name__,
+            "data/regression_mixedlm.txt.bz2",
+        )
+
+        # Creating the input files
+        o_prefix, options = create_input_files(
+            i_filename=data_filename,
+            output_dirname=self.output_dir.name,
+            analysis_type="mixedlm",
+            pheno_name="y",
+            sample_col="SampleID",
+            nb_process=2,
+            use_ml=True,
+        )
+
+        # Executing the tool
+        try:
+            main(args=options)
+        finally:
+            clean_logging_handlers()
+
+        # Making sure the output file exists
+        self.assertTrue(os.path.isfile(o_prefix + ".mixedlm.dosage"))
+
+        # Reading the data
+        observed = pd.read_csv(o_prefix + ".mixedlm.dosage", sep="\t")
+
+        # Checking the shape
+        self.assertEqual((3, 13), observed.shape)
+
+        # Checking all columns are present
+        self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
+                          "coef", "se", "lower", "upper", "z", "p"],
+                         list(observed.columns))
+
+        # Chromosomes
+        self.assertEqual([22], observed.chr.unique())
+
+        # Positions
+        self.assertEqual([1, 2, 3], list(observed.pos))
+
+        # Marker names
+        self.assertEqual(["marker_1", "marker_2", "marker_3"],
+                         list(observed.snp))
+
+        # Major alleles
+        self.assertEqual(["T", "G", "AT"], list(observed.major))
+
+        # Minor alleles
+        self.assertEqual(["C", "A", "A"], list(observed.minor))
+
+        # Minor allele frequency
+        expected = [1724 / 11526, 4605 / 11528, 1379 / 11528]
+        for expected_maf, observed_maf in zip(expected, observed.maf):
+            self.assertAlmostEqual(expected_maf, observed_maf, places=10)
+
+        # The number of samples
+        expected = [5763, 5764, 5764]
+        for expected_n, observed_n in zip(expected, observed.n):
+            self.assertEqual(expected_n, observed_n)
+
+        # The coefficients
+        expected = [0.1226516898098772429, 0.00793160646584102277,
+                    -0.1544998103931393973]
+        places = [10, 9, 10]
+        zipped = zip(expected, observed.coef, places)
+        for expected_coef, observed_coef, place in zipped:
+            self.assertAlmostEqual(expected_coef, observed_coef, places=place)
+
+        # The standard error
+        expected = [0.04170695572479218849, 0.03045797340709452752,
+                    0.04583038201498106784]
+        zipped = zip(expected, observed.se)
+        for expected_se, observed_se in zipped:
+            self.assertAlmostEqual(expected_se, observed_se, places=10)
+
+        # The lower CI
+        expected = [0.0409030180938254675, -0.0517682398048088729,
+                    -0.2443306971781778192]
+        places = [4, 5, 5]
+        zipped = zip(expected, observed.lower, places)
+        for expected_min_ci, observed_min_ci, place in zipped:
+            self.assertAlmostEqual(expected_min_ci, observed_min_ci,
+                                   places=place)
+
+        # The upper CI
+        expected = [0.2044003615251611394, 0.0676314527367696539,
+                    -0.0646689236082046010]
+        places = [4, 5, 5]
+        zipped = zip(expected, observed.upper, places)
+        for expected_max_ci, observed_max_ci, place in zipped:
+            self.assertAlmostEqual(expected_max_ci, observed_max_ci,
+                                   places=place)
+
+        # The Z statistics
+        expected = [2.940796988857387273, 0.260411497502769707,
+                    -3.371122028671643900]
+        for expected_z, observed_z in zip(expected, observed.z):
+            self.assertAlmostEqual(expected_z, observed_z, places=8)
+
+        # The p values
+        expected = [3.27369009811673273e-03, 7.94546375098304614e-01,
+                    7.48626890377357412e-04]
+        for expected_p, observed_p in zip(expected, observed.p):
+            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                                   places=8)
+
     def test_full_fit_mixedlm_interaction(self):
         """Tests the full pipeline for mixed linear model with interaction."""
         # Reading the data
@@ -2930,6 +3043,114 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The p values
         expected = [0.5797624694538319190, 0.851448456503608009,
                     9.720192436335240e-01]
+        places = [10, 8, 10]
+        zipped = zip(expected, observed.p, places)
+        for expected_p, observed_p, place in zipped:
+            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
+                                   places=place)
+
+    def test_full_fit_mixedlm_interaction_use_ml(self):
+        """Tests the full pipeline for mixed linear model (interaction, ML)."""
+        # Reading the data
+        data_filename = resource_filename(
+            __name__,
+            "data/regression_mixedlm.txt.bz2",
+        )
+
+        # Creating the input files
+        o_prefix, options = create_input_files(
+            i_filename=data_filename,
+            output_dirname=self.output_dir.name,
+            analysis_type="mixedlm",
+            pheno_name="y",
+            sample_col="SampleID",
+            interaction="gender",
+            use_ml=True,
+        )
+
+        # Executing the tool
+        try:
+            main(args=options)
+        finally:
+            clean_logging_handlers()
+
+        # Making sure the output file exists
+        self.assertTrue(os.path.isfile(o_prefix + ".mixedlm.dosage"))
+
+        # Reading the data
+        observed = pd.read_csv(o_prefix + ".mixedlm.dosage", sep="\t")
+
+        # Checking the shape
+        self.assertEqual((3, 13), observed.shape)
+
+        # Checking all columns are present
+        self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
+                          "coef", "se", "lower", "upper", "z", "p"],
+                         list(observed.columns))
+
+        # Chromosomes
+        self.assertEqual([22], observed.chr.unique())
+
+        # Positions
+        self.assertEqual([1, 2, 3], list(observed.pos))
+
+        # Marker names
+        self.assertEqual(["marker_1", "marker_2", "marker_3"],
+                         list(observed.snp))
+
+        # Major alleles
+        self.assertEqual(["T", "G", "AT"], list(observed.major))
+
+        # Minor alleles
+        self.assertEqual(["C", "A", "A"], list(observed.minor))
+
+        # Minor allele frequency
+        expected = [1724 / 11526, 4605 / 11528, 1379 / 11528]
+        for expected_maf, observed_maf in zip(expected, observed.maf):
+            self.assertAlmostEqual(expected_maf, observed_maf, places=10)
+
+        # The number of samples
+        expected = [5763, 5764, 5764]
+        for expected_n, observed_n in zip(expected, observed.n):
+            self.assertEqual(expected_n, observed_n)
+
+        # The coefficients
+        expected = [-0.0461968392209209863, 0.01140987754266144238,
+                    -0.00321841685447645789]
+        places = [10, 9, 10]
+        zipped = zip(expected, observed.coef, places)
+        for expected_coef, observed_coef, place in zipped:
+            self.assertAlmostEqual(expected_coef, observed_coef, places=place)
+
+        # The standard error
+        expected = [0.08340889441074257615, 0.06091312045157387667,
+                    0.09173464292030783507]
+        for expected_se, observed_se in zip(expected, observed.se):
+            self.assertAlmostEqual(expected_se, observed_se, places=10)
+
+        # The lower CI
+        expected = [-0.2096843490411491873, -0.1079842752346594492,
+                    -0.1830249985961751036]
+        for expected_min_ci, observed_min_ci in zip(expected, observed.lower):
+            self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
+
+        # The upper CI
+        expected = [0.1172906706005419908, 0.1308040303204295873,
+                    0.1765881648884577437]
+        for expected_max_ci, observed_max_ci in zip(expected, observed.upper):
+            self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
+
+        # The Z statistics
+        expected = [-0.553859867671032235, 0.1873139556482306678,
+                    -0.0350839851992706467]
+        places = [10, 8, 9]
+        zipped = zip(expected, observed.z, places)
+        for expected_z, observed_z, place in zipped:
+            self.assertAlmostEqual(expected_z, observed_z, places=place)
+
+        # The p values
+        expected = [5.79674752511348590e-01, 0.85141448161648325410,
+                    9.72012771510516016e-01]
         places = [10, 8, 10]
         zipped = zip(expected, observed.p, places)
         for expected_p, observed_p, place in zipped:
