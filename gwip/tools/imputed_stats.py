@@ -723,6 +723,8 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
             categorical=options.categorical,
         )
         logging.info("{}: '{}'".format(options.analysis_type, formula))
+        if options.analysis_type == "mixedlm" and options.use_ml:
+            logging.info("  - using ML")
 
     # Reading the IMPUTE2 file one line (site) at a time, creating a subprocess
     # if required
