@@ -2352,7 +2352,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             observed_z, observed_p, = observed
 
         # Comparing the results
-        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_coef, observed_coef, places=9)
         self.assertAlmostEqual(expected_se, observed_se, places=10)
         self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=5)
         self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=5)
