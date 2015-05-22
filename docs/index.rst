@@ -6,9 +6,6 @@
 Genome-Wide Imputation Pipeline
 ================================
 
-.. note::
-
-   Documentation is in progress...
 
 Introduction
 -------------
