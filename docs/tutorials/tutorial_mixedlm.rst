@@ -127,7 +127,7 @@ should download the phenotype file.
    cd $HOME/genipe_tutorial/mixedlm
 
    wget http://pgxcentre.github.io/genipe/_static/tutorial/phenotypes_mixedlm.txt.bz2
-   bunzip2 phenotypes_mixedlm.txt.bz2 
+   bunzip2 phenotypes_mixedlm.txt.bz2
 
 .. note::
 
@@ -255,7 +255,7 @@ effects analysis in the console:
 
    Performs a linear mixed effects regression on imputed data using a random
    intercept for each group. This script is part of the 'genipe' package, version
-   1.1.0).
+   1.0.0).
 
    optional arguments:
      -h, --help            show this help message and exit
