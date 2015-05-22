@@ -10,7 +10,7 @@ Genome-Wide Imputation Pipeline
 Introduction
 -------------
 
-The :py:mod:`genipe` (GENome-wide Imputation Pipeline) module provides an easy
+The :py:mod:`genipe` (GENome-wide Imputation PipelinE) module provides an easy
 an efficient way of performing genome-wide imputation analysis using the three
 commonly used softwares `PLINK <http://pngu.mgh.harvard.edu/~purcell/plink/>`_,
 `SHAPEIT <https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html>`_ and
