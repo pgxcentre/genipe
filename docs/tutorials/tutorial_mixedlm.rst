@@ -368,8 +368,8 @@ to 0** to *imitate* *R* analysis (see note below for more information).
 
    The following figure shows the comparison between *R* and :py:mod:`genipe`
    for the same analysis, but using the default probability threshold of 0.9
-    (excluding imputed genotypes with poor quality). Hence, 163,670 markers
-    were compared.
+   (excluding imputed genotypes with poor quality). Hence, 163,670 markers
+   were compared.
 
    .. figure:: ../_static/images/MixedLM_Diff.png
       :align: center

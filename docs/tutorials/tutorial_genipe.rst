@@ -491,7 +491,7 @@ directory content is describe below. The following files are created inside the
     |                            | only if the :py:mod:`matplotlib` module is |
     |                            | installed.                                 |
     +----------------------------+--------------------------------------------+
-    | ``genipe.log``               | The log file of the main pipeline.        |
+    | ``genipe.log``               | The log file of the main pipeline.       |
     +----------------------------+--------------------------------------------+
     | ``markers_to_exclude.txt`` | The list of markers to exclude prior to    |
     |                            | phasing.                                   |
