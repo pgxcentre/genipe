@@ -52,17 +52,17 @@ activate it, as long as Python 3 was previously installed on the machine.
 .. code-block:: bash
 
    # Creating the environment
-   pyvenv $HOME/genip_pyvenv
+   pyvenv $HOME/genipe_pyvenv
 
    # Activating the environment
-   source $HOME/genip_pyvenv/bin/activate
+   source $HOME/genipe_pyvenv/bin/activate
 
-Then, install the :py:mod:`genip` package (and all its dependencies) using the
+Then, install the :py:mod:`genipe` package (and all its dependencies) using the
 following command:
 
 .. code-block:: bash
 
-   pip install genip
+   pip install genipe
 
 If required, the optional dependencies can be installed using the following
 command:
@@ -91,17 +91,17 @@ doesn't required a previous Python 3 installation.
    bash miniconda.sh -b -p $HOME/miniconda
 
    # Creating the environment
-   $HOME/miniconda/bin/conda create -q -n genip_pyvenv python=3.4
+   $HOME/miniconda/bin/conda create -q -n genipe_pyvenv python=3.4
 
    # Activating the environment
-   source $HOME/miniconda/bin/activate genip_pyvenv
+   source $HOME/miniconda/bin/activate genipe_pyvenv
 
-Then, install the :py:mod:`genip` package (and all its dependencies) using the
+Then, install the :py:mod:`genipe` package (and all its dependencies) using the
 following command:
 
 .. code-block:: bash
 
-   conda install genip -c http://statgen.org/wp-content/uploads/Softwares/genip
+   conda install genipe -c http://statgen.org/wp-content/uploads/Softwares/genipe
 
 If required, the optional dependencies can be installed using the following
 command:
@@ -116,12 +116,12 @@ command:
    pip install --no-deps lifelines
 
 
-.. _genip-pyvenv-activation:
+.. _genipe-pyvenv-activation:
 
 Virtual environment activation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Before using the :py:mod:`genip` module for any analysis, the Python virtual
+Before using the :py:mod:`genipe` module for any analysis, the Python virtual
 environment needs to be activated. Depending of your installation type (*i.e*
 *pyvenv* or *miniconda*), the activation process will differ.
 
@@ -134,7 +134,7 @@ command to activate it.
 
 .. code-block:: bash
 
-   source $HOME/genip_pyvenv/bin/activate
+   source $HOME/genipe_pyvenv/bin/activate
 
 
 Miniconda
@@ -145,7 +145,7 @@ following command to activate it.
 
 .. code-block:: bash
 
-   source $HOME/miniconda/bin/activate genip_pyvenv
+   source $HOME/miniconda/bin/activate genipe_pyvenv
 
 
 .. _install-test:
@@ -158,8 +158,8 @@ Then, launch python and use the following commands:
 
 .. code-block:: python
 
-   >>> import genip
-   >>> genip.test()
+   >>> import genipe
+   >>> genipe.test()
    ......................ss.ss.......................ss...ss...s.s.........
    ----------------------------------------------------------------------
    Ran 72 tests in 107.268s
@@ -172,9 +172,9 @@ Then, launch python and use the following commands:
 Updating the package
 ---------------------
 
-If there is a new :py:mod:`genip` release, perform one of the following command
-(depending of the installation method). Don't forget to first activate the
-python virtual environment.
+If there is a new :py:mod:`genipe` release, perform one of the following
+command (depending of the installation method). Don't forget to first activate
+the python virtual environment.
 
 
 Pyvenv
@@ -182,7 +182,7 @@ Pyvenv
 
 .. code-block:: bash
 
-   pip install -U genip
+   pip install -U genipe
 
 
 Miniconda
@@ -190,5 +190,5 @@ Miniconda
 
 .. code-block:: bash
 
-   conda update genip -c http://statgen.org/wp-content/uploads/Softwares/genip
+   conda update genipe -c http://statgen.org/wp-content/uploads/Softwares/genipe
 

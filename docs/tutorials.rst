@@ -2,11 +2,11 @@ Short Tutorials
 ================
 
 This section presents some short tutorials describing the functionality of the
-:py:mod:`genip` module. The first one describes the genome-wide imputation
+:py:mod:`genipe` module. The first one describes the genome-wide imputation
 pipeline itself. The other tutorials describe provided tools to perform
 statistical analysis or data management.
 
-1. :ref:`genip-tut`
+1. :ref:`genipe-tut`
 2. :ref:`cox-tut`
 3. :ref:`skat-tut`
 4. :ref:`linear-tut`
@@ -15,7 +15,7 @@ statistical analysis or data management.
 7. :ref:`extraction-tut`
 
 
-.. _genip-tut:
+.. _genipe-tut:
 
 Pipeline tutorial
 ------------------
@@ -27,7 +27,7 @@ and output files.
 .. toctree::
    :maxdepth: 3
 
-   tutorials/tutorial_genip
+   tutorials/tutorial_genipe
 
 
 .. _cox-tut:
