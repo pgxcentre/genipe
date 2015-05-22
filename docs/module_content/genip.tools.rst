@@ -1,37 +1,37 @@
-genip.tools package
-====================
+genipe.tools package
+=====================
 
 Module contents
 ----------------
 
-.. automodule:: genip.tools
+.. automodule:: genipe.tools
     :members:
     :undoc-members:
     :show-inheritance:
 
 
-genip.tools.impute2_extractor module
--------------------------------------
+genipe.tools.impute2_extractor module
+--------------------------------------
 
-.. automodule:: genip.tools.impute2_extractor
+.. automodule:: genipe.tools.impute2_extractor
     :members:
     :undoc-members:
     :show-inheritance:
 
 
-genip.tools.impute2_merger module
+genipe.tools.impute2_merger module
+-----------------------------------
+
+.. automodule:: genipe.tools.impute2_merger
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+genipe.tools.imputed_stats module
 ----------------------------------
 
-.. automodule:: genip.tools.impute2_merger
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-genip.tools.imputed_stats module
----------------------------------
-
-.. automodule:: genip.tools.imputed_stats
+.. automodule:: genipe.tools.imputed_stats
     :members:
     :undoc-members:
     :show-inheritance:

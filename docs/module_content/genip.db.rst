@@ -1,11 +1,11 @@
-genip.db package
-=================
+genipe.db package
+==================
 
 
 Module contents
 ----------------
 
-.. automodule:: genip.db
+.. automodule:: genipe.db
     :members:
     :undoc-members:
     :show-inheritance:
@@ -15,10 +15,10 @@ Submodules
 -----------
 
 
-genip.db.utils module
-----------------------
+genipe.db.utils module
+-----------------------
 
-.. automodule:: genip.db.utils
+.. automodule:: genipe.db.utils
     :members:
     :undoc-members:
     :show-inheritance:

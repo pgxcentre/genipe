@@ -1,11 +1,11 @@
-genip package
-==============
+genipe package
+===============
 
 
 Module contents
 ----------------
 
-.. automodule:: genip
+.. automodule:: genipe
     :members:
     :undoc-members:
     :show-inheritance:
@@ -16,41 +16,41 @@ Subpackages
 
 .. toctree::
 
-    genip.config
-    genip.db
-    genip.formats
-    genip.reporting
-    genip.task
-    genip.tests
-    genip.tools
+    genipe.config
+    genipe.db
+    genipe.formats
+    genipe.reporting
+    genipe.task
+    genipe.tests
+    genipe.tools
 
 
 Submodules
 -----------
 
 
-genip.error module
--------------------
+genipe.error module
+--------------------
 
-.. automodule:: genip.error
+.. automodule:: genipe.error
     :members:
     :undoc-members:
     :show-inheritance:
 
 
-genip.pipeline module
+genipe.pipeline module
+-----------------------
+
+.. automodule:: genipe.pipeline
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+genipe.version module
 ----------------------
 
-.. automodule:: genip.pipeline
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-genip.version module
----------------------
-
-.. automodule:: genip.version
+.. automodule:: genipe.version
     :members:
     :undoc-members:
     :show-inheritance:

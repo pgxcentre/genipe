@@ -1,11 +1,11 @@
-genip.config package
-=====================
+genipe.config package
+======================
 
 
 Module contents
 ----------------
 
-.. automodule:: genip.config
+.. automodule:: genipe.config
     :members:
     :undoc-members:
     :show-inheritance:
@@ -15,10 +15,10 @@ Submodules
 -----------
 
 
-genip.config.parser module
----------------------------
+genipe.config.parser module
+----------------------------
 
-.. automodule:: genip.config.parser
+.. automodule:: genipe.config.parser
     :members:
     :undoc-members:
     :show-inheritance:

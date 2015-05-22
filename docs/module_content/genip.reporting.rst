@@ -1,11 +1,11 @@
-genip.reporting package
-========================
+genipe.reporting package
+=========================
 
 
 Module contents
 ----------------
 
-.. automodule:: genip.reporting
+.. automodule:: genipe.reporting
     :members:
     :undoc-members:
     :show-inheritance:
@@ -15,19 +15,19 @@ Submodules
 -----------
 
 
-genip.reporting.autoreport module
-----------------------------------
+genipe.reporting.autoreport module
+-----------------------------------
 
-.. automodule:: genip.reporting.autoreport
+.. automodule:: genipe.reporting.autoreport
     :members:
     :undoc-members:
     :show-inheritance:
 
 
-genip.reporting.utils module
------------------------------
+genipe.reporting.utils module
+------------------------------
 
-.. automodule:: genip.reporting.utils
+.. automodule:: genipe.reporting.utils
     :members:
     :undoc-members:
     :show-inheritance:

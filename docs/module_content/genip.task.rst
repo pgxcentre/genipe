@@ -1,11 +1,11 @@
-genip.task package
-===================
+genipe.task package
+====================
 
 
 Module contents
 ----------------
 
-.. automodule:: genip.task
+.. automodule:: genipe.task
     :members:
     :undoc-members:
     :show-inheritance:
@@ -14,10 +14,10 @@ Submodules
 -----------
 
 
-genip.task.launcher module
----------------------------
+genipe.task.launcher module
+----------------------------
 
-.. automodule:: genip.task.launcher
+.. automodule:: genipe.task.launcher
     :members:
     :undoc-members:
     :show-inheritance:

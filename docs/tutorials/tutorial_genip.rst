@@ -1,4 +1,4 @@
-.. _genip-tut-page:
+.. _genipe-tut-page:
 
 Pipeline Tutorial
 ==================
@@ -7,10 +7,10 @@ Pipeline Tutorial
 Quick navigation
 -----------------
 
-1. :ref:`genip-tut-softwares`
-2. :ref:`genip-tut-input-files`
-3. :ref:`genip-tut-execute`
-4. :ref:`genip-tut-output-files`
+1. :ref:`genipe-tut-softwares`
+2. :ref:`genipe-tut-input-files`
+3. :ref:`genipe-tut-execute`
+4. :ref:`genipe-tut-output-files`
 
 Genome-wide imputation pipeline
 --------------------------------
@@ -22,7 +22,7 @@ million variants (single nucleotides, insertions and deletions). Unfortunately,
 genome-wide imputation requires high computation power and multiple data
 processing steps.
 
-The :py:mod:`genip` pipeline automates the different steps for pre-phasing and
+The :py:mod:`genipe` pipeline automates the different steps for pre-phasing and
 imputation for genome-wide data. The pipeline follows the guideline described
 by IMPUTE2's best practices when analyzing genome-wide data (described
 `by IMPUTE2 <https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#prephasing>`_
@@ -33,16 +33,16 @@ performed:
 
 .. code-block:: bash
 
-   mkdir -p $HOME/genip_tutorial
-   cd $HOME/genip_tutorial
+   mkdir -p $HOME/genipe_tutorial
+   cd $HOME/genipe_tutorial
 
 
-.. _genip-tut-softwares:
+.. _genipe-tut-softwares:
 
 Required softwares
 ^^^^^^^^^^^^^^^^^^^
 
-The main :py:mod:`genip` pipeline requires three external tools:
+The main :py:mod:`genipe` pipeline requires three external tools:
 `Plink <http://pngu.mgh.harvard.edu/~purcell/plink/>`_,
 `IMPUTE2 <https://mathgen.stats.ox.ac.uk/impute/impute_v2.html>`_ and
 `SHAPEIT <https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html>`_.
@@ -53,8 +53,8 @@ We will create a directory where the binaries will go:
 
 .. code-block:: bash
 
-   mkdir -p $HOME/genip_tutorial/bin
-   cd $HOME/genip_tutorial/bin
+   mkdir -p $HOME/genipe_tutorial/bin
+   cd $HOME/genipe_tutorial/bin
 
 Plink is freely available. Go to
 `Plink download page <http://pngu.mgh.harvard.edu/~purcell/plink/download.shtml>`_,
@@ -75,7 +75,7 @@ The ``bin`` directory should now contain three binaries: ``impute2``, ``plink``
 and ``shapeit``.
 
 
-.. _genip-tut-input-files:
+.. _genipe-tut-input-files:
 
 Input files
 ^^^^^^^^^^^^
@@ -99,10 +99,10 @@ To download the data for this tutorial, execute the following command:
 
 .. code-block:: bash
 
-   mkdir -p $HOME/genip_tutorial/data
-   cd $HOME/genip_tutorial/data
+   mkdir -p $HOME/genipe_tutorial/data
+   cd $HOME/genipe_tutorial/data
 
-   wget http://pgxcentre.github.io/genip/_static/tutorial/hapmap_CEU_r23a_hg19.tar.bz2
+   wget http://pgxcentre.github.io/genipe/_static/tutorial/hapmap_CEU_r23a_hg19.tar.bz2
    tar -jxf hapmap_CEU_r23a_hg19.tar.bz2
    rm hapmap_CEU_r23a_hg19.tar.bz2
 
@@ -115,7 +115,7 @@ dataset on their website. Go to IMPUTE2's
 `reference page <https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference>`_,
 and download the most recent reference data (which is over 12Gb). Once the
 reference is downloaded, extract it in the working directory
-(``$HOME/genip_tutorial``).
+(``$HOME/genipe_tutorial``).
 
 
 Human reference (optional)
@@ -133,8 +133,8 @@ It is possible to download the human reference (*fasta* format) from
 
 .. code-block:: bash
 
-   mkdir -p $HOME/genip_tutorial/hg19
-   cd $HOME/genip_tutorial/hg19
+   mkdir -p $HOME/genipe_tutorial/hg19
+   cd $HOME/genipe_tutorial/hg19
 
    wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/chromFa.tar.gz
    tar -zxf chromFa.tar.gz
@@ -149,7 +149,7 @@ installed, perform the following command:
 
    samtools faidx hg19.fasta
 
-You should now have two files in the ``$HOME/genip_tutorial/hg19`` directory:
+You should now have two files in the ``$HOME/genipe_tutorial/hg19`` directory:
 ``hg19.fasta`` and ``hg19.fasta.fai``.
 
 
@@ -206,7 +206,7 @@ located on chromosome 2 will have a walltime of 4 hours.
    chr2_walltime = 04:00:00
 
 We provide a
-`configuration example <http://pgxcentre.github.io/genip/_static/tutorial/config_example.ini>`_
+`configuration example <http://pgxcentre.github.io/genipe/_static/tutorial/config_example.ini>`_
 including all possible section. Also, here is a list of all possible section
 (*i.e* pipeline step) that can be parametrized.
 
@@ -261,7 +261,7 @@ environment before launching the task.
 
    The preamble file is system dependent, but you should always at least
    activate the virtual python environment so that the tools provided by
-   :py:mod:`genip` are automatically in the system path.
+   :py:mod:`genipe` are automatically in the system path.
 
 .. warning::
 
@@ -276,7 +276,7 @@ You should have the following directory structure:
 
 .. code-block:: text
 
-   $HOME/genip_tutorial/
+   $HOME/genipe_tutorial/
    │
    ├── 1000GP_Phase3/
    │   ├── 1000GP_Phase3_chr1.hap.gz
@@ -300,7 +300,7 @@ You should have the following directory structure:
    │   ├── hapmap_CEU_r23a_hg19.bim
    │   └── hapmap_CEU_r23a_hg19.fam
    │
-   ├── genip_config.ini  # OPTIONAL (--use-drmaa, --drmaa-config)
+   ├── genipe_config.ini  # OPTIONAL (--use-drmaa, --drmaa-config)
    │
    ├── hg19/
    │   ├── hg19.fasta
@@ -309,23 +309,23 @@ You should have the following directory structure:
    └── preamble.txt     # OPTIONAL (--use-drmaa, --preamble)
 
 
-.. _genip-tut-execute:
+.. _genipe-tut-execute:
 
 Executing the pipeline
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 Once all the input files are ready for analysis, you can finally execute the
 pipeline. Make sure that the virtual Python environment was properly activated
-(see :ref:`genip-pyvenv-activation` for more details).
+(see :ref:`genipe-pyvenv-activation` for more details).
 
 When in the correct working directory, the following command should execute the
 genome-wide imputation of the *HapMap* CEU dataset.
 
 .. code-block:: bash
 
-   cd $HOME/genip_tutorial
+   cd $HOME/genipe_tutorial
 
-   genip-launcher \
+   genipe-launcher \
        --bfile data/hapmap_CEU_r23a_hg19 \
        --reference hg19/hg19.fasta \
        --hap-template 1000GP_Phase3/1000GP_Phase3_chr{chrom}.hap.gz \
@@ -343,8 +343,8 @@ genome-wide imputation of the *HapMap* CEU dataset.
    In the previous command, the ``--refrence`` and ``--bgzip`` options are
    optional and might be skipped.
 
-The following table describes the option used by :py:mod:`genip` in the
-previous command (see the :ref:`genip-usage` section for a full list):
+The following table describes the option used by :py:mod:`genipe` in the
+previous command (see the :ref:`genipe-usage` section for a full list):
 
 .. table::
 
@@ -402,18 +402,18 @@ previous command (see the :ref:`genip-usage` section for a full list):
    subsequent steps).
 
 
-.. _genip-tut-output-files:
+.. _genipe-tut-output-files:
 
 Output files
 ^^^^^^^^^^^^^
 
-All results will be located in the ``genip`` directory (or whatever
+All results will be located in the ``genipe`` directory (or whatever
 ``--output-dir`` links to). Here is the directory tree summarizing the output
 files.
 
 .. code-block:: text
 
-   genip/
+   genipe/
    │
    ├── chr1/
    │   ├── chr1.1_5000000.impute2
@@ -450,7 +450,7 @@ files.
    │
    ├── chromosome_lengths.txt
    ├── frequency_pie.pdf
-   ├── genip.log
+   ├── genipe.log
    ├── markers_to_exclude.txt
    ├── markers_to_flip.txt
    │
@@ -469,12 +469,12 @@ files.
    └── tasks.db
 
 
-``genip`` directory
-"""""""""""""""""""
+``genipe`` directory
+"""""""""""""""""""""
 
 This directory contains all the chromosome specific analysis. The specific
 directory content is describe below. The following files are created inside the
-``genip`` directory:
+``genipe`` directory:
 
 .. table::
 
@@ -491,7 +491,7 @@ directory content is describe below. The following files are created inside the
     |                            | only if the :py:mod:`matplotlib` module is |
     |                            | installed.                                 |
     +----------------------------+--------------------------------------------+
-    | ``genip.log``               | The log file of the main pipeline.        |
+    | ``genipe.log``               | The log file of the main pipeline.        |
     +----------------------------+--------------------------------------------+
     | ``markers_to_exclude.txt`` | The list of markers to exclude prior to    |
     |                            | phasing.                                   |
@@ -505,8 +505,8 @@ directory content is describe below. The following files are created inside the
     +----------------------------+--------------------------------------------+
 
 
-``genip/chrN`` directories
-""""""""""""""""""""""""""
+``genipe/chrN`` directories
+""""""""""""""""""""""""""""
 
 The ``chrN`` directories contain the intermediate files, created throughout the
 pipeline. The most important files in these directories are the log files (for
@@ -514,14 +514,14 @@ errors and summary statistics). There will be one directory per autosomal
 chromosomes.
 
 
-.. _genip-tut-output-files-final_impute2:
+.. _genipe-tut-output-files-final_impute2:
 
-``genip/chrN/final_impute2`` directories
-""""""""""""""""""""""""""""""""""""""""
+``genipe/chrN/final_impute2`` directories
+""""""""""""""""""""""""""""""""""""""""""
 
-These ``final_impute2`` directories (located in the ``genip/chrN`` directories)
-contain the final output files from the pipeline for each autosomal
-chromosomes. They will contain the following files:
+These ``final_impute2`` directories (located in the ``genipe/chrN``
+directories) contain the final output files from the pipeline for each
+autosomal chromosomes. They will contain the following files:
 
 .. table::
 
@@ -573,15 +573,15 @@ chromosomes. They will contain the following files:
     +-------------------------------+-----------------------------------------+
 
 
-``genip/missing`` directory
-"""""""""""""""""""""""""""
+``genipe/missing`` directory
+"""""""""""""""""""""""""""""
 
 The ``missing`` directory contains the missing rates for both samples
 (``missing.imiss``) and genotypes markers (``missing.lmiss``). Those files are
 generated by Plink.
 
-``genip/report`` directory
-""""""""""""""""""""""""""
+``genipe/report`` directory
+""""""""""""""""""""""""""""
 
 This ``report`` directory contains the automatically generated report, which
 provides valuable information about the imputation analysis. Such information
@@ -594,11 +594,11 @@ The automatic report is generated in the ``LaTeX`` language (file
 
 .. code-block:: bash
 
-   cd $HOME/genip_tutorial/genip/report
+   cd $HOME/genipe_tutorial/genipe/report
    make && make clean
 
 This will generate the following
-`PDF report <http://pgxcentre.github.io/genip/_static/tutorial/report.pdf>`_
+`PDF report <http://pgxcentre.github.io/genipe/_static/tutorial/report.pdf>`_
 (which is named ``report.pdf``). It is always possible to modify the original
 ``report.tex`` file to include analysis specific details (*e.g.* cohort
 description).
