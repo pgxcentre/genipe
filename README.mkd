@@ -7,7 +7,7 @@
 *Version 1.0.0*
 
 The `genipe` module (standing for **GEN**ome-wide **I**mputation
-**P**ipelin**e**) includes a script (named `genipe-launcher`) that
+**P**ipelin**E**) includes a script (named `genipe-launcher`) that
 automatically runs a genome-wide imputation pipeline using *Plink*, *shapeit*
 and *impute2*.
 
