@@ -49,7 +49,8 @@ The main :py:mod:`genipe` pipeline requires three external tools:
 These tools are not required to be located in your ``PATH`` variable, since you
 can specify each of their location at runtime.
 
-We will create a directory where the binaries will go:
+If some of the binaries are missing in you ``PATH`` variable, we will create a
+directory where the missing binaries will go:
 
 .. code-block:: bash
 
@@ -71,8 +72,8 @@ SHAPEIT is freely available for academic use. Go to
 read the license, and download the most recent version. Extract the binary and
 copy it to the ``bin`` directory previously created.
 
-The ``bin`` directory should now contain three binaries: ``impute2``, ``plink``
-and ``shapeit``.
+The ``bin`` directory should now contain the missing binaries: ``impute2``,
+``plink`` and/or ``shapeit``.
 
 
 .. _genipe-tut-input-files:
@@ -327,6 +328,9 @@ genome-wide imputation of the *HapMap* CEU dataset.
 
    genipe-launcher \
        --bfile data/hapmap_CEU_r23a_hg19 \
+       --shapeit-bin bin/shapeit \
+       --impute2-bin bin/impute2 \
+       --plink-bin bin/plink \
        --reference hg19/hg19.fasta \
        --hap-template 1000GP_Phase3/1000GP_Phase3_chr{chrom}.hap.gz \
        --legend-template 1000GP_Phase3/1000GP_Phase3_chr{chrom}.legend.gz \
@@ -342,6 +346,10 @@ genome-wide imputation of the *HapMap* CEU dataset.
 
    In the previous command, the ``--refrence`` and ``--bgzip`` options are
    optional and might be skipped.
+
+   It is possible to skip (in the previous command) the ``--shapeit-bin``, the
+   ``--impute2-bin`` and/or the ``--plink-bin`` options if the SHAPEIT, IMPUTE2
+   and/or the Plink binaries are in  the ``PATH`` variable.
 
 The following table describes the option used by :py:mod:`genipe` in the
 previous command (see the :ref:`genipe-usage` section for a full list):
