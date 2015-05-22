@@ -50,7 +50,7 @@ Usage
                           [--report-author AUTHOR]
 
    Execute the genome-wide imputation pipeline. This script is part of the
-   'genipe' package, version 1.0.0.
+   'genipe' package, version 1.1.0.
 
    optional arguments:
      -h, --help            show this help message and exit

@@ -105,7 +105,7 @@ usage: genipe-launcher [-h] [-v] [--debug] [--thread THREAD] --bfile PREFIX
                        [--report-author AUTHOR]
 
 Execute the genome-wide imputation pipeline. This script is part of the
-'genipe' package, version 1.0.0.
+'genipe' package, version 1.1.0.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -209,7 +209,7 @@ usage: imputed-stats [-h] [-v] {cox,linear,logistic,mixedlm,skat} ...
 
 Performs statistical analysis on imputed data (either SKAT analysis, or
 linear, logistic or survival regression). This script is part of the 'genipe'
-package, version 1.0.0).
+package, version 1.1.0).
 
 optional arguments:
   -h, --help            show this help message and exit

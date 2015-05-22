@@ -236,7 +236,7 @@ analysis in the console:
                             [--rate FLOAT]
 
    Extract imputed markers located in a specific genomic region. This script is
-   part of the 'genipe' package, version 1.0.0).
+   part of the 'genipe' package, version 1.1.0).
 
    optional arguments:
      -h, --help            show this help message and exit
