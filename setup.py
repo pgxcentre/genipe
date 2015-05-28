@@ -8,8 +8,8 @@
 
 # How to build for conda
 #   - python setup.py bdist_conda
-#   - conda convert -p all .../gwip-0.1-py34_0.tar.bz2 -o dist
-#   - cd dist && conda index win-* osx-64 linux-*
+#   - conda convert -p all /PATH/TO/FILE -o conda_dist
+#   - cd conda_dist && rm -r win-* && conda index osx-64 linux-*
 
 
 import os
@@ -17,7 +17,7 @@ from setuptools import setup
 
 
 MAJOR = 1
-MINOR = 0
+MINOR = 1
 MICRO = 0
 VERSION = "{}.{}.{}".format(MAJOR, MINOR, MICRO)
 
@@ -26,11 +26,11 @@ def write_version_file(fn=None):
     if fn is None:
         fn = os.path.join(
             os.path.dirname(os.path.abspath(__file__)),
-            os.path.join("gwip", "version.py"),
+            os.path.join("genipe", "version.py"),
         )
 
-    content = ("\n# THIS FILE WAS GENERATED AUTOMATICALLY BY GWIP SETUP.PY\n"
-               'gwip_version = "{version}"\n')
+    content = ("\n# THIS FILE WAS GENERATED AUTOMATICALLY BY GENIPE SETUP.PY\n"
+               'genipe_version = "{version}"\n')
 
     a = open(fn, "w")
     try:
@@ -44,7 +44,7 @@ def setup_package():
     write_version_file()
 
     setup(
-        name="gwip",
+        name="genipe",
         version=VERSION,
         description="An automatic genome-wide imputation pipeline.",
         long_description=("This package provides tools to automatically "
@@ -56,27 +56,28 @@ def setup_package():
                           "quality metrics about the imputation process."),
         author="Louis-Philippe Lemieux Perreault",
         author_email="louis-philippe.lemieux.perreault@statgen.org",
-        url="https://github.com/pgxcentre/gwip",
+        url="https://github.com/pgxcentre/genipe",
         license="CC BY-NC 4.0",
         entry_points={
             "console_scripts": [
-                "gwip-launcher=gwip.pipeline:main",
-                "impute2-merger=gwip.tools.impute2_merger:main",
-                "impute2-extractor=gwip.tools.impute2_extractor:main",
-                "imputed-stats=gwip.tools.imputed_stats:main",
+                "genipe-launcher=genipe.pipeline:main",
+                "impute2-merger=genipe.tools.impute2_merger:main",
+                "impute2-extractor=genipe.tools.impute2_extractor:main",
+                "imputed-stats=genipe.tools.imputed_stats:main",
             ],
         },
-        install_requires=["numpy >= 1.8.2", "jinja2 >= 2.7.3",
+        install_requires=["numpy >= 1.9.2", "jinja2 >= 2.7.3",
                           "pandas >= 0.15.2", "setuptools >= 12.0.5"],
-        packages=["gwip", "gwip.task", "gwip.db", "gwip.tools", "gwip.formats",
-                  "gwip.reporting", "gwip.config", "gwip.tests"],
-        package_data={"gwip.reporting": ["templates/*.tex",
-                                         "templates/biblio/*",
-                                         "templates/utils/*",
-                                         "templates/parts/*.tex"],
-                      "gwip.tests": ["data/*"],
-                      "gwip": ["script_templates/*"]},
-        test_suite="gwip.tests.test_suite",
+        packages=["genipe", "genipe.task", "genipe.db", "genipe.tools",
+                  "genipe.formats", "genipe.reporting", "genipe.config",
+                  "genipe.tests"],
+        package_data={"genipe.reporting": ["templates/*.tex",
+                                           "templates/biblio/*",
+                                           "templates/utils/*",
+                                           "templates/parts/*.tex"],
+                      "genipe.tests": ["data/*"],
+                      "genipe": ["script_templates/*"]},
+        test_suite="genipe.tests.test_suite",
         classifiers=["Development Status :: 5 - Production/Stable",
                      "Intended Audience :: Science/Research",
                      "License :: Free for non-commercial use",
