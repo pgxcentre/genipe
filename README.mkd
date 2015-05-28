@@ -177,7 +177,7 @@ Automatic Report Options:
 ### Real life example
 
 The documentation provides a quick and easy tutorial for the complete pipeline.
-Refer to [this page](http://pgxcentre.github.io/genipe/tutorial.html)
+Refer to [this page](http://pgxcentre.github.io/genipe/tutorials.html)
 
 
 ### Automatic report
@@ -227,7 +227,7 @@ Statistical Analysis Type:
 ```
 
 See the tutorials for more information:
-[http://pgxcentre.github.io/genipe/tutorial.html](http://pgxcentre.github.io/genipe/tutorial.html)
+[http://pgxcentre.github.io/genipe/tutorials.html](http://pgxcentre.github.io/genipe/tutorials.html)
 
 
 # About
