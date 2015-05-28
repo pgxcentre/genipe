@@ -239,4 +239,4 @@ up (and automatize) the imputation process for the whole genome.
 
 <img src=http://pgxcentre.github.io/genipe/_images/logo_pgx.png width=350 />
 <img src=http://pgxcentre.github.io/genipe/_images/logo_statgen.png width=200 />
-<img src=http://pgxcentre.github.io/genipe/_images/logo_icm.png width=350 />
+<img src=http://pgxcentre.github.io/genipe/_images/logo_icm.jpg width=350 />
