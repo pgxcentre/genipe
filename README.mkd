@@ -4,7 +4,7 @@
 
 # genipe - A Python module to perform genome-wide imputation analysis
 
-*Version 1.0.0*
+*Version 1.1.0*
 
 The `genipe` module (standing for **GEN**ome-wide **I**mputation
 **P**ipelin**E**) includes a script (named `genipe-launcher`) that
