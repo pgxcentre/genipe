@@ -237,6 +237,9 @@ This project was initiated at the
 the [Montreal Heart Institute](https://www.icm-mhi.org/). The aim was to speed
 up (and automatize) the imputation process for the whole genome.
 
+
 <img src=http://pgxcentre.github.io/genipe/_images/logo_pgx.png width=350 />
+
 <img src=http://pgxcentre.github.io/genipe/_images/logo_statgen.png width=200 />
+
 <img src=http://pgxcentre.github.io/genipe/_images/logo_icm.jpg width=350 />
