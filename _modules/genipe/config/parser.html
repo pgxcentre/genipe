@@ -1,0 +1,294 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>genipe.config.parser &mdash; genipe 1.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
+    <link rel="top" title="genipe 1.1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="genipe" href="../../genipe.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for genipe.config.parser</h1><div class="highlight"><pre>
+<span class="c"># This file is part of genipe.</span>
+<span class="c">#</span>
+<span class="c"># This work is licensed under the Creative Commons Attribution-NonCommercial</span>
+<span class="c"># 4.0 International License. To view a copy of this license, visit</span>
+<span class="c"># http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative</span>
+<span class="c"># Commons, PO Box 1866, Mountain View, CA 94042, USA.</span>
+
+
+<span class="kn">import</span> <span class="nn">configparser</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">chromosomes</span>
+
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s">&quot;Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s">&quot;Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)&quot;</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;parse_drmaa_config&quot;</span><span class="p">,</span> <span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">parse_drmaa_config</span><span class="p">(</span><span class="n">configfile</span><span class="p">):</span>
+<div class="viewcode-block" id="parse_drmaa_config"><a class="viewcode-back" href="../../../module_content/genipe.config.html#genipe.config.parser.parse_drmaa_config">[docs]</a>    <span class="sd">&quot;&quot;&quot;Parses the tasks&#39; configuration file for DRMAA.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        configfile (str): the name of the configuration file</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: the DRMAA configuration for each task</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># This will save the final DRMAA configuration</span>
+    <span class="n">final_config</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c"># Loading the configuration file</span>
+    <span class="n">drmaa_config</span> <span class="o">=</span> <span class="n">configparser</span><span class="o">.</span><span class="n">ConfigParser</span><span class="p">()</span>
+    <span class="n">drmaa_config</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="n">configfile</span><span class="p">)</span>
+
+    <span class="c"># Is SKIP is set?</span>
+    <span class="k">if</span> <span class="s">&quot;main&quot;</span> <span class="ow">in</span> <span class="n">drmaa_config</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">drmaa_config</span><span class="p">[</span><span class="s">&quot;main&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;skip_drmaa_config&quot;</span><span class="p">,</span> <span class="s">&quot;no&quot;</span><span class="p">)</span> <span class="o">==</span> <span class="s">&quot;yes&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">{</span><span class="s">&quot;skip_drmaa_config&quot;</span><span class="p">:</span> <span class="bp">True</span><span class="p">}</span>
+
+    <span class="c"># First is &#39;plink_exclude&#39;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">_generate_default_values</span><span class="p">(</span><span class="s">&quot;plink_exclude&quot;</span><span class="p">,</span> <span class="n">drmaa_config</span><span class="p">)</span>
+    <span class="n">final_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="c"># Second is &#39;plink_missing_rate&#39; (only one value)</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">_generate_default_values</span><span class="p">(</span><span class="s">&quot;plink_missing_rate&quot;</span><span class="p">,</span> <span class="n">drmaa_config</span><span class="p">,</span>
+                                      <span class="n">only_one</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">final_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="c"># Third is &#39;shapeit_check_1&#39;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">_generate_default_values</span><span class="p">(</span><span class="s">&quot;shapeit_check_1&quot;</span><span class="p">,</span> <span class="n">drmaa_config</span><span class="p">,</span>
+                                      <span class="n">template</span><span class="o">=</span><span class="s">&quot;shapeit_check_chr{chrom}_1&quot;</span><span class="p">)</span>
+    <span class="n">final_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="c"># Fourth is &#39;plink_flip&#39;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">_generate_default_values</span><span class="p">(</span><span class="s">&quot;plink_flip&quot;</span><span class="p">,</span> <span class="n">drmaa_config</span><span class="p">)</span>
+    <span class="n">final_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="c"># Fifth is &#39;shapeit_check_2&#39;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">_generate_default_values</span><span class="p">(</span><span class="s">&quot;shapeit_check_2&quot;</span><span class="p">,</span> <span class="n">drmaa_config</span><span class="p">,</span>
+                                      <span class="n">template</span><span class="o">=</span><span class="s">&quot;shapeit_check_chr{chrom}_2&quot;</span><span class="p">)</span>
+    <span class="n">final_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="c"># Sixth is &#39;plink_final_exclude&#39;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">_generate_default_values</span><span class="p">(</span><span class="s">&quot;plink_final_exclude&quot;</span><span class="p">,</span> <span class="n">drmaa_config</span><span class="p">)</span>
+    <span class="n">final_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="c"># Seventh is &#39;shapeit_phase&#39;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">_generate_default_values</span><span class="p">(</span><span class="s">&quot;shapeit_phase&quot;</span><span class="p">,</span> <span class="n">drmaa_config</span><span class="p">)</span>
+    <span class="n">final_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="c"># Eight is &#39;impute2_chr{}_{}_{}&#39;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">_generate_default_values</span><span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="n">drmaa_config</span><span class="p">)</span>
+    <span class="n">final_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="c"># Ninth  is &#39;merge_impute2&#39;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">_generate_default_values</span><span class="p">(</span><span class="s">&quot;merge_impute2&quot;</span><span class="p">,</span> <span class="n">drmaa_config</span><span class="p">)</span>
+    <span class="n">final_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="c"># Tenth is &#39;bgzip&#39;</span>
+    <span class="n">config</span> <span class="o">=</span> <span class="n">_generate_default_values</span><span class="p">(</span><span class="s">&quot;bgzip&quot;</span><span class="p">,</span> <span class="n">drmaa_config</span><span class="p">)</span>
+    <span class="n">final_config</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">config</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">final_config</span>
+
+
+<span class="k">def</span> <span class="nf">_generate_default_values</span><span class="p">(</span><span class="n">task_name</span><span class="p">,</span> <span class="n">config</span><span class="p">,</span> <span class="n">walltime</span><span class="o">=</span><span class="s">&quot;00:15:00&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="o">=</span><span class="s">&quot;1&quot;</span><span class="p">,</span></div>
+                             <span class="n">ppn</span><span class="o">=</span><span class="s">&quot;1&quot;</span><span class="p">,</span> <span class="n">only_one</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">template</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates default values for missing DRMAA configuration.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        task_name (str): the name of the task</span>
+<span class="sd">        config (dict): the configuration</span>
+<span class="sd">        walltime (str): the default execution time</span>
+<span class="sd">        nodes (str): the default number of nodes</span>
+<span class="sd">        ppn (str): the default number of processes</span>
+<span class="sd">        only_one (bool): if there is only on task (and not one per chromosome)</span>
+<span class="sd">        template (str): task name template (for each chromosome)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        dict: the final configuration for this task</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># The final tool configuration</span>
+    <span class="n">final_tool_config</span> <span class="o">=</span> <span class="p">{}</span>
+
+    <span class="c"># The nodes configuration string</span>
+    <span class="n">nodes_string</span> <span class="o">=</span> <span class="s">&quot;-l nodes={n}:ppn={p}&quot;</span>
+
+    <span class="c"># The default task configuration</span>
+    <span class="n">task_config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;walltime&quot;</span><span class="p">:</span> <span class="n">walltime</span><span class="p">,</span>
+        <span class="s">&quot;nodes&quot;</span><span class="p">:</span>    <span class="n">nodes</span><span class="p">,</span>
+        <span class="s">&quot;ppn&quot;</span><span class="p">:</span>      <span class="n">ppn</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c"># Is there a configuration for this task?</span>
+    <span class="k">if</span> <span class="n">task_name</span> <span class="ow">in</span> <span class="n">config</span><span class="p">:</span>
+        <span class="c"># The task configuration</span>
+        <span class="n">task_config</span> <span class="o">=</span> <span class="n">config</span><span class="p">[</span><span class="n">task_name</span><span class="p">]</span>
+
+    <span class="c"># Getting the general walltime</span>
+    <span class="n">walltime</span> <span class="o">=</span> <span class="n">task_config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;walltime&quot;</span><span class="p">,</span> <span class="n">walltime</span><span class="p">)</span>
+    <span class="n">nodes</span> <span class="o">=</span> <span class="n">task_config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;nodes&quot;</span><span class="p">,</span> <span class="n">nodes</span><span class="p">)</span>
+    <span class="n">ppn</span> <span class="o">=</span> <span class="n">task_config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;ppn&quot;</span><span class="p">,</span> <span class="n">ppn</span><span class="p">)</span>
+
+    <span class="c"># Is there only one value?</span>
+    <span class="k">if</span> <span class="n">only_one</span><span class="p">:</span>
+        <span class="n">final_tool_config</span><span class="p">[</span><span class="n">task_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&quot;walltime&quot;</span><span class="p">:</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">walltime</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&quot;ascii&quot;</span><span class="p">),</span>
+            <span class="s">&quot;nodes&quot;</span><span class="p">:</span>    <span class="nb">bytes</span><span class="p">(</span><span class="n">nodes_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">nodes</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">ppn</span><span class="p">),</span>
+                              <span class="n">encoding</span><span class="o">=</span><span class="s">&quot;ascii&quot;</span><span class="p">),</span>
+        <span class="p">}</span>
+        <span class="k">return</span> <span class="n">final_tool_config</span>
+
+    <span class="c"># The template for chromosome specific tasks</span>
+    <span class="k">if</span> <span class="n">template</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">template</span> <span class="o">=</span> <span class="n">task_name</span> <span class="o">+</span> <span class="s">&quot;_chr{chrom}&quot;</span>
+
+    <span class="c"># Getting the final values for each chromosomes</span>
+    <span class="k">for</span> <span class="n">chrom</span> <span class="ow">in</span> <span class="n">chromosomes</span><span class="p">:</span>
+        <span class="c"># Getting the chromosome specif walltime</span>
+        <span class="n">chrom_walltime</span> <span class="o">=</span> <span class="n">task_config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;chr{}_walltime&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chrom</span><span class="p">),</span>
+                                         <span class="n">walltime</span><span class="p">)</span>
+        <span class="n">chrom_walltime</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">chrom_walltime</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&quot;ascii&quot;</span><span class="p">)</span>
+
+        <span class="c"># Getting the chromosome specif nodes/ppn</span>
+        <span class="n">chrom_nodes</span> <span class="o">=</span> <span class="n">task_config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;chr{}_nodes&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chrom</span><span class="p">),</span> <span class="n">nodes</span><span class="p">)</span>
+        <span class="n">chrom_ppn</span> <span class="o">=</span> <span class="n">task_config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="s">&quot;chr{}_ppn&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chrom</span><span class="p">),</span> <span class="n">ppn</span><span class="p">)</span>
+        <span class="n">chrom_nodes</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">nodes_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">chrom_nodes</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">chrom_ppn</span><span class="p">),</span>
+                            <span class="n">encoding</span><span class="o">=</span><span class="s">&quot;ascii&quot;</span><span class="p">)</span>
+
+        <span class="c"># Saving the final config</span>
+        <span class="n">final_tool_config</span><span class="p">[</span><span class="n">template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chrom</span><span class="o">=</span><span class="n">chrom</span><span class="p">)]</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s">&quot;walltime&quot;</span><span class="p">:</span> <span class="n">chrom_walltime</span><span class="p">,</span>
+            <span class="s">&quot;nodes&quot;</span><span class="p">:</span>    <span class="n">chrom_nodes</span><span class="p">,</span>
+        <span class="p">}</span>
+
+    <span class="c"># Saving what&#39;s remaining values</span>
+    <span class="n">suffixes</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;_walltime&quot;</span><span class="p">,</span> <span class="s">&quot;_nodes&quot;</span><span class="p">,</span> <span class="s">&quot;_ppn&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">suffixes</span><span class="p">:</span>
+        <span class="n">remaining</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="n">i</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">task_config</span><span class="o">.</span><span class="n">keys</span><span class="p">()</span> <span class="k">if</span> <span class="n">i</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="n">suffix</span><span class="p">)</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">remaining</span><span class="p">:</span>
+            <span class="c"># The name of the remaining task (removing the _walltime)</span>
+            <span class="n">remaining_task_name</span> <span class="o">=</span> <span class="n">k</span><span class="p">[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="n">suffix</span><span class="p">)]</span>
+
+            <span class="c"># The walltime</span>
+            <span class="n">walltime_k</span> <span class="o">=</span> <span class="n">remaining_task_name</span> <span class="o">+</span> <span class="s">&quot;_walltime&quot;</span>
+            <span class="n">remaining_walltime</span> <span class="o">=</span> <span class="n">task_config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">walltime_k</span><span class="p">,</span> <span class="n">walltime</span><span class="p">)</span>
+            <span class="n">remaining_walltime</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span><span class="n">remaining_walltime</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&quot;ascii&quot;</span><span class="p">)</span>
+
+            <span class="c"># The nodes and ppn values</span>
+            <span class="n">nodes_k</span> <span class="o">=</span> <span class="n">remaining_task_name</span> <span class="o">+</span> <span class="s">&quot;_nodes&quot;</span>
+            <span class="n">ppn_k</span> <span class="o">=</span> <span class="n">remaining_task_name</span> <span class="o">+</span> <span class="s">&quot;_ppn&quot;</span>
+            <span class="n">remaining_nodes</span> <span class="o">=</span> <span class="n">task_config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">nodes_k</span><span class="p">,</span> <span class="n">nodes</span><span class="p">)</span>
+            <span class="n">remaining_ppn</span> <span class="o">=</span> <span class="n">task_config</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">ppn_k</span><span class="p">,</span> <span class="n">ppn</span><span class="p">)</span>
+            <span class="n">remaining_nodes</span> <span class="o">=</span> <span class="nb">bytes</span><span class="p">(</span>
+                <span class="n">nodes_string</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="o">=</span><span class="n">remaining_nodes</span><span class="p">,</span> <span class="n">p</span><span class="o">=</span><span class="n">remaining_ppn</span><span class="p">),</span>
+                <span class="n">encoding</span><span class="o">=</span><span class="s">&quot;ascii&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+
+            <span class="c"># Saving the final config</span>
+            <span class="n">final_tool_config</span><span class="p">[</span><span class="n">task_name</span> <span class="o">+</span> <span class="s">&quot;_&quot;</span> <span class="o">+</span> <span class="n">remaining_task_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&quot;walltime&quot;</span><span class="p">:</span> <span class="n">remaining_walltime</span><span class="p">,</span>
+                <span class="s">&quot;nodes&quot;</span><span class="p">:</span>    <span class="n">remaining_nodes</span><span class="p">,</span>
+            <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">final_tool_config</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,426 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>genipe.reporting.utils &mdash; genipe 1.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
+    <link rel="top" title="genipe 1.1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="genipe" href="../../genipe.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for genipe.reporting.utils</h1><div class="highlight"><pre>
+<span class="c"># This file is part of genipe.</span>
+<span class="c">#</span>
+<span class="c"># This work is licensed under the Creative Commons Attribution-NonCommercial</span>
+<span class="c"># 4.0 International License. To view a copy of this license, visit</span>
+<span class="c"># http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative</span>
+<span class="c"># Commons, PO Box 1866, Mountain View, CA 94042, USA.</span>
+
+
+<span class="kn">import</span> <span class="nn">re</span>
+<span class="kn">from</span> <span class="nn">textwrap</span> <span class="kn">import</span> <span class="n">wrap</span>
+
+<span class="kn">import</span> <span class="nn">jinja2</span>
+
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s">&quot;Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s">&quot;Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)&quot;</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;config_jinja2&quot;</span><span class="p">,</span> <span class="s">&quot;sanitize_tex&quot;</span><span class="p">,</span> <span class="s">&quot;format_tex&quot;</span><span class="p">,</span> <span class="s">&quot;wrap_tex&quot;</span><span class="p">,</span>
+           <span class="s">&quot;create_tabular&quot;</span><span class="p">,</span> <span class="s">&quot;create_float&quot;</span><span class="p">,</span> <span class="s">&quot;tex_inline_math&quot;</span><span class="p">,</span> <span class="s">&quot;format_time&quot;</span><span class="p">,</span>
+           <span class="s">&quot;colorize_time&quot;</span><span class="p">]</span>
+
+
+<span class="n">_char_mod</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="s">&quot;~&quot;</span><span class="p">:</span> <span class="s">r&quot;$\sim$&quot;</span><span class="p">,</span>
+<span class="p">}</span>
+<span class="n">_escaped_char</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;$&quot;</span><span class="p">,</span> <span class="s">&quot;%&quot;</span><span class="p">,</span> <span class="s">&quot;_&quot;</span><span class="p">,</span> <span class="s">&quot;}&quot;</span><span class="p">,</span> <span class="s">&quot;{&quot;</span><span class="p">,</span> <span class="s">&quot;&amp;&quot;</span><span class="p">,</span> <span class="s">&quot;#&quot;</span><span class="p">]</span>
+<span class="n">_valid_tex_formats</span> <span class="o">=</span> <span class="p">{</span><span class="s">&quot;texttt&quot;</span><span class="p">,</span> <span class="s">&quot;emph&quot;</span><span class="p">,</span> <span class="s">&quot;textbf&quot;</span><span class="p">,</span> <span class="s">&quot;textit&quot;</span><span class="p">}</span>
+
+
+<span class="k">def</span> <span class="nf">config_jinja2</span><span class="p">():</span>
+<div class="viewcode-block" id="config_jinja2"><a class="viewcode-back" href="../../../module_content/genipe.reporting.html#genipe.reporting.utils.config_jinja2">[docs]</a>    <span class="sd">&quot;&quot;&quot;Configure the jinja2 environment for LaTeX.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        The configuration used is for LaTeX documents. Hence, a block command</span>
+<span class="sd">        is done using ``\BLOCK{}`` and variables using ``\VAR{}`` in the Jinja2</span>
+<span class="sd">        template.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">jinja2</span><span class="o">.</span><span class="n">Environment</span><span class="p">(</span>
+        <span class="n">block_start_string</span><span class="o">=</span><span class="s">&#39;\BLOCK{&#39;</span><span class="p">,</span>
+        <span class="n">block_end_string</span><span class="o">=</span><span class="s">&#39;}&#39;</span><span class="p">,</span>
+        <span class="n">variable_start_string</span><span class="o">=</span><span class="s">&#39;\VAR{&#39;</span><span class="p">,</span>
+        <span class="n">variable_end_string</span><span class="o">=</span><span class="s">&#39;}&#39;</span><span class="p">,</span>
+        <span class="n">comment_start_string</span><span class="o">=</span><span class="s">&#39;\#{&#39;</span><span class="p">,</span>
+        <span class="n">comment_end_string</span><span class="o">=</span><span class="s">&#39;}&#39;</span><span class="p">,</span>
+        <span class="n">line_statement_prefix</span><span class="o">=</span><span class="s">&#39;%-&#39;</span><span class="p">,</span>
+        <span class="n">line_comment_prefix</span><span class="o">=</span><span class="s">&#39;%#&#39;</span><span class="p">,</span>
+        <span class="n">trim_blocks</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">autoescape</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+        <span class="n">loader</span><span class="o">=</span><span class="n">jinja2</span><span class="o">.</span><span class="n">PackageLoader</span><span class="p">(</span><span class="n">__name__</span><span class="p">,</span> <span class="s">&quot;templates&quot;</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">sanitize_tex</span><span class="p">(</span><span class="n">original_text</span><span class="p">):</span></div>
+<div class="viewcode-block" id="sanitize_tex"><a class="viewcode-back" href="../../../module_content/genipe.reporting.html#genipe.reporting.utils.sanitize_tex">[docs]</a>    <span class="sd">&quot;&quot;&quot;Sanitize TeX text.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        original_text (str): the text to sanitize for LaTeX</span>
+
+<span class="sd">    Text is sanitized by following these steps:</span>
+
+<span class="sd">    1. Replaces ``\\\\`` by ``\\textbackslash``</span>
+<span class="sd">    2. Escapes certain characters (such as ``$``, ``%``, ``_``, ``}``, ``{``,</span>
+<span class="sd">       ``&amp;`` and ``#``) by adding a backslash (*e.g.* from ``&amp;`` to ``\\&amp;``).</span>
+<span class="sd">    3. Replaces special characters such as ``~`` by the LaTeX equivalent</span>
+<span class="sd">       (*e.g.* from ``~`` to ``$\\sim$``).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># The backslashes</span>
+    <span class="n">sanitized_tex</span> <span class="o">=</span> <span class="n">original_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\\</span><span class="s">&quot;</span><span class="p">,</span> <span class="s">r&quot;\textbackslash &quot;</span><span class="p">)</span>
+
+    <span class="c"># Escaping</span>
+    <span class="n">sanitized_tex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s">r&quot;([{}])&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_escaped_char</span><span class="p">)),</span>
+                           <span class="s">r&quot;</span><span class="se">\\</span><span class="s">\g&lt;1&gt;&quot;</span><span class="p">,</span> <span class="n">sanitized_tex</span><span class="p">)</span>
+
+    <span class="c"># Replacing</span>
+    <span class="k">for</span> <span class="n">character</span><span class="p">,</span> <span class="n">mod</span> <span class="ow">in</span> <span class="n">_char_mod</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="n">sanitized_tex</span> <span class="o">=</span> <span class="n">sanitized_tex</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">character</span><span class="p">,</span> <span class="n">mod</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sanitized_tex</span>
+
+
+<span class="k">def</span> <span class="nf">wrap_tex</span><span class="p">(</span><span class="n">original_text</span><span class="p">):</span></div>
+<div class="viewcode-block" id="wrap_tex"><a class="viewcode-back" href="../../../module_content/genipe.reporting.html#genipe.reporting.utils.wrap_tex">[docs]</a>    <span class="sd">&quot;&quot;&quot;Wraps the text.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        original_text (str): the text to wrap</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a string where the original text was wrapped</span>
+
+<span class="sd">    Wraps the text so that lines are no longer than 80 characters. Uses the</span>
+<span class="sd">    :py:func:`str.join` function on the results of the :py:func:`wrap`</span>
+<span class="sd">    function, so that a single string is returned.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">wrap</span><span class="p">(</span><span class="n">original_text</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">format_tex</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">tex_format</span><span class="p">):</span></div>
+<div class="viewcode-block" id="format_tex"><a class="viewcode-back" href="../../../module_content/genipe.reporting.html#genipe.reporting.utils.format_tex">[docs]</a>    <span class="sd">&quot;&quot;&quot;Change the TeX text format.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text (str): the text for which the format needs to be specified</span>
+<span class="sd">        tex_format (str): the format of the text to return</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: the formatted text</span>
+
+<span class="sd">    This will change the format by adding the LaTeX format command (*e.g.* from</span>
+<span class="sd">    ``text`` to ``\\texttt{text}``).</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        Only the following format are available:</span>
+
+<span class="sd">        * ``texttt``</span>
+<span class="sd">        * ``emph``</span>
+<span class="sd">        * ``textbf``</span>
+<span class="sd">        * ``textit``</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="n">tex_format</span> <span class="ow">in</span> <span class="n">_valid_tex_formats</span><span class="p">,</span> <span class="s">&quot;invalid format&quot;</span>
+    <span class="k">assert</span> <span class="n">_is_sanitized</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="s">&quot;text not sanitized&quot;</span>
+
+    <span class="k">return</span> <span class="s">r&quot;\</span><span class="si">%s</span><span class="s">{</span><span class="si">%s</span><span class="s">}&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tex_format</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">tex_inline_math</span><span class="p">(</span><span class="n">content</span><span class="p">):</span></div>
+<div class="viewcode-block" id="tex_inline_math"><a class="viewcode-back" href="../../../module_content/genipe.reporting.html#genipe.reporting.utils.tex_inline_math">[docs]</a>    <span class="sd">&quot;&quot;&quot;Creates an inline mathematical formula in TeX.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        content (str): the content of the mathematical formula</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: the formatted mathematical formula</span>
+
+<span class="sd">    The function only adds ``$`` symbols before and after the content (*e.g.*</span>
+<span class="sd">    from ``\\pi`` to ``$\\pi$``).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="s">&quot;${}$&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">content</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_is_sanitized</span><span class="p">(</span><span class="n">text</span><span class="p">):</span></div>
+    <span class="sd">&quot;&quot;&quot;Check if text is sanitized.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        text (str): the text to check</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: ``True`` if the text is sanitized, ``False`` otherwise</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Checking the escaped characters</span>
+    <span class="n">sanitized</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s">r&quot;[^</span><span class="se">\\</span><span class="s">][{}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_escaped_char</span><span class="p">)),</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">sanitized</span> <span class="o">=</span> <span class="n">sanitized</span> <span class="ow">is</span> <span class="bp">None</span>
+
+    <span class="c"># Checking the characters to replace</span>
+    <span class="k">for</span> <span class="n">character</span> <span class="ow">in</span> <span class="n">_char_mod</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+        <span class="n">sanitized</span> <span class="o">=</span> <span class="n">sanitized</span> <span class="ow">and</span> <span class="p">(</span><span class="n">character</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">text</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sanitized</span>
+
+
+<span class="k">def</span> <span class="nf">create_tabular</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">header_multicol</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+<div class="viewcode-block" id="create_tabular"><a class="viewcode-back" href="../../../module_content/genipe.reporting.html#genipe.reporting.utils.create_tabular">[docs]</a>                   <span class="n">col_align</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Creates a TeX tabular.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        template (jinja2.Template): the tabular template</span>
+<span class="sd">        header (list): the header of the tabular</span>
+<span class="sd">        data (list): the tabular data</span>
+<span class="sd">        header_multicol (list): the number of columns for the header</span>
+<span class="sd">        col_align (list): the column alignement</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a string representation of a LaTeX tabular</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">header_multicol</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">header_multicol</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">header</span><span class="p">]</span>
+
+    <span class="c"># Getting the number of columns</span>
+    <span class="n">nb_col</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">header_multicol</span><span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">col_align</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">col_align</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;c&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="n">nb_col</span>
+
+    <span class="c"># Checking that the number of columns holds</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">header_multicol</span><span class="p">),</span> <span class="s">&quot;len(header) != len(multicol)&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">col_align</span><span class="p">)</span> <span class="o">==</span> <span class="n">nb_col</span><span class="p">,</span> <span class="s">&quot;len(align) != number of columns&quot;</span>
+
+    <span class="c"># Generating the tabular data</span>
+    <span class="n">tabular_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;col_alignments&quot;</span><span class="p">:</span> <span class="s">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">col_align</span><span class="p">),</span>
+        <span class="s">&quot;header_data&quot;</span><span class="p">:</span>    <span class="nb">zip</span><span class="p">(</span><span class="n">header</span><span class="p">,</span> <span class="n">header_multicol</span><span class="p">),</span>
+        <span class="s">&quot;tabular_data&quot;</span><span class="p">:</span>   <span class="n">data</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c"># Rendering</span>
+    <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">tabular_data</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">create_float</span><span class="p">(</span><span class="n">template</span><span class="p">,</span> <span class="n">float_type</span><span class="p">,</span> <span class="n">caption</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">placement</span><span class="o">=</span><span class="s">&quot;H&quot;</span><span class="p">):</span></div>
+<div class="viewcode-block" id="create_float"><a class="viewcode-back" href="../../../module_content/genipe.reporting.html#genipe.reporting.utils.create_float">[docs]</a>    <span class="sd">&quot;&quot;&quot;Creates a TeX float.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        template (jinja2.Template): the float template</span>
+<span class="sd">        float_type (str): the type of float (``figure`` or  ``table``)</span>
+<span class="sd">        caption (str): the caption of the float</span>
+<span class="sd">        label (str): the label of the float</span>
+<span class="sd">        content (str): the content of the float</span>
+<span class="sd">        placement (str): the float placement (*e.g.* ``H``)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a string representation of a LaTeX float</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Some assertions</span>
+    <span class="k">assert</span> <span class="n">float_type</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;figure&quot;</span><span class="p">,</span> <span class="s">&quot;table&quot;</span><span class="p">],</span> <span class="s">&quot;invalid float type&quot;</span>
+    <span class="k">for</span> <span class="n">character</span> <span class="ow">in</span> <span class="n">placement</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">character</span> <span class="ow">in</span> <span class="s">&quot;htbp!H&quot;</span><span class="p">,</span> <span class="s">&quot;invalid placement&quot;</span>
+    <span class="k">if</span> <span class="s">&quot;H&quot;</span> <span class="ow">in</span> <span class="n">placement</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">placement</span> <span class="o">==</span> <span class="s">&quot;H&quot;</span><span class="p">,</span> <span class="s">&quot;placement &#39;H&#39; should be alone&quot;</span>
+
+    <span class="c"># Generating the float data</span>
+    <span class="n">float_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;float_type&quot;</span><span class="p">:</span>      <span class="n">float_type</span><span class="p">,</span>
+        <span class="s">&quot;float_placement&quot;</span><span class="p">:</span> <span class="n">placement</span><span class="p">,</span>
+        <span class="s">&quot;float_caption&quot;</span><span class="p">:</span>   <span class="n">caption</span><span class="p">,</span>
+        <span class="s">&quot;float_label&quot;</span><span class="p">:</span>     <span class="n">label</span><span class="p">,</span>
+        <span class="s">&quot;float_content&quot;</span><span class="p">:</span>   <span class="n">content</span><span class="p">,</span>
+    <span class="p">}</span>
+
+    <span class="c"># Rendering</span>
+    <span class="k">return</span> <span class="n">template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">float_data</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">format_time</span><span class="p">(</span><span class="n">total_seconds</span><span class="p">,</span> <span class="n">written_time</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span></div>
+<div class="viewcode-block" id="format_time"><a class="viewcode-back" href="../../../module_content/genipe.reporting.html#genipe.reporting.utils.format_time">[docs]</a>    <span class="sd">&quot;&quot;&quot;Format time (either &quot;HH:MM:SS&quot; or &quot;H hours, M minutes and S seconds&quot;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        total_seconds (int): the total number of seconds</span>
+<span class="sd">        written_time (bool): whether to write time in written language</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a string representation of the total time</span>
+
+<span class="sd">    If ``written_time`` is ``True``, time will be displayed as &quot;H hours, M</span>
+<span class="sd">    minutes and S seconds&quot;. Otherwise, the time will be represented as</span>
+<span class="sd">    HH:MM:SS.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># The format for the time</span>
+    <span class="n">time_fmt</span> <span class="o">=</span> <span class="s">&quot;{hours:02d}:{minutes:02d}:{seconds:02d}&quot;</span>
+
+    <span class="c"># Getting the number of seconds, minutes and hours</span>
+    <span class="n">minutes</span><span class="p">,</span> <span class="n">seconds</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">total_seconds</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+    <span class="n">hours</span><span class="p">,</span> <span class="n">minutes</span> <span class="o">=</span> <span class="nb">divmod</span><span class="p">(</span><span class="n">minutes</span><span class="p">,</span> <span class="mi">60</span><span class="p">)</span>
+
+    <span class="c"># Formatting</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">written_time</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">time_fmt</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">seconds</span><span class="o">=</span><span class="n">seconds</span><span class="p">,</span> <span class="n">minutes</span><span class="o">=</span><span class="n">minutes</span><span class="p">,</span> <span class="n">hours</span><span class="o">=</span><span class="n">hours</span><span class="p">)</span>
+
+    <span class="c"># The written time</span>
+    <span class="n">written_time</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c"># The hours</span>
+    <span class="k">if</span> <span class="n">hours</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">written_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s">&quot;{} hour{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hours</span><span class="p">,</span> <span class="s">&quot;s&quot;</span> <span class="k">if</span> <span class="n">hours</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="c"># The minutes</span>
+    <span class="k">if</span> <span class="n">minutes</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">written_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s">&quot;{} minute{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">minutes</span><span class="p">,</span> <span class="s">&quot;s&quot;</span> <span class="k">if</span> <span class="n">minutes</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="c"># The seconds</span>
+    <span class="k">if</span> <span class="n">seconds</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">written_time</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+            <span class="s">&quot;{} second{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">seconds</span><span class="p">,</span> <span class="s">&quot;s&quot;</span> <span class="k">if</span> <span class="n">seconds</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="k">else</span> <span class="s">&quot;&quot;</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="c"># Formatting the written time</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">written_time</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s">&quot;no time&quot;</span>
+
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">written_time</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">written_time</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="s">&quot;, &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">written_time</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span> <span class="o">+</span> <span class="s">&quot; and &quot;</span> <span class="o">+</span> <span class="n">written_time</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">colorize_time</span><span class="p">(</span><span class="n">total_seconds</span><span class="p">):</span></div>
+<div class="viewcode-block" id="colorize_time"><a class="viewcode-back" href="../../../module_content/genipe.reporting.html#genipe.reporting.utils.colorize_time">[docs]</a>    <span class="sd">&quot;&quot;&quot;Colorize the time.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        total_seconds (int): the total number of seconds</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a colorized LaTeX string representation of time</span>
+
+<span class="sd">    The time is displayed as ``HH:MM:SS``, but insignificant zeros are</span>
+<span class="sd">    grayed-out.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Formatting the time</span>
+    <span class="n">formatted_time</span> <span class="o">=</span> <span class="n">format_time</span><span class="p">(</span><span class="n">total_seconds</span><span class="p">)</span>
+
+    <span class="c"># Setting the color</span>
+    <span class="n">colored_time</span> <span class="o">=</span> <span class="n">formatted_time</span>
+    <span class="n">to_color</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s">&quot;([0:]+)&quot;</span><span class="p">,</span> <span class="n">formatted_time</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">to_color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">colored_time</span> <span class="o">=</span> <span class="s">r&quot;{\color{light_gray}&quot;</span>
+        <span class="n">colored_time</span> <span class="o">+=</span> <span class="n">formatted_time</span><span class="p">[:</span><span class="n">to_color</span><span class="o">.</span><span class="n">end</span><span class="p">()]</span>
+        <span class="n">colored_time</span> <span class="o">+=</span> <span class="s">&quot;}&quot;</span> <span class="o">+</span> <span class="n">formatted_time</span><span class="p">[</span><span class="n">to_color</span><span class="o">.</span><span class="n">end</span><span class="p">():]</span>
+
+    <span class="c"># Formatting the time</span>
+    <span class="k">return</span> <span class="n">colored_time</span>
+</pre></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

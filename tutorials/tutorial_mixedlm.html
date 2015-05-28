@@ -1,0 +1,473 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Linear Mixed Effects Model Tutorial &mdash; genipe 1.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="top" title="genipe 1.1.0 documentation" href="../index.html" />
+    <link rel="up" title="Short Tutorials" href="../tutorials.html" />
+    <link rel="next" title="Site Extraction Tutorial" href="tutorial_extract.html" />
+    <link rel="prev" title="Logistic Tutorial" href="tutorial_logistic.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tutorial_extract.html" title="Site Extraction Tutorial"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tutorial_logistic.html" title="Logistic Tutorial"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Linear Mixed Effects Model Tutorial</a><ul>
+<li><a class="reference internal" href="#quick-navigation">Quick navigation</a></li>
+<li><a class="reference internal" href="#linear-mixed-effects-model">Linear mixed effects model</a><ul>
+<li><a class="reference internal" href="#input-files">Input files</a><ul>
+<li><a class="reference internal" href="#imputed-genotypes">Imputed genotypes</a></li>
+<li><a class="reference internal" href="#samples-file">Samples file</a></li>
+<li><a class="reference internal" href="#phenotype-file">Phenotype file</a></li>
+<li><a class="reference internal" href="#sites-to-extract-optional">Sites to extract (optional)</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#executing-the-analysis">Executing the analysis</a></li>
+<li><a class="reference internal" href="#output-files">Output files</a><ul>
+<li><a class="reference internal" href="#mixedlm-dosage-file"><code class="docutils literal"><span class="pre">.mixedlm.dosage</span></code> file</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#execution-time">Execution time</a></li>
+<li><a class="reference internal" href="#results-comparison">Results comparison</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="tutorial_logistic.html"
+                        title="previous chapter">Logistic Tutorial</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tutorial_extract.html"
+                        title="next chapter">Site Extraction Tutorial</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/tutorials/tutorial_mixedlm.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="linear-mixed-effects-model-tutorial">
+<h1>Linear Mixed Effects Model Tutorial<a class="headerlink" href="#linear-mixed-effects-model-tutorial" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="quick-navigation">
+<h2>Quick navigation<a class="headerlink" href="#quick-navigation" title="Permalink to this headline">¶</a></h2>
+<ol class="arabic simple">
+<li><a class="reference internal" href="#mixedlm-tut-input-files"><span>Input files</span></a></li>
+<li><a class="reference internal" href="#mixedlm-tut-execute"><span>Executing the analysis</span></a></li>
+<li><a class="reference internal" href="#mixedlm-tut-output-files"><span>Output files</span></a></li>
+<li><a class="reference internal" href="#mixedlm-tut-usage"><span>Usage</span></a></li>
+<li><a class="reference internal" href="#mixedlm-tut-execution-time"><span>Execution time</span></a></li>
+<li><a class="reference internal" href="#mixedlm-tut-comparison"><span>Results comparison</span></a></li>
+</ol>
+</div>
+<div class="section" id="linear-mixed-effects-model">
+<h2>Linear mixed effects model<a class="headerlink" href="#linear-mixed-effects-model" title="Permalink to this headline">¶</a></h2>
+<p>Linear mixed effects models are commonly used for regression analyses involving
+repeated measurements made on each subject (<em>i.e</em> dependent data). It is
+possible to perform such an analysis using imputation data (dosage format),
+where each imputed genotypes varies between 0 and 2 (inclusively). A value
+close to 0 means that a homozygous genotype of the most frequent allele is the
+most probable. A value close to 2 means that a homozygous genotype of the rare
+allele is the most probable. Finally, a value close to 1 means that a
+heterozygous genotype is the most probable.</p>
+<p>We suppose that you have followed the main <a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>. The
+following command will create the working directory for this tutorial.</p>
+<div class="highlight-bash"><div class="highlight"><pre>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial/mixedlm
+</pre></div>
+</div>
+<div class="section" id="input-files">
+<span id="mixedlm-tut-input-files"></span><h3>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h3>
+<div class="section" id="imputed-genotypes">
+<h4>Imputed genotypes<a class="headerlink" href="#imputed-genotypes" title="Permalink to this headline">¶</a></h4>
+<p>After running the <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> pipeline, the imputed genotypes files will
+have the <code class="docutils literal"><span class="pre">.impute2</span></code> or <code class="docutils literal"><span class="pre">.impute2.gz</span></code> extension Those files will be located
+in the <code class="docutils literal"><span class="pre">final_impute2</span></code> directories of each chromosomes. There should be one
+<em>impute2</em> file per chromosome (see the
+<a class="reference internal" href="tutorial_genipe.html#genipe-tut-output-files-final-impute2"><span>genipe/chrN/final_impute2 directories</span></a> section in the main
+<a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>). These files consist of the imputed genotypes required
+to perform the analysis.</p>
+<p>The general structure of the file contains the following columns (which are
+space delimited): the chromosome, the name of the marker, its position and its
+two alleles. The subsequent columns correspond to the probabilities of each
+genotype (hence, there are three columns per sample). The first value
+correspond to the probability of being homozygous of the first allele. The
+second value correspond to the probability of being heterozygous. Finally, the
+third value correspond to the probability of being homozygous of the second
+allele. The following example shows two lines of the <em>impute2</em> file.</p>
+<div class="highlight-text"><div class="highlight"><pre>21 rs376366718:10000302:A:G 10000302 A G 0.986 0.014 0 1 0 0 1 0 0 ...
+21 21:10002805:C:T 10002805 C T 0.254 0.736 0.010 0.810 0.188 0.002 0.800 0.195 0.005 ...
+</pre></div>
+</div>
+</div>
+<div class="section" id="samples-file">
+<h4>Samples file<a class="headerlink" href="#samples-file" title="Permalink to this headline">¶</a></h4>
+<p>This file is generated by <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> and has the <code class="docutils literal"><span class="pre">.sample</span></code> extension.
+There should be one sample file per chromosome (see the
+<a class="reference internal" href="tutorial_genipe.html#genipe-tut-output-files-final-impute2"><span>genipe/chrN/final_impute2 directories</span></a> section in the main
+<a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>). These files greatly resembles the <em>Plink</em> <code class="docutils literal"><span class="pre">fam</span></code>
+file. Specifically, it contains the samples that are included in the <em>impute2</em>
+file (with <strong>the same order</strong>). It is needed to correctly interpret the sample
+described by the <em>impute2</em> file. The format is as follow:</p>
+<div class="highlight-text"><div class="highlight"><pre>ID_1 ID_2 missing father mother sex plink_pheno
+0 0 0 D D D B
+1341 NA06985 0 0 0 2 -9
+1341 NA06991 0 NA06993 NA06985 2 -9
+1341 NA06993 0 0 0 1 -9
+...
+</pre></div>
+</div>
+<p>The first two rows are part of the format and should be as is.</p>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The column <code class="docutils literal"><span class="pre">ID_2</span></code> should contain <strong>unique</strong> sample identification numbers,
+since the analysis will only consider the <code class="docutils literal"><span class="pre">ID_2</span></code> (which correspond to the
+sample ID in the <em>Plink</em> file) to correctly match the samples and the
+imputed genotypes.</p>
+</div>
+</div>
+<div class="section" id="phenotype-file">
+<h4>Phenotype file<a class="headerlink" href="#phenotype-file" title="Permalink to this headline">¶</a></h4>
+<p>This file describes the phenotype and variables used to perform the analysis.
+The file is <em>tab</em> separated and contains one row per sample, one column per
+phenotype/variable.</p>
+<p>The following is an example of a phenotype file (where there are three
+measurements per sample):</p>
+<div class="highlight-text"><div class="highlight"><pre>SampleID     Pheno3  Age     Var1    Gender
+NA06985      58.6923101992   53      48.01043142060001       2
+NA06985      79.18026839086532       53      48.01043142060001       2
+NA06985      97.6831921953767        53      48.01043142060001       2
+NA06993      64.8981628053   47      23.7615117523   1
+NA06993      81.26389783395985       47      23.7615117523   1
+NA06993      100.71531297841553      47      23.7615117523   1
+NA06994      129.562482664   48      20.2946857226   1
+NA06994      144.2513248255908       48      20.2946857226   1
+NA06994      161.94488318622535      48      20.2946857226   1
+...
+</pre></div>
+</div>
+<p>We provide a <em>dummy</em> phenotype file (where values, except for <code class="docutils literal"><span class="pre">Gender</span></code>, were
+randomly generated for 60 founders of the dataset). The following command
+should download the phenotype file.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/mixedlm
+
+wget http://pgxcentre.github.io/genipe/_static/tutorial/phenotypes_mixedlm.txt.bz2
+bunzip2 phenotypes_mixedlm.txt.bz2
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Note that the gender is encoded such that males are <code class="docutils literal"><span class="pre">1</span></code> and females are
+<code class="docutils literal"><span class="pre">2</span></code>. Samples with missing gender (encoded as <code class="docutils literal"><span class="pre">0</span></code>) will be excluded only
+if gender is in the covariable list.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Categorical variables should be specified using the <code class="docutils literal"><span class="pre">--categorical</span></code>
+option.</p>
+</div>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">The sample identification numbers should match the ones in the sample file
+(see above). Those numbers should be unique for each sample. There should be
+multiple rows for each sample, one for each repeated measurement. Only the
+samples that are <strong>both</strong> in the sample and phenotype files will be kept for
+analysis. The order of the samples in the phenotype file is not important.</p>
+</div>
+</div>
+<div class="section" id="sites-to-extract-optional">
+<h4>Sites to extract (optional)<a class="headerlink" href="#sites-to-extract-optional" title="Permalink to this headline">¶</a></h4>
+<p>This file (which is optional) should contain a list of site (one identification
+number per line) to keep for the analysis. This file might be the
+<code class="docutils literal"><span class="pre">.good_sites</span></code> file automatically generated by <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> (see the
+<a class="reference internal" href="tutorial_genipe.html#genipe-tut-output-files-final-impute2"><span>genipe/chrN/final_impute2 directories</span></a> section in the main
+<a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>).</p>
+</div>
+</div>
+<div class="section" id="executing-the-analysis">
+<span id="mixedlm-tut-execute"></span><h3>Executing the analysis<a class="headerlink" href="#executing-the-analysis" title="Permalink to this headline">¶</a></h3>
+<p>If you followed the <a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>, the following commands should
+execute the linear mixed effects analysis.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/mixedlm
+
+imputed-stats mixedlm <span class="se">\</span>
+    --impute2 ../genipe/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
+    --sample ../genipe/chr22/final_impute2/chr22.imputed.sample <span class="se">\</span>
+    --pheno phenotypes_mixedlm.txt <span class="se">\</span>
+    --extract-sites ../genipe/chr22/final_impute2/chr22.imputed.good_sites <span class="se">\</span>
+    --nb-process <span class="m">8</span> <span class="se">\</span>
+    --nb-lines <span class="m">6000</span> <span class="se">\</span>
+    --gender-column Gender <span class="se">\</span>
+    --covar Age,Var1,Gender <span class="se">\</span>
+    --sample-column SampleID <span class="se">\</span>
+    --pheno-name Pheno3
+</pre></div>
+</div>
+<p>For more information about the arguments and options, see the
+<a class="reference internal" href="tutorial_linear.html#lin-tut-usage"><span>Usage</span></a> section. The number of process to use might differ
+according to the installation type and to the computer/server. See the
+<a class="reference internal" href="tutorial_linear.html#lin-tut-execution-time"><span>Execution time</span></a> section for more information.</p>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>Analysis will be performed only on samples whitout missing data (phenotype,
+gender, variables, etc).</p>
+<p class="last">By default, the analysis is performed by removing low quality genotypes
+(using a probability threshold of 0.9, the <code class="docutils literal"><span class="pre">--prob</span></code> option).</p>
+</div>
+</div>
+<div class="section" id="output-files">
+<span id="mixedlm-tut-output-files"></span><h3>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h3>
+<p>There will be two output files: <code class="docutils literal"><span class="pre">.mixedlm.dosage</span></code> will contain the
+statistics, and <code class="docutils literal"><span class="pre">.log</span></code> will contain the execution log.</p>
+<div class="section" id="mixedlm-dosage-file">
+<h4><code class="docutils literal"><span class="pre">.mixedlm.dosage</span></code> file<a class="headerlink" href="#mixedlm-dosage-file" title="Permalink to this headline">¶</a></h4>
+<p>This file contains the results from the linear mixed effects analysis. It shows
+the following information:</p>
+<ul class="simple">
+<li><code class="docutils literal"><span class="pre">chr</span></code>: the chromosome.</li>
+<li><code class="docutils literal"><span class="pre">pos</span></code>: the position on the chromosome.</li>
+<li><code class="docutils literal"><span class="pre">snp</span></code>: the name of the marker.</li>
+<li><code class="docutils literal"><span class="pre">major</span></code>: the major allele.</li>
+<li><code class="docutils literal"><span class="pre">minor</span></code>: the minor allele.</li>
+<li><code class="docutils literal"><span class="pre">maf</span></code>: the frequency of the minor allele.</li>
+<li><code class="docutils literal"><span class="pre">n</span></code>: the number of samples that were used for this marker.</li>
+<li><code class="docutils literal"><span class="pre">coef</span></code>: the coefficient.</li>
+<li><code class="docutils literal"><span class="pre">se</span></code>: the standard error.</li>
+<li><code class="docutils literal"><span class="pre">lower</span></code>: the lower value of the 95% confidence interval.</li>
+<li><code class="docutils literal"><span class="pre">upper</span></code>: the upper value of the 95% confidence interval.</li>
+<li><code class="docutils literal"><span class="pre">z</span></code>: the <em>z</em>-statistic.</li>
+<li><code class="docutils literal"><span class="pre">p</span></code>: the <em>p</em>-value.</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">By default, the statistics are computed only for markers with a minor allele
+frequency of 1% and higher. Markers with lower MAF will have <code class="docutils literal"><span class="pre">NA</span></code> values.
+To modify this behavior, use the <code class="docutils literal"><span class="pre">--maf</span></code> option.</p>
+</div>
+</div>
+</div>
+<div class="section" id="usage">
+<span id="mixedlm-tut-usage"></span><h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
+<p>The following command will display the documentation for the linear mixed
+effects analysis in the console:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> imputed-stats mixedlm --help
+<span class="go">usage: imputed-stats mixedlm [-h] [-v] [--debug] --impute2 FILE --sample FILE</span>
+<span class="go">                             --pheno FILE [--extract-sites FILE] [--out FILE]</span>
+<span class="go">                             [--nb-process INT] [--nb-lines INT] [--chrx]</span>
+<span class="go">                             [--gender-column NAME] [--scale INT]</span>
+<span class="go">                             [--prob FLOAT] [--maf FLOAT] [--covar NAME]</span>
+<span class="go">                             [--categorical NAME] [--missing-value NAME]</span>
+<span class="go">                             [--sample-column NAME] [--interaction NAME]</span>
+<span class="go">                             --pheno-name NAME [--use-ml]</span>
+
+<span class="go">Performs a linear mixed effects regression on imputed data using a random</span>
+<span class="go">intercept for each group. This script is part of the &#39;genipe&#39; package, version</span>
+<span class="go">1.1.0).</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -v, --version         show program&#39;s version number and exit</span>
+<span class="go">  --debug               set the logging level to debug</span>
+
+<span class="go">Input Files:</span>
+<span class="go">  --impute2 FILE        The output from IMPUTE2.</span>
+<span class="go">  --sample FILE         The sample file (the order should be the same as in</span>
+<span class="go">                        the IMPUTE2 files).</span>
+<span class="go">  --pheno FILE          The file containing phenotypes and co variables.</span>
+<span class="go">  --extract-sites FILE  A list of sites to extract for analysis (optional).</span>
+
+<span class="go">Output Options:</span>
+<span class="go">  --out FILE            The prefix for the output files. [imputed_stats]</span>
+
+<span class="go">General Options:</span>
+<span class="go">  --nb-process INT      The number of process to use. [1]</span>
+<span class="go">  --nb-lines INT        The number of line to read at a time. [1000]</span>
+<span class="go">  --chrx                The analysis is performed for the non pseudo-autosomal</span>
+<span class="go">                        region of the chromosome X (male dosage will be</span>
+<span class="go">                        divided by 2 to get values [0, 0.5] instead of [0, 1])</span>
+<span class="go">                        (males are coded as 1 and option &#39;--gender-column&#39;</span>
+<span class="go">                        should be used).</span>
+<span class="go">  --gender-column NAME  The name of the gender column (use to exclude samples</span>
+<span class="go">                        with unknown gender (i.e. not 1, male, or 2, female).</span>
+<span class="go">                        If gender not available, use &#39;None&#39;. [Gender]</span>
+
+<span class="go">Dosage Options:</span>
+<span class="go">  --scale INT           Scale dosage so that values are in [0, n] (possible</span>
+<span class="go">                        values are 1 (no scaling) or 2). [2]</span>
+<span class="go">  --prob FLOAT          The minimal probability for which a genotype should be</span>
+<span class="go">                        considered. [&gt;=0.9]</span>
+<span class="go">  --maf FLOAT           Minor allele frequency threshold for which marker will</span>
+<span class="go">                        be skipped. [&lt;0.01]</span>
+
+<span class="go">Phenotype Options:</span>
+<span class="go">  --covar NAME          The co variable names (in the phenotype file),</span>
+<span class="go">                        separated by coma.</span>
+<span class="go">  --categorical NAME    The name of the variables that are categorical (note</span>
+<span class="go">                        that the gender is always categorical). The variables</span>
+<span class="go">                        are separated by coma.</span>
+<span class="go">  --missing-value NAME  The missing value in the phenotype file.</span>
+<span class="go">  --sample-column NAME  The name of the sample ID column (in the phenotype</span>
+<span class="go">                        file). [sample_id]</span>
+<span class="go">  --interaction NAME    Add an interaction between the genotype and this</span>
+<span class="go">                        variable.</span>
+
+<span class="go">Linear Mixed Effects Options:</span>
+<span class="go">  --pheno-name NAME     The phenotype.</span>
+<span class="go">  --use-ml              Fit the standard likelihood using maximum likelihood</span>
+<span class="go">                        (ML) estimation instead of REML (default is REML).</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="execution-time">
+<span id="mixedlm-tut-execution-time"></span><h3>Execution time<a class="headerlink" href="#execution-time" title="Permalink to this headline">¶</a></h3>
+<p>The following figure shows the approximate execution time for different number
+of processes (the <code class="docutils literal"><span class="pre">--nb-process</span></code> option) with different installation methods
+(<em>pyvenv</em> in blue, versus <em>miniconda</em> in orange). This analysis was performed
+on a computer with an <em>Intel(R) Core(TM) i7-3770 CPU &#64; 3.40GHz</em> (8 cores) and
+16Go of RAM. The analysis contained the 195,473 imputed markers and 90 samples
+from the previous command (where phenotypes were available for only 60 of the
+samples). Each test was performed only one time (no repetition).</p>
+<div class="figure align-center" id="mixedlm-exec-time">
+<a class="reference internal image-reference" href="../_images/MixedLM_Walltime.png"><img alt="Linear mixed effects execution time vs number of processes." src="../_images/MixedLM_Walltime.png" style="width: 60%;" /></a>
+</div>
+</div>
+<div class="section" id="results-comparison">
+<span id="mixedlm-tut-comparison"></span><h3>Results comparison<a class="headerlink" href="#results-comparison" title="Permalink to this headline">¶</a></h3>
+<p>The linear mixed effects analysis results from <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> and <em>R</em> were
+compared for validity. The following figure shows the comparison for, from left
+to right, the coefficients, the standard errors and the <em>p</em>-values. The <em>x</em>
+axis shows the results from <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a>, and the <em>y</em> axis shows the
+results for <em>R</em>. This comparison includes 163,670 &#8220;good&#8221; imputed markers,
+analyzed for 60 samples (<em>i.e</em> results from this tutorial). Note that for this
+comparison, the <strong>probability threshold</strong> (<code class="docutils literal"><span class="pre">--prob</span></code>) <strong>was changed from 0.9
+to 0</strong> to <em>imitate</em> <em>R</em> analysis (see note below for more information).</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/MixedLM_Diff_Prob0.png"><img alt="Linear mixed effects comparison between genipe and R (probability of 0)" src="../_images/MixedLM_Diff_Prob0.png" style="width: 100%;" /></a>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The sign of the coefficients might be different when comparing
+<a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> to <em>R</em>, since <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> computes the statistics on
+the rare allele, while <em>R</em> computes them on the second (alternative) allele.
+The alternative allele might not always be the rarest.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>By default, <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> excludes samples with a maximum probability
+lower than 0.9 (the <code class="docutils literal"><span class="pre">--prob</span></code> option), while <em>R</em> keeps all the samples for
+the analysis. In order to get the same results as <em>R</em>, the analysis must be
+done with a probability threshold of 0 (<em>i.e.</em> <code class="docutils literal"><span class="pre">--prob</span> <span class="pre">0</span></code>, keeping all
+imputed genotypes including those with poor quality). This is what was done
+for the previous figure.</p>
+<p>The following figure shows the comparison between <em>R</em> and <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a>
+for the same analysis, but using the default probability threshold of 0.9
+(excluding imputed genotypes with poor quality). Hence, 163,670 markers
+were compared.</p>
+<div class="last figure align-center">
+<a class="reference internal image-reference" href="../_images/MixedLM_Diff.png"><img alt="Linear mixed effects comparison between genipe and R" src="../_images/MixedLM_Diff.png" style="width: 100%;" /></a>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="tutorial_extract.html" title="Site Extraction Tutorial"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tutorial_logistic.html" title="Logistic Tutorial"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

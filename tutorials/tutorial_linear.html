@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Linear Tutorial &mdash; gwip 1.0.0 documentation</title>
+    <title>Linear Tutorial &mdash; genipe 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.0',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,8 +26,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
-    <link rel="top" title="gwip 1.0.0 documentation" href="../index.html" />
-    <link rel="up" title="Short Tutorials" href="../tutorial.html" />
+    <link rel="top" title="genipe 1.1.0 documentation" href="../index.html" />
+    <link rel="up" title="Short Tutorials" href="../tutorials.html" />
     <link rel="next" title="Logistic Tutorial" href="tutorial_logistic.html" />
     <link rel="prev" title="SKAT Tutorial" href="tutorial_SKAT.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -51,8 +51,8 @@
         <li class="right" >
           <a href="tutorial_SKAT.html" title="SKAT Tutorial"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">gwip 1.0.0 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../tutorial.html" accesskey="U">Short Tutorials</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -139,22 +139,22 @@ studies. It is possible to perform such an analysis using imputation data
 frequent allele is the most probable. A value close to 2 means that a
 homozygous genotype of the rare allele is the most probable. Finally, a value
 close to 1 means that a heterozygous genotype is the most probable.</p>
-<p>We suppose that you have followed the main <a class="reference internal" href="tutorial_gwip.html#gwip-tut-page"><span>Pipeline Tutorial</span></a>. The following
-command will create the working directory for this tutorial.</p>
-<div class="highlight-bash"><div class="highlight"><pre>mkdir -p <span class="nv">$HOME</span>/gwip_tutorial/linear
+<p>We suppose that you have followed the main <a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>. The
+following command will create the working directory for this tutorial.</p>
+<div class="highlight-bash"><div class="highlight"><pre>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial/linear
 </pre></div>
 </div>
 <div class="section" id="input-files">
 <span id="lin-tut-input-files"></span><h3>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="imputed-genotypes">
 <h4>Imputed genotypes<a class="headerlink" href="#imputed-genotypes" title="Permalink to this headline">¶</a></h4>
-<p>After running the <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> pipeline, the imputed genotypes files will
+<p>After running the <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> pipeline, the imputed genotypes files will
 have the <code class="docutils literal"><span class="pre">.impute2</span></code> or <code class="docutils literal"><span class="pre">.impute2.gz</span></code> extension Those files will be located
 in the <code class="docutils literal"><span class="pre">final_impute2</span></code> directories of each chromosomes. There should be one
 <em>impute2</em> file per chromosome (see the
-<a class="reference internal" href="tutorial_gwip.html#gwip-tut-output-files-final-impute2"><span>gwip/chrN/final_impute2 directories</span></a> section in the main
-<a class="reference internal" href="tutorial_gwip.html#gwip-tut-page"><span>Pipeline Tutorial</span></a>). These files consist of the imputed genotypes required to
-perform the analysis.</p>
+<a class="reference internal" href="tutorial_genipe.html#genipe-tut-output-files-final-impute2"><span>genipe/chrN/final_impute2 directories</span></a> section in the main
+<a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>). These files consist of the imputed genotypes required
+to perform the analysis.</p>
 <p>The general structure of the file contains the following columns (which are
 space delimited): the chromosome, the name of the marker, its position and its
 two alleles. The subsequent columns correspond to the probabilities of each
@@ -170,12 +170,12 @@ allele. The following example shows two lines of the <em>impute2</em> file.</p>
 </div>
 <div class="section" id="samples-file">
 <h4>Samples file<a class="headerlink" href="#samples-file" title="Permalink to this headline">¶</a></h4>
-<p>This file is generated by <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> and has the <code class="docutils literal"><span class="pre">.sample</span></code> extension.
+<p>This file is generated by <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> and has the <code class="docutils literal"><span class="pre">.sample</span></code> extension.
 There should be one sample file per chromosome (see the
-<a class="reference internal" href="tutorial_gwip.html#gwip-tut-output-files-final-impute2"><span>gwip/chrN/final_impute2 directories</span></a> section in the main
-<a class="reference internal" href="tutorial_gwip.html#gwip-tut-page"><span>Pipeline Tutorial</span></a>). These files greatly resembles the <em>Plink</em> <code class="docutils literal"><span class="pre">fam</span></code> file.
-Specifically, it contains the samples that are included in the <em>impute2</em> file
-(with <strong>the same order</strong>). It is needed to correctly interpret the sample
+<a class="reference internal" href="tutorial_genipe.html#genipe-tut-output-files-final-impute2"><span>genipe/chrN/final_impute2 directories</span></a> section in the main
+<a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>). These files greatly resembles the <em>Plink</em> <code class="docutils literal"><span class="pre">fam</span></code>
+file. Specifically, it contains the samples that are included in the <em>impute2</em>
+file (with <strong>the same order</strong>). It is needed to correctly interpret the sample
 described by the <em>impute2</em> file. The format is as follow:</p>
 <div class="highlight-text"><div class="highlight"><pre>ID_1 ID_2 missing father mother sex plink_pheno
 0 0 0 D D D B
@@ -210,16 +210,22 @@ NA06994      129.562482664   48      20.2946857226   1
 <p>We provide a <em>dummy</em> phenotype file (where values, except for <code class="docutils literal"><span class="pre">Gender</span></code>, were
 randomly generated for 60 founders of the dataset). The following command
 should download the phenotype file.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/linear
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/linear
 
-wget http://pgxcentre.github.io/gwip/_static/tutorial/phenotypes_linear.txt.bz2
+wget http://pgxcentre.github.io/genipe/_static/tutorial/phenotypes_linear.txt.bz2
 bunzip2 phenotypes_linear.txt.bz2
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Note that the gender is encoded such that males are <code class="docutils literal"><span class="pre">1</span></code> and females are
-<code class="docutils literal"><span class="pre">2</span></code>. Missing gender is encoded as <code class="docutils literal"><span class="pre">0</span></code>.</p>
+<code class="docutils literal"><span class="pre">2</span></code>. Samples with missing gender (encoded as <code class="docutils literal"><span class="pre">0</span></code>) will be excluded only
+if gender is in the covariable list.</p>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Categorical variables should be specified using the <code class="docutils literal"><span class="pre">--categorical</span></code>
+option.</p>
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -233,22 +239,22 @@ analysis. The order of the samples in the phenotype file is not important.</p>
 <h4>Sites to extract (optional)<a class="headerlink" href="#sites-to-extract-optional" title="Permalink to this headline">¶</a></h4>
 <p>This file (which is optional) should contain a list of site (one identification
 number per line) to keep for the analysis. This file might be the
-<code class="docutils literal"><span class="pre">.good_sites</span></code> file automatically generated by <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> (see the
-<a class="reference internal" href="tutorial_gwip.html#gwip-tut-output-files-final-impute2"><span>gwip/chrN/final_impute2 directories</span></a> section in the main
-<a class="reference internal" href="tutorial_gwip.html#gwip-tut-page"><span>Pipeline Tutorial</span></a>).</p>
+<code class="docutils literal"><span class="pre">.good_sites</span></code> file automatically generated by <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> (see the
+<a class="reference internal" href="tutorial_genipe.html#genipe-tut-output-files-final-impute2"><span>genipe/chrN/final_impute2 directories</span></a> section in the main
+<a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>).</p>
 </div>
 </div>
 <div class="section" id="executing-the-analysis">
 <span id="lin-tut-execute"></span><h3>Executing the analysis<a class="headerlink" href="#executing-the-analysis" title="Permalink to this headline">¶</a></h3>
-<p>If you followed the <a class="reference internal" href="tutorial_gwip.html#gwip-tut-page"><span>Pipeline Tutorial</span></a>, the following commands should execute
-the linear regression analysis.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/linear
+<p>If you followed the <a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>, the following commands should
+execute the linear regression analysis.</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/linear
 
 imputed-stats linear <span class="se">\</span>
-    --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
-    --sample ../gwip/chr22/final_impute2/chr22.imputed.sample <span class="se">\</span>
+    --impute2 ../genipe/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
+    --sample ../genipe/chr22/final_impute2/chr22.imputed.sample <span class="se">\</span>
     --pheno phenotypes_linear.txt <span class="se">\</span>
-    --extract-sites ../gwip/chr22/final_impute2/chr22.imputed.good_sites <span class="se">\</span>
+    --extract-sites ../genipe/chr22/final_impute2/chr22.imputed.good_sites <span class="se">\</span>
     --nb-process <span class="m">8</span> <span class="se">\</span>
     --nb-lines <span class="m">6000</span> <span class="se">\</span>
     --gender-column Gender <span class="se">\</span>
@@ -310,11 +316,12 @@ analysis in the console:</p>
 <span class="go">                            [--nb-process INT] [--nb-lines INT] [--chrx]</span>
 <span class="go">                            [--gender-column NAME] [--scale INT]</span>
 <span class="go">                            [--prob FLOAT] [--maf FLOAT] [--covar NAME]</span>
-<span class="go">                            [--missing-value NAME] [--sample-column NAME]</span>
-<span class="go">                            [--interaction NAME] --pheno-name NAME</span>
+<span class="go">                            [--categorical NAME] [--missing-value NAME]</span>
+<span class="go">                            [--sample-column NAME] [--interaction NAME]</span>
+<span class="go">                            --pheno-name NAME</span>
 
 <span class="go">Performs a linear regression (ordinary least squares) on imputed data. This</span>
-<span class="go">script is part of the &#39;gwip&#39; package, version 1.0.0).</span>
+<span class="go">script is part of the &#39;genipe&#39; package, version 1.1.0).</span>
 
 <span class="go">optional arguments:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
@@ -354,6 +361,9 @@ analysis in the console:</p>
 <span class="go">Phenotype Options:</span>
 <span class="go">  --covar NAME          The co variable names (in the phenotype file),</span>
 <span class="go">                        separated by coma.</span>
+<span class="go">  --categorical NAME    The name of the variables that are categorical (note</span>
+<span class="go">                        that the gender is always categorical). The variables</span>
+<span class="go">                        are separated by coma.</span>
 <span class="go">  --missing-value NAME  The missing value in the phenotype file.</span>
 <span class="go">  --sample-column NAME  The name of the sample ID column (in the phenotype</span>
 <span class="go">                        file). [sample_id]</span>
@@ -379,14 +389,14 @@ samples). Each test was performed only one time (no repetition).</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>Execution times between <em>Plink</em> and <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> were compared for this
+<p>Execution times between <em>Plink</em> and <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> were compared for this
 analysis. When data processing is required prior to the statistical analysis
 (<em>e.g.</em> removing poor quality genotypes and excluding the 60 samples without
-phenotype), <em>Plink</em> was <strong>significantly faster</strong> than <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>, even
+phenotype), <em>Plink</em> was <strong>significantly faster</strong> than <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a>, even
 if the latter is using more than one processes. This is due to prior data
 manipulation, which significantly increse computation time.</p>
 <p>When no data processing is required (<em>i.e.</em> keeping bad quality genotypes
-and keeping all samples), <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> was faster with two processes or
+and keeping all samples), <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> was faster with two processes or
 more (as shown in the figure below). Note that for this example (30,000
 imputed markers for 2,402 samples), all samples were used for the analysis
 because they all had a phenotype.</p>
@@ -394,7 +404,7 @@ because they all had a phenotype.</p>
 <a class="reference internal image-reference" href="../_images/Linear_Walltime_Plink.png"><img alt="Linear regression execution time vs number of processes (Plink)." src="../_images/Linear_Walltime_Plink.png" style="width: 60%;" /></a>
 </div>
 <p class="last">Note that the linear regression from <em>Statsmodels 0.6.1</em> (at least when
-compiled on a modern Linux system, <em>i.e.</em> when <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> is installed
+compiled on a modern Linux system, <em>i.e.</em> when <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> is installed
 using the <em>pyvenv</em> method) uses more than 100% of each process when no data
 preprocessing is required. Hence, we recommend testing with <span class="math">\(n/2\)</span>
 processes (where <span class="math">\(n\)</span> is the number of processing cores on the machine)
@@ -406,38 +416,38 @@ using a <em>miniconda</em> installation, since all processes uses no more than
 </div>
 <div class="section" id="results-comparison">
 <span id="lin-tut-comparison"></span><h3>Results comparison<a class="headerlink" href="#results-comparison" title="Permalink to this headline">¶</a></h3>
-<p>The linear regression results from <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> and <em>Plink</em> were compared for
-validity. The following figure shows the comparison for, from left to right,
-the coefficients, the standard errors and the <em>p</em>-values. The <em>x</em> axis shows
-the results from <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>, and the <em>y</em> axis shows the results for
+<p>The linear regression results from <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> and <em>Plink</em> were compared
+for validity. The following figure shows the comparison for, from left to
+right, the coefficients, the standard errors and the <em>p</em>-values. The <em>x</em> axis
+shows the results from <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a>, and the <em>y</em> axis shows the results for
 <em>Plink</em>. This comparison includes 163,670 &#8220;good&#8221; imputed markers, analyzed for
 60 samples (<em>i.e</em> results from this tutorial). Note that for this comparison,
 the <strong>probability threshold</strong> (<code class="docutils literal"><span class="pre">--prob</span></code>) <strong>was changed from 0.9 to 0</strong> to
 <em>imitate</em> <em>Plink</em> analysis (see note below for more information).</p>
 <div class="figure align-center">
-<a class="reference internal image-reference" href="../_images/Linear_Diff_Prob0.png"><img alt="Linear regression comparison between gwip and Plink (probability of 0)" src="../_images/Linear_Diff_Prob0.png" style="width: 100%;" /></a>
+<a class="reference internal image-reference" href="../_images/Linear_Diff_Prob0.png"><img alt="Linear regression comparison between genipe and Plink (probability of 0)" src="../_images/Linear_Diff_Prob0.png" style="width: 100%;" /></a>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The sign of the coefficients might be different when comparing
-<a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> to <em>Plink</em>, since <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> computes the statistics on
-the rare allele, while <em>Plink</em> computes them on the second (alternative)
+<a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> to <em>Plink</em>, since <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> computes the statistics
+on the rare allele, while <em>Plink</em> computes them on the second (alternative)
 allele. The alternative allele might not always be the rarest.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>By default, <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> excludes samples with a maximum probability lower
-than 0.9 (the <code class="docutils literal"><span class="pre">--prob</span></code> option), while <em>Plink</em> keeps all the samples for
-the analysis. In order to get the same results as <em>Plink</em>, the analysis must
-be done with a probability threshold of 0 (<em>i.e.</em> <code class="docutils literal"><span class="pre">--prob</span> <span class="pre">0</span></code>, keeping all
-imputed genotypes including those with poor quality). This is what was done
-for the previous figure.</p>
-<p>The following figure shows the comparison between <em>Plink</em> and <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a>
-for the same analysis, but using the default probability threshold of 0.9
-(excluding imputed genotypes with poor quality). Hence, 163,670 markers
-were compared.</p>
+<p>By default, <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> excludes samples with a maximum probability
+lower than 0.9 (the <code class="docutils literal"><span class="pre">--prob</span></code> option), while <em>Plink</em> keeps all the samples
+for the analysis. In order to get the same results as <em>Plink</em>, the analysis
+must be done with a probability threshold of 0 (<em>i.e.</em> <code class="docutils literal"><span class="pre">--prob</span> <span class="pre">0</span></code>, keeping
+all imputed genotypes including those with poor quality). This is what was
+done for the previous figure.</p>
+<p>The following figure shows the comparison between <em>Plink</em> and
+<a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> for the same analysis, but using the default probability
+threshold of 0.9 (excluding imputed genotypes with poor quality). Hence,
+163,670 markers were compared.</p>
 <div class="last figure align-center">
-<a class="reference internal image-reference" href="../_images/Linear_Diff.png"><img alt="Linear regression comparison between gwip and Plink" src="../_images/Linear_Diff.png" style="width: 100%;" /></a>
+<a class="reference internal image-reference" href="../_images/Linear_Diff.png"><img alt="Linear regression comparison between genipe and Plink" src="../_images/Linear_Diff.png" style="width: 100%;" /></a>
 </div>
 </div>
 </div>
@@ -465,8 +475,8 @@ were compared.</p>
         <li class="right" >
           <a href="tutorial_SKAT.html" title="SKAT Tutorial"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">gwip 1.0.0 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../tutorial.html" >Short Tutorials</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

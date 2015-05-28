@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Installation &mdash; gwip 1.0.0 documentation</title>
+    <title>Installation &mdash; genipe 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.0',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,8 +26,8 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="gwip 1.0.0 documentation" href="index.html" />
-    <link rel="next" title="Short Tutorials" href="tutorial.html" />
+    <link rel="top" title="genipe 1.1.0 documentation" href="index.html" />
+    <link rel="next" title="Short Tutorials" href="tutorials.html" />
     <link rel="prev" title="Genome-Wide Imputation Pipeline" href="index.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -45,12 +45,12 @@
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tutorial.html" title="Short Tutorials"
+          <a href="tutorials.html" title="Short Tutorials"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Genome-Wide Imputation Pipeline"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">gwip 1.0.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">genipe 1.1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -84,7 +84,7 @@
   <p class="topless"><a href="index.html"
                         title="previous chapter">Genome-Wide Imputation Pipeline</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="tutorial.html"
+  <p class="topless"><a href="tutorials.html"
                         title="next chapter">Short Tutorials</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
@@ -156,20 +156,21 @@ management):</p>
 <p>The following commands should successfully create a virtual environment and
 activate it, as long as Python 3 was previously installed on the machine.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="c"># Creating the environment</span>
-pyvenv <span class="nv">$HOME</span>/gwip_pyvenv
+pyvenv <span class="nv">$HOME</span>/genipe_pyvenv
 
 <span class="c"># Activating the environment</span>
-<span class="nb">source</span> <span class="nv">$HOME</span>/gwip_pyvenv/bin/activate
+<span class="nb">source</span> <span class="nv">$HOME</span>/genipe_pyvenv/bin/activate
 </pre></div>
 </div>
-<p>Then, install the <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> package (and all its dependencies) using the
+<p>Then, install the <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> package (and all its dependencies) using the
 following command:</p>
-<div class="highlight-bash"><div class="highlight"><pre>pip install gwip
+<div class="highlight-bash"><div class="highlight"><pre>pip install genipe
 </pre></div>
 </div>
 <p>If required, the optional dependencies can be installed using the following
 command:</p>
-<div class="highlight-bash"><div class="highlight"><pre>pip install statsmodels
+<div class="highlight-bash"><div class="highlight"><pre>pip install scipy
+pip install statsmodels
 pip install lifelines
 pip install biopython
 pip install pyfaidx
@@ -187,15 +188,15 @@ wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O min
 bash miniconda.sh -b -p <span class="nv">$HOME</span>/miniconda
 
 <span class="c"># Creating the environment</span>
-<span class="nv">$HOME</span>/miniconda/bin/conda create -q -n gwip_pyvenv <span class="nv">python</span><span class="o">=</span>3.4
+<span class="nv">$HOME</span>/miniconda/bin/conda create -q -n genipe_pyvenv <span class="nv">python</span><span class="o">=</span>3.4
 
 <span class="c"># Activating the environment</span>
-<span class="nb">source</span> <span class="nv">$HOME</span>/miniconda/bin/activate gwip_pyvenv
+<span class="nb">source</span> <span class="nv">$HOME</span>/miniconda/bin/activate genipe_pyvenv
 </pre></div>
 </div>
-<p>Then, install the <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> package (and all its dependencies) using the
+<p>Then, install the <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> package (and all its dependencies) using the
 following command:</p>
-<div class="highlight-bash"><div class="highlight"><pre>conda install gwip -c http://statgen.org/wp-content/uploads/Softwares/gwip
+<div class="highlight-bash"><div class="highlight"><pre>conda install genipe -c http://statgen.org/wp-content/uploads/Softwares/genipe
 </pre></div>
 </div>
 <p>If required, the optional dependencies can be installed using the following
@@ -210,15 +211,15 @@ pip install --no-deps lifelines
 </div>
 </div>
 <div class="section" id="virtual-environment-activation">
-<span id="gwip-pyvenv-activation"></span><h3>Virtual environment activation<a class="headerlink" href="#virtual-environment-activation" title="Permalink to this headline">¶</a></h3>
-<p>Before using the <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> module for any analysis, the Python virtual
+<span id="genipe-pyvenv-activation"></span><h3>Virtual environment activation<a class="headerlink" href="#virtual-environment-activation" title="Permalink to this headline">¶</a></h3>
+<p>Before using the <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> module for any analysis, the Python virtual
 environment needs to be activated. Depending of your installation type (<em>i.e</em>
 <em>pyvenv</em> or <em>miniconda</em>), the activation process will differ.</p>
 <div class="section" id="pyvenv">
 <h4>Pyvenv<a class="headerlink" href="#pyvenv" title="Permalink to this headline">¶</a></h4>
 <p>If the module was installed into a <em>pyvenv</em> environment, perform the following
 command to activate it.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">source</span> <span class="nv">$HOME</span>/gwip_pyvenv/bin/activate
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">source</span> <span class="nv">$HOME</span>/genipe_pyvenv/bin/activate
 </pre></div>
 </div>
 </div>
@@ -226,7 +227,7 @@ command to activate it.</p>
 <h4>Miniconda<a class="headerlink" href="#miniconda" title="Permalink to this headline">¶</a></h4>
 <p>If the module was installed into a <em>Miniconda</em> environment, perform the
 following command to activate it.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">source</span> <span class="nv">$HOME</span>/miniconda/bin/activate gwip_pyvenv
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">source</span> <span class="nv">$HOME</span>/miniconda/bin/activate genipe_pyvenv
 </pre></div>
 </div>
 </div>
@@ -236,8 +237,8 @@ following command to activate it.</p>
 <span id="install-test"></span><h2>Testing the installation<a class="headerlink" href="#testing-the-installation" title="Permalink to this headline">¶</a></h2>
 <p>To test the installation, make sure that the virtual environment is activated.
 Then, launch python and use the following commands:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">gwip</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">gwip</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
+<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">genipe</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">genipe</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
 <span class="go">......................ss.ss.......................ss...ss...s.s.........</span>
 <span class="go">----------------------------------------------------------------------</span>
 <span class="go">Ran 72 tests in 107.268s</span>
@@ -248,18 +249,18 @@ Then, launch python and use the following commands:</p>
 </div>
 <div class="section" id="updating-the-package">
 <span id="install-update"></span><h2>Updating the package<a class="headerlink" href="#updating-the-package" title="Permalink to this headline">¶</a></h2>
-<p>If there is a new <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> release, perform one of the following command
-(depending of the installation method). Don&#8217;t forget to first activate the
-python virtual environment.</p>
+<p>If there is a new <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> release, perform one of the following
+command (depending of the installation method). Don&#8217;t forget to first activate
+the python virtual environment.</p>
 <div class="section" id="id1">
 <h3>Pyvenv<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-bash"><div class="highlight"><pre>pip install -U gwip
+<div class="highlight-bash"><div class="highlight"><pre>pip install -U genipe
 </pre></div>
 </div>
 </div>
 <div class="section" id="id2">
 <h3>Miniconda<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-bash"><div class="highlight"><pre>conda update gwip -c http://statgen.org/wp-content/uploads/Softwares/gwip
+<div class="highlight-bash"><div class="highlight"><pre>conda update genipe -c http://statgen.org/wp-content/uploads/Softwares/genipe
 </pre></div>
 </div>
 </div>
@@ -282,12 +283,12 @@ python virtual environment.</p>
           <a href="py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tutorial.html" title="Short Tutorials"
+          <a href="tutorials.html" title="Short Tutorials"
              >next</a> |</li>
         <li class="right" >
           <a href="index.html" title="Genome-Wide Imputation Pipeline"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">gwip 1.0.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="index.html">genipe 1.1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

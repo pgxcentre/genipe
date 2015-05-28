@@ -1,0 +1,321 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>genipe.tests.test_reporting_utils &mdash; genipe 1.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
+    <link rel="top" title="genipe 1.1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="genipe" href="../../genipe.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for genipe.tests.test_reporting_utils</h1><div class="highlight"><pre>
+<span class="c"># This file is part of genipe.</span>
+<span class="c">#</span>
+<span class="c"># This work is licensed under the Creative Commons Attribution-NonCommercial</span>
+<span class="c"># 4.0 International License. To view a copy of this license, visit</span>
+<span class="c"># http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative</span>
+<span class="c"># Commons, PO Box 1866, Mountain View, CA 94042, USA.</span>
+
+
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">TemporaryDirectory</span>
+
+<span class="kn">from</span> <span class="nn">..reporting.utils</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">..reporting.utils</span> <span class="kn">import</span> <span class="n">_is_sanitized</span>
+
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s">&quot;Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s">&quot;Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)&quot;</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;TestReportingUtils&quot;</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">TestReportingUtils</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<div class="viewcode-block" id="TestReportingUtils"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_reporting_utils.TestReportingUtils">[docs]</a>
+    <span class="k">def</span> <span class="nf">test_sanitize_tex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<div class="viewcode-block" id="TestReportingUtils.test_sanitize_tex"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_reporting_utils.TestReportingUtils.test_sanitize_tex">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the &#39;sanitize_tex&#39; function.&quot;&quot;&quot;</span>
+        <span class="c"># Sanitize all required characters</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="s">&quot;$%_}{&amp;#~&quot;</span>
+        <span class="n">sanitized</span> <span class="o">=</span> <span class="s">r&quot;\$\%\_\}\{\&amp;\#$\sim$&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">sanitized</span><span class="p">,</span> <span class="n">sanitize_tex</span><span class="p">(</span><span class="n">string</span><span class="p">))</span>
+
+        <span class="c"># Sanitize only required characters (and not others)</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="s">&quot;ad$sf]35[fsdfs</span><span class="si">%f</span><span class="s">_s3f}546t%?%$634{&amp;#dfs&amp;?</span><span class="si">%%</span><span class="s">$/B~DF&quot;</span>
+        <span class="n">sanitized</span> <span class="o">=</span> <span class="p">(</span><span class="s">r&quot;ad\$sf]35[fsdfs\</span><span class="si">%f</span><span class="s">\_s3f\}546t\%?\%\$634\{\&amp;\#dfs&quot;</span>
+                     <span class="s">r&quot;\&amp;?\%\%\$/B$\sim$DF&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">sanitized</span><span class="p">,</span> <span class="n">sanitize_tex</span><span class="p">(</span><span class="n">string</span><span class="p">))</span>
+
+        <span class="c"># Sanitizing a LaTeX command</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="s">r&quot;\texttt{test}</span><span class="se">\\</span><span class="s">&quot;</span>
+        <span class="n">sanitized</span> <span class="o">=</span> <span class="p">(</span><span class="s">r&quot;\textbackslash texttt\{test\}\textbackslash &quot;</span>
+                     <span class="s">r&quot;\textbackslash &quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">sanitized</span><span class="p">,</span> <span class="n">sanitize_tex</span><span class="p">(</span><span class="n">string</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">test_wrap_tex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestReportingUtils.test_wrap_tex"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_reporting_utils.TestReportingUtils.test_wrap_tex">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the &#39;wrap_tex&#39; function.&quot;&quot;&quot;</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="s">&quot;. &quot;</span> <span class="o">*</span> <span class="mi">80</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">((</span><span class="s">&quot;. &quot;</span> <span class="o">*</span> <span class="mi">35</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span> <span class="o">+</span> <span class="s">&quot;</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">(</span><span class="s">&quot;. &quot;</span> <span class="o">*</span> <span class="mi">10</span><span class="p">)</span><span class="o">.</span><span class="n">rstrip</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">wrap_tex</span><span class="p">(</span><span class="n">string</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">test_format_tex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestReportingUtils.test_format_tex"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_reporting_utils.TestReportingUtils.test_format_tex">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the &#39;format_tex&#39; function.&quot;&quot;&quot;</span>
+        <span class="c"># Testing all valid format</span>
+        <span class="n">valid_formats</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;texttt&quot;</span><span class="p">,</span> <span class="s">&quot;emph&quot;</span><span class="p">,</span> <span class="s">&quot;textbf&quot;</span><span class="p">,</span> <span class="s">&quot;textit&quot;</span><span class="p">]</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="s">&quot;dummy string&quot;</span>
+        <span class="k">for</span> <span class="n">valid_format</span> <span class="ow">in</span> <span class="n">valid_formats</span><span class="p">:</span>
+            <span class="n">expected</span> <span class="o">=</span> <span class="s">&quot;</span><span class="se">\\</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">valid_format</span> <span class="o">+</span> <span class="s">&quot;{&quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="s">&quot;}&quot;</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">format_tex</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="n">valid_format</span><span class="p">))</span>
+
+        <span class="c"># Testing an invalid format</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">AssertionError</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+            <span class="n">format_tex</span><span class="p">(</span><span class="n">string</span><span class="p">,</span> <span class="s">&quot;invalid_format&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">exception</span><span class="p">),</span> <span class="s">&quot;invalid format&quot;</span><span class="p">)</span>
+
+        <span class="c"># Testing an un-sanitized string</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">AssertionError</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+            <span class="n">format_tex</span><span class="p">(</span><span class="s">&quot;50%&quot;</span><span class="p">,</span> <span class="n">valid_formats</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">exception</span><span class="p">),</span> <span class="s">&quot;text not sanitized&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_tex_inline_math</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestReportingUtils.test_tex_inline_math"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_reporting_utils.TestReportingUtils.test_tex_inline_math">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the &#39;tex_inline_math&#39; function.&quot;&quot;&quot;</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="s">r&quot;\sum_{n=1}^{100} \frac{1}{n}&quot;</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="s">&quot;$&quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="s">&quot;$&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">tex_inline_math</span><span class="p">(</span><span class="n">string</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">test_is_sanitized</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestReportingUtils.test_is_sanitized"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_reporting_utils.TestReportingUtils.test_is_sanitized">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the &#39;_is_sanitized&#39; function.&quot;&quot;&quot;</span>
+        <span class="c"># Not sanitized</span>
+        <span class="n">characters</span> <span class="o">=</span> <span class="s">&quot;$%_}{&amp;#~&quot;</span>
+        <span class="n">padding</span> <span class="o">=</span> <span class="s">&quot;pad&quot;</span>
+        <span class="k">for</span> <span class="n">character</span> <span class="ow">in</span> <span class="n">characters</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">_is_sanitized</span><span class="p">(</span><span class="n">padding</span> <span class="o">+</span> <span class="n">character</span> <span class="o">+</span> <span class="n">padding</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">_is_sanitized</span><span class="p">(</span><span class="s">r&quot;\ %&quot;</span><span class="p">))</span>
+
+        <span class="c"># Sanitized</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="s">r&quot;ksj\$h\}f2\</span><span class="si">%o</span><span class="s">39\_875n\{9nt\&amp;98\#34&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">_is_sanitized</span><span class="p">(</span><span class="n">string</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">test_create_tabular</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestReportingUtils.test_create_tabular"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_reporting_utils.TestReportingUtils.test_create_tabular">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the &#39;create_tabular&#39; function.&quot;&quot;&quot;</span>
+        <span class="c"># Just testing the assertions for now</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">AssertionError</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+            <span class="n">create_tabular</span><span class="p">(</span>
+                <span class="n">template</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">header</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+                <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">header_multicol</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                <span class="n">col_align</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">exception</span><span class="p">),</span> <span class="s">&quot;len(header) != len(multicol)&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">AssertionError</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+            <span class="n">create_tabular</span><span class="p">(</span>
+                <span class="n">template</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">header</span><span class="o">=</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">5</span><span class="p">],</span>
+                <span class="n">data</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">header_multicol</span><span class="o">=</span><span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span>
+                <span class="n">col_align</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;c&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">exception</span><span class="p">),</span> <span class="s">&quot;len(align) != number of columns&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_create_float</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestReportingUtils.test_create_float"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_reporting_utils.TestReportingUtils.test_create_float">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the &#39;create_float&#39; function.&quot;&quot;&quot;</span>
+        <span class="c"># Just testing the assertions for now</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">AssertionError</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+            <span class="n">create_float</span><span class="p">(</span>
+                <span class="n">template</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">float_type</span><span class="o">=</span><span class="s">&quot;unknown_type&quot;</span><span class="p">,</span>
+                <span class="n">caption</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">label</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">content</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">placement</span><span class="o">=</span><span class="s">&quot;H&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">exception</span><span class="p">),</span> <span class="s">&quot;invalid float type&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">AssertionError</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+            <span class="n">create_float</span><span class="p">(</span>
+                <span class="n">template</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">float_type</span><span class="o">=</span><span class="s">&quot;figure&quot;</span><span class="p">,</span>
+                <span class="n">caption</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">label</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">content</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">placement</span><span class="o">=</span><span class="s">&quot;Hb&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">exception</span><span class="p">),</span> <span class="s">&quot;placement &#39;H&#39; should be alone&quot;</span><span class="p">)</span>
+
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">AssertionError</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+            <span class="n">create_float</span><span class="p">(</span>
+                <span class="n">template</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">float_type</span><span class="o">=</span><span class="s">&quot;figure&quot;</span><span class="p">,</span>
+                <span class="n">caption</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">label</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">content</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+                <span class="n">placement</span><span class="o">=</span><span class="s">&quot;xb!&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">exception</span><span class="p">),</span> <span class="s">&quot;invalid placement&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_format_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestReportingUtils.test_format_time"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_reporting_utils.TestReportingUtils.test_format_time">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the &#39;format_time&#39; function.&quot;&quot;&quot;</span>
+        <span class="n">seconds</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
+        <span class="n">minutes</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">]</span>
+        <span class="n">hours</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">30</span><span class="p">,</span> <span class="mi">101</span><span class="p">]</span>
+
+        <span class="n">written_times</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;no time&quot;</span><span class="p">,</span> <span class="s">&quot;1 hour&quot;</span><span class="p">,</span> <span class="s">&quot;30 hours&quot;</span><span class="p">,</span> <span class="s">&quot;101 hours&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;1 minute&quot;</span><span class="p">,</span> <span class="s">&quot;1 hour and 1 minute&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;30 hours and 1 minute&quot;</span><span class="p">,</span> <span class="s">&quot;101 hours and 1 minute&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;30 minutes&quot;</span><span class="p">,</span> <span class="s">&quot;1 hour and 30 minutes&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;30 hours and 30 minutes&quot;</span><span class="p">,</span> <span class="s">&quot;101 hours and 30 minutes&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;1 second&quot;</span><span class="p">,</span> <span class="s">&quot;1 hour and 1 second&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;30 hours and 1 second&quot;</span><span class="p">,</span> <span class="s">&quot;101 hours and 1 second&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;1 minute and 1 second&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;1 hour, 1 minute and 1 second&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;30 hours, 1 minute and 1 second&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;101 hours, 1 minute and 1 second&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;30 minutes and 1 second&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;1 hour, 30 minutes and 1 second&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;30 hours, 30 minutes and 1 second&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;101 hours, 30 minutes and 1 second&quot;</span><span class="p">,</span> <span class="s">&quot;30 seconds&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;1 hour and 30 seconds&quot;</span><span class="p">,</span> <span class="s">&quot;30 hours and 30 seconds&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;101 hours and 30 seconds&quot;</span><span class="p">,</span> <span class="s">&quot;1 minute and 30 seconds&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;1 hour, 1 minute and 30 seconds&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;30 hours, 1 minute and 30 seconds&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;101 hours, 1 minute and 30 seconds&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;30 minutes and 30 seconds&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;1 hour, 30 minutes and 30 seconds&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;30 hours, 30 minutes and 30 seconds&quot;</span><span class="p">,</span>
+                         <span class="s">&quot;101 hours, 30 minutes and 30 seconds&quot;</span><span class="p">]</span>
+
+        <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+        <span class="k">for</span> <span class="n">second</span> <span class="ow">in</span> <span class="n">seconds</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">minute</span> <span class="ow">in</span> <span class="n">minutes</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">hour</span> <span class="ow">in</span> <span class="n">hours</span><span class="p">:</span>
+                    <span class="c"># Computing the total number of seconds</span>
+                    <span class="n">total_seconds</span> <span class="o">=</span> <span class="n">second</span> <span class="o">+</span> <span class="p">(</span><span class="n">minute</span> <span class="o">*</span> <span class="mi">60</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="n">hour</span> <span class="o">*</span> <span class="mi">3600</span><span class="p">)</span>
+
+                    <span class="c"># Checking the time</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+                        <span class="s">&quot;{:02d}:{:02d}:{:02d}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">hour</span><span class="p">,</span> <span class="n">minute</span><span class="p">,</span> <span class="n">second</span><span class="p">),</span>
+                        <span class="n">format_time</span><span class="p">(</span><span class="n">total_seconds</span><span class="p">),</span>
+                    <span class="p">)</span>
+
+                    <span class="c"># Checking the written time</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span>
+                        <span class="n">written_times</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                        <span class="n">format_time</span><span class="p">(</span><span class="n">total_seconds</span><span class="p">,</span> <span class="n">written_time</span><span class="o">=</span><span class="bp">True</span><span class="p">),</span>
+                    <span class="p">)</span>
+                    <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+
+    <span class="k">def</span> <span class="nf">test_colorize_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestReportingUtils.test_colorize_time"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_reporting_utils.TestReportingUtils.test_colorize_time">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the &#39;colorize_time&#39; function.&quot;&quot;&quot;</span>
+        <span class="c"># Testing 1 second</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">r&quot;{\color{light_gray}00:00:0}1&quot;</span><span class="p">,</span> <span class="n">colorize_time</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+
+        <span class="c"># Testing 10 seconds</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">r&quot;{\color{light_gray}00:00:}10&quot;</span><span class="p">,</span> <span class="n">colorize_time</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
+
+        <span class="c"># Testing 1 minute</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">r&quot;{\color{light_gray}00:0}1:00&quot;</span><span class="p">,</span> <span class="n">colorize_time</span><span class="p">(</span><span class="mi">60</span><span class="p">))</span>
+
+        <span class="c"># Testing 10 minutes</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">r&quot;{\color{light_gray}00:}10:00&quot;</span><span class="p">,</span> <span class="n">colorize_time</span><span class="p">(</span><span class="mi">600</span><span class="p">))</span>
+
+        <span class="c"># Testing 1 hour</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">r&quot;{\color{light_gray}0}1:00:00&quot;</span><span class="p">,</span> <span class="n">colorize_time</span><span class="p">(</span><span class="mi">3600</span><span class="p">))</span>
+
+        <span class="c"># Testing 10 hours</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">&quot;10:00:00&quot;</span><span class="p">,</span> <span class="n">colorize_time</span><span class="p">(</span><span class="mi">36000</span><span class="p">))</span>
+
+        <span class="c"># Testing 100 hours</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s">&quot;100:00:00&quot;</span><span class="p">,</span> <span class="n">colorize_time</span><span class="p">(</span><span class="mi">360000</span><span class="p">))</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Site Extraction Tutorial &mdash; gwip 1.0.0 documentation</title>
+    <title>Site Extraction Tutorial &mdash; genipe 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.0.0',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
-    <link rel="top" title="gwip 1.0.0 documentation" href="../index.html" />
-    <link rel="up" title="Short Tutorials" href="../tutorial.html" />
+    <link rel="top" title="genipe 1.1.0 documentation" href="../index.html" />
+    <link rel="up" title="Short Tutorials" href="../tutorials.html" />
     <link rel="next" title="Input Files" href="../input_files.html" />
-    <link rel="prev" title="Logistic Tutorial" href="tutorial_logistic.html" />
+    <link rel="prev" title="Linear Mixed Effects Model Tutorial" href="tutorial_mixedlm.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -49,10 +49,10 @@
           <a href="../input_files.html" title="Input Files"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="tutorial_logistic.html" title="Logistic Tutorial"
+          <a href="tutorial_mixedlm.html" title="Linear Mixed Effects Model Tutorial"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">gwip 1.0.0 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../tutorial.html" accesskey="U">Short Tutorials</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -82,8 +82,8 @@
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="tutorial_logistic.html"
-                        title="previous chapter">Logistic Tutorial</a></p>
+  <p class="topless"><a href="tutorial_mixedlm.html"
+                        title="previous chapter">Linear Mixed Effects Model Tutorial</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../input_files.html"
                         title="next chapter">Input Files</a></p>
@@ -135,17 +135,17 @@ be required, depending of the underlying analysis (<em>e.g.</em> hard calls or d
 values). We provide an easy tool to perform site extraction of multiple
 <em>impute2</em> files using either marker identification number, or genomic location
 and/or minor allele frequency and/or call rate.</p>
-<p>We suppose that you have followed the main <a class="reference internal" href="tutorial_gwip.html#gwip-tut-page"><span>Pipeline Tutorial</span></a>. The following
-command will create the working directory for this tutorial.</p>
-<div class="highlight-bash"><div class="highlight"><pre>mkdir -p <span class="nv">$HOME</span>/gwip_tutorial/extraction
+<p>We suppose that you have followed the main <a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>. The
+following command will create the working directory for this tutorial.</p>
+<div class="highlight-bash"><div class="highlight"><pre>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial/extraction
 </pre></div>
 </div>
 <div class="section" id="input-files">
 <span id="extract-tut-input-files"></span><h3>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h3>
-<p>After running the <a class="reference internal" href="../module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> pipeline, all the required files for the
+<p>After running the <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> pipeline, all the required files for the
 extraction tools are automatically created in the <code class="docutils literal"><span class="pre">final_impute2</span></code> directories
-(see the <a class="reference internal" href="tutorial_gwip.html#gwip-tut-output-files-final-impute2"><span>gwip/chrN/final_impute2 directories</span></a> section in the main
-<a class="reference internal" href="tutorial_gwip.html#gwip-tut-page"><span>Pipeline Tutorial</span></a>).</p>
+(see the <a class="reference internal" href="tutorial_genipe.html#genipe-tut-output-files-final-impute2"><span>genipe/chrN/final_impute2 directories</span></a> section in the main
+<a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>).</p>
 <p>The files that are required in these directories depends of what kind of
 extraction is required (by name, or by genomic location and/or by minor allele
 frequency and/or by calling rate).</p>
@@ -167,7 +167,7 @@ specifying multiple input files.</p>
 <h4>Extraction by ID<a class="headerlink" href="#extraction-by-id" title="Permalink to this headline">¶</a></h4>
 <p>To extract markers using their identification number, you need a file
 containing the list of marker to extract (one marker per line).</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/extraction
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/extraction
 
 <span class="nb">echo</span> <span class="s2">&quot;rs76139713:51137523:C:T&quot;</span> &gt; marker_list.txt
 <span class="nb">echo</span> <span class="s2">&quot;rs372879164:17037188:A:G&quot;</span> &gt;&gt; marker_list.txt
@@ -181,7 +181,7 @@ rs372879164:17037188:A:G
 <p>Then, the following command (using the <code class="docutils literal"><span class="pre">--extract</span></code> option will extract those
 two markers from the <em>impute2</em> file.</p>
 <div class="highlight-bash"><div class="highlight"><pre>impute2-extractor <span class="se">\</span>
-    --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
+    --impute2 ../genipe/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
     --extract marker_list.txt
 </pre></div>
 </div>
@@ -203,10 +203,10 @@ ways can be used at the same time (<em>e.g.</em> to get markers in a specific ge
 range and a specific call rate).</p>
 <p>For example, to extract markers with a MAF <span class="math">\(\geq\)</span> 0.05 located in the
 <em>CYP2D6</em> gene, perform the following command:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/gwip_tutorial/extraction
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/extraction
 
 impute2-extractor <span class="se">\</span>
-    --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
+    --impute2 ../genipe/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
     --genomic chr22:42522501-42526883 <span class="se">\</span>
     --maf 0.05 <span class="se">\</span>
     --out cyp2d6_common
@@ -215,7 +215,7 @@ impute2-extractor <span class="se">\</span>
 <p>To gather all markers with a MAF <span class="math">\(\geq\)</span> 0.05 and a call rate <span class="math">\(\geq\)</span>
 0.99, perform the following command:</p>
 <div class="highlight-bash"><div class="highlight"><pre>impute2-extractor <span class="se">\</span>
-    --impute2 ../gwip/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
+    --impute2 ../genipe/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
     --maf 0.05 <span class="se">\</span>
     --rate 0.99 <span class="se">\</span>
     --out common_complete
@@ -301,7 +301,7 @@ analysis in the console:</p>
 <span class="go">                         [--rate FLOAT]</span>
 
 <span class="go">Extract imputed markers located in a specific genomic region. This script is</span>
-<span class="go">part of the &#39;gwip&#39; package, version 1.0.0).</span>
+<span class="go">part of the &#39;genipe&#39; package, version 1.1.0).</span>
 
 <span class="go">optional arguments:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
@@ -359,10 +359,10 @@ analysis in the console:</p>
           <a href="../input_files.html" title="Input Files"
              >next</a> |</li>
         <li class="right" >
-          <a href="tutorial_logistic.html" title="Logistic Tutorial"
+          <a href="tutorial_mixedlm.html" title="Linear Mixed Effects Model Tutorial"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">gwip 1.0.0 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../tutorial.html" >Short Tutorials</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">

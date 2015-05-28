@@ -1,0 +1,864 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>genipe.reporting.autoreport &mdash; genipe 1.1.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.1.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
+    <link rel="top" title="genipe 1.1.0 documentation" href="../../../index.html" />
+    <link rel="up" title="genipe" href="../../genipe.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for genipe.reporting.autoreport</h1><div class="highlight"><pre>
+<span class="c"># This file is part of genipe.</span>
+<span class="c">#</span>
+<span class="c"># This work is licensed under the Creative Commons Attribution-NonCommercial</span>
+<span class="c"># 4.0 International License. To view a copy of this license, visit</span>
+<span class="c"># http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative</span>
+<span class="c"># Commons, PO Box 1866, Mountain View, CA 94042, USA.</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span>
+
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span>
+
+<span class="kn">from</span> <span class="nn">.utils</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">__version__</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">chromosomes</span>
+<span class="kn">from</span> <span class="nn">..error</span> <span class="kn">import</span> <span class="n">ProgramError</span>
+
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s">&quot;Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s">&quot;Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)&quot;</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;generate_report&quot;</span><span class="p">,</span> <span class="p">]</span>
+
+
+<span class="k">def</span> <span class="nf">generate_report</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="n">run_opts</span><span class="p">,</span> <span class="n">run_info</span><span class="p">):</span>
+<div class="viewcode-block" id="generate_report"><a class="viewcode-back" href="../../../module_content/genipe.reporting.html#genipe.reporting.autoreport.generate_report">[docs]</a>    <span class="sd">&quot;&quot;&quot;Generate the report.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        out_dir (str): the output directory for the report</span>
+<span class="sd">        run_opts (dict): the run options</span>
+<span class="sd">        run_info (dict): the run information</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Configuring Jinja2</span>
+    <span class="n">jinja2_env</span> <span class="o">=</span> <span class="n">config_jinja2</span><span class="p">()</span>
+
+    <span class="c"># Gathering the report data</span>
+    <span class="n">report_data</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="s">&quot;report_number&quot;</span><span class="p">:</span>   <span class="n">sanitize_tex</span><span class="p">(</span><span class="n">run_opts</span><span class="o">.</span><span class="n">report_number</span><span class="p">),</span>
+        <span class="s">&quot;title&quot;</span><span class="p">:</span>           <span class="n">sanitize_tex</span><span class="p">(</span><span class="n">run_opts</span><span class="o">.</span><span class="n">report_title</span><span class="p">),</span>
+        <span class="s">&quot;author&quot;</span><span class="p">:</span>          <span class="n">sanitize_tex</span><span class="p">(</span><span class="n">run_opts</span><span class="o">.</span><span class="n">report_author</span><span class="p">),</span>
+        <span class="s">&quot;date&quot;</span><span class="p">:</span>            <span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;{:%B </span><span class="si">%d</span><span class="s">, %Y}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">date</span><span class="o">.</span><span class="n">today</span><span class="p">())),</span>
+        <span class="s">&quot;package_name&quot;</span><span class="p">:</span>    <span class="n">sanitize_tex</span><span class="p">(</span><span class="n">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="s">&quot;package_version&quot;</span><span class="p">:</span> <span class="n">sanitize_tex</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
+    <span class="p">}</span>
+
+    <span class="c"># We want to copy the figures to the right place</span>
+    <span class="n">figures</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;frequency_pie&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">figure</span> <span class="ow">in</span> <span class="n">figures</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">figure</span> <span class="ow">in</span> <span class="n">run_info</span><span class="p">,</span> <span class="n">figure</span>
+        <span class="k">if</span> <span class="n">run_info</span><span class="p">[</span><span class="n">figure</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">run_info</span><span class="p">[</span><span class="n">figure</span><span class="p">],</span> <span class="n">out_dir</span><span class="p">)</span>
+            <span class="n">run_info</span><span class="p">[</span><span class="n">figure</span><span class="p">]</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">run_info</span><span class="p">[</span><span class="n">figure</span><span class="p">])</span>
+
+    <span class="c"># Gathering the report content</span>
+    <span class="n">report_content</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+    <span class="n">report_content</span> <span class="o">+=</span> <span class="n">_generate_background</span><span class="p">(</span><span class="n">jinja2_env</span><span class="p">,</span> <span class="n">run_opts</span><span class="p">,</span> <span class="n">run_info</span><span class="p">)</span>
+    <span class="n">report_content</span> <span class="o">+=</span> <span class="n">_generate_methods</span><span class="p">(</span><span class="n">jinja2_env</span><span class="p">,</span> <span class="n">run_opts</span><span class="p">,</span> <span class="n">run_info</span><span class="p">)</span>
+    <span class="n">report_content</span> <span class="o">+=</span> <span class="n">_generate_results</span><span class="p">(</span><span class="n">jinja2_env</span><span class="p">,</span> <span class="n">run_opts</span><span class="p">,</span> <span class="n">run_info</span><span class="p">)</span>
+    <span class="n">report_content</span> <span class="o">+=</span> <span class="n">_generate_conclusions</span><span class="p">(</span><span class="n">jinja2_env</span><span class="p">,</span> <span class="n">run_opts</span><span class="p">,</span> <span class="n">run_info</span><span class="p">)</span>
+    <span class="n">report_data</span><span class="p">[</span><span class="s">&quot;report_content&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">report_content</span>
+
+    <span class="c"># Gathering the annex content</span>
+    <span class="n">annex_content</span> <span class="o">=</span> <span class="n">_generate_annex</span><span class="p">(</span><span class="n">jinja2_env</span><span class="p">,</span> <span class="n">run_opts</span><span class="p">,</span> <span class="n">run_info</span><span class="p">)</span>
+    <span class="n">report_data</span><span class="p">[</span><span class="s">&quot;annex_content&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">annex_content</span>
+
+    <span class="c"># Getting the template</span>
+    <span class="n">main_template</span> <span class="o">=</span> <span class="n">jinja2_env</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;main_template.tex&quot;</span><span class="p">)</span>
+
+    <span class="c"># Writing the report</span>
+    <span class="n">report_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_dir</span><span class="p">,</span> <span class="s">&quot;report.tex&quot;</span><span class="p">)</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">report_filename</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">main_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">report_data</span><span class="p">),</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="n">FileNotFoundError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: cannot write file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">report_filename</span><span class="p">))</span>
+
+    <span class="c"># Copying the bibliography file</span>
+    <span class="n">bib_file</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="n">__name__</span><span class="p">,</span> <span class="s">&quot;templates/biblio/references.bib&quot;</span><span class="p">)</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">bib_file</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span>
+
+    <span class="c"># Copying the bibliography style</span>
+    <span class="n">bib_style</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="n">__name__</span><span class="p">,</span> <span class="s">&quot;templates/biblio/references.bst&quot;</span><span class="p">)</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">bib_style</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span>
+
+    <span class="c"># Copying the Makefile (to help build the report)</span>
+    <span class="n">makefile</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="n">__name__</span><span class="p">,</span> <span class="s">&quot;templates/utils/Makefile&quot;</span><span class="p">)</span>
+    <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">makefile</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_generate_background</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span> <span class="n">run_options</span><span class="p">,</span> <span class="n">run_information</span><span class="p">):</span></div>
+    <span class="sd">&quot;&quot;&quot;Generates the background section of the report.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        templates (jinja2.Environment): the jinja2 template environment</span>
+<span class="sd">        run_options (dict): the run options</span>
+<span class="sd">        run_information (dict): the run information</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a string representation of the &quot;background&quot; section</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Loading the template</span>
+    <span class="n">section_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;section_template.tex&quot;</span><span class="p">)</span>
+    <span class="n">background</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;parts/background.tex&quot;</span><span class="p">)</span>
+
+    <span class="c"># Returning the section</span>
+    <span class="k">return</span> <span class="n">section_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
+        <span class="n">section_name</span><span class="o">=</span><span class="s">&quot;Background&quot;</span><span class="p">,</span>
+        <span class="n">section_type</span><span class="o">=</span><span class="s">&quot;section&quot;</span><span class="p">,</span>
+        <span class="n">section_label</span><span class="o">=</span><span class="s">&quot;sec:background&quot;</span><span class="p">,</span>
+        <span class="n">section_content</span><span class="o">=</span><span class="n">background</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">run_information</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_generate_methods</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span> <span class="n">run_options</span><span class="p">,</span> <span class="n">run_information</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generate the method section of the report.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        templates (jinja2.Environment): the jinja2 template environment</span>
+<span class="sd">        run_options (dict): the run options</span>
+<span class="sd">        run_information (dict): the run information</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a string representation of the &quot;methods&quot; section</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Some assertions</span>
+    <span class="n">required_variables</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;shapeit_version&quot;</span><span class="p">,</span> <span class="s">&quot;impute2_version&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;plink_version&quot;</span><span class="p">,</span> <span class="s">&quot;initial_nb_markers&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;initial_nb_samples&quot;</span><span class="p">,</span> <span class="s">&quot;nb_duplicates&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;nb_ambiguous&quot;</span><span class="p">,</span> <span class="s">&quot;nb_flip&quot;</span><span class="p">,</span> <span class="s">&quot;nb_exclude&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;nb_phasing_markers&quot;</span><span class="p">,</span> <span class="s">&quot;nb_flip_reference&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;reference_checked&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">required_variable</span> <span class="ow">in</span> <span class="n">required_variables</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">required_variable</span> <span class="ow">in</span> <span class="n">run_information</span><span class="p">,</span> <span class="n">required_variable</span>
+
+    <span class="c"># Loading the templates</span>
+    <span class="n">section_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;section_template.tex&quot;</span><span class="p">)</span>
+    <span class="n">itemize_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;iterate_template.tex&quot;</span><span class="p">)</span>
+    <span class="n">methods</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;parts/methods.tex&quot;</span><span class="p">)</span>
+
+    <span class="c"># Are there any filtering rules?</span>
+    <span class="n">filtering_rules</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">run_options</span><span class="o">.</span><span class="n">filtering_rules</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">filtering_rules</span> <span class="o">=</span> <span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot; (filtering out sites where&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">rule</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">run_options</span><span class="o">.</span><span class="n">filtering_rules</span><span class="p">):</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="s">&quot;, &quot;</span>
+            <span class="k">if</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="s">&quot; &quot;</span>
+            <span class="k">elif</span> <span class="n">i</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">run_options</span><span class="o">.</span><span class="n">filtering_rules</span><span class="p">)</span> <span class="o">-</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="n">p</span> <span class="o">=</span> <span class="s">&quot; or &quot;</span>
+            <span class="n">p</span> <span class="o">=</span> <span class="n">sanitize_tex</span><span class="p">(</span><span class="n">p</span><span class="p">)</span>
+            <span class="n">filtering_rules</span> <span class="o">+=</span> <span class="n">p</span> <span class="o">+</span> <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="n">rule</span><span class="p">),</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span>
+        <span class="n">filtering_rules</span> <span class="o">+=</span> <span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;)&quot;</span><span class="p">)</span>
+
+    <span class="c"># The input files</span>
+    <span class="n">data_files</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="s">&quot;{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_options</span><span class="o">.</span><span class="n">bfile</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span> <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;bed&quot;</span><span class="p">,</span> <span class="s">&quot;bim&quot;</span><span class="p">,</span> <span class="s">&quot;fam&quot;</span><span class="p">]</span>
+    <span class="p">]</span>
+    <span class="n">data_files</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">data_files</span>
+    <span class="p">]</span>
+
+    <span class="c"># Creating the iteration</span>
+    <span class="n">data_files</span> <span class="o">=</span> <span class="n">itemize_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">iteration_type</span><span class="o">=</span><span class="s">&quot;itemize&quot;</span><span class="p">,</span>
+                                         <span class="n">iteration_list</span><span class="o">=</span><span class="n">data_files</span><span class="p">)</span>
+
+    <span class="c"># The text for the different steps</span>
+    <span class="n">steps</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c"># Was there an initial reference check?</span>
+    <span class="n">to_add_1</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+    <span class="n">to_add_2</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;reference_checked&quot;</span><span class="p">]:</span>
+        <span class="n">to_add_1</span> <span class="o">=</span> <span class="n">sanitize_tex</span><span class="p">(</span>
+            <span class="s">&quot;An initial strand check was also performed using the human &quot;</span>
+            <span class="s">&quot;reference genome. &quot;</span>
+        <span class="p">)</span>
+        <span class="n">to_add_2</span> <span class="o">=</span> <span class="n">format_tex</span><span class="p">(</span>
+            <span class="n">sanitize_tex</span><span class="p">(</span>
+                <span class="s">&quot; Also, {nb_flip} markers were flipped because of strand &quot;</span>
+                <span class="s">&quot;issue.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">nb_flip</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;nb_flip_reference&quot;</span><span class="p">],</span>
+                <span class="p">)</span>
+            <span class="p">),</span>
+            <span class="s">&quot;textbf&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="c"># The ambiguous and duplicated markers that were removed</span>
+    <span class="n">steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wrap_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span>
+        <span class="s">&quot;Ambiguous markers with alleles &quot;</span>
+    <span class="p">)</span> <span class="o">+</span> <span class="n">format_tex</span><span class="p">(</span><span class="s">&quot;A&quot;</span><span class="p">,</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="n">format_tex</span><span class="p">(</span><span class="s">&quot;T&quot;</span><span class="p">,</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot; and &quot;</span> <span class="o">+</span>
+        <span class="n">format_tex</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">,</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="n">format_tex</span><span class="p">(</span><span class="s">&quot;G&quot;</span><span class="p">,</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="o">+</span>
+        <span class="n">sanitize_tex</span><span class="p">(</span>
+            <span class="s">&quot;, duplicated markers (same position), and markers located on &quot;</span>
+            <span class="s">&quot;special chromosomes (sexual or mitochondrial chromosomes) were &quot;</span>
+            <span class="s">&quot;excluded from the imputation. &quot;</span>
+    <span class="p">)</span> <span class="o">+</span> <span class="n">to_add_1</span> <span class="o">+</span> <span class="n">format_tex</span><span class="p">(</span>
+        <span class="n">sanitize_tex</span><span class="p">(</span>
+            <span class="s">&quot;In total, {ambiguous} ambiguous, {duplicated} duplicated and &quot;</span>
+            <span class="s">&quot;{special} special markers were excluded.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">ambiguous</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;nb_ambiguous&quot;</span><span class="p">],</span>
+                <span class="n">duplicated</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;nb_duplicates&quot;</span><span class="p">],</span>
+                <span class="n">special</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;nb_special_markers&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="p">),</span>
+        <span class="s">&quot;textbf&quot;</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">+</span> <span class="n">to_add_2</span><span class="p">))</span>
+
+    <span class="c"># The number of markers that were flipped</span>
+    <span class="n">steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wrap_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span>
+        <span class="s">&quot;Markers&#39; strand was checked using the SHAPEIT algorithm and &quot;</span>
+        <span class="s">&quot;IMPUTE2&#39;s reference files. &quot;</span>
+    <span class="p">)</span> <span class="o">+</span> <span class="n">format_tex</span><span class="p">(</span>
+        <span class="n">sanitize_tex</span><span class="p">(</span>
+            <span class="s">&quot;In total, {nb_markers} markers had an incorrect strand and &quot;</span>
+            <span class="s">&quot;were flipped using Plink.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">nb_markers</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;nb_flip&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="p">),</span>
+        <span class="s">&quot;textbf&quot;</span><span class="p">,</span>
+    <span class="p">)))</span>
+
+    <span class="c"># The number of excluded markers because of strand problem</span>
+    <span class="n">steps</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">wrap_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span>
+        <span class="s">&quot;The strand of each marker was checked again using SHAPEIT against &quot;</span>
+        <span class="s">&quot;IMPUTE2&#39;s reference files. &quot;</span>
+    <span class="p">)</span> <span class="o">+</span> <span class="n">format_tex</span><span class="p">(</span>
+        <span class="n">sanitize_tex</span><span class="p">(</span>
+            <span class="s">&quot;In total, {nb_markers} markers were found to still be on the &quot;</span>
+            <span class="s">&quot;wrong strand, and were hence excluded from the final dataset &quot;</span>
+            <span class="s">&quot;using Plink.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">nb_markers</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;nb_exclude&quot;</span><span class="p">],</span>
+            <span class="p">)</span>
+        <span class="p">),</span>
+        <span class="s">&quot;textbf&quot;</span><span class="p">,</span>
+    <span class="p">)))</span>
+
+    <span class="n">steps</span> <span class="o">=</span> <span class="n">itemize_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">iteration_type</span><span class="o">=</span><span class="s">&quot;enumerate&quot;</span><span class="p">,</span>
+                                    <span class="n">iteration_list</span><span class="o">=</span><span class="n">steps</span><span class="p">)</span>
+
+    <span class="c"># Returning the section</span>
+    <span class="k">return</span> <span class="n">section_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
+        <span class="n">section_name</span><span class="o">=</span><span class="s">&quot;Methods&quot;</span><span class="p">,</span>
+        <span class="n">section_type</span><span class="o">=</span><span class="s">&quot;section&quot;</span><span class="p">,</span>
+        <span class="n">section_label</span><span class="o">=</span><span class="s">&quot;sec:methods&quot;</span><span class="p">,</span>
+        <span class="n">section_content</span><span class="o">=</span><span class="n">methods</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
+            <span class="n">data_files</span><span class="o">=</span><span class="n">data_files</span><span class="p">,</span>
+            <span class="n">steps_data</span><span class="o">=</span><span class="n">steps</span><span class="p">,</span>
+            <span class="n">filtering_rules</span><span class="o">=</span><span class="n">filtering_rules</span><span class="p">,</span>
+            <span class="o">**</span><span class="n">run_information</span>
+        <span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_generate_results</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span> <span class="n">run_options</span><span class="p">,</span> <span class="n">run_information</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates the results section of the report.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        templates (jinja2.Environment): the jinja2 template environment</span>
+<span class="sd">        run_options (dict): the run options</span>
+<span class="sd">        run_information (dict): the run information</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a string representation of the &quot;results&quot; section</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Some assertions</span>
+    <span class="n">required_variables</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;cross_validation_final_nb_genotypes&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;cross_validation_nb_genotypes_chrom&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;cross_validation_table_1&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;cross_validation_table_2&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;cross_validation_table_1_chrom&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;cross_validation_table_2_chrom&quot;</span><span class="p">,</span> <span class="s">&quot;prob_threshold&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;nb_imputed&quot;</span><span class="p">,</span> <span class="s">&quot;average_comp_rate&quot;</span><span class="p">,</span> <span class="s">&quot;rate_threshold&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;nb_good_sites&quot;</span><span class="p">,</span> <span class="s">&quot;average_comp_rate_cleaned&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;mean_missing&quot;</span><span class="p">,</span> <span class="s">&quot;nb_samples&quot;</span><span class="p">,</span> <span class="s">&quot;nb_genotyped&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;nb_genotyped_not_complete&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;pct_genotyped_not_complete&quot;</span><span class="p">,</span> <span class="s">&quot;nb_geno_now_complete&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;pct_geno_now_complete&quot;</span><span class="p">,</span> <span class="s">&quot;nb_site_now_complete&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;pct_good_sites&quot;</span><span class="p">,</span> <span class="s">&quot;nb_missing_geno&quot;</span><span class="p">,</span> <span class="s">&quot;nb_maf_nan&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;nb_marker_with_maf&quot;</span><span class="p">,</span> <span class="s">&quot;nb_maf_geq_01&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;nb_maf_geq_05&quot;</span><span class="p">,</span> <span class="s">&quot;nb_maf_lt_05&quot;</span><span class="p">,</span> <span class="s">&quot;nb_maf_lt_01&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;nb_maf_geq_01_lt_05&quot;</span><span class="p">,</span> <span class="s">&quot;pct_maf_geq_01&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;pct_maf_geq_05&quot;</span><span class="p">,</span> <span class="s">&quot;pct_maf_lt_05&quot;</span><span class="p">,</span> <span class="s">&quot;pct_maf_lt_01&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;pct_maf_geq_01_lt_05&quot;</span><span class="p">,</span> <span class="s">&quot;frequency_pie&quot;</span><span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">required_variable</span> <span class="ow">in</span> <span class="n">required_variables</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">required_variable</span> <span class="ow">in</span> <span class="n">run_information</span><span class="p">,</span> <span class="n">required_variable</span>
+
+    <span class="c"># Loading the templates</span>
+    <span class="n">section_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;section_template.tex&quot;</span><span class="p">)</span>
+    <span class="n">tabular_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;tabular_template.tex&quot;</span><span class="p">)</span>
+    <span class="n">graphics_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;graphics_template.tex&quot;</span><span class="p">)</span>
+    <span class="n">float_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;float_template.tex&quot;</span><span class="p">)</span>
+    <span class="n">cross_validation</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;parts/cross_validation.tex&quot;</span><span class="p">)</span>
+    <span class="n">completion_rate</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;parts/completion_rate.tex&quot;</span><span class="p">)</span>
+    <span class="n">frequencies</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;parts/frequencies.tex&quot;</span><span class="p">)</span>
+
+    <span class="c"># The header of the two kind of tables</span>
+    <span class="n">header_table_1</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;Interval&quot;</span><span class="p">),</span> <span class="s">&quot;textbf&quot;</span><span class="p">),</span>
+        <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;Nb Geno&quot;</span><span class="p">),</span> <span class="s">&quot;textbf&quot;</span><span class="p">),</span>
+        <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;Concordance (%)&quot;</span><span class="p">),</span> <span class="s">&quot;textbf&quot;</span><span class="p">),</span>
+    <span class="p">]</span>
+    <span class="n">header_table_2</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;Interval&quot;</span><span class="p">),</span> <span class="s">&quot;textbf&quot;</span><span class="p">),</span>
+        <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;Called (%)&quot;</span><span class="p">),</span> <span class="s">&quot;textbf&quot;</span><span class="p">),</span>
+        <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;Concordance (%)&quot;</span><span class="p">),</span> <span class="s">&quot;textbf&quot;</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="c"># Creating the tables</span>
+    <span class="n">tables</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+
+    <span class="c"># Adding the table for each of the chromosomes</span>
+    <span class="k">for</span> <span class="n">chrom</span> <span class="ow">in</span> <span class="n">chromosomes</span><span class="p">:</span>
+        <span class="c"># Getting the table 1</span>
+        <span class="n">table_1</span> <span class="o">=</span> <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;cross_validation_table_1_chrom&quot;</span><span class="p">][</span><span class="n">chrom</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table_1</span><span class="p">)):</span>
+            <span class="n">table_1</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tex_inline_math</span><span class="p">(</span><span class="n">table_1</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+        <span class="n">table_1</span> <span class="o">=</span> <span class="n">create_tabular</span><span class="p">(</span>
+            <span class="n">template</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span>
+            <span class="n">header</span><span class="o">=</span><span class="n">header_table_1</span><span class="p">,</span>
+            <span class="n">col_align</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;c&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">],</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">table_1</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c"># Getting the table 2</span>
+        <span class="n">table_2</span> <span class="o">=</span> <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;cross_validation_table_2_chrom&quot;</span><span class="p">][</span><span class="n">chrom</span><span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table_2</span><span class="p">)):</span>
+            <span class="n">table_2</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tex_inline_math</span><span class="p">(</span>
+                <span class="n">table_2</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="s">r&quot;\geq &quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="n">table_2</span> <span class="o">=</span> <span class="n">create_tabular</span><span class="p">(</span>
+            <span class="n">template</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span>
+            <span class="n">header</span><span class="o">=</span><span class="n">header_table_2</span><span class="p">,</span>
+            <span class="n">col_align</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;c&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">],</span>
+            <span class="n">data</span><span class="o">=</span><span class="n">table_2</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c"># The number of genotypes</span>
+        <span class="n">nb_genotypes</span> <span class="o">=</span> <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;cross_validation_nb_genotypes_chrom&quot;</span><span class="p">]</span>
+        <span class="n">nb_genotypes</span> <span class="o">=</span> <span class="n">nb_genotypes</span><span class="p">[</span><span class="n">chrom</span><span class="p">]</span>
+
+        <span class="c"># Adding the float</span>
+        <span class="n">tables</span> <span class="o">+=</span> <span class="n">create_float</span><span class="p">(</span>
+            <span class="n">template</span><span class="o">=</span><span class="n">float_template</span><span class="p">,</span>
+            <span class="n">float_type</span><span class="o">=</span><span class="s">&quot;table&quot;</span><span class="p">,</span>
+            <span class="n">caption</span><span class="o">=</span><span class="n">wrap_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span>
+                <span class="s">&quot;IMPUTE2&#39;s internal cross-validation for chromosome {}. &quot;</span>
+                <span class="s">&quot;Tables show the percentage of concordance between genotyped &quot;</span>
+                <span class="s">&quot;calls and imputed calls for {:,d} &quot;</span>
+                <span class="s">&quot;genotypes.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">nb_genotypes</span><span class="p">)</span>
+            <span class="p">)),</span>
+            <span class="n">label</span><span class="o">=</span><span class="s">&quot;tab:cross_validation_chr_{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chrom</span><span class="p">),</span>
+            <span class="n">placement</span><span class="o">=</span><span class="s">&quot;H&quot;</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">table_1</span> <span class="o">+</span> <span class="s">r&quot;\hfill&quot;</span> <span class="o">+</span> <span class="n">table_2</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="c"># Adding the table for all the autosomes (Table 1)</span>
+    <span class="n">table_1</span> <span class="o">=</span> <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;cross_validation_table_1&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table_1</span><span class="p">)):</span>
+        <span class="n">table_1</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tex_inline_math</span><span class="p">(</span><span class="n">table_1</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">])</span>
+    <span class="n">table_1</span> <span class="o">=</span> <span class="n">create_tabular</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header_table_1</span><span class="p">,</span>
+                             <span class="n">col_align</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;c&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">],</span> <span class="n">data</span><span class="o">=</span><span class="n">table_1</span><span class="p">)</span>
+
+    <span class="c"># Adding the table for all the autosomes (Table 2)</span>
+    <span class="n">table_2</span> <span class="o">=</span> <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;cross_validation_table_2&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table_2</span><span class="p">)):</span>
+        <span class="n">table_2</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">tex_inline_math</span><span class="p">(</span><span class="n">table_2</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="s">r&quot;\geq &quot;</span><span class="p">))</span>
+    <span class="n">table_2</span> <span class="o">=</span> <span class="n">create_tabular</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header_table_2</span><span class="p">,</span>
+                             <span class="n">col_align</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;c&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">],</span> <span class="n">data</span><span class="o">=</span><span class="n">table_2</span><span class="p">)</span>
+
+    <span class="c"># The number of genotypes</span>
+    <span class="n">nb_genotypes</span> <span class="o">=</span> <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;cross_validation_final_nb_genotypes&quot;</span><span class="p">]</span>
+
+    <span class="c"># Adding the float</span>
+    <span class="n">tables</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">create_float</span><span class="p">(</span>
+        <span class="n">template</span><span class="o">=</span><span class="n">float_template</span><span class="p">,</span>
+        <span class="n">float_type</span><span class="o">=</span><span class="s">&quot;table&quot;</span><span class="p">,</span>
+        <span class="n">caption</span><span class="o">=</span><span class="n">wrap_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span>
+            <span class="s">&quot;IMPUTE2&#39;s internal cross-validation across the genome. Tables &quot;</span>
+            <span class="s">&quot;show the percentage of concordance between genotyped calls and &quot;</span>
+            <span class="s">&quot;imputed calls for {:,d} genotypes.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_genotypes</span><span class="p">)</span>
+        <span class="p">)),</span>
+        <span class="n">label</span><span class="o">=</span><span class="s">&quot;tab:cross_validation&quot;</span><span class="p">,</span>
+        <span class="n">placement</span><span class="o">=</span><span class="s">&quot;H&quot;</span><span class="p">,</span>
+        <span class="n">content</span><span class="o">=</span><span class="n">table_1</span> <span class="o">+</span> <span class="s">r&quot;\hfill&quot;</span> <span class="o">+</span> <span class="n">table_2</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c"># Creating the cross-validation subsection</span>
+    <span class="n">cross_validation_content</span> <span class="o">=</span> <span class="n">section_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
+        <span class="n">section_name</span><span class="o">=</span><span class="s">&quot;Cross-validation&quot;</span><span class="p">,</span>
+        <span class="n">section_type</span><span class="o">=</span><span class="s">&quot;subsection&quot;</span><span class="p">,</span>
+        <span class="n">section_content</span><span class="o">=</span><span class="n">cross_validation</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">tables</span><span class="o">=</span><span class="n">tables</span><span class="p">),</span>
+        <span class="n">section_label</span><span class="o">=</span><span class="s">&quot;subsec:cross_validation&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c"># Creating the completion rate subsection</span>
+    <span class="n">completion_rate_content</span> <span class="o">=</span> <span class="n">section_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
+        <span class="n">section_name</span><span class="o">=</span><span class="s">&quot;Completion rate&quot;</span><span class="p">,</span>
+        <span class="n">section_type</span><span class="o">=</span><span class="s">&quot;subsection&quot;</span><span class="p">,</span>
+        <span class="n">section_content</span><span class="o">=</span><span class="n">completion_rate</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">run_information</span><span class="p">),</span>
+        <span class="n">section_label</span><span class="o">=</span><span class="s">&quot;subsec:completion_rate&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c"># Do we have a frequency pie?</span>
+    <span class="n">frequency_float</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;frequency_pie&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+        <span class="n">frequency_float</span> <span class="o">=</span> <span class="n">create_float</span><span class="p">(</span>
+            <span class="n">template</span><span class="o">=</span><span class="n">float_template</span><span class="p">,</span>
+            <span class="n">float_type</span><span class="o">=</span><span class="s">&quot;figure&quot;</span><span class="p">,</span>
+            <span class="n">caption</span><span class="o">=</span><span class="n">wrap_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span>
+                <span class="s">&quot;Proportions of minor allele frequencies for imputed &quot;</span>
+                <span class="s">&quot;sites with a completion rate of {}</span><span class="si">% o</span><span class="s">r &quot;</span>
+                <span class="s">&quot;more at a probability of {}</span><span class="si">% o</span><span class="s">r &quot;</span>
+                <span class="s">&quot;more.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;rate_threshold&quot;</span><span class="p">],</span>
+                               <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;prob_threshold&quot;</span><span class="p">])</span>
+            <span class="p">)),</span>
+            <span class="n">label</span><span class="o">=</span><span class="s">&quot;fig:frequency_pie&quot;</span><span class="p">,</span>
+            <span class="n">placement</span><span class="o">=</span><span class="s">&quot;H&quot;</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">graphics_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
+                <span class="n">width</span><span class="o">=</span><span class="s">r&quot;0.5\textwidth&quot;</span><span class="p">,</span>
+                <span class="n">path</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;frequency_pie&quot;</span><span class="p">],</span>
+            <span class="p">),</span>
+        <span class="p">)</span>
+    <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;frequency_float&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frequency_float</span>
+
+    <span class="c"># Creating the frequency subsection</span>
+    <span class="n">frequencies_content</span> <span class="o">=</span> <span class="n">section_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
+        <span class="n">section_name</span><span class="o">=</span><span class="s">&quot;Minor allele frequencies&quot;</span><span class="p">,</span>
+        <span class="n">section_type</span><span class="o">=</span><span class="s">&quot;subsection&quot;</span><span class="p">,</span>
+        <span class="n">section_content</span><span class="o">=</span><span class="n">frequencies</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">run_information</span><span class="p">),</span>
+        <span class="n">section_label</span><span class="o">=</span><span class="s">&quot;subsec:maf&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c"># The final content</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="p">(</span><span class="n">cross_validation_content</span> <span class="o">+</span> <span class="n">completion_rate_content</span> <span class="o">+</span>
+               <span class="n">frequencies_content</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">section_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">section_name</span><span class="o">=</span><span class="s">&quot;Results&quot;</span><span class="p">,</span>
+                                   <span class="n">section_type</span><span class="o">=</span><span class="s">&quot;section&quot;</span><span class="p">,</span>
+                                   <span class="n">section_content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span>
+                                   <span class="n">section_label</span><span class="o">=</span><span class="s">&quot;sec:results&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_generate_conclusions</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span> <span class="n">run_options</span><span class="p">,</span> <span class="n">run_information</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates the background section of the report.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        templates (jinja2.Environment): the jinja2 template environment</span>
+<span class="sd">        run_options (dict): the run options</span>
+<span class="sd">        run_information (dict): the run information</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a string representation of the &quot;conclusions&quot; section</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Some assertions</span>
+    <span class="n">required_variables</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;nb_good_sites&quot;</span><span class="p">,</span> <span class="s">&quot;prob_threshold&quot;</span><span class="p">,</span> <span class="s">&quot;rate_threshold&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;nb_genotyped&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">required_variable</span> <span class="ow">in</span> <span class="n">required_variables</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">required_variable</span> <span class="ow">in</span> <span class="n">run_information</span>
+
+    <span class="c"># Loading the template</span>
+    <span class="n">section_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;section_template.tex&quot;</span><span class="p">)</span>
+    <span class="n">conclusions</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;parts/conclusions.tex&quot;</span><span class="p">)</span>
+    <span class="n">itemize_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;iterate_template.tex&quot;</span><span class="p">)</span>
+
+    <span class="c"># Adding the required information (output directories)</span>
+    <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;output_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sanitize_tex</span><span class="p">(</span><span class="n">run_options</span><span class="o">.</span><span class="n">out_dir</span><span class="p">)</span>
+    <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;output_dir_chrom&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sanitize_tex</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">run_options</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="s">&quot;chr*&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;output_final_impute2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">sanitize_tex</span><span class="p">(</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">run_options</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="s">&quot;chr*&quot;</span><span class="p">,</span> <span class="s">&quot;final_impute2&quot;</span><span class="p">)</span>
+    <span class="p">)</span>
+
+    <span class="c"># Output files</span>
+    <span class="n">output_files</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">wrap_tex</span><span class="p">(</span>
+            <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;chr*.imputed.alleles&quot;</span><span class="p">),</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="o">+</span>
+            <span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;: description of the reference and alternative &quot;</span>
+                         <span class="s">&quot;allele at each site.&quot;</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="n">wrap_tex</span><span class="p">(</span>
+            <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;chr*.imputed.completion_rates&quot;</span><span class="p">),</span>
+                       <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="o">+</span>
+            <span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;: number of missing values and completion rate for &quot;</span>
+                         <span class="s">&quot;all site (using a probability threshold &quot;</span><span class="p">)</span> <span class="o">+</span>
+            <span class="n">tex_inline_math</span><span class="p">(</span>
+                <span class="s">r&quot;\geq {}\%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;prob_threshold&quot;</span><span class="p">])</span>
+            <span class="p">)</span> <span class="o">+</span> <span class="s">&quot;).&quot;</span>
+        <span class="p">),</span>
+        <span class="n">wrap_tex</span><span class="p">(</span>
+            <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;chr*.imputed.good_sites&quot;</span><span class="p">),</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="o">+</span>
+            <span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;: list of sites which pass the completion rate &quot;</span>
+                         <span class="s">&quot;threshold (&quot;</span><span class="p">)</span> <span class="o">+</span>
+            <span class="n">tex_inline_math</span><span class="p">(</span>
+                <span class="s">r&quot;\geq {}\%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;rate_threshold&quot;</span><span class="p">])</span>
+            <span class="p">)</span> <span class="o">+</span> <span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;) using the probability threshold &quot;</span><span class="p">)</span> <span class="o">+</span>
+            <span class="n">tex_inline_math</span><span class="p">(</span>
+                <span class="s">r&quot;\geq {}\%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;prob_threshold&quot;</span><span class="p">])</span>
+            <span class="p">)</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span>
+        <span class="p">),</span>
+        <span class="n">wrap_tex</span><span class="p">(</span>
+            <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;chr*.imputed.impute2&quot;</span><span class="p">),</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="o">+</span>
+            <span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;: imputation results (merged from all segments.&quot;</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="n">wrap_tex</span><span class="p">(</span>
+            <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;chr*.imputed.imputed_sites&quot;</span><span class="p">),</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="o">+</span>
+            <span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;: list of imputed sites (excluding sites that were &quot;</span>
+                         <span class="s">&quot;previously genotyped in the study cohort).&quot;</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="n">wrap_tex</span><span class="p">(</span>
+            <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;chr*.imputed.log&quot;</span><span class="p">),</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="o">+</span>
+            <span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;: log file of the merging procedure.&quot;</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="n">wrap_tex</span><span class="p">(</span>
+            <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;chr*.imputed.maf&quot;</span><span class="p">),</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="o">+</span>
+            <span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;: minor allele frequency (along with minor allele &quot;</span>
+                         <span class="s">&quot;identification) for all sites using the probability &quot;</span>
+                         <span class="s">&quot;threshold &quot;</span><span class="p">)</span> <span class="o">+</span>
+            <span class="n">tex_inline_math</span><span class="p">(</span>
+                <span class="s">r&quot;\geq {}\%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;prob_threshold&quot;</span><span class="p">])</span>
+            <span class="p">)</span> <span class="o">+</span> <span class="s">&quot;.&quot;</span>
+        <span class="p">),</span>
+        <span class="n">wrap_tex</span><span class="p">(</span>
+            <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;chr*.imputed.map&quot;</span><span class="p">),</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="o">+</span>
+            <span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;: a map file describing the genomic location of &quot;</span>
+                         <span class="s">&quot;all sites.&quot;</span><span class="p">)</span>
+        <span class="p">),</span>
+        <span class="n">wrap_tex</span><span class="p">(</span>
+            <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;chr*.imputed.sample&quot;</span><span class="p">),</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="o">+</span>
+            <span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;: the sample file generated by the phasing step.&quot;</span><span class="p">)</span>
+        <span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="c"># Formating the enumeration of files</span>
+    <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;output_files&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">itemize_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
+        <span class="n">iteration_type</span><span class="o">=</span><span class="s">&quot;itemize&quot;</span><span class="p">,</span>
+        <span class="n">iteration_list</span><span class="o">=</span><span class="n">output_files</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c"># Returning the section</span>
+    <span class="k">return</span> <span class="n">section_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
+        <span class="n">section_name</span><span class="o">=</span><span class="s">&quot;Conclusions&quot;</span><span class="p">,</span>
+        <span class="n">section_type</span><span class="o">=</span><span class="s">&quot;section&quot;</span><span class="p">,</span>
+        <span class="n">section_label</span><span class="o">=</span><span class="s">&quot;sec:conclusions&quot;</span><span class="p">,</span>
+        <span class="n">section_content</span><span class="o">=</span><span class="n">conclusions</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">run_information</span><span class="p">),</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_generate_annex</span><span class="p">(</span><span class="n">templates</span><span class="p">,</span> <span class="n">run_options</span><span class="p">,</span> <span class="n">run_information</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates the annex section of the report (execution times).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        templates (jinja2.Environment): the jinja2 template environment</span>
+<span class="sd">        run_options (dict): the run options</span>
+<span class="sd">        run_information (dict): the run information</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a string representation of the &quot;Annex&quot; section</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Some assertions</span>
+    <span class="n">required_variables</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;plink_exclude_exec_time&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;shapeit_check_1_exec_time&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;shapeit_check_2_exec_time&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;plink_missing_exec_time&quot;</span><span class="p">,</span> <span class="s">&quot;plink_flip_exec_time&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;plink_final_exec_time&quot;</span><span class="p">,</span> <span class="s">&quot;shapeit_phase_exec_time&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;merge_impute2_exec_time&quot;</span><span class="p">,</span> <span class="s">&quot;impute2_exec_time&quot;</span><span class="p">,</span>
+                          <span class="s">&quot;bgzip_exec_time&quot;</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">required_variable</span> <span class="ow">in</span> <span class="n">required_variables</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="n">required_variable</span> <span class="ow">in</span> <span class="n">run_information</span><span class="p">,</span> <span class="n">required_variable</span>
+
+    <span class="c"># Loading the templates</span>
+    <span class="n">tabular_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;tabular_template.tex&quot;</span><span class="p">)</span>
+    <span class="n">float_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;float_template.tex&quot;</span><span class="p">)</span>
+
+    <span class="c"># This section content</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;The following tables show the execution time required by all &quot;</span>
+               <span class="s">&quot;the different tasks. All tasks are split by chromosomes. &quot;</span>
+               <span class="s">&quot;Execution times for imputation for each chromosome are means &quot;</span>
+               <span class="s">&quot;of individual segment times. Computing all genotyped markers&#39; &quot;</span>
+               <span class="s">&quot;missing rate took {}.&quot;</span><span class="p">)</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="n">wrap_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="n">content</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">format_time</span><span class="p">(</span>
+        <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;plink_missing_exec_time&quot;</span><span class="p">],</span>
+        <span class="n">written_time</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+    <span class="p">))))</span>
+
+    <span class="c"># The header of the tables</span>
+    <span class="n">table_header</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;Chrom&quot;</span><span class="p">),</span> <span class="s">&quot;textbf&quot;</span><span class="p">),</span>
+        <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;Time&quot;</span><span class="p">),</span> <span class="s">&quot;textbf&quot;</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="c"># Getting the first table (plink_exclude_chr*)</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="s">&quot;</span><span class="se">\n\n</span><span class="s">&quot;</span> <span class="o">+</span> <span class="n">_generate_time_float</span><span class="p">(</span>
+        <span class="n">table</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;plink_exclude_exec_time&quot;</span><span class="p">],</span>
+        <span class="n">header</span><span class="o">=</span><span class="n">table_header</span><span class="p">,</span>
+        <span class="n">task_name</span><span class="o">=</span><span class="s">&quot;plink_exclude_chr*&quot;</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s">&quot;plink_exclude_exec_time&quot;</span><span class="p">,</span>
+        <span class="n">tabular_t</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span>
+        <span class="n">float_t</span><span class="o">=</span><span class="n">float_template</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c"># Getting the second table (shapeit_check_chr*_1)</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="n">_generate_time_float</span><span class="p">(</span>
+        <span class="n">table</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;shapeit_check_1_exec_time&quot;</span><span class="p">],</span>
+        <span class="n">header</span><span class="o">=</span><span class="n">table_header</span><span class="p">,</span>
+        <span class="n">task_name</span><span class="o">=</span><span class="s">&quot;shapeit_check_chr*_1&quot;</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s">&quot;shapeit_check_1_exec_time&quot;</span><span class="p">,</span>
+        <span class="n">tabular_t</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span>
+        <span class="n">float_t</span><span class="o">=</span><span class="n">float_template</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c"># Getting the third table (plink_flip_chr*)</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="n">_generate_time_float</span><span class="p">(</span>
+        <span class="n">table</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;plink_flip_exec_time&quot;</span><span class="p">],</span>
+        <span class="n">header</span><span class="o">=</span><span class="n">table_header</span><span class="p">,</span>
+        <span class="n">task_name</span><span class="o">=</span><span class="s">&quot;plink_flip_chr*&quot;</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s">&quot;plink_flip_exec_time&quot;</span><span class="p">,</span>
+        <span class="n">tabular_t</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span>
+        <span class="n">float_t</span><span class="o">=</span><span class="n">float_template</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c"># Getting the fourth table (shapeit_check_chr*_2)</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="n">_generate_time_float</span><span class="p">(</span>
+        <span class="n">table</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;shapeit_check_2_exec_time&quot;</span><span class="p">],</span>
+        <span class="n">header</span><span class="o">=</span><span class="n">table_header</span><span class="p">,</span>
+        <span class="n">task_name</span><span class="o">=</span><span class="s">&quot;shapeit_check_chr*_2&quot;</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s">&quot;shapeit_check_2_exec_time&quot;</span><span class="p">,</span>
+        <span class="n">tabular_t</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span>
+        <span class="n">float_t</span><span class="o">=</span><span class="n">float_template</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c"># Getting the fifth table (plink_final_exclude_chr*)</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="n">_generate_time_float</span><span class="p">(</span>
+        <span class="n">table</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;plink_final_exec_time&quot;</span><span class="p">],</span>
+        <span class="n">header</span><span class="o">=</span><span class="n">table_header</span><span class="p">,</span>
+        <span class="n">task_name</span><span class="o">=</span><span class="s">&quot;plink_final_exclude_chr*&quot;</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s">&quot;plink_final_exclude_exec_time&quot;</span><span class="p">,</span>
+        <span class="n">tabular_t</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span>
+        <span class="n">float_t</span><span class="o">=</span><span class="n">float_template</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c"># Getting the sixth table (shapeit_phase_chr*)</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="n">_generate_time_float</span><span class="p">(</span>
+        <span class="n">table</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;shapeit_phase_exec_time&quot;</span><span class="p">],</span>
+        <span class="n">header</span><span class="o">=</span><span class="n">table_header</span><span class="p">,</span>
+        <span class="n">task_name</span><span class="o">=</span><span class="s">&quot;shapeit_phase_chr*&quot;</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s">&quot;shapeit_phase_exec_time&quot;</span><span class="p">,</span>
+        <span class="n">tabular_t</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span>
+        <span class="n">float_t</span><span class="o">=</span><span class="n">float_template</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c"># Getting the seventh table (impute2_chr*)</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="n">_generate_time_float</span><span class="p">(</span>
+        <span class="n">table</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;impute2_exec_time&quot;</span><span class="p">],</span>
+        <span class="n">header</span><span class="o">=</span><span class="p">[</span><span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;Chrom&quot;</span><span class="p">),</span> <span class="s">&quot;textbf&quot;</span><span class="p">),</span>
+                <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;Nb Seg.&quot;</span><span class="p">),</span> <span class="s">&quot;textbf&quot;</span><span class="p">),</span>
+                <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;Mean T.&quot;</span><span class="p">),</span> <span class="s">&quot;textbf&quot;</span><span class="p">),</span>
+                <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;Max T.&quot;</span><span class="p">),</span> <span class="s">&quot;textbf&quot;</span><span class="p">)],</span>
+        <span class="n">task_name</span><span class="o">=</span><span class="s">&quot;impute2_chr*&quot;</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s">&quot;impute2_exec_time&quot;</span><span class="p">,</span>
+        <span class="n">tabular_t</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span>
+        <span class="n">float_t</span><span class="o">=</span><span class="n">float_template</span><span class="p">,</span>
+        <span class="n">first_time_col</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c"># Getting the eight table (merge_impute2_chr*)</span>
+    <span class="n">content</span> <span class="o">+=</span> <span class="n">_generate_time_float</span><span class="p">(</span>
+        <span class="n">table</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;merge_impute2_exec_time&quot;</span><span class="p">],</span>
+        <span class="n">header</span><span class="o">=</span><span class="n">table_header</span><span class="p">,</span>
+        <span class="n">task_name</span><span class="o">=</span><span class="s">&quot;merge_impute2_chr*&quot;</span><span class="p">,</span>
+        <span class="n">label</span><span class="o">=</span><span class="s">&quot;merge_impute2_exec_time&quot;</span><span class="p">,</span>
+        <span class="n">tabular_t</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span>
+        <span class="n">float_t</span><span class="o">=</span><span class="n">float_template</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="c"># The last table (bgzip_chr*) only if present</span>
+    <span class="k">if</span> <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;bgzip_exec_time&quot;</span><span class="p">]:</span>
+        <span class="n">content</span> <span class="o">+=</span> <span class="n">_generate_time_float</span><span class="p">(</span>
+            <span class="n">table</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;bgzip_exec_time&quot;</span><span class="p">],</span>
+            <span class="n">header</span><span class="o">=</span><span class="n">table_header</span><span class="p">,</span>
+            <span class="n">task_name</span><span class="o">=</span><span class="s">&quot;bgzip_chr*&quot;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s">&quot;bgzip_exec_time&quot;</span><span class="p">,</span>
+            <span class="n">tabular_t</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span>
+            <span class="n">float_t</span><span class="o">=</span><span class="n">float_template</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">content</span>
+
+
+<span class="k">def</span> <span class="nf">_generate_time_float</span><span class="p">(</span><span class="n">task_name</span><span class="p">,</span> <span class="n">label</span><span class="p">,</span> <span class="n">table</span><span class="p">,</span> <span class="n">header</span><span class="p">,</span> <span class="n">tabular_t</span><span class="p">,</span> <span class="n">float_t</span><span class="p">,</span>
+                         <span class="n">first_time_col</span><span class="o">=</span><span class="mi">1</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates time tables (split one long table in two).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        task_name (str): the name of the task</span>
+<span class="sd">        label (str): the label for the float</span>
+<span class="sd">        table (list): the data for the float</span>
+<span class="sd">        header (str): the header for the tables</span>
+<span class="sd">        tabular_t (jinja2.Template): the template for the tabular</span>
+<span class="sd">        float_t (jinja2.Template): the template for the float</span>
+<span class="sd">        first_time_col (int): the first column containing time (base 0)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        str: a LaTeX float</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">)</span> <span class="o">==</span> <span class="mi">22</span>
+
+    <span class="c"># Adding the first table</span>
+    <span class="n">table_1</span> <span class="o">=</span> <span class="n">create_tabular</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="n">tabular_t</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span>
+                             <span class="n">col_align</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;r&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">),</span>
+                             <span class="n">data</span><span class="o">=</span><span class="n">_format_time_columns</span><span class="p">(</span><span class="n">table</span><span class="p">[:</span><span class="mi">11</span><span class="p">],</span>
+                                                       <span class="n">first_time_col</span><span class="p">))</span>
+
+    <span class="c"># Adding the second table</span>
+    <span class="n">table_2</span> <span class="o">=</span> <span class="n">create_tabular</span><span class="p">(</span><span class="n">template</span><span class="o">=</span><span class="n">tabular_t</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span>
+                             <span class="n">col_align</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;r&quot;</span><span class="p">]</span> <span class="o">*</span> <span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">),</span>
+                             <span class="n">data</span><span class="o">=</span><span class="n">_format_time_columns</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="mi">11</span><span class="p">:],</span>
+                                                       <span class="n">first_time_col</span><span class="p">))</span>
+
+    <span class="c"># The caption</span>
+    <span class="n">caption</span> <span class="o">=</span> <span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;Execution time for the &#39;&quot;</span><span class="p">)</span>
+    <span class="n">caption</span> <span class="o">+=</span> <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="n">task_name</span><span class="p">),</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span>
+    <span class="n">caption</span> <span class="o">+=</span> <span class="n">sanitize_tex</span><span class="p">(</span><span class="s">&quot;&#39; tasks.&quot;</span><span class="p">)</span>
+
+    <span class="c"># Returning the float</span>
+    <span class="k">return</span> <span class="n">create_float</span><span class="p">(</span>
+        <span class="n">template</span><span class="o">=</span><span class="n">float_t</span><span class="p">,</span>
+        <span class="n">float_type</span><span class="o">=</span><span class="s">&quot;table&quot;</span><span class="p">,</span>
+        <span class="n">caption</span><span class="o">=</span><span class="n">wrap_tex</span><span class="p">(</span><span class="n">caption</span><span class="p">),</span>
+        <span class="n">label</span><span class="o">=</span><span class="s">&quot;tab:{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">label</span><span class="p">),</span>
+        <span class="n">placement</span><span class="o">=</span><span class="s">&quot;H&quot;</span><span class="p">,</span>
+        <span class="n">content</span><span class="o">=</span><span class="n">table_1</span> <span class="o">+</span> <span class="s">r&quot;\hspace{1cm}&quot;</span> <span class="o">+</span> <span class="n">table_2</span><span class="p">,</span>
+    <span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_format_time_columns</span><span class="p">(</span><span class="n">table</span><span class="p">,</span> <span class="n">first_col</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Colorize the time in the table (columns 2 and up).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        table (list): the data for the tabular</span>
+<span class="sd">        first_col (int): the first column containing time</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        list: the same data, but with time column colorized</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">)):</span>
+        <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">first_col</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">])):</span>
+            <span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">colorize_time</span><span class="p">(</span><span class="n">table</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">])</span>
+    <span class="k">return</span> <span class="n">table</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

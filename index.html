@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Genome-Wide Imputation Pipeline &mdash; gwip 1.0.0 documentation</title>
+    <title>Genome-Wide Imputation Pipeline &mdash; genipe 1.1.0 documentation</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.0.0',
+        VERSION:     '1.1.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="gwip 1.0.0 documentation" href="#" />
+    <link rel="top" title="genipe 1.1.0 documentation" href="#" />
     <link rel="next" title="Installation" href="installation.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="installation.html" title="Installation"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">gwip 1.0.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">genipe 1.1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -56,6 +56,7 @@
 <li><a class="reference internal" href="#">Genome-Wide Imputation Pipeline</a><ul>
 <li><a class="reference internal" href="#introduction">Introduction</a></li>
 <li><a class="reference internal" href="#usage">Usage</a></li>
+<li><a class="reference internal" href="#about">About</a></li>
 </ul>
 </li>
 </ul>
@@ -93,14 +94,10 @@
             
   <div class="section" id="genome-wide-imputation-pipeline">
 <h1>Genome-Wide Imputation Pipeline<a class="headerlink" href="#genome-wide-imputation-pipeline" title="Permalink to this headline">¶</a></h1>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Documentation is in progress...</p>
-</div>
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="module_content/gwip.html#module-gwip" title="gwip"><code class="xref py py-mod docutils literal"><span class="pre">gwip</span></code></a> (Genome-Wide Imputation Pipeline) module provides an easy an
-efficient way of performing genome-wide imputation analysis using the three
+<p>The <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> (GENome-wide Imputation PipelinE) module provides an easy
+an efficient way of performing genome-wide imputation analysis using the three
 commonly used softwares <a class="reference external" href="http://pngu.mgh.harvard.edu/~purcell/plink/">PLINK</a>,
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html">SHAPEIT</a> and
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html">IMPUTE2</a>. It also
@@ -117,41 +114,42 @@ provides a useful standalone tool to perform statistical analysis on imputed
 <li class="toctree-l2"><a class="reference internal" href="installation.html#updating-the-package">Updating the package</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="tutorial.html">Short Tutorials</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#pipeline-tutorial">Pipeline tutorial</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#survival-tutorial">Survival tutorial</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#skat-tutorial">SKAT tutorial</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#linear-tutorial">Linear tutorial</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#logistic-tutorial">Logistic tutorial</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorial.html#site-extraction-tutorial">Site extraction tutorial</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tutorials.html">Short Tutorials</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html#pipeline-tutorial">Pipeline tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html#survival-tutorial">Survival tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html#skat-tutorial">SKAT tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html#linear-tutorial">Linear tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html#logistic-tutorial">Logistic tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html#linear-mixed-effects-tutorial">Linear mixed effects tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html#site-extraction-tutorial">Site extraction tutorial</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="input_files.html">Input Files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="output_files.html">Output Files</a></li>
 <li class="toctree-l1"><a class="reference internal" href="implementation.html">Implementation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="module_content/modules.html">gwip</a></li>
+<li class="toctree-l2"><a class="reference internal" href="module_content/modules.html">genipe</a></li>
 </ul>
 </li>
 </ul>
 </div>
 </div>
 <div class="section" id="usage">
-<span id="gwip-usage"></span><h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> gwip-launcher --help
-<span class="go">usage: gwip-launcher [-h] [-v] [--debug] [--thread THREAD] --bfile PREFIX</span>
-<span class="go">                     [--reference FILE] [--output-dir DIR] [--bgzip]</span>
-<span class="go">                     [--use-drmaa] [--drmaa-config FILE] [--preamble FILE]</span>
-<span class="go">                     [--shapeit-bin BINARY] [--shapeit-thread INT]</span>
-<span class="go">                     [--plink-bin BINARY] [--impute2-bin BINARY]</span>
-<span class="go">                     [--segment-length BP] --hap-template TEMPLATE</span>
-<span class="go">                     --legend-template TEMPLATE --map-template TEMPLATE</span>
-<span class="go">                     --sample-file FILE [--filtering-rules RULE [RULE ...]]</span>
-<span class="go">                     [--probability FLOAT] [--completion FLOAT]</span>
-<span class="go">                     [--report-number NB] [--report-title TITLE]</span>
-<span class="go">                     [--report-author AUTHOR]</span>
+<span id="genipe-usage"></span><h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> genipe-launcher --help
+<span class="go">usage: genipe-launcher [-h] [-v] [--debug] [--thread THREAD] --bfile PREFIX</span>
+<span class="go">                       [--reference FILE] [--output-dir DIR] [--bgzip]</span>
+<span class="go">                       [--use-drmaa] [--drmaa-config FILE] [--preamble FILE]</span>
+<span class="go">                       [--shapeit-bin BINARY] [--shapeit-thread INT]</span>
+<span class="go">                       [--plink-bin BINARY] [--impute2-bin BINARY]</span>
+<span class="go">                       [--segment-length BP] --hap-template TEMPLATE</span>
+<span class="go">                       --legend-template TEMPLATE --map-template TEMPLATE</span>
+<span class="go">                       --sample-file FILE [--filtering-rules RULE [RULE ...]]</span>
+<span class="go">                       [--probability FLOAT] [--completion FLOAT]</span>
+<span class="go">                       [--report-number NB] [--report-title TITLE]</span>
+<span class="go">                       [--report-author AUTHOR]</span>
 
-<span class="go">Execute the genome-wide imputation pipeline. This script is part of the &#39;gwip&#39;</span>
-<span class="go">package, version 1.0.0.</span>
+<span class="go">Execute the genome-wide imputation pipeline. This script is part of the</span>
+<span class="go">&#39;genipe&#39; package, version 1.1.0.</span>
 
 <span class="go">optional arguments:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
@@ -166,7 +164,7 @@ provides a useful standalone tool to perform statistical analysis on imputed
 <span class="go">                        reference files) (optional).</span>
 
 <span class="go">Output Options:</span>
-<span class="go">  --output-dir DIR      The name of the output directory. [gwip]</span>
+<span class="go">  --output-dir DIR      The name of the output directory. [genipe]</span>
 <span class="go">  --bgzip               Use bgzip to compress the impute2 files.</span>
 
 <span class="go">HPC Options:</span>
@@ -212,13 +210,23 @@ provides a useful standalone tool to perform statistical analysis on imputed
 <span class="go">                        [&lt;0.98]</span>
 
 <span class="go">Automatic Report Options:</span>
-<span class="go">  --report-number NB    The report number. [GWIP automatic report]</span>
-<span class="go">  --report-title TITLE  The report title. [GWIP: Automatic genome-wide</span>
+<span class="go">  --report-number NB    The report number. [genipe automatic report]</span>
+<span class="go">  --report-title TITLE  The report title. [genipe: Automatic genome-wide</span>
 <span class="go">                        imputation]</span>
 <span class="go">  --report-author AUTHOR</span>
-<span class="go">                        The report author. [Automatically generated by GWIP]</span>
+<span class="go">                        The report author. [Automatically generated by genipe]</span>
 </pre></div>
 </div>
+</div>
+<div class="section" id="about">
+<h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
+<p>This project was initiated at the
+<a class="reference external" href="http://www.pharmacogenomics.ca">Beaulieu-Saucier Pharmacogenomics Centre</a> of
+the <a class="reference external" href="https://www.icm-mhi.org">Montreal Heart Institute</a>. The aim was to speed
+up (and automatize) the imputation process for the whole genome.</p>
+<a class="reference internal image-reference" href="_images/logo_pgx.png"><img alt="_images/logo_pgx.png" class="align-center" src="_images/logo_pgx.png" style="width: 350px;" /></a>
+<a class="reference internal image-reference" href="_images/logo_statgen.png"><img alt="_images/logo_statgen.png" class="align-center" src="_images/logo_statgen.png" style="width: 200px;" /></a>
+<a class="reference internal image-reference" href="_images/logo_icm.jpg"><img alt="_images/logo_icm.jpg" class="align-center" src="_images/logo_icm.jpg" style="width: 350px;" /></a>
 </div>
 </div>
 
@@ -240,7 +248,7 @@ provides a useful standalone tool to perform statistical analysis on imputed
         <li class="right" >
           <a href="installation.html" title="Installation"
              >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">gwip 1.0.0 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">genipe 1.1.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
