@@ -17,6 +17,7 @@ from glob import glob
 from math import floor
 from shutil import which, copyfile
 from urllib.request import urlopen
+from urllib.error import HTTPError
 from subprocess import Popen, PIPE
 from collections import defaultdict
 
@@ -578,25 +579,56 @@ def get_chromosome_length(out_dir):
         # The URL
         url = ("http://grch37.rest.ensembl.org/info/assembly/homo_sapiens"
                "?content-type=application/json")
-        result = json.loads(urlopen(url).read().decode())
+        try:
+            result = json.loads(urlopen(url).read().decode())
 
-        # Checking the build
-        if not result["assembly_name"].startswith("GRCh37") or \
-           result["default_coord_system_version"] != "GRCh37":
-            raise ProgramError("{}: wrong "
-                               "build".format(result["assembly_name"]))
+            # Checking the build
+            if not result["assembly_name"].startswith("GRCh37") or \
+                    result["default_coord_system_version"] != "GRCh37":
+                raise ProgramError("{}: wrong "
+                                   "build".format(result["assembly_name"]))
 
-        # Gathering the chromosome length
-        chrom_length = {}
-        req_chrom = {str(i) for i in range(23)} | {"X"}
-        for region in result["top_level_region"]:
-            if region["name"] in req_chrom:
-                chrom_length[region["name"]] = region["length"]
+            # Gathering the chromosome length
+            chrom_length = {}
+            req_chrom = {str(i) for i in range(23)} | {"X"}
+            for region in result["top_level_region"]:
+                if region["name"] in req_chrom:
+                    chrom_length[region["name"]] = region["length"]
 
-        # Saving to file
-        with open(filename, "w") as o_file:
-            for chrom in sorted(chrom_length.keys()):
-                print(chrom, chrom_length[chrom], sep="\t", file=o_file)
+        except HTTPError:
+            logging.warning("Ensembl GRCh37 not available... Using hard coded "
+                            "chromosome lengths")
+            chrom_length = {
+                "1": 249250621,
+                "2": 243199373,
+                "3": 198022430,
+                "4": 191154276,
+                "5": 180915260,
+                "6": 171115067,
+                "7": 159138663,
+                "8": 146364022,
+                "9": 141213431,
+                "10": 135534747,
+                "11": 135006516,
+                "12": 133851895,
+                "13": 115169878,
+                "14": 107349540,
+                "15": 102531392,
+                "16": 90354753,
+                "17": 81195210,
+                "18": 78077248,
+                "19": 59128983,
+                "20": 63025520,
+                "21": 48129895,
+                "22": 51304566,
+                "X": 155270560,
+            }
+
+        finally:
+            # Saving to file
+            with open(filename, "w") as o_file:
+                for chrom in sorted(chrom_length.keys()):
+                    print(chrom, chrom_length[chrom], sep="\t", file=o_file)
 
     else:
         # Gathering from file
