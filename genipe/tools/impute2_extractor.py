@@ -211,7 +211,7 @@ def print_data(o_files, prob_t, *, line=None, row=None):
     # Dosage?
     if "dosage" in o_files:
         # Getting the maf
-        maf, minor, major = maf_from_probs(probabilities, 0, 2)
+        maf, minor, major = maf_from_probs(probabilities[good_calls, :], 0, 2)
         dosage = dosage_from_probs(probabilities[:, minor],
                                    probabilities[:, 1], scale=2)
         dosage[~good_calls] = nan
@@ -383,7 +383,7 @@ def check_args(args):
             raise ProgramError("{}: no such file".format(filename))
 
     # Is there something to extract?
-    if not args.genomic and not args.maf and not args.rate:
+    if not args.genomic and not args.maf and not args.rate and not args.info:
         if args.extract is None:
             raise ProgramError("nothing to extract: use '--extract', "
                                "'--genomic', '--maf' or '--rate'")
