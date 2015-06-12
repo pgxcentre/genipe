@@ -1,9 +1,10 @@
 
 Statistical analyses will be performed with the genome-wide imputed dataset,
-which include \VAR{ nb_good_sites } imputed variants (done with an imputation
-probability threshold of $\geq\VAR{ prob_threshold }$\% and a completion rate
-of $\geq\VAR{ rate_threshold }$\%, including \VAR{ nb_genotyped } previously
-genotyped variants.\\
+which include \VAR{ nb_good_sites } imputed variants (done with an information
+threshold of $\geq\VAR{ info_threshold }$, and a completion rate of
+$\geq\VAR{ rate_threshold }$\% at an imputation probability threshold of
+$\geq\VAR{ prob_threshold }$\%). This total includes \VAR{ nb_genotyped }
+previously genotyped variants.\\
 
 All files were generated in the \texttt{\VAR{ output_dir }} directory and were
 separated by chromosomes (\texttt{\VAR{ output_dir_chrom }} directories). The
