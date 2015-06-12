@@ -72,6 +72,7 @@ def main(args=None):
             i_filenames=args.impute2,
             maf=args.maf,
             rate=args.rate,
+            info=args.info,
             extract_filename=args.extract,
             genomic_range=args.genomic,
         )
@@ -226,13 +227,16 @@ def print_data(o_files, prob_t, *, line=None, row=None):
         print(chrom, name, "0", pos, *calls, sep="\t", file=o_files["calls"])
 
 
-def gather_extraction(i_filenames, maf, rate, extract_filename, genomic_range):
+def gather_extraction(i_filenames, maf, rate, info, extract_filename,
+                      genomic_range):
     """Gather positions that are required.
 
     Args:
         i_filenames (list): the list of input files
         maf (float): the minor allele frequency threshold (might be ``None``)
         rate (float): the call rate threshold (might be ``None``)
+        info (float): the marker information value threshold (might be
+                      ``None``)
         extract_filename (str): the name of the file containing marker names to
                                 extract (might be ``None``)
         genomic_range (str): the genomic range for extraction
@@ -241,9 +245,9 @@ def gather_extraction(i_filenames, maf, rate, extract_filename, genomic_range):
         dict: the list of markers to extract for each input file
 
     If extraction by marker name is required, only those markers will be
-    extracted. Otherwise, ``maf``, ``rate`` or ``genomic_range`` can be
-    specified (alone or together) to extract markers according to minor allele
-    frequency, call rate and genomic location.
+    extracted. Otherwise, ``maf``, ``rate``, ``info`` or ``genomic_range`` can
+    be specified (alone or together) to extract markers according to minor
+    allele frequency, call rate and genomic location.
 
     """
     to_extract = {}
@@ -316,6 +320,21 @@ def gather_extraction(i_filenames, maf, rate, extract_filename, genomic_range):
             )
             logging.info("{:,d} markers with completion rate >= "
                          "{}".format(len(map_data), rate))
+
+        # Do we required a certain information value?
+        if info is not None:
+            logging.info("Reading information values")
+            info_data = pd.read_csv(prefix + ".impute2_info", sep="\t")
+            info_data = info_data.set_index("name", verify_integrity=True)
+            map_data = pd.merge(
+                map_data,
+                info_data[info_data["info"] >= info],
+                how="inner",
+                left_index=True,
+                right_index=True,
+            )
+            logging.info("{:,d} markers with information value >= "
+                         "{}".format(len(map_data), info))
 
         # Extracting the names
         to_extract[i_filename] = set(map_data.index)
@@ -412,6 +431,14 @@ def check_args(args):
         extensions.add("completion_rates")
         if args.rate < 0 or args.rate > 1:
             raise ProgramError("{}: invalid rate".format(args.rate))
+
+    # If info, we check what's required
+    if args.info is not None:
+        extensions.add("map")
+        extensions.add("impute2_info")
+        if args.info < 0 or args.info > 1:
+            raise ProgramError("{}: invalid information "
+                               "value".format(args.info))
 
     # Checking the probability threshold
     if args.prob < 0 or args.prob > 1:
@@ -517,7 +544,7 @@ def parse_args(parser, args=None):
         type=str,
         metavar="CHR:START-END",
         help="The range to extract (e.g. 22 1000000 1500000). Can be use in "
-             "combination with '--rate' and '--maf'.",
+             "combination with '--rate', '--maf' and '--info'.",
     )
     group.add_argument(
         "--maf",
@@ -525,15 +552,23 @@ def parse_args(parser, args=None):
         metavar="FLOAT",
         help="Extract markers with a minor allele frequency equal or higher "
              "than the specified threshold. Can be use in combination with "
-             "'--rate' and '--genomic'.",
+             "'--rate', '--info' and '--genomic'.",
     )
     group.add_argument(
         "--rate",
         type=float,
         metavar="FLOAT",
         help="Extract markers with a completion rate equal or higher to the "
-             "specified threshold. Can be use in combination with '--maf' and "
-             "'--genomic'.",
+             "specified threshold. Can be use in combination with '--maf', "
+             "'--info' and '--genomic'.",
+    )
+    group.add_argument(
+        "--info",
+        type=float,
+        metavar="FLOAT",
+        help="Extract markers with an information equal or higher to the "
+             "specified threshold. Can be use in combination with '--maf', "
+             "'--rate' and '--genomic'.",
     )
 
     if args is not None:
