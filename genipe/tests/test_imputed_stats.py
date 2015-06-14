@@ -2255,7 +2255,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             observed_z, observed_p, = observed
 
         # Comparing the results
-        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_coef, observed_coef, places=9)
         self.assertAlmostEqual(expected_se, observed_se, places=10)
         self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
         self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
@@ -2385,7 +2385,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             observed_z, observed_p, = observed
 
         # Comparing the results
-        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_coef, observed_coef, places=9)
         self.assertAlmostEqual(expected_se, observed_se, places=10)
         self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=5)
         self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=5)
@@ -2455,7 +2455,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
         self.assertAlmostEqual(expected_z, observed_z, places=9)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=10)
+                               places=9)
 
     def test_fit_mixedlm_interaction_use_ml(self):
         """Tests the 'fit_mixedlm' function with interaction (using ML)."""
@@ -2500,7 +2500,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
         self.assertAlmostEqual(expected_z, observed_z, places=9)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=10)
+                               places=9)
 
     def test_full_fit_mixedlm(self):
         """Tests the full pipeline for mixed effect model."""
@@ -3027,7 +3027,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The p values
         expected = [0.5797624694538319190, 0.851448456503608009,
                     9.720192436335240e-01]
-        places = [9, 8, 10]
+        places = [9, 8, 9]
         zipped = zip(expected, observed.p, places)
         for expected_p, observed_p, place in zipped:
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
@@ -3135,7 +3135,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The p values
         expected = [5.79674752511348590e-01, 0.85141448161648325410,
                     9.72012771510516016e-01]
-        places = [9, 8, 10]
+        places = [9, 8, 9]
         zipped = zip(expected, observed.p, places)
         for expected_p, observed_p, place in zipped:
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
