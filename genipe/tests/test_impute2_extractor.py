@@ -534,3 +534,342 @@ class TestImpute2Extractor(unittest.TestCase):
         with open(template_name.format(ext="calls"), "r") as i_file:
             observed = i_file.read()
         self.assertEqual(expected, observed)
+
+    def test_maf_rate(self):
+        """Tests the extraction by maf and completion rate."""
+        # Executing the script
+        args = self.common_args + [
+            "--maf", "0.2",
+            "--rate", "0.6",
+        ]
+        impute2_extractor.main(args=args)
+        TestImpute2Extractor.clean_logging_handlers()
+
+        # Testing we have the three output files
+        template_name = os.path.join(self.output_dir.name, "results.{ext}")
+        for suffix in ("impute2", "dosage", "calls"):
+            self.assertTrue(os.path.isfile(template_name.format(ext=suffix)))
+
+        # Checking the impute2 file
+        expected = (
+            "1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1\n"
+            "1 rs23457 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1\n"
+            "1 rs23457_1 3214571 T TC 0.869 0.130 0 0 1 0 0 0 1\n"
+            "1 rs23457_2 3214572 T TC 0.869 0.130 0 0 1 0 0 0 1\n"
+            "1 1:3214573 3214573 T TC 0.869 0.130 0 0 1 0 0 0 1\n"
+        )
+        observed = None
+        with open(template_name.format(ext="impute2"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checking the dosage file
+        expected = (
+            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
+            "1\t3214570\trs23457\tT\tTC\tnan\t1.0\t0.0\n"
+            "1\t3214571\trs23457_1\tT\tTC\tnan\t1.0\t0.0\n"
+            "1\t3214572\trs23457_2\tT\tTC\tnan\t1.0\t0.0\n"
+            "1\t3214573\t1:3214573\tT\tTC\tnan\t1.0\t0.0\n"
+        )
+        observed = None
+        with open(template_name.format(ext="dosage"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checking the hard calls file
+        expected = (
+            "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
+            "1\trs23457\t0\t3214570\t0 0\tT TC\tTC TC\n"
+            "1\trs23457_1\t0\t3214571\t0 0\tT TC\tTC TC\n"
+            "1\trs23457_2\t0\t3214572\t0 0\tT TC\tTC TC\n"
+            "1\t1:3214573\t0\t3214573\t0 0\tT TC\tTC TC\n"
+        )
+        observed = None
+        with open(template_name.format(ext="calls"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+    def test_maf_info(self):
+        """Tests the extraction by maf and information value."""
+        # Executing the script
+        args = self.common_args + [
+            "--maf", "0.2",
+            "--info", "0.3",
+        ]
+        impute2_extractor.main(args=args)
+        TestImpute2Extractor.clean_logging_handlers()
+
+        # Testing we have the three output files
+        template_name = os.path.join(self.output_dir.name, "results.{ext}")
+        for suffix in ("impute2", "dosage", "calls"):
+            self.assertTrue(os.path.isfile(template_name.format(ext=suffix)))
+
+        # Checking the impute2 file
+        expected = (
+            "1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1\n"
+            "1 rs23457_1 3214571 T TC 0.869 0.130 0 0 1 0 0 0 1\n"
+            "1 1:3214573 3214573 T TC 0.869 0.130 0 0 1 0 0 0 1\n"
+        )
+        observed = None
+        with open(template_name.format(ext="impute2"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checking the dosage file
+        expected = (
+            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
+            "1\t3214571\trs23457_1\tT\tTC\tnan\t1.0\t0.0\n"
+            "1\t3214573\t1:3214573\tT\tTC\tnan\t1.0\t0.0\n"
+        )
+        observed = None
+        with open(template_name.format(ext="dosage"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checking the hard calls file
+        expected = (
+            "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
+            "1\trs23457_1\t0\t3214571\t0 0\tT TC\tTC TC\n"
+            "1\t1:3214573\t0\t3214573\t0 0\tT TC\tTC TC\n"
+        )
+        observed = None
+        with open(template_name.format(ext="calls"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+    def test_rate_info(self):
+        """Tests the extraction by completion rate and information value."""
+        # Executing the script
+        args = self.common_args + [
+            "--info", "0.35",
+            "--rate", "0.6",
+        ]
+        impute2_extractor.main(args=args)
+        TestImpute2Extractor.clean_logging_handlers()
+
+        # Testing we have the three output files
+        template_name = os.path.join(self.output_dir.name, "results.{ext}")
+        for suffix in ("impute2", "dosage", "calls"):
+            self.assertTrue(os.path.isfile(template_name.format(ext=suffix)))
+
+        # Checking the impute2 file
+        expected = (
+            "1 rs12345 1231415 A G 1 0 0 0.988 0.002 0 0 0.997 0.003\n"
+            "1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1\n"
+        )
+        observed = None
+        with open(template_name.format(ext="impute2"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checking the dosage file
+        expected = (
+            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "1\t1231415\trs12345\tG\tA\t0.0\t0.002\t1.003\n"
+            "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
+        )
+        observed = None
+        with open(template_name.format(ext="dosage"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checking the hard calls file
+        expected = (
+            "1\trs12345\t0\t1231415\tA A\tA A\tA G\n"
+            "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
+        )
+        observed = None
+        with open(template_name.format(ext="calls"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+    def test_genomic_maf_rate(self):
+        """Tests the extraction by genomic location, maf and rate."""
+        # Executing the script
+        args = self.common_args + [
+            "--genomic", "chr1:3214568-4514570",
+            "--maf", "0.01",
+            "--rate", "0.6",
+        ]
+        impute2_extractor.main(args=args)
+        TestImpute2Extractor.clean_logging_handlers()
+
+        # Testing we have the three output files
+        template_name = os.path.join(self.output_dir.name, "results.{ext}")
+        for suffix in ("impute2", "dosage", "calls"):
+            self.assertTrue(os.path.isfile(template_name.format(ext=suffix)))
+
+        # Checking the impute2 file
+        expected = (
+            "1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1\n"
+            "1 rs23457 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1\n"
+            "1 rs23457_1 3214571 T TC 0.869 0.130 0 0 1 0 0 0 1\n"
+            "1 rs23457_2 3214572 T TC 0.869 0.130 0 0 1 0 0 0 1\n"
+            "1 1:3214573 3214573 T TC 0.869 0.130 0 0 1 0 0 0 1\n"
+        )
+        observed = None
+        with open(template_name.format(ext="impute2"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checking the dosage file
+        expected = (
+            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
+            "1\t3214570\trs23457\tT\tTC\tnan\t1.0\t0.0\n"
+            "1\t3214571\trs23457_1\tT\tTC\tnan\t1.0\t0.0\n"
+            "1\t3214572\trs23457_2\tT\tTC\tnan\t1.0\t0.0\n"
+            "1\t3214573\t1:3214573\tT\tTC\tnan\t1.0\t0.0\n"
+        )
+        observed = None
+        with open(template_name.format(ext="dosage"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checking the hard calls file
+        expected = (
+            "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
+            "1\trs23457\t0\t3214570\t0 0\tT TC\tTC TC\n"
+            "1\trs23457_1\t0\t3214571\t0 0\tT TC\tTC TC\n"
+            "1\trs23457_2\t0\t3214572\t0 0\tT TC\tTC TC\n"
+            "1\t1:3214573\t0\t3214573\t0 0\tT TC\tTC TC\n"
+        )
+        observed = None
+        with open(template_name.format(ext="calls"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+    def test_genomic_maf_info(self):
+        """Tests the extraction by genomic location, maf and information."""
+        # Executing the script
+        args = self.common_args + [
+            "--genomic", "chr1:3214568-4514570",
+            "--maf", "0.01",
+            "--info", "0.35",
+        ]
+        impute2_extractor.main(args=args)
+        TestImpute2Extractor.clean_logging_handlers()
+
+        # Testing we have the three output files
+        template_name = os.path.join(self.output_dir.name, "results.{ext}")
+        for suffix in ("impute2", "dosage", "calls"):
+            self.assertTrue(os.path.isfile(template_name.format(ext=suffix)))
+
+        # Checking the impute2 file
+        expected = (
+            "1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1\n"
+        )
+        observed = None
+        with open(template_name.format(ext="impute2"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checking the dosage file
+        expected = (
+            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
+        )
+        observed = None
+        with open(template_name.format(ext="dosage"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checking the hard calls file
+        expected = (
+            "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
+        )
+        observed = None
+        with open(template_name.format(ext="calls"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+    def test_maf_rate_info(self):
+        """Tests the extraction by maf, completion rate and information."""
+        # Executing the script
+        args = self.common_args + [
+            "--rate", "0.7",
+            "--maf", "0.01",
+            "--info", "0.35",
+        ]
+        impute2_extractor.main(args=args)
+        TestImpute2Extractor.clean_logging_handlers()
+
+        # Testing we have the three output files
+        template_name = os.path.join(self.output_dir.name, "results.{ext}")
+        for suffix in ("impute2", "dosage", "calls"):
+            self.assertTrue(os.path.isfile(template_name.format(ext=suffix)))
+
+        # Checking the impute2 file
+        expected = (
+            "1 rs12345 1231415 A G 1 0 0 0.988 0.002 0 0 0.997 0.003\n"
+        )
+        observed = None
+        with open(template_name.format(ext="impute2"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checking the dosage file
+        expected = (
+            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "1\t1231415\trs12345\tG\tA\t0.0\t0.002\t1.003\n"
+        )
+        observed = None
+        with open(template_name.format(ext="dosage"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checking the hard calls file
+        expected = (
+            "1\trs12345\t0\t1231415\tA A\tA A\tA G\n"
+        )
+        observed = None
+        with open(template_name.format(ext="calls"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+    def test_genomic_maf_rate_info(self):
+        """Tests the extraction by genomic location, maf, rate and info."""
+        # Executing the script
+        args = self.common_args + [
+            "--genomic", "chr1:1231415-3214572",
+            "--rate", "0.6",
+            "--maf", "0.2",
+            "--info", "0.35",
+        ]
+        impute2_extractor.main(args=args)
+        TestImpute2Extractor.clean_logging_handlers()
+
+        # Testing we have the three output files
+        template_name = os.path.join(self.output_dir.name, "results.{ext}")
+        for suffix in ("impute2", "dosage", "calls"):
+            self.assertTrue(os.path.isfile(template_name.format(ext=suffix)))
+
+        # Checking the impute2 file
+        expected = (
+            "1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1\n"
+        )
+        observed = None
+        with open(template_name.format(ext="impute2"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checking the dosage file
+        expected = (
+            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
+        )
+        observed = None
+        with open(template_name.format(ext="dosage"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checking the hard calls file
+        expected = (
+            "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
+        )
+        observed = None
+        with open(template_name.format(ext="calls"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
