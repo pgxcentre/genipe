@@ -14,10 +14,17 @@ The :py:mod:`genipe` (GENome-wide Imputation PipelinE) module provides an easy
 an efficient way of performing genome-wide imputation analysis using the three
 commonly used softwares `PLINK <http://pngu.mgh.harvard.edu/~purcell/plink/>`_,
 `SHAPEIT <https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html>`_ and
-`IMPUTE2 <https://mathgen.stats.ox.ac.uk/impute/impute_v2.html>`_. It also
-provides a useful standalone tool to perform statistical analysis on imputed
-(dosage) data (such as linear, logistic or survival regressions, or
-`SKAT <http://www.hsph.harvard.edu/skat/>`_ analysis of rare variants).
+`IMPUTE2 <https://mathgen.stats.ox.ac.uk/impute/impute_v2.html>`_.
+
+A quality metrics report is automatically generated at the end of the
+imputation process to easily assess the quality of the analysis. The report is
+compiled into a PDF. For information on how to compile the report, refer to the
+:ref:`genipe-tut-compile-report` section in the main :ref:`genipe-tut-page`.
+
+Finally, it also provides a useful standalone tool to perform statistical
+analysis on imputed (dosage) data (such as linear, logistic or survival
+regressions, or `SKAT <http://www.hsph.harvard.edu/skat/>`_ analysis of rare
+variants).
 
 .. toctree::
    :maxdepth: 2

@@ -37,6 +37,7 @@ In summary, here is the structure of the output files. Again, refer to the
    │       ├── chr1.imputed.completion_rates
    │       ├── chr1.imputed.good_sites
    │       ├── chr1.imputed.impute2.gz
+   │       ├── chr1.imputed.impute2_info
    │       ├── chr1.imputed.imputed_sites
    │       ├── chr1.imputed.log
    │       ├── chr1.imputed.maf

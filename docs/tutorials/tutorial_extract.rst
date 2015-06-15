@@ -16,11 +16,12 @@ Site extraction
 
 Genome-wide imputation dataset might be huge. Often, it is required to extract
 a subset of imputed sites (*e.g.* specific markers, genomic location, or
-markers with a specific minor allele frequency). Also, different format might
-be required, depending of the underlying analysis (*e.g.* hard calls or dosage
-values). We provide an easy tool to perform site extraction of multiple
-*impute2* files using either marker identification number, or genomic location
-and/or minor allele frequency and/or call rate.
+markers with a specific minor allele frequency, information value or completion
+rate). Also, different format might be required, depending of the underlying
+analysis (*e.g.* hard calls or dosage values). We provide an easy tool to
+perform site extraction of multiple *impute2* files using either marker
+identification number, or genomic location and/or minor allele frequency and/or
+call rate and/or information value.
 
 We suppose that you have followed the main :ref:`genipe-tut-page`. The
 following command will create the working directory for this tutorial.
@@ -42,7 +43,7 @@ extraction tools are automatically created in the ``final_impute2`` directories
 
 The files that are required in these directories depends of what kind of
 extraction is required (by name, or by genomic location and/or by minor allele
-frequency and/or by calling rate).
+frequency and/or by calling rate and/or by information value).
 
 Once the required *impute2* files are provided to the tool, the other required
 files will be automatically fetched (if required).
@@ -56,12 +57,13 @@ Executing the extraction
 The first time the tool is used on a set of *impute2* files, indexation will
 automatically occur (to speed of the analysis for future extraction). There are
 two ways to extract markers: using their identification number (``--extract``),
-or properties (``--genomic``, ``--maf`` or ``rate``).
+or using their properties (``--genomic``, ``--maf``, ``--rate`` and/or
+``--info``).
 
 .. note::
 
    It is possible to extract from multiple *impute2* files at the same time (by
-   specifying multiple input files.
+   specifying multiple input files).
 
 
 Extraction by ID
@@ -84,7 +86,7 @@ This ``marker_list.txt`` file will contain the following:
    rs76139713:51137523:C:T
    rs372879164:17037188:A:G
 
-Then, the following command (using the ``--extract`` option will extract those
+Then, the following command (using the ``--extract`` option) will extract those
 two markers from the *impute2* file.
 
 .. code-block:: bash
@@ -103,13 +105,14 @@ two markers from the *impute2* file.
 Extraction by characteristics
 """"""""""""""""""""""""""""""
 
-There are three ways to extract markers according to their characteristics. The
+There are four ways to extract markers according to their characteristics. The
 first way is to specify the genomic location of the markers to extract (*i.e.*
 the ``--genomic`` option). The second way is to specify a minor allele
-frequency threshold (*i.e.* the ``--maf`` option). The third and final way is
-to specify a call rate threshold (*i.e.* the ``--rate`` option). Those three
-ways can be used at the same time (*e.g.* to get markers in a specific genomic
-range and a specific call rate).
+frequency threshold (*i.e.* the ``--maf`` option). The third way is to specify
+a call rate threshold (*i.e.* the ``--rate`` option). The fourth and final way
+is to specify an information value threshold (*i.e.* the ``--info`` option).
+Those four ways can be used at the same time (*e.g.* to get markers in a
+specific genomic range and a specific call rate).
 
 For example, to extract markers with a MAF :math:`\geq` 0.05 located in the
 *CYP2D6* gene, perform the following command:
@@ -233,7 +236,7 @@ analysis in the console:
                             [--out PREFIX] [--format FORMAT [FORMAT ...]]
                             [--prob FLOAT] [--extract FILE]
                             [--genomic CHR:START-END] [--maf FLOAT]
-                            [--rate FLOAT]
+                            [--rate FLOAT] [--info FLOAT]
 
    Extract imputed markers located in a specific genomic region. This script is
    part of the 'genipe' package, version 1.1.0).
@@ -262,11 +265,15 @@ analysis in the console:
      --extract FILE        File containing marker names to extract.
      --genomic CHR:START-END
                            The range to extract (e.g. 22 1000000 1500000). Can be
-                           use in combination with '--rate' and '--maf'.
+                           use in combination with '--rate', '--maf' and '--
+                           info'.
      --maf FLOAT           Extract markers with a minor allele frequency equal or
                            higher than the specified threshold. Can be use in
-                           combination with '--rate' and '--genomic'.
+                           combination with '--rate', '--info' and '--genomic'.
      --rate FLOAT          Extract markers with a completion rate equal or higher
                            to the specified threshold. Can be use in combination
-                           with '--maf' and '--genomic'.
+                           with '--maf', '--info' and '--genomic'.
+     --info FLOAT          Extract markers with an information equal or higher to
+                           the specified threshold. Can be use in combination
+                           with '--maf', '--rate' and '--genomic'.
 
