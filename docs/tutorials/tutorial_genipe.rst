@@ -10,7 +10,8 @@ Quick navigation
 1. :ref:`genipe-tut-softwares`
 2. :ref:`genipe-tut-input-files`
 3. :ref:`genipe-tut-execute`
-4. :ref:`genipe-tut-output-files`
+4. :ref:`genipe-tut-compile-report`
+5. :ref:`genipe-tut-output-files`
 
 Genome-wide imputation pipeline
 --------------------------------
@@ -410,6 +411,28 @@ previous command (see the :ref:`genipe-usage` section for a full list):
    subsequent steps).
 
 
+.. _genipe-tut-compile-report:
+
+Compiling the report
+^^^^^^^^^^^^^^^^^^^^^
+
+A report containing useful information (such as quality metrics and execution
+time, among others) is automatically generated once the imputation process is
+completed. To compile the report, perform the following commands:
+
+.. code-block:: bash
+
+   cd $HOME/genipe_tutorial/genipe/report
+
+   make && make clean
+
+This will generate the following
+`PDF report <http://pgxcentre.github.io/genipe/_static/tutorial/report.pdf>`_
+(which is named ``report.pdf``). It is always possible to modify the original
+``report.tex`` file to include analysis specific details (*e.g.* cohort
+description).
+
+
 .. _genipe-tut-output-files:
 
 Output files
@@ -448,6 +471,7 @@ files.
    │       ├── chr1.imputed.completion_rates
    │       ├── chr1.imputed.good_sites
    │       ├── chr1.imputed.impute2.gz
+   │       ├── chr1.imputed.impute2_info
    │       ├── chr1.imputed.imputed_sites
    │       ├── chr1.imputed.log
    │       ├── chr1.imputed.maf
@@ -552,11 +576,19 @@ autosomal chromosomes. They will contain the following files:
     |                               | the user, where the default is higher   |
     |                               | and equal to 0.9).                      |
     +-------------------------------+-----------------------------------------+
-    | ``.imputed.impute2``          | Imputation results (merged from the     |
-    |                               | individual segment files. This file     |
+    | ``.imputed.impute2`` or       | Imputation results (merged from the     |
+    | ``.imputed.impute2.gz``       | individual segment files. This file     |
     |                               | might be compress (with the ``.gz``     |
     |                               | extension) if the ``--bgzip`` option was|
     |                               | used when launching the pipeline.       |
+    +-------------------------------+-----------------------------------------+
+    | ``.imputed.impute2_info``     | Marker-wise information file with one   |
+    |                               | line per marker and a single header line|
+    |                               | at the begening. It contains, among     |
+    |                               | others, the information value which is a|
+    |                               | measure of the observed statistical     |
+    |                               | information associated with the allele  |
+    |                               | frequency estimate.                     |
     +-------------------------------+-----------------------------------------+
     | ``.imputed.imputed_sites``    | List of imputed sites (excluding sites  |
     |                               | that were previously genotyped in the   |

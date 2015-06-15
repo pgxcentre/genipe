@@ -218,7 +218,8 @@ def main():
                             os.path.join(args.out_dir, "chr{chrom}",
                                          "final_impute2",
                                          "chr{chrom}.imputed"),
-                            args.probability, args.completion, db_name, args)
+                            args.probability, args.completion, args.info,
+                            db_name, args)
 
         # If required, zipping the impute2 files
         if args.bgzip:
@@ -229,8 +230,8 @@ def main():
 
         # Gathering the imputation statistics
         numbers = gather_imputation_stats(args.probability, args.completion,
-                                          len(samples), missing_rate,
-                                          args.out_dir)
+                                          args.info, len(samples),
+                                          missing_rate, args.out_dir)
         run_information.update(numbers)
 
         # Gathering the MAF statistics
@@ -428,7 +429,7 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
     logging.info("Done imputing markers")
 
 
-def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
+def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t, info_t,
                         db_name, options):
     """Merges impute2 files.
 
@@ -438,6 +439,7 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
         o_prefix (str): the prefix template of the output files
         probability_t (float): the probability threshold to use
         completion_t (float): the completion threshold to use
+        info_t (float): the info threshold to use
         db_name (str): the name of the DB saving tasks' information
         options (argparse.Namespace): the pipeline options
 
@@ -451,6 +453,7 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
         "impute2-merger",
         "--probability", str(probability_t),
         "--completion", str(completion_t),
+        "--info", str(info_t),
     ]
 
     for chrom in chromosomes:
@@ -477,6 +480,7 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
                                                    ".completion_rates",
                                                    ".good_sites",
                                                    ".impute2",
+                                                   ".impute2_info",
                                                    ".imputed_sites",
                                                    ".map",
                                                    ".maf")],
@@ -1440,12 +1444,14 @@ def get_cross_validation_results(glob_pattern):
     }
 
 
-def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
+def gather_imputation_stats(prob_t, completion_t, info_t, nb_samples, missing,
+                            o_dir):
     """Gathers imputation statistics from the merged dataset.
 
     Args:
         prob_t (float): the probability threshold (>= t)
         completion_t (float): the completion threshold (>= t)
+        info_t (float): the information threshold (>= t)
         nb_samples (int): the number of samples
         missing (pandas.DataFrame): the missing rate
         o_dir (str): the output directory
@@ -1466,6 +1472,8 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
     | ``average_comp_rate``          | the average completion rate            |
     +--------------------------------+----------------------------------------+
     | ``rate_threshold``             | the completion rate threshold (>= t)   |
+    +--------------------------------+----------------------------------------+
+    | ``info_threshold``             | the information threshold (>= t)       |
     +--------------------------------+----------------------------------------+
     | ``nb_good_sites``              | the number of "good" sites (that pass  |
     |                                | the different probability and          |
@@ -1543,12 +1551,36 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
                                             suffix="completion_rates")
         completion_data = pd.read_csv(filename, sep="\t")
 
+        # Then, we read the information file using a DataFrame
+        filename = filename_template.format(chrom=chrom,
+                                            suffix="impute2_info")
+        info_data = pd.read_csv(filename, sep="\t")
+
+        # Merging the two dataset
+        completion_data = pd.merge(completion_data, info_data, left_on="name",
+                                   right_on="name")
+
+        # Checking there is no missing data...
+        assert completion_data["completion_rate"].isnull().sum() == 0
+        assert completion_data["info"].isnull().sum() == 0
+
+        # Counting the number of good sites in the file...
+        nb_good_sites = None
+        filename = filename_template.format(chrom=chrom,
+                                            suffix="good_sites")
+        with open(filename, "r") as i_file:
+            nb_good_sites = len(i_file.read().splitlines())
+
         # Saving the stats for all sites
         tot_nb_sites += completion_data.shape[0]
         sum_rates += completion_data.completion_rate.sum()
 
         # Saving the stats for good sites
-        good_sites = completion_data.completion_rate >= completion_t
+        good_sites = (
+            (completion_data.completion_rate >= completion_t) &
+            (completion_data["info"] >= info_t)
+        )
+        assert nb_good_sites == good_sites.sum()
         tot_good_sites += completion_data[good_sites].shape[0]
         sum_good_rates += completion_data[good_sites].completion_rate.sum()
 
@@ -1588,6 +1620,7 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
         "nb_imputed":                 "{:,d}".format(tot_nb_sites),
         "average_comp_rate":          "{:.1f}".format(comp_rate * 100),
         "rate_threshold":             "{:.1f}".format(completion_t * 100),
+        "info_threshold":             "{:.2f}".format(info_t),
         "nb_good_sites":              "{:,d}".format(tot_good_sites),
         "pct_good_sites":             "{:.1f}".format(pct_good_sites),
         "average_comp_rate_cleaned":  "{:.1f}".format(good_comp_rate * 100),
@@ -2363,6 +2396,15 @@ def parse_args(parser):
         default=0.98,
         help="The completion rate threshold for site exclusion. "
              "[<%(default).2f]",
+    )
+    group.add_argument(
+        "--info",
+        type=float,
+        metavar="FLOAT",
+        default=0,
+        help="The measure of the observed statistical information associated "
+             "with the allele frequency estimate threshold for site "
+             "exclusion. [<%(default).2f]",
     )
 
     # The automatic report options
