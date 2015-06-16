@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tools.impute2_extractor &mdash; genipe 1.1.0 documentation</title>
+    <title>genipe.tools.impute2_extractor &mdash; genipe 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.1.0 documentation" href="../../../index.html" />
+    <link rel="top" title="genipe 1.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="genipe" href="../../genipe.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
       </ul>
@@ -145,6 +145,7 @@
             <span class="n">i_filenames</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">,</span>
             <span class="n">maf</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">maf</span><span class="p">,</span>
             <span class="n">rate</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">rate</span><span class="p">,</span>
+            <span class="n">info</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">info</span><span class="p">,</span>
             <span class="n">extract_filename</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">extract</span><span class="p">,</span>
             <span class="n">genomic_range</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">genomic</span><span class="p">,</span>
         <span class="p">)</span>
@@ -283,7 +284,7 @@
     <span class="c"># Dosage?</span>
     <span class="k">if</span> <span class="s">&quot;dosage&quot;</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">:</span>
         <span class="c"># Getting the maf</span>
-        <span class="n">maf</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">major</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="n">maf</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">major</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">probabilities</span><span class="p">[</span><span class="n">good_calls</span><span class="p">,</span> <span class="p">:],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">dosage</span> <span class="o">=</span> <span class="n">dosage_from_probs</span><span class="p">(</span><span class="n">probabilities</span><span class="p">[:,</span> <span class="n">minor</span><span class="p">],</span>
                                    <span class="n">probabilities</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
         <span class="n">dosage</span><span class="p">[</span><span class="o">~</span><span class="n">good_calls</span><span class="p">]</span> <span class="o">=</span> <span class="n">nan</span>
@@ -299,13 +300,16 @@
         <span class="k">print</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;0&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="o">*</span><span class="n">calls</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_files</span><span class="p">[</span><span class="s">&quot;calls&quot;</span><span class="p">])</span>
 
 
-<span class="k">def</span> <span class="nf">gather_extraction</span><span class="p">(</span><span class="n">i_filenames</span><span class="p">,</span> <span class="n">maf</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">extract_filename</span><span class="p">,</span> <span class="n">genomic_range</span><span class="p">):</span></div>
-<div class="viewcode-block" id="gather_extraction"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.impute2_extractor.gather_extraction">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gather positions that are required.</span>
+<span class="k">def</span> <span class="nf">gather_extraction</span><span class="p">(</span><span class="n">i_filenames</span><span class="p">,</span> <span class="n">maf</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">extract_filename</span><span class="p">,</span></div>
+<div class="viewcode-block" id="gather_extraction"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.impute2_extractor.gather_extraction">[docs]</a>                      <span class="n">genomic_range</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gather positions that are required.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        i_filenames (list): the list of input files</span>
 <span class="sd">        maf (float): the minor allele frequency threshold (might be ``None``)</span>
 <span class="sd">        rate (float): the call rate threshold (might be ``None``)</span>
+<span class="sd">        info (float): the marker information value threshold (might be</span>
+<span class="sd">                      ``None``)</span>
 <span class="sd">        extract_filename (str): the name of the file containing marker names to</span>
 <span class="sd">                                extract (might be ``None``)</span>
 <span class="sd">        genomic_range (str): the genomic range for extraction</span>
@@ -314,9 +318,9 @@
 <span class="sd">        dict: the list of markers to extract for each input file</span>
 
 <span class="sd">    If extraction by marker name is required, only those markers will be</span>
-<span class="sd">    extracted. Otherwise, ``maf``, ``rate`` or ``genomic_range`` can be</span>
-<span class="sd">    specified (alone or together) to extract markers according to minor allele</span>
-<span class="sd">    frequency, call rate and genomic location.</span>
+<span class="sd">    extracted. Otherwise, ``maf``, ``rate``, ``info`` or ``genomic_range`` can</span>
+<span class="sd">    be specified (alone or together) to extract markers according to minor</span>
+<span class="sd">    allele frequency, call rate and genomic location.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">to_extract</span> <span class="o">=</span> <span class="p">{}</span>
@@ -390,6 +394,21 @@
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;{:,d} markers with completion rate &gt;= &quot;</span>
                          <span class="s">&quot;{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">map_data</span><span class="p">),</span> <span class="n">rate</span><span class="p">))</span>
 
+        <span class="c"># Do we required a certain information value?</span>
+        <span class="k">if</span> <span class="n">info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Reading information values&quot;</span><span class="p">)</span>
+            <span class="n">info_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s">&quot;.impute2_info&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)</span>
+            <span class="n">info_data</span> <span class="o">=</span> <span class="n">info_data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+            <span class="n">map_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+                <span class="n">map_data</span><span class="p">,</span>
+                <span class="n">info_data</span><span class="p">[</span><span class="n">info_data</span><span class="p">[</span><span class="s">&quot;info&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">info</span><span class="p">],</span>
+                <span class="n">how</span><span class="o">=</span><span class="s">&quot;inner&quot;</span><span class="p">,</span>
+                <span class="n">left_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+                <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="p">)</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;{:,d} markers with information value &gt;= &quot;</span>
+                         <span class="s">&quot;{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">map_data</span><span class="p">),</span> <span class="n">info</span><span class="p">))</span>
+
         <span class="c"># Extracting the names</span>
         <span class="n">to_extract</span><span class="p">[</span><span class="n">i_filename</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">map_data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 
@@ -437,7 +456,7 @@
             <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: no such file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
 
     <span class="c"># Is there something to extract?</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">genomic</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">maf</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">rate</span><span class="p">:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">genomic</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">maf</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">rate</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">extract</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;nothing to extract: use &#39;--extract&#39;, &quot;</span>
                                <span class="s">&quot;&#39;--genomic&#39;, &#39;--maf&#39; or &#39;--rate&#39;&quot;</span><span class="p">)</span>
@@ -485,6 +504,14 @@
         <span class="n">extensions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;completion_rates&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">rate</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">rate</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: invalid rate&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">rate</span><span class="p">))</span>
+
+    <span class="c"># If info, we check what&#39;s required</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">extensions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;map&quot;</span><span class="p">)</span>
+        <span class="n">extensions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s">&quot;impute2_info&quot;</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">info</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">info</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: invalid information &quot;</span>
+                               <span class="s">&quot;value&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">info</span><span class="p">))</span>
 
     <span class="c"># Checking the probability threshold</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">prob</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">prob</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -590,7 +617,7 @@
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
         <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;CHR:START-END&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s">&quot;The range to extract (e.g. 22 1000000 1500000). Can be use in &quot;</span>
-             <span class="s">&quot;combination with &#39;--rate&#39; and &#39;--maf&#39;.&quot;</span><span class="p">,</span>
+             <span class="s">&quot;combination with &#39;--rate&#39;, &#39;--maf&#39; and &#39;--info&#39;.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s">&quot;--maf&quot;</span><span class="p">,</span>
@@ -598,15 +625,23 @@
         <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;FLOAT&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s">&quot;Extract markers with a minor allele frequency equal or higher &quot;</span>
              <span class="s">&quot;than the specified threshold. Can be use in combination with &quot;</span>
-             <span class="s">&quot;&#39;--rate&#39; and &#39;--genomic&#39;.&quot;</span><span class="p">,</span>
+             <span class="s">&quot;&#39;--rate&#39;, &#39;--info&#39; and &#39;--genomic&#39;.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s">&quot;--rate&quot;</span><span class="p">,</span>
         <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
         <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;FLOAT&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s">&quot;Extract markers with a completion rate equal or higher to the &quot;</span>
-             <span class="s">&quot;specified threshold. Can be use in combination with &#39;--maf&#39; and &quot;</span>
-             <span class="s">&quot;&#39;--genomic&#39;.&quot;</span><span class="p">,</span>
+             <span class="s">&quot;specified threshold. Can be use in combination with &#39;--maf&#39;, &quot;</span>
+             <span class="s">&quot;&#39;--info&#39; and &#39;--genomic&#39;.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s">&quot;--info&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;FLOAT&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&quot;Extract markers with an information equal or higher to the &quot;</span>
+             <span class="s">&quot;specified threshold. Can be use in combination with &#39;--maf&#39;, &quot;</span>
+             <span class="s">&quot;&#39;--rate&#39; and &#39;--genomic&#39;.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
     <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
@@ -634,7 +669,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>

@@ -42,6 +42,15 @@ genipe.tests.test_formats module
     :show-inheritance:
 
 
+genipe.tests.test_impute2_extractor module
+-------------------------------------------
+
+.. automodule:: genipe.tests.test_impute2_extractor
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
 genipe.tests.test_impute2_merger module
 ----------------------------------------
 

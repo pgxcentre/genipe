@@ -154,17 +154,12 @@ Testing the installation
 -------------------------
 
 To test the installation, make sure that the virtual environment is activated.
-Then, launch python and use the following commands:
+Then, launch Python and use the following python commands:
 
 .. code-block:: python
 
    >>> import genipe
    >>> genipe.test()
-   ......................ss.ss.......................ss...ss...s.s.........
-   ----------------------------------------------------------------------
-   Ran 72 tests in 107.268s
-   
-   OK (skipped=10)
 
 
 .. _install-update:

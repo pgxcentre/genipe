@@ -1,0 +1,975 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>genipe.tests.test_impute2_extractor &mdash; genipe 1.2.0 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.2.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
+    <link rel="top" title="genipe 1.2.0 documentation" href="../../../index.html" />
+    <link rel="up" title="genipe" href="../../genipe.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for genipe.tests.test_impute2_extractor</h1><div class="highlight"><pre>
+<span class="c"># This file is part of genipe.</span>
+<span class="c">#</span>
+<span class="c"># This work is licensed under the Creative Commons Attribution-NonCommercial</span>
+<span class="c"># 4.0 International License. To view a copy of this license, visit</span>
+<span class="c"># http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative</span>
+<span class="c"># Commons, PO Box 1866, Mountain View, CA 94042, USA.</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">unittest</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">TemporaryDirectory</span>
+
+<span class="kn">from</span> <span class="nn">..tools</span> <span class="kn">import</span> <span class="n">impute2_extractor</span>
+
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s">&quot;Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s">&quot;Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)&quot;</span>
+
+
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;TestImpute2Extractor&quot;</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">TestImpute2Extractor</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<div class="viewcode-block" id="TestImpute2Extractor"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor">[docs]</a>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">clean_logging_handlers</span><span class="p">():</span>
+<div class="viewcode-block" id="TestImpute2Extractor.clean_logging_handlers"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.clean_logging_handlers">[docs]</a>        <span class="n">handlers</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">handlers</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">handler</span> <span class="ow">in</span> <span class="n">handlers</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">root</span><span class="o">.</span><span class="n">removeHandler</span><span class="p">(</span><span class="n">handler</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">setUp</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.setUp"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.setUp">[docs]</a>        <span class="sd">&quot;&quot;&quot;Setup the tests.&quot;&quot;&quot;</span>
+        <span class="c"># Creating the temporary directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span> <span class="o">=</span> <span class="n">TemporaryDirectory</span><span class="p">(</span><span class="n">prefix</span><span class="o">=</span><span class="s">&quot;genipe_test_&quot;</span><span class="p">)</span>
+
+        <span class="c"># Creating the input files (impute2, map, maf, completion_rate and</span>
+        <span class="c"># impute2_info)</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;genipe.impute2&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
+            <span class="n">o_file</span><span class="o">.</span><span class="n">write</span><span class="p">((</span>
+                <span class="s">&quot;1 rs12345 1231415 A G 1 0 0 0.988 0.002 0 0 0.997 0.003</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1 rs23457 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1 rs23457_1 3214571 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1 rs23457_2 3214572 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1 1:3214573 3214573 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1 1:4214570_1 4214570 T TC 0.869 0.130 0 0.869 0.130 0 0.869 &quot;</span>
+                <span class="s">&quot;0.130 0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="p">))</span>
+
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;genipe.impute2_info&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
+            <span class="n">o_file</span><span class="o">.</span><span class="n">write</span><span class="p">((</span>
+                <span class="s">&quot;chr</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">position</span><span class="se">\t</span><span class="s">a0</span><span class="se">\t</span><span class="s">a1</span><span class="se">\t</span><span class="s">exp_freq_a1</span><span class="se">\t</span><span class="s">info</span><span class="se">\t</span><span class="s">certainty</span><span class="se">\t</span><span class="s">&quot;</span>
+                <span class="s">&quot;type</span><span class="se">\t</span><span class="s">info_type0</span><span class="se">\t</span><span class="s">concord_type0</span><span class="se">\t</span><span class="s">r2_type0</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs12345</span><span class="se">\t</span><span class="s">1231415</span><span class="se">\t</span><span class="s">A</span><span class="se">\t</span><span class="s">G</span><span class="se">\t</span><span class="s">0.006</span><span class="se">\t</span><span class="s">0.359</span><span class="se">\t</span><span class="s">0.987</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">-1</span><span class="se">\t</span><span class="s">-1</span><span class="se">\t</span><span class="s">&quot;</span>
+                <span class="s">&quot;-1</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">0.082</span><span class="se">\t</span><span class="s">0.362</span><span class="se">\t</span><span class="s">0.866</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">-1</span><span class="se">\t</span><span class="s">-1</span><span class="se">\t</span><span class="s">&quot;</span>
+                <span class="s">&quot;-1</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">0.126</span><span class="se">\t</span><span class="s">0.299</span><span class="se">\t</span><span class="s">0.832</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">-1</span><span class="se">\t</span><span class="s">-1</span><span class="se">\t</span><span class="s">&quot;</span>
+                <span class="s">&quot;-1</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">0.060</span><span class="se">\t</span><span class="s">0.300</span><span class="se">\t</span><span class="s">0.909</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">-1</span><span class="se">\t</span><span class="s">&quot;</span>
+                <span class="s">&quot;-1</span><span class="se">\t</span><span class="s">-1</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_2</span><span class="se">\t</span><span class="s">3214572</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">0.084</span><span class="se">\t</span><span class="s">0.203</span><span class="se">\t</span><span class="s">0.854</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">-1</span><span class="se">\t</span><span class="s">&quot;</span>
+                <span class="s">&quot;-1</span><span class="se">\t</span><span class="s">-1</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">0.371</span><span class="se">\t</span><span class="s">0.339</span><span class="se">\t</span><span class="s">0.619</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">-1</span><span class="se">\t</span><span class="s">&quot;</span>
+                <span class="s">&quot;-1</span><span class="se">\t</span><span class="s">-1</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:4214570_1</span><span class="se">\t</span><span class="s">4214570</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">0.174</span><span class="se">\t</span><span class="s">0.589</span><span class="se">\t</span><span class="s">0.831</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">-1</span><span class="se">\t</span><span class="s">&quot;</span>
+                <span class="s">&quot;-1</span><span class="se">\t</span><span class="s">-1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="p">))</span>
+
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;genipe.map&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
+            <span class="n">o_file</span><span class="o">.</span><span class="n">write</span><span class="p">((</span>
+                <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs12345</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">1231415</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_2</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214572</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:4214570_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">4214570</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="p">))</span>
+
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;genipe.maf&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
+            <span class="n">o_file</span><span class="o">.</span><span class="n">write</span><span class="p">((</span>
+                <span class="s">&quot;name</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">maf</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;rs12345</span><span class="se">\t</span><span class="s">A</span><span class="se">\t</span><span class="s">G</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;rs23456</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;rs23457</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;rs23457_1</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;rs23457_2</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1:3214573</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1:4214570_1</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="s">&quot;NA&quot;</span><span class="p">))</span>
+
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
+                                <span class="s">&quot;genipe.completion_rates&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
+            <span class="n">o_file</span><span class="o">.</span><span class="n">write</span><span class="p">((</span>
+                <span class="s">&quot;name</span><span class="se">\t</span><span class="s">nb_missing</span><span class="se">\t</span><span class="s">completion_rate</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;rs12345</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;rs23456</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;rs23457</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;rs23457_1</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;rs23457_2</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1:3214573</span><span class="se">\t</span><span class="s">1</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+                <span class="s">&quot;1:4214570_1</span><span class="se">\t</span><span class="s">3</span><span class="se">\t</span><span class="s">{}</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s">&quot;--impute2&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;genipe.impute2&quot;</span><span class="p">),</span>
+            <span class="s">&quot;--format&quot;</span><span class="p">,</span> <span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--out&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results&quot;</span><span class="p">),</span>
+        <span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">tearDown</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.tearDown"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.tearDown">[docs]</a>        <span class="sd">&quot;&quot;&quot;Finishes the test.&quot;&quot;&quot;</span>
+        <span class="c"># Deleting the output directory</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">cleanup</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">test_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.test_extract"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_extract">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the extraction by marker name.&quot;&quot;&quot;</span>
+        <span class="c"># Creating a file with markers to extract</span>
+        <span class="n">extract_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;to_extract&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">extract_filename</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
+            <span class="n">o_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s">&quot;rs23456</span><span class="se">\n</span><span class="s">rs23457_2</span><span class="se">\n</span><span class="s">1:4214570_1</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">)</span>
+
+        <span class="c"># Executing the script</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s">&quot;--extract&quot;</span><span class="p">,</span> <span class="n">extract_filename</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">impute2_extractor</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">TestImpute2Extractor</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Testing we have the three output files</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results.{ext}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="n">suffix</span><span class="p">)))</span>
+
+        <span class="c"># Checking the impute2 file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_2 3214572 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 1:4214570_1 4214570 T TC 0.869 0.130 0 0.869 0.130 0 0.869 &quot;</span>
+            <span class="s">&quot;0.130 0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;impute2&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the dosage file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;chrom</span><span class="se">\t</span><span class="s">pos</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">dosage</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">0.099</span><span class="se">\t</span><span class="s">2.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214572</span><span class="se">\t</span><span class="s">rs23457_2</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">4214570</span><span class="se">\t</span><span class="s">1:4214570_1</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">nan</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;dosage&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the hard calls file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T T</span><span class="se">\t</span><span class="s">C C</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_2</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214572</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:4214570_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">4214570</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;calls&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_genomic</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.test_genomic"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the extraction by genomic location.&quot;&quot;&quot;</span>
+        <span class="c"># Executing the script</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s">&quot;--genomic&quot;</span><span class="p">,</span> <span class="s">&quot;chr1:3214570-3214573&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">impute2_extractor</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">TestImpute2Extractor</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Testing we have the three output files</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results.{ext}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="n">suffix</span><span class="p">)))</span>
+
+        <span class="c"># Checking the impute2 file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs23457 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_1 3214571 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_2 3214572 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 1:3214573 3214573 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;impute2&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the dosage file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;chrom</span><span class="se">\t</span><span class="s">pos</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">dosage</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\t</span><span class="s">rs23457</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214572</span><span class="se">\t</span><span class="s">rs23457_2</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;dosage&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the hard calls file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_2</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214572</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;calls&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_maf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.test_maf"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_maf">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the extraction by maf.&quot;&quot;&quot;</span>
+        <span class="c"># Executing the script</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s">&quot;--maf&quot;</span><span class="p">,</span> <span class="s">&quot;0.25&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">impute2_extractor</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">TestImpute2Extractor</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Testing we have the three output files</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results.{ext}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="n">suffix</span><span class="p">)))</span>
+
+        <span class="c"># Checking the impute2 file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_1 3214571 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_2 3214572 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 1:3214573 3214573 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;impute2&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the dosage file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;chrom</span><span class="se">\t</span><span class="s">pos</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">dosage</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">0.099</span><span class="se">\t</span><span class="s">2.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\t</span><span class="s">rs23457</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214572</span><span class="se">\t</span><span class="s">rs23457_2</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;dosage&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the hard calls file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T T</span><span class="se">\t</span><span class="s">C C</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_2</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214572</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;calls&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.test_rate"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_rate">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the extraction by completion rate.&quot;&quot;&quot;</span>
+        <span class="c"># Executing the script</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s">&quot;--rate&quot;</span><span class="p">,</span> <span class="s">&quot;0.5&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">impute2_extractor</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">TestImpute2Extractor</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Testing we have the three output files</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results.{ext}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="n">suffix</span><span class="p">)))</span>
+
+        <span class="c"># Checking the impute2 file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs12345 1231415 A G 1 0 0 0.988 0.002 0 0 0.997 0.003</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_1 3214571 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_2 3214572 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 1:3214573 3214573 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;impute2&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the dosage file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;chrom</span><span class="se">\t</span><span class="s">pos</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">dosage</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1231415</span><span class="se">\t</span><span class="s">rs12345</span><span class="se">\t</span><span class="s">G</span><span class="se">\t</span><span class="s">A</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\t</span><span class="s">0.002</span><span class="se">\t</span><span class="s">1.003</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">0.099</span><span class="se">\t</span><span class="s">2.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\t</span><span class="s">rs23457</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214572</span><span class="se">\t</span><span class="s">rs23457_2</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;dosage&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the hard calls file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs12345</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">1231415</span><span class="se">\t</span><span class="s">A A</span><span class="se">\t</span><span class="s">A A</span><span class="se">\t</span><span class="s">A G</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T T</span><span class="se">\t</span><span class="s">C C</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_2</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214572</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;calls&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.test_info"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_info">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the extraction by information value.&quot;&quot;&quot;</span>
+        <span class="c"># Executing the script</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s">&quot;--info&quot;</span><span class="p">,</span> <span class="s">&quot;0.3&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">impute2_extractor</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">TestImpute2Extractor</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Testing we have the three output files</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results.{ext}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="n">suffix</span><span class="p">)))</span>
+
+        <span class="c"># Checking the impute2 file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs12345 1231415 A G 1 0 0 0.988 0.002 0 0 0.997 0.003</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_1 3214571 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 1:3214573 3214573 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 1:4214570_1 4214570 T TC 0.869 0.130 0 0.869 0.130 0 0.869 &quot;</span>
+            <span class="s">&quot;0.130 0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;impute2&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the dosage file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;chrom</span><span class="se">\t</span><span class="s">pos</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">dosage</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1231415</span><span class="se">\t</span><span class="s">rs12345</span><span class="se">\t</span><span class="s">G</span><span class="se">\t</span><span class="s">A</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\t</span><span class="s">0.002</span><span class="se">\t</span><span class="s">1.003</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">0.099</span><span class="se">\t</span><span class="s">2.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">4214570</span><span class="se">\t</span><span class="s">1:4214570_1</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">nan</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;dosage&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the hard calls file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs12345</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">1231415</span><span class="se">\t</span><span class="s">A A</span><span class="se">\t</span><span class="s">A A</span><span class="se">\t</span><span class="s">A G</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T T</span><span class="se">\t</span><span class="s">C C</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:4214570_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">4214570</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;calls&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_genomic_maf</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.test_genomic_maf"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_maf">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the extraction by genomic location and maf.&quot;&quot;&quot;</span>
+        <span class="c"># Executing the script</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s">&quot;--genomic&quot;</span><span class="p">,</span> <span class="s">&quot;chr1:3214569-3214573&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--maf&quot;</span><span class="p">,</span> <span class="s">&quot;0.3&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">impute2_extractor</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">TestImpute2Extractor</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Testing we have the three output files</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results.{ext}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="n">suffix</span><span class="p">)))</span>
+
+        <span class="c"># Checking the impute2 file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;impute2&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the dosage file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;chrom</span><span class="se">\t</span><span class="s">pos</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">dosage</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">0.099</span><span class="se">\t</span><span class="s">2.0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;dosage&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the hard calls file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T T</span><span class="se">\t</span><span class="s">C C</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;calls&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_genomic_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.test_genomic_rate"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_rate">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the extraction by genomic location and completion rate.&quot;&quot;&quot;</span>
+        <span class="c"># Executing the script</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s">&quot;--genomic&quot;</span><span class="p">,</span> <span class="s">&quot;chr1:1231415-3214573&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--rate&quot;</span><span class="p">,</span> <span class="s">&quot;0.7&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">impute2_extractor</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">TestImpute2Extractor</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Testing we have the three output files</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results.{ext}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="n">suffix</span><span class="p">)))</span>
+
+        <span class="c"># Checking the impute2 file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs12345 1231415 A G 1 0 0 0.988 0.002 0 0 0.997 0.003</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;impute2&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the dosage file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;chrom</span><span class="se">\t</span><span class="s">pos</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">dosage</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1231415</span><span class="se">\t</span><span class="s">rs12345</span><span class="se">\t</span><span class="s">G</span><span class="se">\t</span><span class="s">A</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\t</span><span class="s">0.002</span><span class="se">\t</span><span class="s">1.003</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;dosage&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the hard calls file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs12345</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">1231415</span><span class="se">\t</span><span class="s">A A</span><span class="se">\t</span><span class="s">A A</span><span class="se">\t</span><span class="s">A G</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;calls&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_genomic_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.test_genomic_info"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_info">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the extraction by genomic location and information value.&quot;&quot;&quot;</span>
+        <span class="c"># Executing the script</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s">&quot;--genomic&quot;</span><span class="p">,</span> <span class="s">&quot;chr1:1231415-3214573&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--info&quot;</span><span class="p">,</span> <span class="s">&quot;0.28&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">impute2_extractor</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">TestImpute2Extractor</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Testing we have the three output files</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results.{ext}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="n">suffix</span><span class="p">)))</span>
+
+        <span class="c"># Checking the impute2 file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs12345 1231415 A G 1 0 0 0.988 0.002 0 0 0.997 0.003</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_1 3214571 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 1:3214573 3214573 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;impute2&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the dosage file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;chrom</span><span class="se">\t</span><span class="s">pos</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">dosage</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1231415</span><span class="se">\t</span><span class="s">rs12345</span><span class="se">\t</span><span class="s">G</span><span class="se">\t</span><span class="s">A</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\t</span><span class="s">0.002</span><span class="se">\t</span><span class="s">1.003</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">0.099</span><span class="se">\t</span><span class="s">2.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\t</span><span class="s">rs23457</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;dosage&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the hard calls file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs12345</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">1231415</span><span class="se">\t</span><span class="s">A A</span><span class="se">\t</span><span class="s">A A</span><span class="se">\t</span><span class="s">A G</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T T</span><span class="se">\t</span><span class="s">C C</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;calls&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_maf_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.test_maf_rate"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_maf_rate">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the extraction by maf and completion rate.&quot;&quot;&quot;</span>
+        <span class="c"># Executing the script</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s">&quot;--maf&quot;</span><span class="p">,</span> <span class="s">&quot;0.2&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--rate&quot;</span><span class="p">,</span> <span class="s">&quot;0.6&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">impute2_extractor</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">TestImpute2Extractor</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Testing we have the three output files</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results.{ext}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="n">suffix</span><span class="p">)))</span>
+
+        <span class="c"># Checking the impute2 file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_1 3214571 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_2 3214572 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 1:3214573 3214573 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;impute2&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the dosage file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;chrom</span><span class="se">\t</span><span class="s">pos</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">dosage</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">0.099</span><span class="se">\t</span><span class="s">2.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\t</span><span class="s">rs23457</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214572</span><span class="se">\t</span><span class="s">rs23457_2</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;dosage&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the hard calls file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T T</span><span class="se">\t</span><span class="s">C C</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_2</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214572</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;calls&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_maf_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.test_maf_info"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_maf_info">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the extraction by maf and information value.&quot;&quot;&quot;</span>
+        <span class="c"># Executing the script</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s">&quot;--maf&quot;</span><span class="p">,</span> <span class="s">&quot;0.2&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--info&quot;</span><span class="p">,</span> <span class="s">&quot;0.3&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">impute2_extractor</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">TestImpute2Extractor</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Testing we have the three output files</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results.{ext}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="n">suffix</span><span class="p">)))</span>
+
+        <span class="c"># Checking the impute2 file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_1 3214571 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 1:3214573 3214573 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;impute2&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the dosage file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;chrom</span><span class="se">\t</span><span class="s">pos</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">dosage</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">0.099</span><span class="se">\t</span><span class="s">2.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;dosage&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the hard calls file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T T</span><span class="se">\t</span><span class="s">C C</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;calls&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_rate_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.test_rate_info"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_rate_info">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the extraction by completion rate and information value.&quot;&quot;&quot;</span>
+        <span class="c"># Executing the script</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s">&quot;--info&quot;</span><span class="p">,</span> <span class="s">&quot;0.35&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--rate&quot;</span><span class="p">,</span> <span class="s">&quot;0.6&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">impute2_extractor</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">TestImpute2Extractor</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Testing we have the three output files</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results.{ext}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="n">suffix</span><span class="p">)))</span>
+
+        <span class="c"># Checking the impute2 file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs12345 1231415 A G 1 0 0 0.988 0.002 0 0 0.997 0.003</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;impute2&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the dosage file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;chrom</span><span class="se">\t</span><span class="s">pos</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">dosage</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1231415</span><span class="se">\t</span><span class="s">rs12345</span><span class="se">\t</span><span class="s">G</span><span class="se">\t</span><span class="s">A</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\t</span><span class="s">0.002</span><span class="se">\t</span><span class="s">1.003</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">0.099</span><span class="se">\t</span><span class="s">2.0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;dosage&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the hard calls file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs12345</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">1231415</span><span class="se">\t</span><span class="s">A A</span><span class="se">\t</span><span class="s">A A</span><span class="se">\t</span><span class="s">A G</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T T</span><span class="se">\t</span><span class="s">C C</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;calls&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_genomic_maf_rate</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.test_genomic_maf_rate"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_maf_rate">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the extraction by genomic location, maf and rate.&quot;&quot;&quot;</span>
+        <span class="c"># Executing the script</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s">&quot;--genomic&quot;</span><span class="p">,</span> <span class="s">&quot;chr1:3214568-4514570&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--maf&quot;</span><span class="p">,</span> <span class="s">&quot;0.01&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--rate&quot;</span><span class="p">,</span> <span class="s">&quot;0.6&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">impute2_extractor</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">TestImpute2Extractor</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Testing we have the three output files</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results.{ext}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="n">suffix</span><span class="p">)))</span>
+
+        <span class="c"># Checking the impute2 file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457 3214570 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_1 3214571 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 rs23457_2 3214572 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1 1:3214573 3214573 T TC 0.869 0.130 0 0 1 0 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;impute2&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the dosage file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;chrom</span><span class="se">\t</span><span class="s">pos</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">dosage</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">0.099</span><span class="se">\t</span><span class="s">2.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\t</span><span class="s">rs23457</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214572</span><span class="se">\t</span><span class="s">rs23457_2</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">TC</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">1.0</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;dosage&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the hard calls file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T T</span><span class="se">\t</span><span class="s">C C</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214570</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_1</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214571</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23457_2</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214572</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1:3214573</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214573</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T TC</span><span class="se">\t</span><span class="s">TC TC</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;calls&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_genomic_maf_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.test_genomic_maf_info"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_maf_info">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the extraction by genomic location, maf and information.&quot;&quot;&quot;</span>
+        <span class="c"># Executing the script</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s">&quot;--genomic&quot;</span><span class="p">,</span> <span class="s">&quot;chr1:3214568-4514570&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--maf&quot;</span><span class="p">,</span> <span class="s">&quot;0.01&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--info&quot;</span><span class="p">,</span> <span class="s">&quot;0.35&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">impute2_extractor</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">TestImpute2Extractor</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Testing we have the three output files</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results.{ext}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="n">suffix</span><span class="p">)))</span>
+
+        <span class="c"># Checking the impute2 file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;impute2&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the dosage file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;chrom</span><span class="se">\t</span><span class="s">pos</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">dosage</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">0.099</span><span class="se">\t</span><span class="s">2.0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;dosage&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the hard calls file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T T</span><span class="se">\t</span><span class="s">C C</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;calls&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_maf_rate_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.test_maf_rate_info"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_maf_rate_info">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the extraction by maf, completion rate and information.&quot;&quot;&quot;</span>
+        <span class="c"># Executing the script</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s">&quot;--rate&quot;</span><span class="p">,</span> <span class="s">&quot;0.7&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--maf&quot;</span><span class="p">,</span> <span class="s">&quot;0.01&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--info&quot;</span><span class="p">,</span> <span class="s">&quot;0.35&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">impute2_extractor</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">TestImpute2Extractor</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Testing we have the three output files</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results.{ext}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="n">suffix</span><span class="p">)))</span>
+
+        <span class="c"># Checking the impute2 file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs12345 1231415 A G 1 0 0 0.988 0.002 0 0 0.997 0.003</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;impute2&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the dosage file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;chrom</span><span class="se">\t</span><span class="s">pos</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">dosage</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">1231415</span><span class="se">\t</span><span class="s">rs12345</span><span class="se">\t</span><span class="s">G</span><span class="se">\t</span><span class="s">A</span><span class="se">\t</span><span class="s">0.0</span><span class="se">\t</span><span class="s">0.002</span><span class="se">\t</span><span class="s">1.003</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;dosage&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the hard calls file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs12345</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">1231415</span><span class="se">\t</span><span class="s">A A</span><span class="se">\t</span><span class="s">A A</span><span class="se">\t</span><span class="s">A G</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;calls&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">test_genomic_maf_rate_info</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
+<div class="viewcode-block" id="TestImpute2Extractor.test_genomic_maf_rate_info"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_maf_rate_info">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the extraction by genomic location, maf, rate and info.&quot;&quot;&quot;</span>
+        <span class="c"># Executing the script</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">+</span> <span class="p">[</span>
+            <span class="s">&quot;--genomic&quot;</span><span class="p">,</span> <span class="s">&quot;chr1:1231415-3214572&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--rate&quot;</span><span class="p">,</span> <span class="s">&quot;0.6&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--maf&quot;</span><span class="p">,</span> <span class="s">&quot;0.2&quot;</span><span class="p">,</span>
+            <span class="s">&quot;--info&quot;</span><span class="p">,</span> <span class="s">&quot;0.35&quot;</span><span class="p">,</span>
+        <span class="p">]</span>
+        <span class="n">impute2_extractor</span><span class="o">.</span><span class="n">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="n">args</span><span class="p">)</span>
+        <span class="n">TestImpute2Extractor</span><span class="o">.</span><span class="n">clean_logging_handlers</span><span class="p">()</span>
+
+        <span class="c"># Testing we have the three output files</span>
+        <span class="n">template_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s">&quot;results.{ext}&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">,</span> <span class="s">&quot;dosage&quot;</span><span class="p">,</span> <span class="s">&quot;calls&quot;</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="n">suffix</span><span class="p">)))</span>
+
+        <span class="c"># Checking the impute2 file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1 rs23456 3214569 T C 0.869 0.130 0 0.903 0.095 0.002 0 0 1</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;impute2&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the dosage file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;chrom</span><span class="se">\t</span><span class="s">pos</span><span class="se">\t</span><span class="s">name</span><span class="se">\t</span><span class="s">minor</span><span class="se">\t</span><span class="s">major</span><span class="se">\t</span><span class="s">dosage</span><span class="se">\n</span><span class="s">&quot;</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">C</span><span class="se">\t</span><span class="s">T</span><span class="se">\t</span><span class="s">nan</span><span class="se">\t</span><span class="s">0.099</span><span class="se">\t</span><span class="s">2.0</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;dosage&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+
+        <span class="c"># Checking the hard calls file</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s">&quot;1</span><span class="se">\t</span><span class="s">rs23456</span><span class="se">\t</span><span class="s">0</span><span class="se">\t</span><span class="s">3214569</span><span class="se">\t</span><span class="s">0 0</span><span class="se">\t</span><span class="s">T T</span><span class="se">\t</span><span class="s">C C</span><span class="se">\n</span><span class="s">&quot;</span>
+        <span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">template_name</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">ext</span><span class="o">=</span><span class="s">&quot;calls&quot;</span><span class="p">),</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
+</pre></div></div></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+    </div>
+  </body>
+</html>

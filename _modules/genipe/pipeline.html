@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.pipeline &mdash; genipe 1.1.0 documentation</title>
+    <title>genipe.pipeline &mdash; genipe 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.1.0 documentation" href="../../index.html" />
+    <link rel="top" title="genipe 1.2.0 documentation" href="../../index.html" />
     <link rel="up" title="genipe" href="../genipe.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
       </ul>
@@ -90,6 +90,7 @@
 <span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">floor</span>
 <span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">which</span><span class="p">,</span> <span class="n">copyfile</span>
 <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlopen</span>
+<span class="kn">from</span> <span class="nn">urllib.error</span> <span class="kn">import</span> <span class="n">HTTPError</span>
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">Popen</span><span class="p">,</span> <span class="n">PIPE</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 
@@ -290,7 +291,8 @@
                             <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">out_dir</span><span class="p">,</span> <span class="s">&quot;chr{chrom}&quot;</span><span class="p">,</span>
                                          <span class="s">&quot;final_impute2&quot;</span><span class="p">,</span>
                                          <span class="s">&quot;chr{chrom}.imputed&quot;</span><span class="p">),</span>
-                            <span class="n">args</span><span class="o">.</span><span class="n">probability</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">completion</span><span class="p">,</span> <span class="n">db_name</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+                            <span class="n">args</span><span class="o">.</span><span class="n">probability</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">completion</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">info</span><span class="p">,</span>
+                            <span class="n">db_name</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
 
         <span class="c"># If required, zipping the impute2 files</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">bgzip</span><span class="p">:</span>
@@ -301,8 +303,8 @@
 
         <span class="c"># Gathering the imputation statistics</span>
         <span class="n">numbers</span> <span class="o">=</span> <span class="n">gather_imputation_stats</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">probability</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">completion</span><span class="p">,</span>
-                                          <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">),</span> <span class="n">missing_rate</span><span class="p">,</span>
-                                          <span class="n">args</span><span class="o">.</span><span class="n">out_dir</span><span class="p">)</span>
+                                          <span class="n">args</span><span class="o">.</span><span class="n">info</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">),</span>
+                                          <span class="n">missing_rate</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">out_dir</span><span class="p">)</span>
         <span class="n">run_information</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">numbers</span><span class="p">)</span>
 
         <span class="c"># Gathering the MAF statistics</span>
@@ -500,7 +502,7 @@
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Done imputing markers&quot;</span><span class="p">)</span>
 
 
-<span class="k">def</span> <span class="nf">merge_impute2_files</span><span class="p">(</span><span class="n">in_glob</span><span class="p">,</span> <span class="n">o_prefix</span><span class="p">,</span> <span class="n">probability_t</span><span class="p">,</span> <span class="n">completion_t</span><span class="p">,</span></div>
+<span class="k">def</span> <span class="nf">merge_impute2_files</span><span class="p">(</span><span class="n">in_glob</span><span class="p">,</span> <span class="n">o_prefix</span><span class="p">,</span> <span class="n">probability_t</span><span class="p">,</span> <span class="n">completion_t</span><span class="p">,</span> <span class="n">info_t</span><span class="p">,</span></div>
 <div class="viewcode-block" id="merge_impute2_files"><a class="viewcode-back" href="../../module_content/genipe.html#genipe.pipeline.merge_impute2_files">[docs]</a>                        <span class="n">db_name</span><span class="p">,</span> <span class="n">options</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Merges impute2 files.</span>
 
@@ -510,6 +512,7 @@
 <span class="sd">        o_prefix (str): the prefix template of the output files</span>
 <span class="sd">        probability_t (float): the probability threshold to use</span>
 <span class="sd">        completion_t (float): the completion threshold to use</span>
+<span class="sd">        info_t (float): the info threshold to use</span>
 <span class="sd">        db_name (str): the name of the DB saving tasks&#39; information</span>
 <span class="sd">        options (argparse.Namespace): the pipeline options</span>
 
@@ -523,6 +526,7 @@
         <span class="s">&quot;impute2-merger&quot;</span><span class="p">,</span>
         <span class="s">&quot;--probability&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">probability_t</span><span class="p">),</span>
         <span class="s">&quot;--completion&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">completion_t</span><span class="p">),</span>
+        <span class="s">&quot;--info&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">info_t</span><span class="p">),</span>
     <span class="p">]</span>
 
     <span class="k">for</span> <span class="n">chrom</span> <span class="ow">in</span> <span class="n">chromosomes</span><span class="p">:</span>
@@ -549,6 +553,7 @@
                                                    <span class="s">&quot;.completion_rates&quot;</span><span class="p">,</span>
                                                    <span class="s">&quot;.good_sites&quot;</span><span class="p">,</span>
                                                    <span class="s">&quot;.impute2&quot;</span><span class="p">,</span>
+                                                   <span class="s">&quot;.impute2_info&quot;</span><span class="p">,</span>
                                                    <span class="s">&quot;.imputed_sites&quot;</span><span class="p">,</span>
                                                    <span class="s">&quot;.map&quot;</span><span class="p">,</span>
                                                    <span class="s">&quot;.maf&quot;</span><span class="p">)],</span>
@@ -651,25 +656,56 @@
         <span class="c"># The URL</span>
         <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;http://grch37.rest.ensembl.org/info/assembly/homo_sapiens&quot;</span>
                <span class="s">&quot;?content-type=application/json&quot;</span><span class="p">)</span>
-        <span class="n">result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">())</span>
 
-        <span class="c"># Checking the build</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">[</span><span class="s">&quot;assembly_name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;GRCh37&quot;</span><span class="p">)</span> <span class="ow">or</span> \
-           <span class="n">result</span><span class="p">[</span><span class="s">&quot;default_coord_system_version&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;GRCh37&quot;</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: wrong &quot;</span>
-                               <span class="s">&quot;build&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s">&quot;assembly_name&quot;</span><span class="p">]))</span>
+            <span class="c"># Checking the build</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">[</span><span class="s">&quot;assembly_name&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;GRCh37&quot;</span><span class="p">)</span> <span class="ow">or</span> \
+                    <span class="n">result</span><span class="p">[</span><span class="s">&quot;default_coord_system_version&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;GRCh37&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: wrong &quot;</span>
+                                   <span class="s">&quot;build&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="s">&quot;assembly_name&quot;</span><span class="p">]))</span>
 
-        <span class="c"># Gathering the chromosome length</span>
-        <span class="n">chrom_length</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="n">req_chrom</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">23</span><span class="p">)}</span> <span class="o">|</span> <span class="p">{</span><span class="s">&quot;X&quot;</span><span class="p">}</span>
-        <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s">&quot;top_level_region&quot;</span><span class="p">]:</span>
-            <span class="k">if</span> <span class="n">region</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">req_chrom</span><span class="p">:</span>
-                <span class="n">chrom_length</span><span class="p">[</span><span class="n">region</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">region</span><span class="p">[</span><span class="s">&quot;length&quot;</span><span class="p">]</span>
+            <span class="c"># Gathering the chromosome length</span>
+            <span class="n">chrom_length</span> <span class="o">=</span> <span class="p">{}</span>
+            <span class="n">req_chrom</span> <span class="o">=</span> <span class="p">{</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">23</span><span class="p">)}</span> <span class="o">|</span> <span class="p">{</span><span class="s">&quot;X&quot;</span><span class="p">}</span>
+            <span class="k">for</span> <span class="n">region</span> <span class="ow">in</span> <span class="n">result</span><span class="p">[</span><span class="s">&quot;top_level_region&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">region</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="ow">in</span> <span class="n">req_chrom</span><span class="p">:</span>
+                    <span class="n">chrom_length</span><span class="p">[</span><span class="n">region</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">region</span><span class="p">[</span><span class="s">&quot;length&quot;</span><span class="p">]</span>
 
-        <span class="c"># Saving to file</span>
-        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">chrom</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">chrom_length</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
-                <span class="k">print</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">chrom_length</span><span class="p">[</span><span class="n">chrom</span><span class="p">],</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">HTTPError</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;Ensembl GRCh37 not available... Using hard coded &quot;</span>
+                            <span class="s">&quot;chromosome lengths&quot;</span><span class="p">)</span>
+            <span class="n">chrom_length</span> <span class="o">=</span> <span class="p">{</span>
+                <span class="s">&quot;1&quot;</span><span class="p">:</span> <span class="mi">249250621</span><span class="p">,</span>
+                <span class="s">&quot;2&quot;</span><span class="p">:</span> <span class="mi">243199373</span><span class="p">,</span>
+                <span class="s">&quot;3&quot;</span><span class="p">:</span> <span class="mi">198022430</span><span class="p">,</span>
+                <span class="s">&quot;4&quot;</span><span class="p">:</span> <span class="mi">191154276</span><span class="p">,</span>
+                <span class="s">&quot;5&quot;</span><span class="p">:</span> <span class="mi">180915260</span><span class="p">,</span>
+                <span class="s">&quot;6&quot;</span><span class="p">:</span> <span class="mi">171115067</span><span class="p">,</span>
+                <span class="s">&quot;7&quot;</span><span class="p">:</span> <span class="mi">159138663</span><span class="p">,</span>
+                <span class="s">&quot;8&quot;</span><span class="p">:</span> <span class="mi">146364022</span><span class="p">,</span>
+                <span class="s">&quot;9&quot;</span><span class="p">:</span> <span class="mi">141213431</span><span class="p">,</span>
+                <span class="s">&quot;10&quot;</span><span class="p">:</span> <span class="mi">135534747</span><span class="p">,</span>
+                <span class="s">&quot;11&quot;</span><span class="p">:</span> <span class="mi">135006516</span><span class="p">,</span>
+                <span class="s">&quot;12&quot;</span><span class="p">:</span> <span class="mi">133851895</span><span class="p">,</span>
+                <span class="s">&quot;13&quot;</span><span class="p">:</span> <span class="mi">115169878</span><span class="p">,</span>
+                <span class="s">&quot;14&quot;</span><span class="p">:</span> <span class="mi">107349540</span><span class="p">,</span>
+                <span class="s">&quot;15&quot;</span><span class="p">:</span> <span class="mi">102531392</span><span class="p">,</span>
+                <span class="s">&quot;16&quot;</span><span class="p">:</span> <span class="mi">90354753</span><span class="p">,</span>
+                <span class="s">&quot;17&quot;</span><span class="p">:</span> <span class="mi">81195210</span><span class="p">,</span>
+                <span class="s">&quot;18&quot;</span><span class="p">:</span> <span class="mi">78077248</span><span class="p">,</span>
+                <span class="s">&quot;19&quot;</span><span class="p">:</span> <span class="mi">59128983</span><span class="p">,</span>
+                <span class="s">&quot;20&quot;</span><span class="p">:</span> <span class="mi">63025520</span><span class="p">,</span>
+                <span class="s">&quot;21&quot;</span><span class="p">:</span> <span class="mi">48129895</span><span class="p">,</span>
+                <span class="s">&quot;22&quot;</span><span class="p">:</span> <span class="mi">51304566</span><span class="p">,</span>
+                <span class="s">&quot;X&quot;</span><span class="p">:</span> <span class="mi">155270560</span><span class="p">,</span>
+            <span class="p">}</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="c"># Saving to file</span>
+            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">chrom</span> <span class="ow">in</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">chrom_length</span><span class="o">.</span><span class="n">keys</span><span class="p">()):</span>
+                    <span class="k">print</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">chrom_length</span><span class="p">[</span><span class="n">chrom</span><span class="p">],</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="c"># Gathering from file</span>
@@ -1481,12 +1517,14 @@
     <span class="p">}</span>
 
 
-<span class="k">def</span> <span class="nf">gather_imputation_stats</span><span class="p">(</span><span class="n">prob_t</span><span class="p">,</span> <span class="n">completion_t</span><span class="p">,</span> <span class="n">nb_samples</span><span class="p">,</span> <span class="n">missing</span><span class="p">,</span> <span class="n">o_dir</span><span class="p">):</span></div>
-<div class="viewcode-block" id="gather_imputation_stats"><a class="viewcode-back" href="../../module_content/genipe.html#genipe.pipeline.gather_imputation_stats">[docs]</a>    <span class="sd">&quot;&quot;&quot;Gathers imputation statistics from the merged dataset.</span>
+<span class="k">def</span> <span class="nf">gather_imputation_stats</span><span class="p">(</span><span class="n">prob_t</span><span class="p">,</span> <span class="n">completion_t</span><span class="p">,</span> <span class="n">info_t</span><span class="p">,</span> <span class="n">nb_samples</span><span class="p">,</span> <span class="n">missing</span><span class="p">,</span></div>
+<div class="viewcode-block" id="gather_imputation_stats"><a class="viewcode-back" href="../../module_content/genipe.html#genipe.pipeline.gather_imputation_stats">[docs]</a>                            <span class="n">o_dir</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gathers imputation statistics from the merged dataset.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        prob_t (float): the probability threshold (&gt;= t)</span>
 <span class="sd">        completion_t (float): the completion threshold (&gt;= t)</span>
+<span class="sd">        info_t (float): the information threshold (&gt;= t)</span>
 <span class="sd">        nb_samples (int): the number of samples</span>
 <span class="sd">        missing (pandas.DataFrame): the missing rate</span>
 <span class="sd">        o_dir (str): the output directory</span>
@@ -1507,6 +1545,8 @@
 <span class="sd">    | ``average_comp_rate``          | the average completion rate            |</span>
 <span class="sd">    +--------------------------------+----------------------------------------+</span>
 <span class="sd">    | ``rate_threshold``             | the completion rate threshold (&gt;= t)   |</span>
+<span class="sd">    +--------------------------------+----------------------------------------+</span>
+<span class="sd">    | ``info_threshold``             | the information threshold (&gt;= t)       |</span>
 <span class="sd">    +--------------------------------+----------------------------------------+</span>
 <span class="sd">    | ``nb_good_sites``              | the number of &quot;good&quot; sites (that pass  |</span>
 <span class="sd">    |                                | the different probability and          |</span>
@@ -1584,12 +1624,36 @@
                                             <span class="n">suffix</span><span class="o">=</span><span class="s">&quot;completion_rates&quot;</span><span class="p">)</span>
         <span class="n">completion_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)</span>
 
+        <span class="c"># Then, we read the information file using a DataFrame</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chrom</span><span class="o">=</span><span class="n">chrom</span><span class="p">,</span>
+                                            <span class="n">suffix</span><span class="o">=</span><span class="s">&quot;impute2_info&quot;</span><span class="p">)</span>
+        <span class="n">info_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">)</span>
+
+        <span class="c"># Merging the two dataset</span>
+        <span class="n">completion_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">completion_data</span><span class="p">,</span> <span class="n">info_data</span><span class="p">,</span> <span class="n">left_on</span><span class="o">=</span><span class="s">&quot;name&quot;</span><span class="p">,</span>
+                                   <span class="n">right_on</span><span class="o">=</span><span class="s">&quot;name&quot;</span><span class="p">)</span>
+
+        <span class="c"># Checking there is no missing data...</span>
+        <span class="k">assert</span> <span class="n">completion_data</span><span class="p">[</span><span class="s">&quot;completion_rate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
+        <span class="k">assert</span> <span class="n">completion_data</span><span class="p">[</span><span class="s">&quot;info&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">isnull</span><span class="p">()</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span>
+
+        <span class="c"># Counting the number of good sites in the file...</span>
+        <span class="n">nb_good_sites</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">filename_template</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chrom</span><span class="o">=</span><span class="n">chrom</span><span class="p">,</span>
+                                            <span class="n">suffix</span><span class="o">=</span><span class="s">&quot;good_sites&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">nb_good_sites</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
+
         <span class="c"># Saving the stats for all sites</span>
         <span class="n">tot_nb_sites</span> <span class="o">+=</span> <span class="n">completion_data</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">sum_rates</span> <span class="o">+=</span> <span class="n">completion_data</span><span class="o">.</span><span class="n">completion_rate</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
         <span class="c"># Saving the stats for good sites</span>
-        <span class="n">good_sites</span> <span class="o">=</span> <span class="n">completion_data</span><span class="o">.</span><span class="n">completion_rate</span> <span class="o">&gt;=</span> <span class="n">completion_t</span>
+        <span class="n">good_sites</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="p">(</span><span class="n">completion_data</span><span class="o">.</span><span class="n">completion_rate</span> <span class="o">&gt;=</span> <span class="n">completion_t</span><span class="p">)</span> <span class="o">&amp;</span>
+            <span class="p">(</span><span class="n">completion_data</span><span class="p">[</span><span class="s">&quot;info&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">info_t</span><span class="p">)</span>
+        <span class="p">)</span>
+        <span class="k">assert</span> <span class="n">nb_good_sites</span> <span class="o">==</span> <span class="n">good_sites</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
         <span class="n">tot_good_sites</span> <span class="o">+=</span> <span class="n">completion_data</span><span class="p">[</span><span class="n">good_sites</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
         <span class="n">sum_good_rates</span> <span class="o">+=</span> <span class="n">completion_data</span><span class="p">[</span><span class="n">good_sites</span><span class="p">]</span><span class="o">.</span><span class="n">completion_rate</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
 
@@ -1629,6 +1693,7 @@
         <span class="s">&quot;nb_imputed&quot;</span><span class="p">:</span>                 <span class="s">&quot;{:,d}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tot_nb_sites</span><span class="p">),</span>
         <span class="s">&quot;average_comp_rate&quot;</span><span class="p">:</span>          <span class="s">&quot;{:.1f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">comp_rate</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span>
         <span class="s">&quot;rate_threshold&quot;</span><span class="p">:</span>             <span class="s">&quot;{:.1f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">completion_t</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span>
+        <span class="s">&quot;info_threshold&quot;</span><span class="p">:</span>             <span class="s">&quot;{:.2f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">info_t</span><span class="p">),</span>
         <span class="s">&quot;nb_good_sites&quot;</span><span class="p">:</span>              <span class="s">&quot;{:,d}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tot_good_sites</span><span class="p">),</span>
         <span class="s">&quot;pct_good_sites&quot;</span><span class="p">:</span>             <span class="s">&quot;{:.1f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pct_good_sites</span><span class="p">),</span>
         <span class="s">&quot;average_comp_rate_cleaned&quot;</span><span class="p">:</span>  <span class="s">&quot;{:.1f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">good_comp_rate</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span>
@@ -2405,6 +2470,15 @@
         <span class="n">help</span><span class="o">=</span><span class="s">&quot;The completion rate threshold for site exclusion. &quot;</span>
              <span class="s">&quot;[&lt;</span><span class="si">%(default).2f</span><span class="s">]&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s">&quot;--info&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;FLOAT&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&quot;The measure of the observed statistical information associated &quot;</span>
+             <span class="s">&quot;with the allele frequency estimate threshold for site &quot;</span>
+             <span class="s">&quot;exclusion. [&lt;</span><span class="si">%(default).2f</span><span class="s">]&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="c"># The automatic report options</span>
     <span class="n">group</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s">&quot;Automatic Report Options&quot;</span><span class="p">)</span>
@@ -2451,7 +2525,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../genipe.html" >genipe</a> &raquo;</li> 
       </ul>

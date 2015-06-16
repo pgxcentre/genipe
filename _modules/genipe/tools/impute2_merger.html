@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tools.impute2_merger &mdash; genipe 1.1.0 documentation</title>
+    <title>genipe.tools.impute2_merger &mdash; genipe 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.1.0 documentation" href="../../../index.html" />
+    <link rel="top" title="genipe 1.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="genipe" href="../../genipe.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
       </ul>
@@ -184,6 +184,9 @@
 <span class="sd">    | ``.imputed_sites``    | List of imputed sites (excluding sites that     |</span>
 <span class="sd">    |                       | were previously genotyped in the study cohort). |</span>
 <span class="sd">    +-----------------------+-------------------------------------------------+</span>
+<span class="sd">    | ``.impute2_info``     | SNP-wise information file with one line per SNP |</span>
+<span class="sd">    |                       | and a single header line at the beginning.      |</span>
+<span class="sd">    +-----------------------+-------------------------------------------------+</span>
 <span class="sd">    | ``.completion_rates`` | Number of missing values and completion rate    |</span>
 <span class="sd">    |                       | for all sites (using the probability threshold  |</span>
 <span class="sd">    |                       | set by the user, where the default is higher    |</span>
@@ -209,6 +212,7 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Opening output files</span>
     <span class="n">impute2_o_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_prefix</span> <span class="o">+</span> <span class="s">&quot;.impute2&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
+    <span class="n">impute2_info_o_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_prefix</span> <span class="o">+</span> <span class="s">&quot;.impute2_info&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
     <span class="n">alleles_o_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_prefix</span> <span class="o">+</span> <span class="s">&quot;.alleles&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
     <span class="n">imputed_sites_o_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_prefix</span> <span class="o">+</span> <span class="s">&quot;.imputed_sites&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
     <span class="n">completion_o_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_prefix</span> <span class="o">+</span> <span class="s">&quot;.completion_rates&quot;</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span>
@@ -227,6 +231,7 @@
 
     <span class="c"># Opening the input file(s) one by one</span>
     <span class="n">chr23_par_already_warned</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">info_header_printed</span> <span class="o">=</span> <span class="bp">False</span>
     <span class="k">for</span> <span class="n">i_filename</span> <span class="ow">in</span> <span class="n">i_filenames</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Working with {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_filename</span><span class="p">))</span>
 
@@ -243,8 +248,20 @@
         <span class="n">nb_expected</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">r</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;  - expecting {:,d} lines&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_expected</span><span class="p">))</span>
 
-        <span class="c"># The input file</span>
+        <span class="c"># The input files</span>
         <span class="n">i_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">i_filename</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
+        <span class="n">i_info_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">i_filename</span> <span class="o">+</span> <span class="s">&quot;_info&quot;</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span>
+
+        <span class="c"># Reading the info header</span>
+        <span class="n">info_header_row</span> <span class="o">=</span> <span class="n">i_info_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
+        <span class="n">info_header</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">info_header_row</span><span class="p">)}</span>
+
+        <span class="c"># Printing the header for the info file only once</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">info_header_printed</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s">&quot;chr&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;position&quot;</span><span class="p">,</span>
+                  <span class="o">*</span><span class="n">info_header_row</span><span class="p">[</span><span class="n">info_header</span><span class="p">[</span><span class="s">&quot;position&quot;</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">:],</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span>
+                  <span class="nb">file</span><span class="o">=</span><span class="n">impute2_info_o_file</span><span class="p">)</span>
+            <span class="n">info_header_printed</span> <span class="o">=</span> <span class="bp">True</span>
 
         <span class="n">nb_line</span> <span class="o">=</span> <span class="mi">0</span>
         <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">i_file</span><span class="p">:</span>
@@ -256,6 +273,23 @@
 
             <span class="c"># Gathering genotypes</span>
             <span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">),</span> <span class="n">geno</span> <span class="o">=</span> <span class="n">matrix_from_line</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+
+            <span class="c"># Splitting the info line</span>
+            <span class="n">info_row</span> <span class="o">=</span> <span class="n">i_info_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="k">if</span> <span class="n">info_row</span> <span class="o">==</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: missing information for &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">i_filename</span> <span class="o">+</span> <span class="s">&quot;_info&quot;</span><span class="p">,</span>
+                    <span class="n">name</span><span class="p">,</span>
+                <span class="p">))</span>
+            <span class="n">info_row</span> <span class="o">=</span> <span class="n">info_row</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">)</span>
+
+            <span class="c"># Checking that the two names and position are the same</span>
+            <span class="k">if</span> <span class="p">((</span><span class="n">name</span> <span class="o">!=</span> <span class="n">info_row</span><span class="p">[</span><span class="n">info_header</span><span class="p">[</span><span class="s">&quot;rs_id&quot;</span><span class="p">]])</span> <span class="ow">or</span>
+                    <span class="p">(</span><span class="n">pos</span> <span class="o">!=</span> <span class="n">info_row</span><span class="p">[</span><span class="n">info_header</span><span class="p">[</span><span class="s">&quot;position&quot;</span><span class="p">]])):</span>
+                <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{} and {}: not same order&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">i_filename</span><span class="p">,</span>
+                    <span class="n">i_filename</span> <span class="o">+</span> <span class="s">&quot;_info&quot;</span><span class="p">,</span>
+                <span class="p">))</span>
 
             <span class="c"># Checking the name of the marker</span>
             <span class="k">if</span> <span class="n">name</span> <span class="o">==</span> <span class="s">&quot;.&quot;</span><span class="p">:</span>
@@ -309,8 +343,11 @@
             <span class="n">maf</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">major</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">geno</span><span class="p">[</span><span class="n">good_calls</span><span class="p">],</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">)</span>
             <span class="k">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">major</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">maf</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">maf_o_file</span><span class="p">)</span>
 
-            <span class="k">if</span> <span class="n">comp</span> <span class="o">&gt;=</span> <span class="n">options</span><span class="o">.</span><span class="n">completion</span><span class="p">:</span>
-                <span class="c"># The completion is over the threshold</span>
+            <span class="c"># Checking the information value</span>
+            <span class="n">info_value</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">info_row</span><span class="p">[</span><span class="n">info_header</span><span class="p">[</span><span class="s">&quot;info&quot;</span><span class="p">]])</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="n">comp</span> <span class="o">&gt;=</span> <span class="n">options</span><span class="o">.</span><span class="n">completion</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">info_value</span> <span class="o">&gt;=</span> <span class="n">options</span><span class="o">.</span><span class="n">info</span><span class="p">):</span>
+                <span class="c"># The completion is over the thresholds</span>
                 <span class="k">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">good_sites_o_file</span><span class="p">)</span>
 
             <span class="c"># Saving the map file</span>
@@ -320,8 +357,13 @@
             <span class="k">print</span><span class="p">(</span><span class="n">real_chrom</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="o">*</span><span class="n">row</span><span class="p">[</span><span class="mi">5</span><span class="p">:],</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot; &quot;</span><span class="p">,</span>
                   <span class="nb">file</span><span class="o">=</span><span class="n">impute2_o_file</span><span class="p">)</span>
 
+            <span class="c"># Saving the information data</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">real_chrom</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="o">*</span><span class="n">info_row</span><span class="p">[</span><span class="n">info_header</span><span class="p">[</span><span class="s">&quot;position&quot;</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">:],</span>
+                  <span class="n">sep</span><span class="o">=</span><span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">impute2_info_o_file</span><span class="p">)</span>
+
         <span class="c"># Closing the input file</span>
         <span class="n">i_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="n">i_info_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="k">if</span> <span class="n">nb_line</span> <span class="o">!=</span> <span class="n">nb_expected</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;  - number of lines ({:,d}) is not as expected &quot;</span>
@@ -329,6 +371,7 @@
 
     <span class="c"># Closing output files</span>
     <span class="n">impute2_o_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="n">impute2_info_o_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="n">alleles_o_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="n">imputed_sites_o_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
     <span class="n">completion_o_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -358,6 +401,20 @@
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">summary_file</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: no such file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">summary_file</span><span class="p">))</span>
 
+        <span class="n">info_file</span> <span class="o">=</span> <span class="n">filename</span> <span class="o">+</span> <span class="s">&quot;_info&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">info_file</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: no such file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">info_file</span><span class="p">))</span>
+
+        <span class="c"># Checking the header of the info file</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">info_file</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">header</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">i_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="p">))</span>
+            <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;rs_id&quot;</span><span class="p">,</span> <span class="s">&quot;position&quot;</span><span class="p">,</span> <span class="s">&quot;info&quot;</span><span class="p">):</span>
+                <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: missing column &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">info_file</span><span class="p">,</span>
+                        <span class="n">name</span><span class="p">,</span>
+                    <span class="p">))</span>
+
     <span class="c"># Checking the chromosome</span>
     <span class="n">valid_chromosome</span> <span class="o">=</span> <span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">24</span><span class="p">)]</span>
     <span class="n">valid_chromosome</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s">&quot;25&quot;</span><span class="p">)</span>
@@ -366,6 +423,14 @@
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">chrom</span> <span class="o">==</span> <span class="s">&quot;23&quot;</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;MAF computation is wrong for chromosome 23 (males &quot;</span>
                         <span class="s">&quot;have 2 alleles in the computation, instead of 1)...&quot;</span><span class="p">)</span>
+
+    <span class="c"># Checking that probability, completion and info are between 0 and 1</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">probability</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">probability</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: invalid probability&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">probability</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">completion</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">completion</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: invalid completion&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">completion</span><span class="p">))</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">info</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">info</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: invalid info&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">info</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="bp">True</span>
 
@@ -435,6 +500,15 @@
         <span class="n">help</span><span class="o">=</span><span class="s">&quot;The completion rate threshold for site exclusion. &quot;</span>
              <span class="s">&quot;[&lt;</span><span class="si">%(default).2f</span><span class="s">]&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s">&quot;--info&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;FLOAT&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&quot;The measure of the observed statistical information associated &quot;</span>
+             <span class="s">&quot;with the allele frequency estimate threshold for site &quot;</span>
+             <span class="s">&quot;exclusion. [&lt;</span><span class="si">%(default).2f</span><span class="s">]&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="c"># The output files</span>
     <span class="n">group</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s">&quot;Output Files&quot;</span><span class="p">)</span>
@@ -471,7 +545,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>

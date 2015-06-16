@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Pipeline Tutorial &mdash; genipe 1.1.0 documentation</title>
+    <title>Pipeline Tutorial &mdash; genipe 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.1.0 documentation" href="../index.html" />
+    <link rel="top" title="genipe 1.2.0 documentation" href="../index.html" />
     <link rel="up" title="Short Tutorials" href="../tutorials.html" />
     <link rel="next" title="Survival Tutorial" href="tutorial_cox.html" />
     <link rel="prev" title="Short Tutorials" href="../tutorials.html" />
@@ -51,7 +51,7 @@
         <li class="right" >
           <a href="../tutorials.html" title="Short Tutorials"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>
@@ -73,6 +73,7 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#executing-the-pipeline">Executing the pipeline</a></li>
+<li><a class="reference internal" href="#compiling-the-report">Compiling the report</a></li>
 <li><a class="reference internal" href="#output-files">Output files</a><ul>
 <li><a class="reference internal" href="#genipe-directory"><code class="docutils literal"><span class="pre">genipe</span></code> directory</a></li>
 <li><a class="reference internal" href="#genipe-chrn-directories"><code class="docutils literal"><span class="pre">genipe/chrN</span></code> directories</a></li>
@@ -129,6 +130,7 @@
 <li><a class="reference internal" href="#genipe-tut-softwares"><span>Required softwares</span></a></li>
 <li><a class="reference internal" href="#genipe-tut-input-files"><span>Input files</span></a></li>
 <li><a class="reference internal" href="#genipe-tut-execute"><span>Executing the pipeline</span></a></li>
+<li><a class="reference internal" href="#genipe-tut-compile-report"><span>Compiling the report</span></a></li>
 <li><a class="reference internal" href="#genipe-tut-output-files"><span>Output files</span></a></li>
 </ol>
 </div>
@@ -490,6 +492,22 @@ deleted, the step producing this file will be run again (but not the
 subsequent steps).</p>
 </div>
 </div>
+<div class="section" id="compiling-the-report">
+<span id="genipe-tut-compile-report"></span><h3>Compiling the report<a class="headerlink" href="#compiling-the-report" title="Permalink to this headline">¶</a></h3>
+<p>A report containing useful information (such as quality metrics and execution
+time, among others) is automatically generated once the imputation process is
+completed. To compile the report, perform the following commands:</p>
+<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/genipe/report
+
+make <span class="o">&amp;&amp;</span> make clean
+</pre></div>
+</div>
+<p>This will generate the following
+<a class="reference external" href="http://pgxcentre.github.io/genipe/_static/tutorial/report.pdf">PDF report</a>
+(which is named <code class="docutils literal"><span class="pre">report.pdf</span></code>). It is always possible to modify the original
+<code class="docutils literal"><span class="pre">report.tex</span></code> file to include analysis specific details (<em>e.g.</em> cohort
+description).</p>
+</div>
 <div class="section" id="output-files">
 <span id="genipe-tut-output-files"></span><h3>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h3>
 <p>All results will be located in the <code class="docutils literal"><span class="pre">genipe</span></code> directory (or whatever
@@ -522,6 +540,7 @@ files.</p>
 │       ├── chr1.imputed.completion_rates
 │       ├── chr1.imputed.good_sites
 │       ├── chr1.imputed.impute2.gz
+│       ├── chr1.imputed.impute2_info
 │       ├── chr1.imputed.imputed_sites
 │       ├── chr1.imputed.log
 │       ├── chr1.imputed.maf
@@ -639,22 +658,32 @@ using the probability threshold (set by
 the user, where the default is higher
 and equal to 0.9).</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.impute2</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.impute2</span></code> or
+<code class="docutils literal"><span class="pre">.imputed.impute2.gz</span></code></td>
 <td>Imputation results (merged from the
 individual segment files. This file
 might be compress (with the <code class="docutils literal"><span class="pre">.gz</span></code>
 extension) if the <code class="docutils literal"><span class="pre">--bgzip</span></code> option was
 used when launching the pipeline.</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.imputed_sites</span></code></td>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.impute2_info</span></code></td>
+<td>Marker-wise information file with one
+line per marker and a single header line
+at the begening. It contains, among
+others, the information value which is a
+measure of the observed statistical
+information associated with the allele
+frequency estimate.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.imputed_sites</span></code></td>
 <td>List of imputed sites (excluding sites
 that were previously genotyped in the
 study cohort).</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.log</span></code></td>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.log</span></code></td>
 <td>The log file of the merging step.</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.maf</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.maf</span></code></td>
 <td>File containing the minor allele
 frequency (along with minor allele
 identification) for all sites using the
@@ -663,11 +692,11 @@ genotypes are available (because they
 are all below the threshold), the MAF is
 <code class="docutils literal"><span class="pre">NA</span></code>.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.map</span></code></td>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.map</span></code></td>
 <td>A <em>map</em> file describing the genomic
 location of all sites.</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.sample</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.sample</span></code></td>
 <td>The sample file generated by the phasing
 step, which describe the sample ordering
 in the IMPUTE2 files.</td>
@@ -725,7 +754,7 @@ description).</p>
         <li class="right" >
           <a href="../tutorials.html" title="Short Tutorials"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>

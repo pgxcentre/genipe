@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tests.test_imputed_stats &mdash; genipe 1.1.0 documentation</title>
+    <title>genipe.tests.test_imputed_stats &mdash; genipe 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.1.0 documentation" href="../../../index.html" />
+    <link rel="top" title="genipe 1.2.0 documentation" href="../../../index.html" />
     <link rel="up" title="genipe" href="../../genipe.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
       </ul>
@@ -2328,7 +2328,7 @@
             <span class="n">observed_z</span><span class="p">,</span> <span class="n">observed_p</span><span class="p">,</span> <span class="o">=</span> <span class="n">observed</span>
 
         <span class="c"># Comparing the results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_se</span><span class="p">,</span> <span class="n">observed_se</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_min_ci</span><span class="p">,</span> <span class="n">observed_min_ci</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_max_ci</span><span class="p">,</span> <span class="n">observed_max_ci</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
@@ -2458,7 +2458,7 @@
             <span class="n">observed_z</span><span class="p">,</span> <span class="n">observed_p</span><span class="p">,</span> <span class="o">=</span> <span class="n">observed</span>
 
         <span class="c"># Comparing the results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_se</span><span class="p">,</span> <span class="n">observed_se</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_min_ci</span><span class="p">,</span> <span class="n">observed_min_ci</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_max_ci</span><span class="p">,</span> <span class="n">observed_max_ci</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
@@ -2526,9 +2526,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_se</span><span class="p">,</span> <span class="n">observed_se</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_min_ci</span><span class="p">,</span> <span class="n">observed_min_ci</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_max_ci</span><span class="p">,</span> <span class="n">observed_max_ci</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">expected_p</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">observed_p</span><span class="p">),</span>
-                               <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+                               <span class="n">places</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">test_fit_mixedlm_interaction_use_ml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
 <div class="viewcode-block" id="TestImputedStatsMixedLM.test_fit_mixedlm_interaction_use_ml"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_interaction_use_ml">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the &#39;fit_mixedlm&#39; function with interaction (using ML).&quot;&quot;&quot;</span>
@@ -2571,9 +2571,9 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_se</span><span class="p">,</span> <span class="n">observed_se</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_min_ci</span><span class="p">,</span> <span class="n">observed_min_ci</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_max_ci</span><span class="p">,</span> <span class="n">observed_max_ci</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">expected_p</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">observed_p</span><span class="p">),</span>
-                               <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+                               <span class="n">places</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">test_full_fit_mixedlm</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
 <div class="viewcode-block" id="TestImputedStatsMixedLM.test_full_fit_mixedlm"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_full_fit_mixedlm">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the full pipeline for mixed effect model.&quot;&quot;&quot;</span>
@@ -2641,10 +2641,8 @@
         <span class="c"># The coefficients</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.12265168980987724</span><span class="p">,</span> <span class="mf">0.007931606465841023</span><span class="p">,</span>
                     <span class="o">-</span><span class="mf">0.15449981039313940</span><span class="p">]</span>
-        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
-        <span class="n">zipped</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">coef</span><span class="p">,</span> <span class="n">places</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">place</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="n">place</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">coef</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
 
         <span class="c"># The standard error</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.041715401481444134</span><span class="p">,</span> <span class="mf">0.030464140147980882</span><span class="p">,</span>
@@ -2668,19 +2666,15 @@
         <span class="c"># The Z statistics</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.9402015911182162</span><span class="p">,</span> <span class="mf">0.2603587833863980</span><span class="p">,</span>
                     <span class="o">-</span><span class="mf">3.3704396251655511</span><span class="p">]</span>
-        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
-        <span class="n">zipped</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">places</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span><span class="p">,</span> <span class="n">place</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="n">place</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">z</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 
         <span class="c"># The p values</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3.279987709238652e-03</span><span class="p">,</span> <span class="mf">7.945870329397586e-01</span><span class="p">,</span>
                     <span class="mf">7.504834930376347e-04</span><span class="p">]</span>
-        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
-        <span class="n">zipped</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">places</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">expected_p</span><span class="p">,</span> <span class="n">observed_p</span><span class="p">,</span> <span class="n">place</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">expected_p</span><span class="p">,</span> <span class="n">observed_p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">p</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">expected_p</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">observed_p</span><span class="p">),</span>
-                                   <span class="n">places</span><span class="o">=</span><span class="n">place</span><span class="p">)</span>
+                                   <span class="n">places</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">test_full_fit_mixedlm_use_ml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
 <div class="viewcode-block" id="TestImputedStatsMixedLM.test_full_fit_mixedlm_use_ml"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_full_fit_mixedlm_use_ml">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the full pipeline for mixed effect model (using ML).&quot;&quot;&quot;</span>
@@ -2749,10 +2743,8 @@
         <span class="c"># The coefficients</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1226516898098772429</span><span class="p">,</span> <span class="mf">0.00793160646584102277</span><span class="p">,</span>
                     <span class="o">-</span><span class="mf">0.1544998103931393973</span><span class="p">]</span>
-        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
-        <span class="n">zipped</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">coef</span><span class="p">,</span> <span class="n">places</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">place</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="n">place</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">coef</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
 
         <span class="c"># The standard error</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.04170695572479218849</span><span class="p">,</span> <span class="mf">0.03045797340709452752</span><span class="p">,</span>
@@ -2861,10 +2853,8 @@
         <span class="c"># The coefficients</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.12265168980987724</span><span class="p">,</span> <span class="mf">0.007931606465841023</span><span class="p">,</span>
                     <span class="o">-</span><span class="mf">0.15449981039313940</span><span class="p">]</span>
-        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
-        <span class="n">zipped</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">coef</span><span class="p">,</span> <span class="n">places</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">place</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="n">place</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">coef</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
 
         <span class="c"># The standard error</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.041715401481444134</span><span class="p">,</span> <span class="mf">0.030464140147980882</span><span class="p">,</span>
@@ -2888,19 +2878,15 @@
         <span class="c"># The Z statistics</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mf">2.9402015911182162</span><span class="p">,</span> <span class="mf">0.2603587833863980</span><span class="p">,</span>
                     <span class="o">-</span><span class="mf">3.3704396251655511</span><span class="p">]</span>
-        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
-        <span class="n">zipped</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">places</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span><span class="p">,</span> <span class="n">place</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="n">place</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">z</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 
         <span class="c"># The p values</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mf">3.279987709238652e-03</span><span class="p">,</span> <span class="mf">7.945870329397586e-01</span><span class="p">,</span>
                     <span class="mf">7.504834930376347e-04</span><span class="p">]</span>
-        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">8</span><span class="p">]</span>
-        <span class="n">zipped</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">places</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">expected_p</span><span class="p">,</span> <span class="n">observed_p</span><span class="p">,</span> <span class="n">place</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">expected_p</span><span class="p">,</span> <span class="n">observed_p</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">p</span><span class="p">):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">expected_p</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">observed_p</span><span class="p">),</span>
-                                   <span class="n">places</span><span class="o">=</span><span class="n">place</span><span class="p">)</span>
+                                   <span class="n">places</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
 
     <span class="nd">@unittest.skipIf</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s">&quot;Darwin&quot;</span><span class="p">,</span></div>
                      <span class="s">&quot;multiprocessing not supported with Mac OS&quot;</span><span class="p">)</span>
@@ -2972,10 +2958,8 @@
         <span class="c"># The coefficients</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.1226516898098772429</span><span class="p">,</span> <span class="mf">0.00793160646584102277</span><span class="p">,</span>
                     <span class="o">-</span><span class="mf">0.1544998103931393973</span><span class="p">]</span>
-        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">9</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
-        <span class="n">zipped</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">coef</span><span class="p">,</span> <span class="n">places</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">place</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="n">place</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">coef</span><span class="p">):</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_coef</span><span class="p">,</span> <span class="n">observed_coef</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">9</span><span class="p">)</span>
 
         <span class="c"># The standard error</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.04170695572479218849</span><span class="p">,</span> <span class="mf">0.03045797340709452752</span><span class="p">,</span>
@@ -3108,7 +3092,7 @@
         <span class="c"># The Z statistics</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.5537317112818183</span><span class="p">,</span> <span class="mf">0.18727062101360839</span><span class="p">,</span>
                     <span class="o">-</span><span class="mf">0.03507586860339586</span><span class="p">]</span>
-        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
         <span class="n">zipped</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">places</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span><span class="p">,</span> <span class="n">place</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="n">place</span><span class="p">)</span>
@@ -3116,7 +3100,7 @@
         <span class="c"># The p values</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.5797624694538319190</span><span class="p">,</span> <span class="mf">0.851448456503608009</span><span class="p">,</span>
                     <span class="mf">9.720192436335240e-01</span><span class="p">]</span>
-        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
         <span class="n">zipped</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">places</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">expected_p</span><span class="p">,</span> <span class="n">observed_p</span><span class="p">,</span> <span class="n">place</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">expected_p</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">observed_p</span><span class="p">),</span>
@@ -3216,7 +3200,7 @@
         <span class="c"># The Z statistics</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.553859867671032235</span><span class="p">,</span> <span class="mf">0.1873139556482306678</span><span class="p">,</span>
                     <span class="o">-</span><span class="mf">0.0350839851992706467</span><span class="p">]</span>
-        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
+        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
         <span class="n">zipped</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">z</span><span class="p">,</span> <span class="n">places</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span><span class="p">,</span> <span class="n">place</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_z</span><span class="p">,</span> <span class="n">observed_z</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="n">place</span><span class="p">)</span>
@@ -3224,7 +3208,7 @@
         <span class="c"># The p values</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="mf">5.79674752511348590e-01</span><span class="p">,</span> <span class="mf">0.85141448161648325410</span><span class="p">,</span>
                     <span class="mf">9.72012771510516016e-01</span><span class="p">]</span>
-        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">10</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">10</span><span class="p">]</span>
+        <span class="n">places</span> <span class="o">=</span> <span class="p">[</span><span class="mi">9</span><span class="p">,</span> <span class="mi">8</span><span class="p">,</span> <span class="mi">9</span><span class="p">]</span>
         <span class="n">zipped</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="n">places</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">expected_p</span><span class="p">,</span> <span class="n">observed_p</span><span class="p">,</span> <span class="n">place</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">expected_p</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">observed_p</span><span class="p">),</span>
@@ -3545,7 +3529,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>

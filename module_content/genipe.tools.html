@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tools package &mdash; genipe 1.1.0 documentation</title>
+    <title>genipe.tools package &mdash; genipe 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.1.0 documentation" href="../index.html" />
+    <link rel="top" title="genipe 1.2.0 documentation" href="../index.html" />
     <link rel="up" title="genipe package" href="genipe.html" />
     <link rel="prev" title="genipe.tests package" href="genipe.tests.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
@@ -47,7 +47,7 @@
         <li class="right" >
           <a href="genipe.tests.html" title="genipe.tests package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &raquo;</li> 
@@ -132,11 +132,11 @@ raised.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>i_filenames</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)"><em>list</em></a>) &#8211; the list of input file names</li>
-<li><strong>to_extract</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#dict" title="(in Jinja2 v2.8-dev)"><em>dict</em></a>) &#8211; the list of markers to extract for each input file</li>
+<li><strong>i_filenames</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the list of input file names</li>
+<li><strong>to_extract</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) &#8211; the list of markers to extract for each input file</li>
 <li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the output prefix</li>
-<li><strong>out_format</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)"><em>list</em></a>) &#8211; the output format(s)</li>
-<li><strong>prob_t</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#float" title="(in Jinja2 v2.8-dev)"><em>float</em></a>) &#8211; the probability threshold</li>
+<li><strong>out_format</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the output format(s)</li>
+<li><strong>prob_t</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) &#8211; the probability threshold</li>
 </ul>
 </td>
 </tr>
@@ -146,16 +146,18 @@ raised.</p>
 
 <dl class="function">
 <dt id="genipe.tools.impute2_extractor.gather_extraction">
-<code class="descclassname">genipe.tools.impute2_extractor.</code><code class="descname">gather_extraction</code><span class="sig-paren">(</span><em>i_filenames</em>, <em>maf</em>, <em>rate</em>, <em>extract_filename</em>, <em>genomic_range</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#gather_extraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.gather_extraction" title="Permalink to this definition">¶</a></dt>
+<code class="descclassname">genipe.tools.impute2_extractor.</code><code class="descname">gather_extraction</code><span class="sig-paren">(</span><em>i_filenames</em>, <em>maf</em>, <em>rate</em>, <em>info</em>, <em>extract_filename</em>, <em>genomic_range</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#gather_extraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.gather_extraction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Gather positions that are required.</p>
 <table class="docutils field-list" frame="void" rules="none">
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>i_filenames</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)"><em>list</em></a>) &#8211; the list of input files</li>
-<li><strong>maf</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#float" title="(in Jinja2 v2.8-dev)"><em>float</em></a>) &#8211; the minor allele frequency threshold (might be <code class="docutils literal"><span class="pre">None</span></code>)</li>
-<li><strong>rate</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#float" title="(in Jinja2 v2.8-dev)"><em>float</em></a>) &#8211; the call rate threshold (might be <code class="docutils literal"><span class="pre">None</span></code>)</li>
+<li><strong>i_filenames</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the list of input files</li>
+<li><strong>maf</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) &#8211; the minor allele frequency threshold (might be <code class="docutils literal"><span class="pre">None</span></code>)</li>
+<li><strong>rate</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) &#8211; the call rate threshold (might be <code class="docutils literal"><span class="pre">None</span></code>)</li>
+<li><strong>info</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) &#8211; the marker information value threshold (might be
+<code class="docutils literal"><span class="pre">None</span></code>)</li>
 <li><strong>extract_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the file containing marker names to
 extract (might be <code class="docutils literal"><span class="pre">None</span></code>)</li>
 <li><strong>genomic_range</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the genomic range for extraction</li>
@@ -165,15 +167,15 @@ extract (might be <code class="docutils literal"><span class="pre">None</span></
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the list of markers to extract for each input file</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://jinja.pocoo.org/docs/templates/#dict" title="(in Jinja2 v2.8-dev)">dict</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)">dict</a></p>
 </td>
 </tr>
 </tbody>
 </table>
 <p>If extraction by marker name is required, only those markers will be
-extracted. Otherwise, <code class="docutils literal"><span class="pre">maf</span></code>, <code class="docutils literal"><span class="pre">rate</span></code> or <code class="docutils literal"><span class="pre">genomic_range</span></code> can be
-specified (alone or together) to extract markers according to minor allele
-frequency, call rate and genomic location.</p>
+extracted. Otherwise, <code class="docutils literal"><span class="pre">maf</span></code>, <code class="docutils literal"><span class="pre">rate</span></code>, <code class="docutils literal"><span class="pre">info</span></code> or <code class="docutils literal"><span class="pre">genomic_range</span></code> can
+be specified (alone or together) to extract markers according to minor
+allele frequency, call rate and genomic location.</p>
 </dd></dl>
 
 <dl class="function">
@@ -223,7 +225,7 @@ modulel)</td>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.4)"><em>argparse.ArgumentParser</em></a>) &#8211; the argument parser</li>
-<li><strong>args</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)"><em>list</em></a>) &#8211; the list of arguments (if not taken from <code class="docutils literal"><span class="pre">sys.argv</span></code>)</li>
+<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the list of arguments (if not taken from <code class="docutils literal"><span class="pre">sys.argv</span></code>)</li>
 </ul>
 </td>
 </tr>
@@ -251,10 +253,10 @@ verified later by the <a class="reference internal" href="#genipe.tools.impute2_
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>o_files</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#dict" title="(in Jinja2 v2.8-dev)"><em>dict</em></a>) &#8211; the output files</li>
-<li><strong>prob_t</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#float" title="(in Jinja2 v2.8-dev)"><em>float</em></a>) &#8211; the probability threshold</li>
+<li><strong>o_files</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) &#8211; the output files</li>
+<li><strong>prob_t</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) &#8211; the probability threshold</li>
 <li><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the impute2 line</li>
-<li><strong>row</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)"><em>list</em></a>) &#8211; the impute2 line, split by spaces</li>
+<li><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the impute2 line, split by spaces</li>
 </ul>
 </td>
 </tr>
@@ -293,7 +295,7 @@ raised.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>i_filenames</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)"><em>list</em></a>) &#8211; the list of input filenames (to concatenate)</li>
+<li><strong>i_filenames</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the list of input filenames (to concatenate)</li>
 <li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the output prefix for the output files</li>
 <li><strong>real_chrom</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the chromosome contained in all the input files</li>
 <li><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) &#8211; the options</li>
@@ -326,24 +328,28 @@ allele at each sites.</td>
 <td>List of imputed sites (excluding sites that
 were previously genotyped in the study cohort).</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.completion_rates</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.impute2_info</span></code></td>
+<td>SNP-wise information file with one line per SNP
+and a single header line at the beginning.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">.completion_rates</span></code></td>
 <td>Number of missing values and completion rate
 for all sites (using the probability threshold
 set by the user, where the default is higher
 and equal to 0.9).</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">.good_sites</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.good_sites</span></code></td>
 <td>List of sites which pass the completion rate
 threshold (set by the user, where the default
 is higher and equal to 0.98) using the
 probability threshold (set by the user, where
 the default is higher and equal to 0.9).</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.map</span></code></td>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">.map</span></code></td>
 <td>A map file describing the genomic location of
 all sites.</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">.maf</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.maf</span></code></td>
 <td>File containing the minor allele frequency
 (along with minor allele identification) for
 all sites using the probabilitty threshold of
@@ -381,7 +387,7 @@ modulel)</td>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.4)"><em>argparse.ArgumentParser</em></a>) &#8211; the argument parser</li>
-<li><strong>args</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)"><em>list</em></a>) &#8211; the list of arguments (if not taken from <code class="docutils literal"><span class="pre">sys.argv</span></code>)</li>
+<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the list of arguments (if not taken from <code class="docutils literal"><span class="pre">sys.argv</span></code>)</li>
 </ul>
 </td>
 </tr>
@@ -497,7 +503,7 @@ come.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the results from the linear regression</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)">list</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)">list</a></p>
 </td>
 </tr>
 </tbody>
@@ -522,7 +528,7 @@ come.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the results from the logistic regression</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)">list</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)">list</a></p>
 </td>
 </tr>
 </tbody>
@@ -549,7 +555,7 @@ come.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the results from the linear mixed effects model</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)">list</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)">list</a></p>
 </td>
 </tr>
 </tbody>
@@ -566,7 +572,7 @@ come.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>phenotype</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the phenotype column</li>
-<li><strong>covars</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)"><em>list</em></a>) &#8211; the list of co variable columns</li>
+<li><strong>covars</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the list of co variable columns</li>
 <li><strong>interaction</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the interaction column</li>
 </ul>
 </td>
@@ -618,7 +624,7 @@ modulel)</td>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.4)"><em>argparse.ArgumentParser</em></a>) &#8211; the argument parser</li>
-<li><strong>args</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)"><em>list</em></a>) &#8211; the list of arguments (if not taken from <code class="docutils literal"><span class="pre">sys.argv</span></code>)</li>
+<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the list of arguments (if not taken from <code class="docutils literal"><span class="pre">sys.argv</span></code>)</li>
 </ul>
 </td>
 </tr>
@@ -645,11 +651,11 @@ verified later by the <a class="reference internal" href="#genipe.tools.imputed_
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_info</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)"><em>list</em></a>) &#8211; the impute2 line (split by space)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_info</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the impute2 line (split by space)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the results of the analysis</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)">list</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)">list</a></td>
 </tr>
 </tbody>
 </table>
@@ -840,7 +846,7 @@ is specified, the default Beta weights are used.</p>
         <li class="right" >
           <a href="genipe.tests.html" title="genipe.tests package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &raquo;</li> 

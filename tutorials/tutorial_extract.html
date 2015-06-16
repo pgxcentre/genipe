@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Site Extraction Tutorial &mdash; genipe 1.1.0 documentation</title>
+    <title>Site Extraction Tutorial &mdash; genipe 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.1.0 documentation" href="../index.html" />
+    <link rel="top" title="genipe 1.2.0 documentation" href="../index.html" />
     <link rel="up" title="Short Tutorials" href="../tutorials.html" />
     <link rel="next" title="Input Files" href="../input_files.html" />
     <link rel="prev" title="Linear Mixed Effects Model Tutorial" href="tutorial_mixedlm.html" />
@@ -51,7 +51,7 @@
         <li class="right" >
           <a href="tutorial_mixedlm.html" title="Linear Mixed Effects Model Tutorial"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>
@@ -130,11 +130,12 @@
 <h2>Site extraction<a class="headerlink" href="#site-extraction" title="Permalink to this headline">¶</a></h2>
 <p>Genome-wide imputation dataset might be huge. Often, it is required to extract
 a subset of imputed sites (<em>e.g.</em> specific markers, genomic location, or
-markers with a specific minor allele frequency). Also, different format might
-be required, depending of the underlying analysis (<em>e.g.</em> hard calls or dosage
-values). We provide an easy tool to perform site extraction of multiple
-<em>impute2</em> files using either marker identification number, or genomic location
-and/or minor allele frequency and/or call rate.</p>
+markers with a specific minor allele frequency, information value or completion
+rate). Also, different format might be required, depending of the underlying
+analysis (<em>e.g.</em> hard calls or dosage values). We provide an easy tool to
+perform site extraction of multiple <em>impute2</em> files using either marker
+identification number, or genomic location and/or minor allele frequency and/or
+call rate and/or information value.</p>
 <p>We suppose that you have followed the main <a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>. The
 following command will create the working directory for this tutorial.</p>
 <div class="highlight-bash"><div class="highlight"><pre>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial/extraction
@@ -148,7 +149,7 @@ extraction tools are automatically created in the <code class="docutils literal"
 <a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>).</p>
 <p>The files that are required in these directories depends of what kind of
 extraction is required (by name, or by genomic location and/or by minor allele
-frequency and/or by calling rate).</p>
+frequency and/or by calling rate and/or by information value).</p>
 <p>Once the required <em>impute2</em> files are provided to the tool, the other required
 files will be automatically fetched (if required).</p>
 </div>
@@ -157,11 +158,12 @@ files will be automatically fetched (if required).</p>
 <p>The first time the tool is used on a set of <em>impute2</em> files, indexation will
 automatically occur (to speed of the analysis for future extraction). There are
 two ways to extract markers: using their identification number (<code class="docutils literal"><span class="pre">--extract</span></code>),
-or properties (<code class="docutils literal"><span class="pre">--genomic</span></code>, <code class="docutils literal"><span class="pre">--maf</span></code> or <code class="docutils literal"><span class="pre">rate</span></code>).</p>
+or using their properties (<code class="docutils literal"><span class="pre">--genomic</span></code>, <code class="docutils literal"><span class="pre">--maf</span></code>, <code class="docutils literal"><span class="pre">--rate</span></code> and/or
+<code class="docutils literal"><span class="pre">--info</span></code>).</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">It is possible to extract from multiple <em>impute2</em> files at the same time (by
-specifying multiple input files.</p>
+specifying multiple input files).</p>
 </div>
 <div class="section" id="extraction-by-id">
 <h4>Extraction by ID<a class="headerlink" href="#extraction-by-id" title="Permalink to this headline">¶</a></h4>
@@ -178,7 +180,7 @@ containing the list of marker to extract (one marker per line).</p>
 rs372879164:17037188:A:G
 </pre></div>
 </div>
-<p>Then, the following command (using the <code class="docutils literal"><span class="pre">--extract</span></code> option will extract those
+<p>Then, the following command (using the <code class="docutils literal"><span class="pre">--extract</span></code> option) will extract those
 two markers from the <em>impute2</em> file.</p>
 <div class="highlight-bash"><div class="highlight"><pre>impute2-extractor <span class="se">\</span>
     --impute2 ../genipe/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
@@ -194,13 +196,14 @@ file.</p>
 </div>
 <div class="section" id="extraction-by-characteristics">
 <h4>Extraction by characteristics<a class="headerlink" href="#extraction-by-characteristics" title="Permalink to this headline">¶</a></h4>
-<p>There are three ways to extract markers according to their characteristics. The
+<p>There are four ways to extract markers according to their characteristics. The
 first way is to specify the genomic location of the markers to extract (<em>i.e.</em>
 the <code class="docutils literal"><span class="pre">--genomic</span></code> option). The second way is to specify a minor allele
-frequency threshold (<em>i.e.</em> the <code class="docutils literal"><span class="pre">--maf</span></code> option). The third and final way is
-to specify a call rate threshold (<em>i.e.</em> the <code class="docutils literal"><span class="pre">--rate</span></code> option). Those three
-ways can be used at the same time (<em>e.g.</em> to get markers in a specific genomic
-range and a specific call rate).</p>
+frequency threshold (<em>i.e.</em> the <code class="docutils literal"><span class="pre">--maf</span></code> option). The third way is to specify
+a call rate threshold (<em>i.e.</em> the <code class="docutils literal"><span class="pre">--rate</span></code> option). The fourth and final way
+is to specify an information value threshold (<em>i.e.</em> the <code class="docutils literal"><span class="pre">--info</span></code> option).
+Those four ways can be used at the same time (<em>e.g.</em> to get markers in a
+specific genomic range and a specific call rate).</p>
 <p>For example, to extract markers with a MAF <span class="math">\(\geq\)</span> 0.05 located in the
 <em>CYP2D6</em> gene, perform the following command:</p>
 <div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/extraction
@@ -298,10 +301,10 @@ analysis in the console:</p>
 <span class="go">                         [--out PREFIX] [--format FORMAT [FORMAT ...]]</span>
 <span class="go">                         [--prob FLOAT] [--extract FILE]</span>
 <span class="go">                         [--genomic CHR:START-END] [--maf FLOAT]</span>
-<span class="go">                         [--rate FLOAT]</span>
+<span class="go">                         [--rate FLOAT] [--info FLOAT]</span>
 
 <span class="go">Extract imputed markers located in a specific genomic region. This script is</span>
-<span class="go">part of the &#39;genipe&#39; package, version 1.1.0).</span>
+<span class="go">part of the &#39;genipe&#39; package, version 1.2.0).</span>
 
 <span class="go">optional arguments:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
@@ -327,13 +330,17 @@ analysis in the console:</p>
 <span class="go">  --extract FILE        File containing marker names to extract.</span>
 <span class="go">  --genomic CHR:START-END</span>
 <span class="go">                        The range to extract (e.g. 22 1000000 1500000). Can be</span>
-<span class="go">                        use in combination with &#39;--rate&#39; and &#39;--maf&#39;.</span>
+<span class="go">                        use in combination with &#39;--rate&#39;, &#39;--maf&#39; and &#39;--</span>
+<span class="go">                        info&#39;.</span>
 <span class="go">  --maf FLOAT           Extract markers with a minor allele frequency equal or</span>
 <span class="go">                        higher than the specified threshold. Can be use in</span>
-<span class="go">                        combination with &#39;--rate&#39; and &#39;--genomic&#39;.</span>
+<span class="go">                        combination with &#39;--rate&#39;, &#39;--info&#39; and &#39;--genomic&#39;.</span>
 <span class="go">  --rate FLOAT          Extract markers with a completion rate equal or higher</span>
 <span class="go">                        to the specified threshold. Can be use in combination</span>
-<span class="go">                        with &#39;--maf&#39; and &#39;--genomic&#39;.</span>
+<span class="go">                        with &#39;--maf&#39;, &#39;--info&#39; and &#39;--genomic&#39;.</span>
+<span class="go">  --info FLOAT          Extract markers with an information equal or higher to</span>
+<span class="go">                        the specified threshold. Can be use in combination</span>
+<span class="go">                        with &#39;--maf&#39;, &#39;--rate&#39; and &#39;--genomic&#39;.</span>
 </pre></div>
 </div>
 </div>
@@ -361,7 +368,7 @@ analysis in the console:</p>
         <li class="right" >
           <a href="tutorial_mixedlm.html" title="Linear Mixed Effects Model Tutorial"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>

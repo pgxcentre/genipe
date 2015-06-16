@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tests package &mdash; genipe 1.1.0 documentation</title>
+    <title>genipe.tests package &mdash; genipe 1.2.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.1.0',
+        VERSION:     '1.2.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.1.0 documentation" href="../index.html" />
+    <link rel="top" title="genipe 1.2.0 documentation" href="../index.html" />
     <link rel="up" title="genipe package" href="genipe.html" />
     <link rel="next" title="genipe.tools package" href="genipe.tools.html" />
     <link rel="prev" title="genipe.task package" href="genipe.task.html" />
@@ -51,7 +51,7 @@
         <li class="right" >
           <a href="genipe.task.html" title="genipe.task package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &raquo;</li> 
@@ -67,6 +67,7 @@
 <li><a class="reference internal" href="#module-genipe.tests.python_3_3_compatibility">genipe.tests.python_3_3_compatibility module</a></li>
 <li><a class="reference internal" href="#module-genipe.tests.test_db">genipe.tests.test_db module</a></li>
 <li><a class="reference internal" href="#module-genipe.tests.test_formats">genipe.tests.test_formats module</a></li>
+<li><a class="reference internal" href="#module-genipe.tests.test_impute2_extractor">genipe.tests.test_impute2_extractor module</a></li>
 <li><a class="reference internal" href="#module-genipe.tests.test_impute2_merger">genipe.tests.test_impute2_merger module</a></li>
 <li><a class="reference internal" href="#module-genipe.tests.test_imputed_stats">genipe.tests.test_imputed_stats module</a></li>
 <li><a class="reference internal" href="#module-genipe.tests.test_launcher">genipe.tests.test_launcher module</a></li>
@@ -270,6 +271,122 @@
 </dd></dl>
 
 </div>
+<div class="section" id="module-genipe.tests.test_impute2_extractor">
+<span id="genipe-tests-test-impute2-extractor-module"></span><h2>genipe.tests.test_impute2_extractor module<a class="headerlink" href="#module-genipe.tests.test_impute2_extractor" title="Permalink to this headline">¶</a></h2>
+<dl class="class">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor">
+<em class="property">class </em><code class="descclassname">genipe.tests.test_impute2_extractor.</code><code class="descname">TestImpute2Extractor</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
+<dl class="staticmethod">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.clean_logging_handlers">
+<em class="property">static </em><code class="descname">clean_logging_handlers</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.clean_logging_handlers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.clean_logging_handlers" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.setUp">
+<code class="descname">setUp</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.setUp"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.setUp" title="Permalink to this definition">¶</a></dt>
+<dd><p>Setup the tests.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.tearDown">
+<code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.tearDown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Finishes the test.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_extract">
+<code class="descname">test_extract</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.test_extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_extract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the extraction by marker name.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic">
+<code class="descname">test_genomic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.test_genomic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the extraction by genomic location.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_info">
+<code class="descname">test_genomic_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.test_genomic_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the extraction by genomic location and information value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_maf">
+<code class="descname">test_genomic_maf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.test_genomic_maf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_maf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the extraction by genomic location and maf.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_maf_info">
+<code class="descname">test_genomic_maf_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.test_genomic_maf_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_maf_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the extraction by genomic location, maf and information.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_maf_rate">
+<code class="descname">test_genomic_maf_rate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.test_genomic_maf_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_maf_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the extraction by genomic location, maf and rate.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_maf_rate_info">
+<code class="descname">test_genomic_maf_rate_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.test_genomic_maf_rate_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_maf_rate_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the extraction by genomic location, maf, rate and info.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_rate">
+<code class="descname">test_genomic_rate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.test_genomic_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_genomic_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the extraction by genomic location and completion rate.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_info">
+<code class="descname">test_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.test_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the extraction by information value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_maf">
+<code class="descname">test_maf</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.test_maf"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_maf" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the extraction by maf.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_maf_info">
+<code class="descname">test_maf_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.test_maf_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_maf_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the extraction by maf and information value.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_maf_rate">
+<code class="descname">test_maf_rate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.test_maf_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_maf_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the extraction by maf and completion rate.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_maf_rate_info">
+<code class="descname">test_maf_rate_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.test_maf_rate_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_maf_rate_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the extraction by maf, completion rate and information.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_rate">
+<code class="descname">test_rate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.test_rate"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_rate" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the extraction by completion rate.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_rate_info">
+<code class="descname">test_rate_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_extractor.html#TestImpute2Extractor.test_rate_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_extractor.TestImpute2Extractor.test_rate_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the extraction by completion rate and information value.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
 <div class="section" id="module-genipe.tests.test_impute2_merger">
 <span id="genipe-tests-test-impute2-merger-module"></span><h2>genipe.tests.test_impute2_merger module<a class="headerlink" href="#module-genipe.tests.test_impute2_merger" title="Permalink to this headline">¶</a></h2>
 <dl class="class">
@@ -321,6 +438,12 @@
 <dt id="genipe.tests.test_impute2_merger.TestImpute2Merger.test_impute2">
 <code class="descname">test_impute2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_merger.html#TestImpute2Merger.test_impute2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_merger.TestImpute2Merger.test_impute2" title="Permalink to this definition">¶</a></dt>
 <dd><p>Checks the &#8216;.impute2&#8217; file.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_impute2_merger.TestImpute2Merger.test_impute2_info">
+<code class="descname">test_impute2_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_impute2_merger.html#TestImpute2Merger.test_impute2_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_impute2_merger.TestImpute2Merger.test_impute2_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the &#8216;.impute2_info&#8217; file.</p>
 </dd></dl>
 
 <dl class="method">
@@ -899,7 +1022,7 @@
         <li class="right" >
           <a href="genipe.task.html" title="genipe.task package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.1.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &raquo;</li> 

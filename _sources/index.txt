@@ -14,10 +14,17 @@ The :py:mod:`genipe` (GENome-wide Imputation PipelinE) module provides an easy
 an efficient way of performing genome-wide imputation analysis using the three
 commonly used softwares `PLINK <http://pngu.mgh.harvard.edu/~purcell/plink/>`_,
 `SHAPEIT <https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html>`_ and
-`IMPUTE2 <https://mathgen.stats.ox.ac.uk/impute/impute_v2.html>`_. It also
-provides a useful standalone tool to perform statistical analysis on imputed
-(dosage) data (such as linear, logistic or survival regressions, or
-`SKAT <http://www.hsph.harvard.edu/skat/>`_ analysis of rare variants).
+`IMPUTE2 <https://mathgen.stats.ox.ac.uk/impute/impute_v2.html>`_.
+
+A quality metrics report is automatically generated at the end of the
+imputation process to easily assess the quality of the analysis. The report is
+compiled into a PDF. For information on how to compile the report, refer to the
+:ref:`genipe-tut-compile-report` section in the main :ref:`genipe-tut-page`.
+
+Finally, it also provides a useful standalone tool to perform statistical
+analysis on imputed (dosage) data (such as linear, logistic or survival
+regressions, or `SKAT <http://www.hsph.harvard.edu/skat/>`_ analysis of rare
+variants).
 
 .. toctree::
    :maxdepth: 2
@@ -46,11 +53,11 @@ Usage
                           --legend-template TEMPLATE --map-template TEMPLATE
                           --sample-file FILE [--filtering-rules RULE [RULE ...]]
                           [--probability FLOAT] [--completion FLOAT]
-                          [--report-number NB] [--report-title TITLE]
-                          [--report-author AUTHOR]
+                          [--info FLOAT] [--report-number NB]
+                          [--report-title TITLE] [--report-author AUTHOR]
 
    Execute the genome-wide imputation pipeline. This script is part of the
-   'genipe' package, version 1.1.0.
+   'genipe' package, version 1.2.0.
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -109,6 +116,9 @@ Usage
      --probability FLOAT   The probability threshold for no calls. [<0.9]
      --completion FLOAT    The completion rate threshold for site exclusion.
                            [<0.98]
+     --info FLOAT          The measure of the observed statistical information
+                           associated with the allele frequency estimate
+                           threshold for site exclusion. [<0.00]
 
    Automatic Report Options:
      --report-number NB    The report number. [genipe automatic report]
