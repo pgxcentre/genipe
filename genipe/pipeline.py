@@ -17,6 +17,7 @@ from glob import glob
 from math import floor
 from shutil import which, copyfile
 from urllib.request import urlopen
+from urllib.error import HTTPError
 from subprocess import Popen, PIPE
 from collections import defaultdict
 
@@ -217,7 +218,8 @@ def main():
                             os.path.join(args.out_dir, "chr{chrom}",
                                          "final_impute2",
                                          "chr{chrom}.imputed"),
-                            args.probability, args.completion, db_name, args)
+                            args.probability, args.completion, args.info,
+                            db_name, args)
 
         # If required, zipping the impute2 files
         if args.bgzip:
@@ -228,8 +230,8 @@ def main():
 
         # Gathering the imputation statistics
         numbers = gather_imputation_stats(args.probability, args.completion,
-                                          len(samples), missing_rate,
-                                          args.out_dir)
+                                          args.info, len(samples),
+                                          missing_rate, args.out_dir)
         run_information.update(numbers)
 
         # Gathering the MAF statistics
@@ -427,7 +429,7 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
     logging.info("Done imputing markers")
 
 
-def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
+def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t, info_t,
                         db_name, options):
     """Merges impute2 files.
 
@@ -437,6 +439,7 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
         o_prefix (str): the prefix template of the output files
         probability_t (float): the probability threshold to use
         completion_t (float): the completion threshold to use
+        info_t (float): the info threshold to use
         db_name (str): the name of the DB saving tasks' information
         options (argparse.Namespace): the pipeline options
 
@@ -450,6 +453,7 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
         "impute2-merger",
         "--probability", str(probability_t),
         "--completion", str(completion_t),
+        "--info", str(info_t),
     ]
 
     for chrom in chromosomes:
@@ -476,6 +480,7 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t,
                                                    ".completion_rates",
                                                    ".good_sites",
                                                    ".impute2",
+                                                   ".impute2_info",
                                                    ".imputed_sites",
                                                    ".map",
                                                    ".maf")],
@@ -578,25 +583,56 @@ def get_chromosome_length(out_dir):
         # The URL
         url = ("http://grch37.rest.ensembl.org/info/assembly/homo_sapiens"
                "?content-type=application/json")
-        result = json.loads(urlopen(url).read().decode())
+        try:
+            result = json.loads(urlopen(url).read().decode())
 
-        # Checking the build
-        if not result["assembly_name"].startswith("GRCh37") or \
-           result["default_coord_system_version"] != "GRCh37":
-            raise ProgramError("{}: wrong "
-                               "build".format(result["assembly_name"]))
+            # Checking the build
+            if not result["assembly_name"].startswith("GRCh37") or \
+                    result["default_coord_system_version"] != "GRCh37":
+                raise ProgramError("{}: wrong "
+                                   "build".format(result["assembly_name"]))
 
-        # Gathering the chromosome length
-        chrom_length = {}
-        req_chrom = {str(i) for i in range(23)} | {"X"}
-        for region in result["top_level_region"]:
-            if region["name"] in req_chrom:
-                chrom_length[region["name"]] = region["length"]
+            # Gathering the chromosome length
+            chrom_length = {}
+            req_chrom = {str(i) for i in range(23)} | {"X"}
+            for region in result["top_level_region"]:
+                if region["name"] in req_chrom:
+                    chrom_length[region["name"]] = region["length"]
 
-        # Saving to file
-        with open(filename, "w") as o_file:
-            for chrom in sorted(chrom_length.keys()):
-                print(chrom, chrom_length[chrom], sep="\t", file=o_file)
+        except HTTPError:
+            logging.warning("Ensembl GRCh37 not available... Using hard coded "
+                            "chromosome lengths")
+            chrom_length = {
+                "1": 249250621,
+                "2": 243199373,
+                "3": 198022430,
+                "4": 191154276,
+                "5": 180915260,
+                "6": 171115067,
+                "7": 159138663,
+                "8": 146364022,
+                "9": 141213431,
+                "10": 135534747,
+                "11": 135006516,
+                "12": 133851895,
+                "13": 115169878,
+                "14": 107349540,
+                "15": 102531392,
+                "16": 90354753,
+                "17": 81195210,
+                "18": 78077248,
+                "19": 59128983,
+                "20": 63025520,
+                "21": 48129895,
+                "22": 51304566,
+                "X": 155270560,
+            }
+
+        finally:
+            # Saving to file
+            with open(filename, "w") as o_file:
+                for chrom in sorted(chrom_length.keys()):
+                    print(chrom, chrom_length[chrom], sep="\t", file=o_file)
 
     else:
         # Gathering from file
@@ -1408,12 +1444,14 @@ def get_cross_validation_results(glob_pattern):
     }
 
 
-def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
+def gather_imputation_stats(prob_t, completion_t, info_t, nb_samples, missing,
+                            o_dir):
     """Gathers imputation statistics from the merged dataset.
 
     Args:
         prob_t (float): the probability threshold (>= t)
         completion_t (float): the completion threshold (>= t)
+        info_t (float): the information threshold (>= t)
         nb_samples (int): the number of samples
         missing (pandas.DataFrame): the missing rate
         o_dir (str): the output directory
@@ -1434,6 +1472,8 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
     | ``average_comp_rate``          | the average completion rate            |
     +--------------------------------+----------------------------------------+
     | ``rate_threshold``             | the completion rate threshold (>= t)   |
+    +--------------------------------+----------------------------------------+
+    | ``info_threshold``             | the information threshold (>= t)       |
     +--------------------------------+----------------------------------------+
     | ``nb_good_sites``              | the number of "good" sites (that pass  |
     |                                | the different probability and          |
@@ -1511,12 +1551,36 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
                                             suffix="completion_rates")
         completion_data = pd.read_csv(filename, sep="\t")
 
+        # Then, we read the information file using a DataFrame
+        filename = filename_template.format(chrom=chrom,
+                                            suffix="impute2_info")
+        info_data = pd.read_csv(filename, sep="\t")
+
+        # Merging the two dataset
+        completion_data = pd.merge(completion_data, info_data, left_on="name",
+                                   right_on="name")
+
+        # Checking there is no missing data...
+        assert completion_data["completion_rate"].isnull().sum() == 0
+        assert completion_data["info"].isnull().sum() == 0
+
+        # Counting the number of good sites in the file...
+        nb_good_sites = None
+        filename = filename_template.format(chrom=chrom,
+                                            suffix="good_sites")
+        with open(filename, "r") as i_file:
+            nb_good_sites = len(i_file.read().splitlines())
+
         # Saving the stats for all sites
         tot_nb_sites += completion_data.shape[0]
         sum_rates += completion_data.completion_rate.sum()
 
         # Saving the stats for good sites
-        good_sites = completion_data.completion_rate >= completion_t
+        good_sites = (
+            (completion_data.completion_rate >= completion_t) &
+            (completion_data["info"] >= info_t)
+        )
+        assert nb_good_sites == good_sites.sum()
         tot_good_sites += completion_data[good_sites].shape[0]
         sum_good_rates += completion_data[good_sites].completion_rate.sum()
 
@@ -1556,6 +1620,7 @@ def gather_imputation_stats(prob_t, completion_t, nb_samples, missing, o_dir):
         "nb_imputed":                 "{:,d}".format(tot_nb_sites),
         "average_comp_rate":          "{:.1f}".format(comp_rate * 100),
         "rate_threshold":             "{:.1f}".format(completion_t * 100),
+        "info_threshold":             "{:.2f}".format(info_t),
         "nb_good_sites":              "{:,d}".format(tot_good_sites),
         "pct_good_sites":             "{:.1f}".format(pct_good_sites),
         "average_comp_rate_cleaned":  "{:.1f}".format(good_comp_rate * 100),
@@ -2331,6 +2396,15 @@ def parse_args(parser):
         default=0.98,
         help="The completion rate threshold for site exclusion. "
              "[<%(default).2f]",
+    )
+    group.add_argument(
+        "--info",
+        type=float,
+        metavar="FLOAT",
+        default=0,
+        help="The measure of the observed statistical information associated "
+             "with the allele frequency estimate threshold for site "
+             "exclusion. [<%(default).2f]",
     )
 
     # The automatic report options

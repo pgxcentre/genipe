@@ -111,6 +111,9 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
     | ``.imputed_sites``    | List of imputed sites (excluding sites that     |
     |                       | were previously genotyped in the study cohort). |
     +-----------------------+-------------------------------------------------+
+    | ``.impute2_info``     | SNP-wise information file with one line per SNP |
+    |                       | and a single header line at the beginning.      |
+    +-----------------------+-------------------------------------------------+
     | ``.completion_rates`` | Number of missing values and completion rate    |
     |                       | for all sites (using the probability threshold  |
     |                       | set by the user, where the default is higher    |
@@ -136,6 +139,7 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
     """
     # Opening output files
     impute2_o_file = open(out_prefix + ".impute2", "w")
+    impute2_info_o_file = open(out_prefix + ".impute2_info", "w")
     alleles_o_file = open(out_prefix + ".alleles", "w")
     imputed_sites_o_file = open(out_prefix + ".imputed_sites", "w")
     completion_o_file = open(out_prefix + ".completion_rates", "w")
@@ -154,6 +158,7 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
 
     # Opening the input file(s) one by one
     chr23_par_already_warned = False
+    info_header_printed = False
     for i_filename in i_filenames:
         logging.info("Working with {}".format(i_filename))
 
@@ -170,8 +175,20 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
         nb_expected = int(r.group(1))
         logging.info("  - expecting {:,d} lines".format(nb_expected))
 
-        # The input file
+        # The input files
         i_file = open(i_filename, "r")
+        i_info_file = open(i_filename + "_info", "r")
+
+        # Reading the info header
+        info_header_row = i_info_file.readline().rstrip("\r\n").split(" ")
+        info_header = {name: i for i, name in enumerate(info_header_row)}
+
+        # Printing the header for the info file only once
+        if not info_header_printed:
+            print("chr", "name", "position",
+                  *info_header_row[info_header["position"]+1:], sep="\t",
+                  file=impute2_info_o_file)
+            info_header_printed = True
 
         nb_line = 0
         for line in i_file:
@@ -183,6 +200,23 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
 
             # Gathering genotypes
             (chrom, name, pos, a1, a2), geno = matrix_from_line(row)
+
+            # Splitting the info line
+            info_row = i_info_file.readline()
+            if info_row == "":
+                raise ProgramError("{}: missing information for '{}'".format(
+                    i_filename + "_info",
+                    name,
+                ))
+            info_row = info_row.rstrip("\r\n").split(" ")
+
+            # Checking that the two names and position are the same
+            if ((name != info_row[info_header["rs_id"]]) or
+                    (pos != info_row[info_header["position"]])):
+                raise ProgramError("{} and {}: not same order".format(
+                    i_filename,
+                    i_filename + "_info",
+                ))
 
             # Checking the name of the marker
             if name == ".":
@@ -236,8 +270,11 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
             maf, minor, major = maf_from_probs(geno[good_calls], a1, a2)
             print(name, major, minor, maf, sep="\t", file=maf_o_file)
 
-            if comp >= options.completion:
-                # The completion is over the threshold
+            # Checking the information value
+            info_value = float(info_row[info_header["info"]])
+
+            if (comp >= options.completion) and (info_value >= options.info):
+                # The completion is over the thresholds
                 print(name, file=good_sites_o_file)
 
             # Saving the map file
@@ -247,8 +284,13 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
             print(real_chrom, name, pos, a1, a2, *row[5:], sep=" ",
                   file=impute2_o_file)
 
+            # Saving the information data
+            print(real_chrom, name, pos, *info_row[info_header["position"]+1:],
+                  sep="\t", file=impute2_info_o_file)
+
         # Closing the input file
         i_file.close()
+        i_info_file.close()
 
     if nb_line != nb_expected:
         logging.warning("  - number of lines ({:,d}) is not as expected "
@@ -256,6 +298,7 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
 
     # Closing output files
     impute2_o_file.close()
+    impute2_info_o_file.close()
     alleles_o_file.close()
     imputed_sites_o_file.close()
     completion_o_file.close()
@@ -285,6 +328,20 @@ def check_args(args):
         if not os.path.isfile(summary_file):
             raise ProgramError("{}: no such file".format(summary_file))
 
+        info_file = filename + "_info"
+        if not os.path.isfile(info_file):
+            raise ProgramError("{}: no such file".format(info_file))
+
+        # Checking the header of the info file
+        with open(info_file, "r") as i_file:
+            header = set(i_file.readline().rstrip("\r\n").split(" "))
+            for name in ("rs_id", "position", "info"):
+                if name not in header:
+                    raise ProgramError("{}: missing column '{}'".format(
+                        info_file,
+                        name,
+                    ))
+
     # Checking the chromosome
     valid_chromosome = [str(i) for i in range(1, 24)]
     valid_chromosome.append("25")
@@ -293,6 +350,14 @@ def check_args(args):
     if args.chrom == "23":
         logging.warning("MAF computation is wrong for chromosome 23 (males "
                         "have 2 alleles in the computation, instead of 1)...")
+
+    # Checking that probability, completion and info are between 0 and 1
+    if args.probability < 0 or args.probability > 1:
+        raise ProgramError("{}: invalid probability".format(args.probability))
+    if args.completion < 0 or args.completion > 1:
+        raise ProgramError("{}: invalid completion".format(args.completion))
+    if args.info < 0 or args.info > 1:
+        raise ProgramError("{}: invalid info".format(args.info))
 
     return True
 
@@ -361,6 +426,15 @@ def parse_args(parser, args=None):
         default=0.98,
         help="The completion rate threshold for site exclusion. "
              "[<%(default).2f]",
+    )
+    group.add_argument(
+        "--info",
+        type=float,
+        metavar="FLOAT",
+        default=0,
+        help="The measure of the observed statistical information associated "
+             "with the allele frequency estimate threshold for site "
+             "exclusion. [<%(default).2f]",
     )
 
     # The output files

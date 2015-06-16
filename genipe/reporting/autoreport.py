@@ -40,11 +40,14 @@ def generate_report(out_dir, run_opts, run_info):
     jinja2_env = config_jinja2()
 
     # Gathering the report data
+    today = date.today()
     report_data = {
         "report_number":   sanitize_tex(run_opts.report_number),
         "title":           sanitize_tex(run_opts.report_title),
         "author":          sanitize_tex(run_opts.report_author),
-        "date":            sanitize_tex("{:%B %d, %Y}".format(date.today())),
+        "month":           sanitize_tex("{:%B}".format(today)),
+        "day":             sanitize_tex("{:%d}".format(today)),
+        "year":            sanitize_tex("{:%Y}".format(today)),
         "package_name":    sanitize_tex(__name__.split(".")[0]),
         "package_version": sanitize_tex(__version__),
     }
@@ -280,8 +283,9 @@ def _generate_results(templates, run_options, run_information):
                           "cross_validation_table_1_chrom",
                           "cross_validation_table_2_chrom", "prob_threshold",
                           "nb_imputed", "average_comp_rate", "rate_threshold",
-                          "nb_good_sites", "average_comp_rate_cleaned",
-                          "mean_missing", "nb_samples", "nb_genotyped",
+                          "info_threshold", "nb_good_sites",
+                          "average_comp_rate_cleaned", "mean_missing",
+                          "nb_samples", "nb_genotyped",
                           "nb_genotyped_not_complete",
                           "pct_genotyped_not_complete", "nb_geno_now_complete",
                           "pct_geno_now_complete", "nb_site_now_complete",
@@ -465,7 +469,7 @@ def _generate_conclusions(templates, run_options, run_information):
     """
     # Some assertions
     required_variables = ["nb_good_sites", "prob_threshold", "rate_threshold",
-                          "nb_genotyped"]
+                          "info_threshold", "nb_genotyped"]
     for required_variable in required_variables:
         assert required_variable in run_information
 
@@ -501,8 +505,11 @@ def _generate_conclusions(templates, run_options, run_information):
         ),
         wrap_tex(
             format_tex(sanitize_tex("chr*.imputed.good_sites"), "texttt") +
-            sanitize_tex(": list of sites which pass the completion rate "
+            sanitize_tex(": list of sites which pass the information "
                          "threshold (") +
+            tex_inline_math(
+                r"\geq {}".format(run_information["info_threshold"])
+            ) + sanitize_tex(") and the completion rate threshold (") +
             tex_inline_math(
                 r"\geq {}\%".format(run_information["rate_threshold"])
             ) + sanitize_tex(") using the probability threshold ") +
@@ -512,7 +519,12 @@ def _generate_conclusions(templates, run_options, run_information):
         ),
         wrap_tex(
             format_tex(sanitize_tex("chr*.imputed.impute2"), "texttt") +
-            sanitize_tex(": imputation results (merged from all segments.")
+            sanitize_tex(": imputation results (merged from all segments).")
+        ),
+        wrap_tex(
+            format_tex(sanitize_tex("chr*.imputed.impute2_info"), "texttt") +
+            sanitize_tex(": the IMPUTE2 marker-wise information file (merged "
+                         "from all segments).")
         ),
         wrap_tex(
             format_tex(sanitize_tex("chr*.imputed.imputed_sites"), "texttt") +

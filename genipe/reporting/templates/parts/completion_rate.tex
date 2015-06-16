@@ -6,10 +6,11 @@ probabilities higher or equal to \VAR{ prob_threshold }\% to be considered as a
 \textit{good call}.\\
 
 For the \VAR{ nb_imputed } imputed variants, an average completion rate of
-\VAR{ average_comp_rate }\% was obtained. When removing variants with a
-completion rate under \VAR{ rate_threshold }\%, \VAR{ nb_good_sites }
-(\VAR{ pct_good_sites }\%) markers were left, with an average completion rate
-of \VAR{ average_comp_rate_cleaned }\%, meaning that there is a mean of
+\VAR{ average_comp_rate }\% was obtained. When removing variants with an
+information value under \VAR{ info_threshold }, and a completion rate under
+\VAR{ rate_threshold }\%, \VAR{ nb_good_sites } (\VAR{ pct_good_sites }\%)
+markers were left, with an average completion rate of
+\VAR{ average_comp_rate_cleaned }\%, meaning that there is a mean of
 \VAR{ mean_missing } missing genotypes (for \VAR{ nb_samples } samples) for
 each markers.\\
 
