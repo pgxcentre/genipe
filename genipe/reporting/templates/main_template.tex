@@ -32,6 +32,9 @@
 \usepackage{graphicx}
 \usepackage[bf]{caption}
 
+% Ordinal numbers
+\usepackage{engord}
+
 % The Report number...
 \newcommand{\ReportNumber}{\VAR{ report_number }}
 
@@ -82,7 +85,7 @@
 \author{\VAR{ author }}
 
 
-\date{\VAR{ date }}
+\date{\VAR{ month } \engordnumber{\VAR{ day }}, \VAR{ year }}
 
 \maketitle
 \microtypesetup{protrusion=false} % disables protrusion locally in the document

@@ -53,11 +53,11 @@ Usage
                           --legend-template TEMPLATE --map-template TEMPLATE
                           --sample-file FILE [--filtering-rules RULE [RULE ...]]
                           [--probability FLOAT] [--completion FLOAT]
-                          [--report-number NB] [--report-title TITLE]
-                          [--report-author AUTHOR]
+                          [--info FLOAT] [--report-number NB]
+                          [--report-title TITLE] [--report-author AUTHOR]
 
    Execute the genome-wide imputation pipeline. This script is part of the
-   'genipe' package, version 1.1.0.
+   'genipe' package, version 1.2.0.
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -116,6 +116,9 @@ Usage
      --probability FLOAT   The probability threshold for no calls. [<0.9]
      --completion FLOAT    The completion rate threshold for site exclusion.
                            [<0.98]
+     --info FLOAT          The measure of the observed statistical information
+                           associated with the allele frequency estimate
+                           threshold for site exclusion. [<0.00]
 
    Automatic Report Options:
      --report-number NB    The report number. [genipe automatic report]

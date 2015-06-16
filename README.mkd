@@ -4,7 +4,7 @@
 
 # genipe - A Python module to perform genome-wide imputation analysis
 
-*Version 1.1.0*
+*Version 1.2.0*
 
 The `genipe` module (standing for **GEN**ome-wide **I**mputation
 **P**ipelin**E**) includes a script (named `genipe-launcher`) that
@@ -101,11 +101,11 @@ usage: genipe-launcher [-h] [-v] [--debug] [--thread THREAD] --bfile PREFIX
                        --legend-template TEMPLATE --map-template TEMPLATE
                        --sample-file FILE [--filtering-rules RULE [RULE ...]]
                        [--probability FLOAT] [--completion FLOAT]
-                       [--report-number NB] [--report-title TITLE]
-                       [--report-author AUTHOR]
+                       [--info FLOAT] [--report-number NB]
+                       [--report-title TITLE] [--report-author AUTHOR]
 
 Execute the genome-wide imputation pipeline. This script is part of the
-'genipe' package, version 1.1.0.
+'genipe' package, version 1.2.0.
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -164,6 +164,9 @@ IMPUTE2 Merger Options:
   --probability FLOAT   The probability threshold for no calls. [<0.9]
   --completion FLOAT    The completion rate threshold for site exclusion.
                         [<0.98]
+  --info FLOAT          The measure of the observed statistical information
+                        associated with the allele frequency estimate
+                        threshold for site exclusion. [<0.00]
 
 Automatic Report Options:
   --report-number NB    The report number. [genipe automatic report]
@@ -209,7 +212,7 @@ usage: imputed-stats [-h] [-v] {cox,linear,logistic,mixedlm,skat} ...
 
 Performs statistical analysis on imputed data (either SKAT analysis, or
 linear, logistic or survival regression). This script is part of the 'genipe'
-package, version 1.1.0).
+package, version 1.2.0).
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -238,8 +241,8 @@ the [Montreal Heart Institute](https://www.icm-mhi.org/). The aim was to speed
 up (and automatize) the imputation process for the whole genome.
 
 
-<img src=http://pgxcentre.github.io/genipe/_images/logo_pgx.png width=350 />
+<img src=http://pgxcentre.github.io/genipe/_images/logo_pgx.png align="middle" width=350 />
 
-<img src=http://pgxcentre.github.io/genipe/_images/logo_statgen.png width=200 />
+<img src=http://pgxcentre.github.io/genipe/_images/logo_statgen.png align="middle" width=200 />
 
-<img src=http://pgxcentre.github.io/genipe/_images/logo_icm.jpg width=350 />
+<img src=http://pgxcentre.github.io/genipe/_images/logo_icm.jpg align="middle" width=350 />

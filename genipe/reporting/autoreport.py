@@ -40,11 +40,14 @@ def generate_report(out_dir, run_opts, run_info):
     jinja2_env = config_jinja2()
 
     # Gathering the report data
+    today = date.today()
     report_data = {
         "report_number":   sanitize_tex(run_opts.report_number),
         "title":           sanitize_tex(run_opts.report_title),
         "author":          sanitize_tex(run_opts.report_author),
-        "date":            sanitize_tex("{:%B %d, %Y}".format(date.today())),
+        "month":           sanitize_tex("{:%B}".format(today)),
+        "day":             sanitize_tex("{:%d}".format(today)),
+        "year":            sanitize_tex("{:%Y}".format(today)),
         "package_name":    sanitize_tex(__name__.split(".")[0]),
         "package_version": sanitize_tex(__version__),
     }
