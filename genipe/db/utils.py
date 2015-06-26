@@ -275,6 +275,13 @@ def get_all_runtimes(db_name):
     conn.close()
 
     # Computing the execution time
-    return {
-        i[0]: int(round((i[2] - i[1]).total_seconds(), ndigits=0)) for i in r
-    }
+    final = {}
+    for entry in r:
+        name, start, end = entry
+        if (start is None) or (end is None):
+            logging.warning("{}: no execution time for task".format(name))
+            continue
+
+        final[name] = int(round((end - start).total_seconds(), ndigits=0))
+
+    return final

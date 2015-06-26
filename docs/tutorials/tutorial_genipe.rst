@@ -345,7 +345,7 @@ genome-wide imputation of the *HapMap* CEU dataset.
 
 .. note::
 
-   In the previous command, the ``--refrence`` and ``--bgzip`` options are
+   In the previous command, the ``--reference`` and ``--bgzip`` options are
    optional and might be skipped.
 
    It is possible to skip (in the previous command) the ``--shapeit-bin``, the
