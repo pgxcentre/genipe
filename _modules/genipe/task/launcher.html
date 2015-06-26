@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.task.launcher &mdash; genipe 1.2.0 documentation</title>
+    <title>genipe.task.launcher &mdash; genipe 1.2.1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.2.0',
+        VERSION:     '1.2.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.2.0 documentation" href="../../../index.html" />
+    <link rel="top" title="genipe 1.2.1 documentation" href="../../../index.html" />
     <link rel="up" title="genipe" href="../../genipe.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
       </ul>
@@ -90,6 +90,7 @@
 <span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">Popen</span><span class="p">,</span> <span class="n">PIPE</span>
 <span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">NamedTemporaryFile</span>
+<span class="kn">from</span> <span class="nn">multiprocessing.pool</span> <span class="kn">import</span> <span class="n">ThreadPool</span>
 
 <span class="kn">from</span> <span class="nn">..db</span> <span class="kn">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">..error</span> <span class="kn">import</span> <span class="n">ProgramError</span>
@@ -117,6 +118,13 @@
 <span class="sd">        preamble (str): the script preamble (for DRMAA)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Do we need a DRMAA session?</span>
+    <span class="n">drmaa_session</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="k">if</span> <span class="n">hpc</span><span class="p">:</span>
+        <span class="kn">import</span> <span class="nn">drmaa</span>
+        <span class="n">drmaa_session</span> <span class="o">=</span> <span class="n">drmaa</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
+        <span class="n">drmaa_session</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
+
     <span class="c"># Do we need to check the return code?</span>
     <span class="n">to_run</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">to_process</span><span class="p">)):</span>
@@ -163,19 +171,22 @@
             <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&quot;walltime&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">walltime</span>
             <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&quot;nodes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nodes</span>
             <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&quot;preamble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">preamble</span>
+            <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&quot;drmaa_session&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">drmaa_session</span>
 
         <span class="c"># Adding to list to run</span>
         <span class="n">to_run</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
-    <span class="c"># The execution command</span>
+    <span class="c"># The execution function and the execution type</span>
     <span class="n">execute_func</span> <span class="o">=</span> <span class="n">_execute_command</span>
+    <span class="n">GenipePool</span> <span class="o">=</span> <span class="n">Pool</span>
     <span class="k">if</span> <span class="n">hpc</span><span class="p">:</span>
         <span class="n">execute_func</span> <span class="o">=</span> <span class="n">_execute_command_drmaa</span>
+        <span class="n">GenipePool</span> <span class="o">=</span> <span class="n">ThreadPool</span>
 
     <span class="c"># Launching the command</span>
     <span class="k">if</span> <span class="n">nb_threads</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
         <span class="c"># Running all the processes</span>
-        <span class="n">pool</span> <span class="o">=</span> <span class="n">Pool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">nb_threads</span><span class="p">)</span>
+        <span class="n">pool</span> <span class="o">=</span> <span class="n">GenipePool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">nb_threads</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="bp">None</span>
 
         <span class="k">try</span><span class="p">:</span>
@@ -189,6 +200,9 @@
         <span class="k">finally</span><span class="p">:</span>
             <span class="c"># Closing the pool</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+            <span class="k">if</span> <span class="n">drmaa_session</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">drmaa_session</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
         <span class="c"># Checking the results</span>
         <span class="n">problems</span> <span class="o">=</span> <span class="p">[]</span>
@@ -204,14 +218,24 @@
                                <span class="nb">repr</span><span class="p">(</span><span class="n">problems</span><span class="p">))</span>
 
     <span class="k">else</span><span class="p">:</span>
-        <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">to_run</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Executing {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]))</span>
-            <span class="n">result</span> <span class="o">=</span> <span class="n">execute_func</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-            <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Task &#39;{}&#39;: {} in {:,d} &quot;</span>
-                             <span class="s">&quot;seconds&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
-            <span class="k">else</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;problem executing {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]))</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">to_run</span><span class="p">:</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Executing {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]))</span>
+                <span class="n">result</span> <span class="o">=</span> <span class="n">execute_func</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Task &#39;{}&#39;: {} in {:,d} &quot;</span> <span class="s">&quot;seconds&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+                        <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
+                        <span class="n">result</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+                    <span class="p">))</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span>
+                        <span class="s">&quot;problem executing {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">])</span>
+                    <span class="p">)</span>
+
+        <span class="k">finally</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">drmaa_session</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+                <span class="n">drmaa_session</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
 
 <span class="k">def</span> <span class="nf">_check_output_files</span><span class="p">(</span><span class="n">o_files</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span></div>
@@ -413,7 +437,8 @@
 <span class="sd">        actual command.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="kn">import</span> <span class="nn">drmaa</span>
+    <span class="c"># Some import</span>
+    <span class="kn">from</span> <span class="nn">drmaa</span> <span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">JobControlAction</span>
 
     <span class="c"># Some assertions</span>
     <span class="k">assert</span> <span class="s">&quot;out_dir&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
@@ -426,6 +451,7 @@
     <span class="k">assert</span> <span class="s">&quot;check_retcode&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
     <span class="k">assert</span> <span class="s">&quot;o_files&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
     <span class="k">assert</span> <span class="s">&quot;preamble&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s">&quot;drmaa_session&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
 
     <span class="c"># Getting the command&#39;s information</span>
     <span class="n">name</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span>
@@ -435,6 +461,7 @@
     <span class="n">out_dir</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;out_dir&quot;</span><span class="p">]</span>
     <span class="n">check_rc</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;check_retcode&quot;</span><span class="p">]</span>
     <span class="n">preamble</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;preamble&quot;</span><span class="p">]</span>
+    <span class="n">drmaa_session</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;drmaa_session&quot;</span><span class="p">]</span>
 
     <span class="c"># Checking if the command was completed</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Checking status for &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
@@ -473,11 +500,7 @@
     <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">tmp_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="mi">0</span><span class="n">o755</span><span class="p">)</span>
 
     <span class="c"># Creating the job template</span>
-    <span class="n">s</span> <span class="o">=</span> <span class="n">drmaa</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
-    <span class="n">s</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
-
-    <span class="c"># Creating the job template</span>
-    <span class="n">job</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">createJobTemplate</span><span class="p">()</span>
+    <span class="n">job</span> <span class="o">=</span> <span class="n">drmaa_session</span><span class="o">.</span><span class="n">createJobTemplate</span><span class="p">()</span>
     <span class="n">job</span><span class="o">.</span><span class="n">remoteCommand</span> <span class="o">=</span> <span class="n">tmp_file</span><span class="o">.</span><span class="n">name</span>
     <span class="n">job</span><span class="o">.</span><span class="n">jobName</span> <span class="o">=</span> <span class="s">&quot;_{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">)</span>
     <span class="n">job</span><span class="o">.</span><span class="n">workingDirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
@@ -490,21 +513,20 @@
     <span class="n">create_task_entry</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
 
     <span class="c"># Running the job</span>
-    <span class="n">job_id</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">runJob</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
+    <span class="n">job_id</span> <span class="o">=</span> <span class="n">drmaa_session</span><span class="o">.</span><span class="n">runJob</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
 
     <span class="c"># Waiting for the job</span>
     <span class="n">ret_val</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="n">ret_val</span> <span class="o">=</span> <span class="n">s</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">drmaa</span><span class="o">.</span><span class="n">Session</span><span class="o">.</span><span class="n">TIMEOUT_WAIT_FOREVER</span><span class="p">)</span>
+        <span class="n">ret_val</span> <span class="o">=</span> <span class="n">drmaa_session</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">Session</span><span class="o">.</span><span class="n">TIMEOUT_WAIT_FOREVER</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
-        <span class="n">s</span><span class="o">.</span><span class="n">control</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">drmaa</span><span class="o">.</span><span class="n">JobControlAction</span><span class="o">.</span><span class="n">TERMINATE</span><span class="p">)</span>
+        <span class="n">drmaa_session</span><span class="o">.</span><span class="n">control</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">JobControlAction</span><span class="o">.</span><span class="n">TERMINATE</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;{}: terminated&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
         <span class="k">raise</span>
 
     <span class="k">finally</span><span class="p">:</span>
-        <span class="n">s</span><span class="o">.</span><span class="n">deleteJobTemplate</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
-        <span class="n">s</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+        <span class="n">drmaa_session</span><span class="o">.</span><span class="n">deleteJobTemplate</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
 
     <span class="c"># The job is done</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; finished&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
@@ -573,7 +595,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>

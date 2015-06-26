@@ -255,7 +255,7 @@ effects analysis in the console:
 
    Performs a linear mixed effects regression on imputed data using a random
    intercept for each group. This script is part of the 'genipe' package, version
-   1.2.0).
+   1.2.1).
 
    optional arguments:
      -h, --help            show this help message and exit
