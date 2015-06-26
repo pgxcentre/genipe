@@ -17,6 +17,7 @@ from os.path import isfile
 from multiprocessing import Pool
 from subprocess import Popen, PIPE
 from tempfile import NamedTemporaryFile
+from multiprocessing.pool import ThreadPool
 
 from ..db import *
 from ..error import ProgramError
@@ -44,6 +45,13 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
         preamble (str): the script preamble (for DRMAA)
 
     """
+    # Do we need a DRMAA session?
+    drmaa_session = None
+    if hpc:
+        import drmaa
+        drmaa_session = drmaa.Session()
+        drmaa_session.initialize()
+
     # Do we need to check the return code?
     to_run = []
     for i in range(len(to_process)):
@@ -90,19 +98,22 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
             to_process[i]["walltime"] = walltime
             to_process[i]["nodes"] = nodes
             to_process[i]["preamble"] = preamble
+            to_process[i]["drmaa_session"] = drmaa_session
 
         # Adding to list to run
         to_run.append(to_process[i])
 
-    # The execution command
+    # The execution function and the execution type
     execute_func = _execute_command
+    GenipePool = Pool
     if hpc:
         execute_func = _execute_command_drmaa
+        GenipePool = ThreadPool
 
     # Launching the command
     if nb_threads > 1:
         # Running all the processes
-        pool = Pool(processes=nb_threads)
+        pool = GenipePool(processes=nb_threads)
         results = None
 
         try:
@@ -116,6 +127,9 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
         finally:
             # Closing the pool
             pool.close()
+
+            if drmaa_session is not None:
+                drmaa_session.exit()
 
         # Checking the results
         problems = []
@@ -131,14 +145,24 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
                                repr(problems))
 
     else:
-        for data in to_run:
-            logging.info("Executing {}".format(data["name"]))
-            result = execute_func(data)
-            if result[0]:
-                logging.info("Task '{}': {} in {:,d} "
-                             "seconds".format(result[1], result[2], result[3]))
-            else:
-                raise ProgramError("problem executing {}".format(data["name"]))
+        try:
+            for data in to_run:
+                logging.info("Executing {}".format(data["name"]))
+                result = execute_func(data)
+                if result[0]:
+                    logging.info("Task '{}': {} in {:,d} " "seconds".format(
+                        result[1],
+                        result[2],
+                        result[3],
+                    ))
+                else:
+                    raise ProgramError(
+                        "problem executing {}".format(data["name"])
+                    )
+
+        finally:
+            if drmaa_session is not None:
+                drmaa_session.exit()
 
 
 def _check_output_files(o_files, task):
@@ -340,7 +364,8 @@ def _execute_command_drmaa(command_info):
         actual command.
 
     """
-    import drmaa
+    # Some import
+    from drmaa import Session, JobControlAction
 
     # Some assertions
     assert "out_dir" in command_info
@@ -353,6 +378,7 @@ def _execute_command_drmaa(command_info):
     assert "check_retcode" in command_info
     assert "o_files" in command_info
     assert "preamble" in command_info
+    assert "drmaa_session" in command_info
 
     # Getting the command's information
     name = command_info["name"]
@@ -362,6 +388,7 @@ def _execute_command_drmaa(command_info):
     out_dir = command_info["out_dir"]
     check_rc = command_info["check_retcode"]
     preamble = command_info["preamble"]
+    drmaa_session = command_info["drmaa_session"]
 
     # Checking if the command was completed
     logging.debug("Checking status for '{}'".format(task_id))
@@ -400,11 +427,7 @@ def _execute_command_drmaa(command_info):
     os.chmod(tmp_file.name, 0o755)
 
     # Creating the job template
-    s = drmaa.Session()
-    s.initialize()
-
-    # Creating the job template
-    job = s.createJobTemplate()
+    job = drmaa_session.createJobTemplate()
     job.remoteCommand = tmp_file.name
     job.jobName = "_{}".format(task_id)
     job.workingDirectory = os.getcwd()
@@ -417,21 +440,20 @@ def _execute_command_drmaa(command_info):
     create_task_entry(task_id, db_name)
 
     # Running the job
-    job_id = s.runJob(job)
+    job_id = drmaa_session.runJob(job)
 
     # Waiting for the job
     ret_val = None
     try:
-        ret_val = s.wait(job_id, drmaa.Session.TIMEOUT_WAIT_FOREVER)
+        ret_val = drmaa_session.wait(job_id, Session.TIMEOUT_WAIT_FOREVER)
 
     except KeyboardInterrupt:
-        s.control(job_id, drmaa.JobControlAction.TERMINATE)
+        drmaa_session.control(job_id, JobControlAction.TERMINATE)
         logging.warning("{}: terminated".format(task_id))
         raise
 
     finally:
-        s.deleteJobTemplate(job)
-        s.exit()
+        drmaa_session.deleteJobTemplate(job)
 
     # The job is done
     logging.debug("'{}' finished".format(task_id))
