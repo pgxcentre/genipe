@@ -546,12 +546,12 @@ class TestImputedStats(unittest.TestCase):
         self.assertEqual(expected, observed)
 
     @unittest.skip("Test not implemented")
-    def test_compute_statistics(self):
+    def test_compute_statistics(self):  # pragma: no cover
         """Tests the 'compute_statistics' function."""
         self.fail("Test not implemented")
 
     @unittest.skip("Test not implemented")
-    def test_process_impute2_site(self):
+    def test_process_impute2_site(self):  # pragma: no cover
         """Tests the 'process_impute2_site' function."""
         self.fail("Test not implemented")
 
@@ -641,12 +641,12 @@ class TestImputedStats(unittest.TestCase):
         self.assertEqual(expected, observed)
 
     @unittest.skip("Test not implemented")
-    def test_get_result_from_linear_logistic(self):
+    def test_get_result_from_linear_logistic(self):  # pragma: no cover
         """Tests the '_get_result_from_linear_logistic' function."""
         self.fail("Test not implemented")
 
     @unittest.skip("Test not implemented")
-    def test_check_args(self):
+    def test_check_args(self):  # pragma: no cover
         """Tests the 'check_args' function."""
         self.fail("Test not implemented")
 
@@ -3373,7 +3373,7 @@ class TestImputedStatsSkat(unittest.TestCase):
                     dosage_list.extend(dosage)
 
                 # Make sure all the probabilities are in the [0, 1] interval.
-                for i, proba in enumerate(dosage_list):
+                for i, proba in enumerate(dosage_list):  # pragma: no cover
                     if proba < 0:
                         dosage_list[i] = 0
                     elif proba > 1:

@@ -89,7 +89,8 @@ class TestDB(unittest.TestCase):
             self.assertEqual(expected_columns[col_name], result[1:])
 
         # Checking we have all columns
-        if len((col_names & set(expected_columns.keys())) - col_names) != 0:
+        col_diff = (col_names & set(expected_columns.keys())) - col_names
+        if len(col_diff) != 0:  # pragma: no cover
             self.fail("not all DB columns are present")
 
     def test_create_db_connection(self):
@@ -134,6 +135,13 @@ class TestDB(unittest.TestCase):
         conn.close()
         self.assertFalse(check_task_completion(self.task_names[3],
                                                self.db_name))
+
+        # Checking the status of a missing task
+        with self._my_compatibility_assertLogs(level="DEBUG") as cm:
+            check_task_completion("DUMMY_NAME", self.db_name)
+        log_m = ("DEBUG:root:'DUMMY_NAME' no entry")
+        self.assertEqual(1, len(cm.output))
+        self.assertEqual(log_m, cm.output[0])
 
     def test_create_task_entry(self):
         """Tests the 'create_task_entry' function."""
@@ -472,3 +480,36 @@ class TestDB(unittest.TestCase):
         for task_name in expected_time.keys():
             t_delta = abs(expected_time[task_name] - observed_time[task_name])
             self.assertTrue(t_delta >= 0 and t_delta <= 1)
+
+        # Setting one of the task's end time to None
+        conn, c = _create_db_connection(self.db_name)
+        c.execute("UPDATE genipe_task SET end=NULL WHERE name=?",
+                  (self.task_names[0], ))
+        conn.commit()
+        conn.close()
+        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+            get_all_runtimes(self.db_name)
+        log_m = "WARNING:root:{}: no execution time for task"
+        self.assertEqual(1, len(cm.output))
+        self.assertEqual(log_m.format(self.task_names[0]), cm.output[0])
+
+        # Setting one of the task's start time to None
+        conn, c = _create_db_connection(self.db_name)
+        c.execute("UPDATE genipe_task SET start=NULL WHERE name=?",
+                  (self.task_names[0], ))
+        conn.commit()
+        conn.close()
+        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+            get_all_runtimes(self.db_name)
+        log_m = "WARNING:root:{}: no execution time for task"
+        self.assertEqual(1, len(cm.output))
+        self.assertEqual(log_m.format(self.task_names[0]), cm.output[0])
+
+    def _my_compatibility_assertLogs(self, logger=None, level=None):
+        """Compatibility 'assertLogs' function for Python 3.3."""
+        if hasattr(self, "assertLogs"):
+            return self.assertLogs(logger, level)
+
+        else:
+            from .python_3_3_compatibility import Python_3_4_AssertLogsContext
+            return Python_3_4_AssertLogsContext(self, logger, level)
