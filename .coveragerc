@@ -1,0 +1,11 @@
+[run]
+branch = True
+include = genipe*
+
+[report]
+exclude_lines = 
+    pragma: no cover
+    def _my_compatibility_assertLogs
+
+[html]
+title = Coverage report - genipe
