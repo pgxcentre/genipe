@@ -8,6 +8,7 @@
 
 
 import time
+import logging
 import sqlite3
 import unittest
 from datetime import datetime
@@ -136,12 +137,19 @@ class TestDB(unittest.TestCase):
         self.assertFalse(check_task_completion(self.task_names[3],
                                                self.db_name))
 
+        # The logging capability might be disable...
+        disable_lvl = logging.Logger.manager.disable
+        logging.disable(logging.NOTSET)
+
         # Checking the status of a missing task
         with self._my_compatibility_assertLogs(level="DEBUG") as cm:
             check_task_completion("DUMMY_NAME", self.db_name)
         log_m = ("DEBUG:root:'DUMMY_NAME' no entry")
         self.assertEqual(1, len(cm.output))
         self.assertEqual(log_m, cm.output[0])
+
+        # Setting back to disabled level (if required)
+        logging.disable(disable_lvl)
 
     def test_create_task_entry(self):
         """Tests the 'create_task_entry' function."""
