@@ -9,3 +9,6 @@ docs/_build
 conda_dist
 
 genipe/version.py
+
+.coverage
+htmlcov

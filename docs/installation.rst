@@ -40,8 +40,8 @@ management):
 
 .. _install-virt:
 
-Virtual environment
---------------------
+Installing in a virtual environment
+------------------------------------
 
 Using pyvenv
 ^^^^^^^^^^^^^
@@ -102,6 +102,20 @@ following command:
 .. code-block:: bash
 
    conda install genipe -c http://statgen.org/wp-content/uploads/Softwares/genipe
+
+.. note::
+
+   It is possible to add the channel to conda's configuration (so that you
+   won't need to use the ``-c`` option for installing or updatign). To do so,
+   perform the following command:
+
+   .. code-block:: bash
+
+      conda config --add channels http://statgen.org/wp-content/uploads/Softwares/genipe
+
+   Once this command is executed, you can always ommit
+   ``-c http://statgen.org/...`` in the ``conda`` commands (for installing or
+   updating).
 
 If required, the optional dependencies can be installed using the following
 command:
@@ -186,4 +200,14 @@ Miniconda
 .. code-block:: bash
 
    conda update genipe -c http://statgen.org/wp-content/uploads/Softwares/genipe
+
+.. note::
+
+   If you have configured ``conda`` to use the :py:mod:`genipe` channel (see
+   the note above), the following command can be executed to update the
+   package:
+
+   .. code-block:: bash
+
+      conda update genipe
 

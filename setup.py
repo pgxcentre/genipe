@@ -78,6 +78,7 @@ def setup_package():
                       "genipe.tests": ["data/*"],
                       "genipe": ["script_templates/*"]},
         test_suite="genipe.tests.test_suite",
+        zip_safe=False,
         classifiers=["Development Status :: 5 - Production/Stable",
                      "Intended Audience :: Science/Research",
                      "License :: Free for non-commercial use",
