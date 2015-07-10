@@ -60,7 +60,7 @@
 <li><a class="reference internal" href="#">Installation</a><ul>
 <li><a class="reference internal" href="#quick-navigation">Quick navigation</a></li>
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
-<li><a class="reference internal" href="#virtual-environment">Virtual environment</a><ul>
+<li><a class="reference internal" href="#installing-in-a-virtual-environment">Installing in a virtual environment</a><ul>
 <li><a class="reference internal" href="#using-pyvenv">Using pyvenv</a></li>
 <li><a class="reference internal" href="#using-miniconda">Using Miniconda</a></li>
 <li><a class="reference internal" href="#virtual-environment-activation">Virtual environment activation</a><ul>
@@ -120,7 +120,7 @@
 <h2>Quick navigation<a class="headerlink" href="#quick-navigation" title="Permalink to this headline">¶</a></h2>
 <ol class="arabic simple">
 <li><a class="reference internal" href="#install-requirements"><span>Requirements</span></a></li>
-<li><a class="reference internal" href="#install-virt"><span>Virtual environment</span></a></li>
+<li><a class="reference internal" href="#install-virt"><span>Installing in a virtual environment</span></a></li>
 <li><a class="reference internal" href="#install-test"><span>Testing the installation</span></a></li>
 <li><a class="reference internal" href="#install-update"><span>Updating the package</span></a></li>
 </ol>
@@ -149,8 +149,8 @@ management):</p>
 <p class="last">Only Python versions 3.3 and higher are supported for now.</p>
 </div>
 </div>
-<div class="section" id="virtual-environment">
-<span id="install-virt"></span><h2>Virtual environment<a class="headerlink" href="#virtual-environment" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="installing-in-a-virtual-environment">
+<span id="install-virt"></span><h2>Installing in a virtual environment<a class="headerlink" href="#installing-in-a-virtual-environment" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="using-pyvenv">
 <h3>Using pyvenv<a class="headerlink" href="#using-pyvenv" title="Permalink to this headline">¶</a></h3>
 <p>The following commands should successfully create a virtual environment and
@@ -198,6 +198,18 @@ bash miniconda.sh -b -p <span class="nv">$HOME</span>/miniconda
 following command:</p>
 <div class="highlight-bash"><div class="highlight"><pre>conda install genipe -c http://statgen.org/wp-content/uploads/Softwares/genipe
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>It is possible to add the channel to conda&#8217;s configuration (so that you
+won&#8217;t need to use the <code class="docutils literal"><span class="pre">-c</span></code> option for installing or updatign). To do so,
+perform the following command:</p>
+<div class="highlight-bash"><div class="highlight"><pre>conda config --add channels http://statgen.org/wp-content/uploads/Softwares/genipe
+</pre></div>
+</div>
+<p class="last">Once this command is executed, you can always ommit
+<code class="docutils literal"><span class="pre">-c</span> <span class="pre">http://statgen.org/...</span></code> in the <code class="docutils literal"><span class="pre">conda</span></code> commands (for installing or
+updating).</p>
 </div>
 <p>If required, the optional dependencies can be installed using the following
 command:</p>
@@ -257,6 +269,15 @@ the python virtual environment.</p>
 <h3>Miniconda<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
 <div class="highlight-bash"><div class="highlight"><pre>conda update genipe -c http://statgen.org/wp-content/uploads/Softwares/genipe
 </pre></div>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>If you have configured <code class="docutils literal"><span class="pre">conda</span></code> to use the <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> channel (see
+the note above), the following command can be executed to update the
+package:</p>
+<div class="last highlight-bash"><div class="highlight"><pre>conda update genipe
+</pre></div>
+</div>
 </div>
 </div>
 </div>

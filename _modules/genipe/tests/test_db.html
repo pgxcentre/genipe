@@ -81,6 +81,7 @@
 
 
 <span class="kn">import</span> <span class="nn">time</span>
+<span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">sqlite3</span>
 <span class="kn">import</span> <span class="nn">unittest</span>
 <span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">datetime</span>
@@ -162,7 +163,8 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_columns</span><span class="p">[</span><span class="n">col_name</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
 
         <span class="c"># Checking we have all columns</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">((</span><span class="n">col_names</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">expected_columns</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="o">-</span> <span class="n">col_names</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">col_diff</span> <span class="o">=</span> <span class="p">(</span><span class="n">col_names</span> <span class="o">&amp;</span> <span class="nb">set</span><span class="p">(</span><span class="n">expected_columns</span><span class="o">.</span><span class="n">keys</span><span class="p">()))</span> <span class="o">-</span> <span class="n">col_names</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">col_diff</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>  <span class="c"># pragma: no cover</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s">&quot;not all DB columns are present&quot;</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">test_create_db_connection</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
@@ -207,6 +209,20 @@
         <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">check_task_completion</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_names</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
                                                <span class="bp">self</span><span class="o">.</span><span class="n">db_name</span><span class="p">))</span>
+
+        <span class="c"># The logging capability might be disable...</span>
+        <span class="n">disable_lvl</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">Logger</span><span class="o">.</span><span class="n">manager</span><span class="o">.</span><span class="n">disable</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span>
+
+        <span class="c"># Checking the status of a missing task</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_compatibility_assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s">&quot;DEBUG&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+            <span class="n">check_task_completion</span><span class="p">(</span><span class="s">&quot;DUMMY_NAME&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_name</span><span class="p">)</span>
+        <span class="n">log_m</span> <span class="o">=</span> <span class="p">(</span><span class="s">&quot;DEBUG:root:&#39;DUMMY_NAME&#39; no entry&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">output</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">log_m</span><span class="p">,</span> <span class="n">cm</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c"># Setting back to disabled level (if required)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">disable_lvl</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">test_create_task_entry</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span></div>
 <div class="viewcode-block" id="TestDB.test_create_task_entry"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_db.TestDB.test_create_task_entry">[docs]</a>        <span class="sd">&quot;&quot;&quot;Tests the &#39;create_task_entry&#39; function.&quot;&quot;&quot;</span>
@@ -545,7 +561,40 @@
         <span class="k">for</span> <span class="n">task_name</span> <span class="ow">in</span> <span class="n">expected_time</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="n">t_delta</span> <span class="o">=</span> <span class="nb">abs</span><span class="p">(</span><span class="n">expected_time</span><span class="p">[</span><span class="n">task_name</span><span class="p">]</span> <span class="o">-</span> <span class="n">observed_time</span><span class="p">[</span><span class="n">task_name</span><span class="p">])</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">t_delta</span> <span class="o">&gt;=</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">t_delta</span> <span class="o">&lt;=</span> <span class="mi">1</span><span class="p">)</span>
-</pre></div></div></div>
+
+        <span class="c"># Setting one of the task&#39;s end time to None</span>
+        <span class="n">conn</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">_create_db_connection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_name</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;UPDATE genipe_task SET end=NULL WHERE name=?&quot;</span><span class="p">,</span>
+                  <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">))</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_compatibility_assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s">&quot;WARNING&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+            <span class="n">get_all_runtimes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_name</span><span class="p">)</span>
+        <span class="n">log_m</span> <span class="o">=</span> <span class="s">&quot;WARNING:root:{}: no execution time for task&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">output</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">log_m</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">cm</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="c"># Setting one of the task&#39;s start time to None</span>
+        <span class="n">conn</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">_create_db_connection</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_name</span><span class="p">)</span>
+        <span class="n">c</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="s">&quot;UPDATE genipe_task SET start=NULL WHERE name=?&quot;</span><span class="p">,</span>
+                  <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">))</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_compatibility_assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s">&quot;WARNING&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+            <span class="n">get_all_runtimes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_name</span><span class="p">)</span>
+        <span class="n">log_m</span> <span class="o">=</span> <span class="s">&quot;WARNING:root:{}: no execution time for task&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">output</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">log_m</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">cm</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">_my_compatibility_assertLogs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
+        <span class="sd">&quot;&quot;&quot;Compatibility &#39;assertLogs&#39; function for Python 3.3.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s">&quot;assertLogs&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertLogs</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.python_3_3_compatibility</span> <span class="kn">import</span> <span class="n">Python_3_4_AssertLogsContext</span>
+            <span class="k">return</span> <span class="n">Python_3_4_AssertLogsContext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+</pre></div></div>
 
           </div>
         </div>
