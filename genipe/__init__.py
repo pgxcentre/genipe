@@ -19,7 +19,7 @@ __credits__ = ["Louis-Philippe Lemieux Perreault", "Marc-Andre Legault"]
 __license__ = "CC BY-NC 4.0"
 __maintainer__ = "Louis-Philippe Lemieux Perreault"
 __email__ = "louis-philippe.lemieux.perreault@statgen.org"
-__status__ = "Development"
+__status__ = "Production"
 
 
 chromosomes = range(1, 23)
