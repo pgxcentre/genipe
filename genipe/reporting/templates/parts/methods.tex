@@ -4,7 +4,11 @@ dataset for \VAR{ initial_nb_samples } samples and \VAR{ initial_nb_markers }
 markers (including \VAR{ nb_special_markers } markers located on sexual or
 mitochondrial chromosomes):
 
-\VAR{ data_files }
+\begin{itemize}
+\BLOCK{ for data_file in data_files }
+  \item \path{\VAR{ data_file }}
+\BLOCK{ endfor }
+\end{itemize}
 
 IMPUTE2's pre-phasing approach can work with phased haplotypes from SHAPEIT, a
 highly accurate phasing algorithm that can handle mixtures of unrelated

@@ -165,15 +165,8 @@ def _generate_methods(templates, run_options, run_information):
 
     # The input files
     data_files = [
-        "{}.{}".format(run_options.bfile, ext) for ext in ["bed", "bim", "fam"]
+        "{}.{}".format(run_options.bfile, ext) for ext in ("bed", "bim", "fam")
     ]
-    data_files = [
-        format_tex(sanitize_tex(text), "texttt") for text in data_files
-    ]
-
-    # Creating the iteration
-    data_files = itemize_template.render(iteration_type="itemize",
-                                         iteration_list=data_files)
 
     # The text for the different steps
     steps = []
