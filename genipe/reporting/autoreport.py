@@ -196,12 +196,12 @@ def _generate_methods(templates, run_options, run_information):
         format_tex("C", "texttt") + "/" + format_tex("G", "texttt") +
         sanitize_tex(
             ", duplicated markers (same position), and markers located on "
-            "special chromosomes (sexual or mitochondrial chromosomes) were "
-            "excluded from the imputation. "
+            "sexual or mitochondrial chromosomes were excluded from the "
+            "imputation. "
     ) + to_add_1 + format_tex(
         sanitize_tex(
             "In total, {ambiguous} ambiguous, {duplicated} duplicated and "
-            "{special} special markers were excluded.".format(
+            "{special} non-autosomal markers were excluded.".format(
                 ambiguous=run_information["nb_ambiguous"],
                 duplicated=run_information["nb_duplicates"],
                 special=run_information["nb_special_markers"],
