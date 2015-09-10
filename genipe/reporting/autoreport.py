@@ -109,16 +109,26 @@ def _generate_background(templates, run_options, run_information):
         str: a string representation of the "background" section
 
     """
+    # Some assertion
+    assert "report_background" in run_options
+
+    # The background can either be a file or a string
+    background_content = run_options.report_background
+    if os.path.isfile(background_content):
+        with open(background_content, "r") as i_file:
+            background_content = " ".join(
+                line for line in i_file.read().splitlines() if line != ""
+            )
+
     # Loading the template
     section_template = templates.get_template("section_template.tex")
-    background = templates.get_template("parts/background.tex")
 
     # Returning the section
     return section_template.render(
         section_name="Background",
         section_type="section",
         section_label="sec:background",
-        section_content=background.render(**run_information),
+        section_content=sanitize_tex(background_content),
     )
 
 
