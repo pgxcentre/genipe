@@ -202,6 +202,14 @@ def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
         # Keeping track of what has been extracted
         all_extracted |= extracted
 
+        # Extracting the companion files (if impute2 and files are present)
+        if "impute2" in o_files:
+            extract_companion_files(
+                i_prefix=get_file_prefix(i_filename),
+                to_extract=names,
+                o_prefix=out_prefix,
+            )
+
     # Closing the files
     for o_file in o_files.values():
         o_file.close()
@@ -209,6 +217,56 @@ def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
     # Extraction complete
     logging.info("Extraction of {:,d} markers "
                  "completed".format(len(all_extracted)))
+
+
+def extract_companion_files(i_prefix, o_prefix, to_extract):
+    """Extract markers from companion files (if they exists).
+
+    Args:
+        i_prefix (str): the prefix of the input file
+        o_prefix (str): the prefix of the output file
+        to_extract (set): the set of markers to extract
+
+    """
+    file_info = [
+        dict(suffix=".alleles", header=True, name="name"),
+        dict(suffix=".completion_rates", header=True, name="name"),
+        dict(suffix=".good_sites", header=False, index=0),
+        dict(suffix=".impute2_info", header=True, name="name"),
+        dict(suffix=".imputed_sites", header=False, index=0),
+        dict(suffix=".maf", header=True, name="name"),
+        dict(suffix=".map", header=False, index=1),
+    ]
+
+    for info in file_info:
+        # The name of the input file
+        i_fn = i_prefix + info["suffix"]
+
+        if not os.path.isfile(i_fn):
+            # The file doesn't exist, so we continue
+            continue
+
+        # The name of the output file
+        o_fn = o_prefix + info["suffix"]
+
+        # If the file doesn't have a header, we just read line per line
+        if not info["header"]:
+            with open(i_fn, "r") as i_file, open(o_fn, "w") as o_file:
+                for line in i_file:
+                    row = line.rstrip("\r\n").split(info.get("sep", "\t"))
+                    if row[info["index"]] in to_extract:
+                        o_file.write(line)
+
+        else:
+            # We use pandas to speed up the analysis
+            data = pd.read_csv(i_fn, sep=info.get("sep", "\t"))
+            
+            # Extracting
+            data[data["name"].isin(to_extract)].to_csv(
+                o_fn,
+                sep=info.get("sep", "\t"),
+                index=False,
+            )
 
 
 def print_data(o_files, prob_t, *, line=None, row=None):
