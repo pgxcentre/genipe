@@ -250,23 +250,24 @@ def extract_companion_files(i_prefix, o_prefix, to_extract):
         o_fn = o_prefix + info["suffix"]
 
         # If the file doesn't have a header, we just read line per line
-        if not info["header"]:
-            with open(i_fn, "r") as i_file, open(o_fn, "w") as o_file:
-                for line in i_file:
-                    row = line.rstrip("\r\n").split(info.get("sep", "\t"))
-                    if row[info["index"]] in to_extract:
-                        o_file.write(line)
+        header = None
+        with open(i_fn, "r") as i_file, open(o_fn, "w") as o_file:
+            for i, line in enumerate(i_file):
+                row = line.rstrip("\r\n").split(info.get("sep", "\t"))
+                if info["header"] and i == 0:
+                    header = {name: i for i, name in enumerate(row)}
+                    if info["name"] not in header:
+                        raise ProgramError("{}: missing column {}".format(
+                            i_fn,
+                            info["name"],
+                        ))
 
-        else:
-            # We use pandas to speed up the analysis
-            data = pd.read_csv(i_fn, sep=info.get("sep", "\t"))
-            
-            # Extracting
-            data[data["name"].isin(to_extract)].to_csv(
-                o_fn,
-                sep=info.get("sep", "\t"),
-                index=False,
-            )
+                    info["index"] = header[info["name"]]
+                    o_file.write(line)
+                    continue
+
+                if row[info["index"]] in to_extract:
+                    o_file.write(line)
 
 
 def print_data(o_files, prob_t, *, line=None, row=None):
