@@ -177,6 +177,23 @@ class TestImpute2Extractor(unittest.TestCase):
             observed = i_file.read()
         self.assertEqual(expected, observed)
 
+        # Checks companion files (impute2_info)
+        info_fn = template_name.format(ext="impute2_info")
+        self.assertTrue(os.path.isfile(info_fn))
+        expected = (
+            "chr\tname\tposition\ta0\ta1\texp_freq_a1\tinfo\tcertainty\t"
+            "type\tinfo_type0\tconcord_type0\tr2_type0\n"
+            "1\trs23456\t3214569\tT\tC\t0.082\t0.362\t0.866\t0\t-1\t-1\t-1\n"
+            "1\trs23457_2\t3214572\tT\tTC\t0.084\t0.203\t0.854\t0\t-1\t-1\t"
+            "-1\n"
+            "1\t1:4214570_1\t4214570\tT\tTC\t0.174\t0.589\t0.831\t0\t-1\t-1\t"
+            "-1\n"
+        )
+        observed = None
+        with open(info_fn, "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
     def test_genomic(self):
         """Tests the extraction by genomic location."""
         # Executing the script
@@ -225,6 +242,25 @@ class TestImpute2Extractor(unittest.TestCase):
         )
         observed = None
         with open(template_name.format(ext="calls"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checks companion files (impute2_info)
+        info_fn = template_name.format(ext="impute2_info")
+        self.assertTrue(os.path.isfile(info_fn))
+        expected = (
+            "chr\tname\tposition\ta0\ta1\texp_freq_a1\tinfo\tcertainty\t"
+            "type\tinfo_type0\tconcord_type0\tr2_type0\n"
+            "1\trs23457\t3214570\tT\tTC\t0.126\t0.299\t0.832\t0\t-1\t-1\t-1\n"
+            "1\trs23457_1\t3214571\tT\tTC\t0.060\t0.300\t0.909\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23457_2\t3214572\tT\tTC\t0.084\t0.203\t0.854\t0\t-1\t-1\t"
+            "-1\n"
+            "1\t1:3214573\t3214573\tT\tTC\t0.371\t0.339\t0.619\t0\t-1\t-1\t"
+            "-1\n"
+        )
+        observed = None
+        with open(info_fn, "r") as i_file:
             observed = i_file.read()
         self.assertEqual(expected, observed)
 
@@ -279,6 +315,28 @@ class TestImpute2Extractor(unittest.TestCase):
         )
         observed = None
         with open(template_name.format(ext="calls"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checks companion files (impute2_info)
+        info_fn = template_name.format(ext="impute2_info")
+        self.assertTrue(os.path.isfile(info_fn))
+        expected = (
+            "chr\tname\tposition\ta0\ta1\texp_freq_a1\tinfo\tcertainty\t"
+            "type\tinfo_type0\tconcord_type0\tr2_type0\n"
+            "1\trs23456\t3214569\tT\tC\t0.082\t0.362\t0.866\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23457\t3214570\tT\tTC\t0.126\t0.299\t0.832\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23457_1\t3214571\tT\tTC\t0.060\t0.300\t0.909\t0\t-1\t"
+            "-1\t-1\n"
+            "1\trs23457_2\t3214572\tT\tTC\t0.084\t0.203\t0.854\t0\t-1\t"
+            "-1\t-1\n"
+            "1\t1:3214573\t3214573\tT\tTC\t0.371\t0.339\t0.619\t0\t-1\t"
+            "-1\t-1\n"
+        )
+        observed = None
+        with open(info_fn, "r") as i_file:
             observed = i_file.read()
         self.assertEqual(expected, observed)
 
@@ -339,6 +397,30 @@ class TestImpute2Extractor(unittest.TestCase):
             observed = i_file.read()
         self.assertEqual(expected, observed)
 
+        # Checks companion files (impute2_info)
+        info_fn = template_name.format(ext="impute2_info")
+        self.assertTrue(os.path.isfile(info_fn))
+        expected = (
+            "chr\tname\tposition\ta0\ta1\texp_freq_a1\tinfo\tcertainty\t"
+            "type\tinfo_type0\tconcord_type0\tr2_type0\n"
+            "1\trs12345\t1231415\tA\tG\t0.006\t0.359\t0.987\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23456\t3214569\tT\tC\t0.082\t0.362\t0.866\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23457\t3214570\tT\tTC\t0.126\t0.299\t0.832\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23457_1\t3214571\tT\tTC\t0.060\t0.300\t0.909\t0\t-1\t"
+            "-1\t-1\n"
+            "1\trs23457_2\t3214572\tT\tTC\t0.084\t0.203\t0.854\t0\t-1\t"
+            "-1\t-1\n"
+            "1\t1:3214573\t3214573\tT\tTC\t0.371\t0.339\t0.619\t0\t-1\t"
+            "-1\t-1\n"
+        )
+        observed = None
+        with open(info_fn, "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
     def test_info(self):
         """Tests the extraction by information value."""
         # Executing the script
@@ -394,6 +476,28 @@ class TestImpute2Extractor(unittest.TestCase):
             observed = i_file.read()
         self.assertEqual(expected, observed)
 
+        # Checks companion files (impute2_info)
+        info_fn = template_name.format(ext="impute2_info")
+        self.assertTrue(os.path.isfile(info_fn))
+        expected = (
+            "chr\tname\tposition\ta0\ta1\texp_freq_a1\tinfo\tcertainty\t"
+            "type\tinfo_type0\tconcord_type0\tr2_type0\n"
+            "1\trs12345\t1231415\tA\tG\t0.006\t0.359\t0.987\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23456\t3214569\tT\tC\t0.082\t0.362\t0.866\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23457_1\t3214571\tT\tTC\t0.060\t0.300\t0.909\t0\t-1\t"
+            "-1\t-1\n"
+            "1\t1:3214573\t3214573\tT\tTC\t0.371\t0.339\t0.619\t0\t-1\t"
+            "-1\t-1\n"
+            "1\t1:4214570_1\t4214570\tT\tTC\t0.174\t0.589\t0.831\t0\t-1\t"
+            "-1\t-1\n"
+        )
+        observed = None
+        with open(info_fn, "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
     def test_genomic_maf(self):
         """Tests the extraction by genomic location and maf."""
         # Executing the script
@@ -437,6 +541,20 @@ class TestImpute2Extractor(unittest.TestCase):
             observed = i_file.read()
         self.assertEqual(expected, observed)
 
+        # Checks companion files (impute2_info)
+        info_fn = template_name.format(ext="impute2_info")
+        self.assertTrue(os.path.isfile(info_fn))
+        expected = (
+            "chr\tname\tposition\ta0\ta1\texp_freq_a1\tinfo\tcertainty\t"
+            "type\tinfo_type0\tconcord_type0\tr2_type0\n"
+            "1\trs23456\t3214569\tT\tC\t0.082\t0.362\t0.866\t0\t-1\t-1\t"
+            "-1\n"
+        )
+        observed = None
+        with open(info_fn, "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
     def test_genomic_rate(self):
         """Tests the extraction by genomic location and completion rate."""
         # Executing the script
@@ -477,6 +595,20 @@ class TestImpute2Extractor(unittest.TestCase):
         )
         observed = None
         with open(template_name.format(ext="calls"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checks companion files (impute2_info)
+        info_fn = template_name.format(ext="impute2_info")
+        self.assertTrue(os.path.isfile(info_fn))
+        expected = (
+            "chr\tname\tposition\ta0\ta1\texp_freq_a1\tinfo\tcertainty\t"
+            "type\tinfo_type0\tconcord_type0\tr2_type0\n"
+            "1\trs12345\t1231415\tA\tG\t0.006\t0.359\t0.987\t0\t-1\t-1\t"
+            "-1\n"
+        )
+        observed = None
+        with open(info_fn, "r") as i_file:
             observed = i_file.read()
         self.assertEqual(expected, observed)
 
@@ -535,6 +667,28 @@ class TestImpute2Extractor(unittest.TestCase):
             observed = i_file.read()
         self.assertEqual(expected, observed)
 
+        # Checks companion files (impute2_info)
+        info_fn = template_name.format(ext="impute2_info")
+        self.assertTrue(os.path.isfile(info_fn))
+        expected = (
+            "chr\tname\tposition\ta0\ta1\texp_freq_a1\tinfo\tcertainty\t"
+            "type\tinfo_type0\tconcord_type0\tr2_type0\n"
+            "1\trs12345\t1231415\tA\tG\t0.006\t0.359\t0.987\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23456\t3214569\tT\tC\t0.082\t0.362\t0.866\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23457\t3214570\tT\tTC\t0.126\t0.299\t0.832\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23457_1\t3214571\tT\tTC\t0.060\t0.300\t0.909\t0\t-1\t"
+            "-1\t-1\n"
+            "1\t1:3214573\t3214573\tT\tTC\t0.371\t0.339\t0.619\t0\t-1\t"
+            "-1\t-1\n"
+        )
+        observed = None
+        with open(info_fn, "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
     def test_maf_rate(self):
         """Tests the extraction by maf and completion rate."""
         # Executing the script
@@ -590,6 +744,28 @@ class TestImpute2Extractor(unittest.TestCase):
             observed = i_file.read()
         self.assertEqual(expected, observed)
 
+        # Checks companion files (impute2_info)
+        info_fn = template_name.format(ext="impute2_info")
+        self.assertTrue(os.path.isfile(info_fn))
+        expected = (
+            "chr\tname\tposition\ta0\ta1\texp_freq_a1\tinfo\tcertainty\t"
+            "type\tinfo_type0\tconcord_type0\tr2_type0\n"
+            "1\trs23456\t3214569\tT\tC\t0.082\t0.362\t0.866\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23457\t3214570\tT\tTC\t0.126\t0.299\t0.832\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23457_1\t3214571\tT\tTC\t0.060\t0.300\t0.909\t0\t-1\t"
+            "-1\t-1\n"
+            "1\trs23457_2\t3214572\tT\tTC\t0.084\t0.203\t0.854\t0\t-1\t"
+            "-1\t-1\n"
+            "1\t1:3214573\t3214573\tT\tTC\t0.371\t0.339\t0.619\t0\t-1\t"
+            "-1\t-1\n"
+        )
+        observed = None
+        with open(info_fn, "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
     def test_maf_info(self):
         """Tests the extraction by maf and information value."""
         # Executing the script
@@ -639,6 +815,24 @@ class TestImpute2Extractor(unittest.TestCase):
             observed = i_file.read()
         self.assertEqual(expected, observed)
 
+        # Checks companion files (impute2_info)
+        info_fn = template_name.format(ext="impute2_info")
+        self.assertTrue(os.path.isfile(info_fn))
+        expected = (
+            "chr\tname\tposition\ta0\ta1\texp_freq_a1\tinfo\tcertainty\t"
+            "type\tinfo_type0\tconcord_type0\tr2_type0\n"
+            "1\trs23456\t3214569\tT\tC\t0.082\t0.362\t0.866\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23457_1\t3214571\tT\tTC\t0.060\t0.300\t0.909\t0\t-1\t"
+            "-1\t-1\n"
+            "1\t1:3214573\t3214573\tT\tTC\t0.371\t0.339\t0.619\t0\t-1\t"
+            "-1\t-1\n"
+        )
+        observed = None
+        with open(info_fn, "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
     def test_rate_info(self):
         """Tests the extraction by completion rate and information value."""
         # Executing the script
@@ -682,6 +876,22 @@ class TestImpute2Extractor(unittest.TestCase):
         )
         observed = None
         with open(template_name.format(ext="calls"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checks companion files (impute2_info)
+        info_fn = template_name.format(ext="impute2_info")
+        self.assertTrue(os.path.isfile(info_fn))
+        expected = (
+            "chr\tname\tposition\ta0\ta1\texp_freq_a1\tinfo\tcertainty\t"
+            "type\tinfo_type0\tconcord_type0\tr2_type0\n"
+            "1\trs12345\t1231415\tA\tG\t0.006\t0.359\t0.987\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23456\t3214569\tT\tC\t0.082\t0.362\t0.866\t0\t-1\t-1\t"
+            "-1\n"
+        )
+        observed = None
+        with open(info_fn, "r") as i_file:
             observed = i_file.read()
         self.assertEqual(expected, observed)
 
@@ -741,6 +951,28 @@ class TestImpute2Extractor(unittest.TestCase):
             observed = i_file.read()
         self.assertEqual(expected, observed)
 
+        # Checks companion files (impute2_info)
+        info_fn = template_name.format(ext="impute2_info")
+        self.assertTrue(os.path.isfile(info_fn))
+        expected = (
+            "chr\tname\tposition\ta0\ta1\texp_freq_a1\tinfo\tcertainty\t"
+            "type\tinfo_type0\tconcord_type0\tr2_type0\n"
+            "1\trs23456\t3214569\tT\tC\t0.082\t0.362\t0.866\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23457\t3214570\tT\tTC\t0.126\t0.299\t0.832\t0\t-1\t-1\t"
+            "-1\n"
+            "1\trs23457_1\t3214571\tT\tTC\t0.060\t0.300\t0.909\t0\t-1\t"
+            "-1\t-1\n"
+            "1\trs23457_2\t3214572\tT\tTC\t0.084\t0.203\t0.854\t0\t-1\t"
+            "-1\t-1\n"
+            "1\t1:3214573\t3214573\tT\tTC\t0.371\t0.339\t0.619\t0\t-1\t"
+            "-1\t-1\n"
+        )
+        observed = None
+        with open(info_fn, "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
     def test_genomic_maf_info(self):
         """Tests the extraction by genomic location, maf and information."""
         # Executing the script
@@ -782,6 +1014,20 @@ class TestImpute2Extractor(unittest.TestCase):
         )
         observed = None
         with open(template_name.format(ext="calls"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checks companion files (impute2_info)
+        info_fn = template_name.format(ext="impute2_info")
+        self.assertTrue(os.path.isfile(info_fn))
+        expected = (
+            "chr\tname\tposition\ta0\ta1\texp_freq_a1\tinfo\tcertainty\t"
+            "type\tinfo_type0\tconcord_type0\tr2_type0\n"
+            "1\trs23456\t3214569\tT\tC\t0.082\t0.362\t0.866\t0\t-1\t-1\t"
+            "-1\n"
+        )
+        observed = None
+        with open(info_fn, "r") as i_file:
             observed = i_file.read()
         self.assertEqual(expected, observed)
 
@@ -829,6 +1075,20 @@ class TestImpute2Extractor(unittest.TestCase):
             observed = i_file.read()
         self.assertEqual(expected, observed)
 
+        # Checks companion files (impute2_info)
+        info_fn = template_name.format(ext="impute2_info")
+        self.assertTrue(os.path.isfile(info_fn))
+        expected = (
+            "chr\tname\tposition\ta0\ta1\texp_freq_a1\tinfo\tcertainty\t"
+            "type\tinfo_type0\tconcord_type0\tr2_type0\n"
+            "1\trs12345\t1231415\tA\tG\t0.006\t0.359\t0.987\t0\t-1\t-1\t"
+            "-1\n"
+        )
+        observed = None
+        with open(info_fn, "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
     def test_genomic_maf_rate_info(self):
         """Tests the extraction by genomic location, maf, rate and info."""
         # Executing the script
@@ -871,5 +1131,19 @@ class TestImpute2Extractor(unittest.TestCase):
         )
         observed = None
         with open(template_name.format(ext="calls"), "r") as i_file:
+            observed = i_file.read()
+        self.assertEqual(expected, observed)
+
+        # Checks companion files (impute2_info)
+        info_fn = template_name.format(ext="impute2_info")
+        self.assertTrue(os.path.isfile(info_fn))
+        expected = (
+            "chr\tname\tposition\ta0\ta1\texp_freq_a1\tinfo\tcertainty\t"
+            "type\tinfo_type0\tconcord_type0\tr2_type0\n"
+            "1\trs23456\t3214569\tT\tC\t0.082\t0.362\t0.866\t0\t-1\t-1\t"
+            "-1\n"
+        )
+        observed = None
+        with open(info_fn, "r") as i_file:
             observed = i_file.read()
         self.assertEqual(expected, observed)
