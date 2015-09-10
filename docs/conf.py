@@ -295,6 +295,6 @@ texinfo_documents = [
 intersphinx_mapping = {
     'https://docs.python.org/3.4': None,
     'numpy': ('http://docs.scipy.org/doc/numpy/', None),
-    'pandas': ('http://pandas.pydata.org/pandas-docs/dev', None),
+    'pandas': ('http://pandas.pydata.org/pandas-docs/stable/', None),
     'jinja2': ('http://jinja.pocoo.org/docs', None),
 }
