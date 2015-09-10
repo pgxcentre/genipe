@@ -6,6 +6,7 @@
 # http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
+
 import os
 import re
 import sys
@@ -49,23 +50,34 @@ def main(args=None):
         # Parsing the options
         args = parse_args(parser, args)
 
-        # Getting the output directory (dirname of the output prefix
+        # Getting the output directory (dirname of the output prefix)
         out_dir = os.path.dirname(args.out)
 
+        # The logging handlers
+        handlers = [logging.StreamHandler()]
+        if not args.index_only:
+            log_file = args.out + ".log"
+            logging_fh = logging.FileHandler(log_file, mode="w")
+            handlers.append(logging_fh)
+
         # Adding the logging capability
-        log_file = args.out + ".log"
-        logging_fh = logging.FileHandler(log_file, mode="w")
         logging.basicConfig(
             format="[%(asctime)s %(levelname)s] %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S",
             level=logging.DEBUG if args.debug else logging.INFO,
-            handlers=[logging.StreamHandler(), logging_fh]
+            handlers=handlers,
         )
-        logging.info("Logging everything into '{}'".format(log_file))
+
+        # First log
+        if not args.index_only:
+            logging.info("Logging everything into '{}'".format(log_file))
         logging.info("Program arguments: '{}'".format(" ".join(sys.argv[1:])))
 
         # Checking the options
         check_args(args)
+
+        if args.index_only:
+            return index_files(args.impute2)
 
         # Gathering what needs to be extracted
         to_extract = gather_extraction(
@@ -103,6 +115,27 @@ def main(args=None):
     finally:
         if logging_fh is not None:
             logging_fh.close()
+
+
+def index_files(i_filenames):
+    """Indexes the impute2 files.
+
+    Args:
+        i_filenames (list): the list of input file names
+
+    This function uses the :py:func:`genipe.formats.index.get_index` to create
+    the index file if it's missing.
+
+    Note
+    ----
+        We won't catch the :py:class:`genipe.error.ProgramError` exception if
+        it's raised, since the message will be relevant to the user.
+
+    """
+    # For each input file
+    for i_filename in i_filenames:
+        get_index(i_filename, cols=[0, 1, 2], names=["chrom", "name", "pos"],
+                  sep=" ")
 
 
 def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
@@ -376,11 +409,19 @@ def check_args(args):
         If there is a problem, a :py:class:`genipe.error.ProgramError` is
         raised.
 
+    Note
+    ----
+        Noting is checked (apart from the impute2 files) if indexation is asked
+        (``--index`` option).
+
     """
     # Checking that the impute2 files exists
     for filename in args.impute2:
         if not os.path.isfile(filename):
             raise ProgramError("{}: no such file".format(filename))
+
+    if args.index_only:
+        return True
 
     # Is there something to extract?
     if not args.genomic and not args.maf and not args.rate and not args.info:
@@ -499,6 +540,15 @@ def parse_args(parser, args=None):
         required=True,
         nargs="+",
         help="The output from IMPUTE2.",
+    )
+
+    # Indexation options
+    group = parser.add_argument_group("Indexation Options")
+    group.add_argument(
+        "--index",
+        dest="index_only",
+        action="store_true",
+        help="Only perform the indexation.",
     )
 
     # The output files
