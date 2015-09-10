@@ -53,7 +53,7 @@ def generate_report(out_dir, run_opts, run_info):
     }
 
     # We want to copy the figures to the right place
-    figures = ["frequency_pie"]
+    figures = ["frequency_barh"]
     for figure in figures:
         assert figure in run_info, figure
         if run_info[figure] != "":
@@ -297,7 +297,7 @@ def _generate_results(templates, run_options, run_information):
                           "nb_maf_geq_05", "nb_maf_lt_05", "nb_maf_lt_01",
                           "nb_maf_geq_01_lt_05", "pct_maf_geq_01",
                           "pct_maf_geq_05", "pct_maf_lt_05", "pct_maf_lt_01",
-                          "pct_maf_geq_01_lt_05", "frequency_pie"]
+                          "pct_maf_geq_01_lt_05", "frequency_barh"]
 
     for required_variable in required_variables:
         assert required_variable in run_information, required_variable
@@ -418,9 +418,9 @@ def _generate_results(templates, run_options, run_information):
         section_label="subsec:completion_rate",
     )
 
-    # Do we have a frequency pie?
+    # Do we have a frequency bar plot?
     frequency_float = ""
-    if run_information["frequency_pie"] != "":
+    if run_information["frequency_barh"] != "":
         frequency_float = create_float(
             template=float_template,
             float_type="figure",
@@ -431,11 +431,11 @@ def _generate_results(templates, run_options, run_information):
                 "more.".format(run_information["rate_threshold"],
                                run_information["prob_threshold"])
             )),
-            label="fig:frequency_pie",
+            label="fig:frequency_barh",
             placement="H",
             content=graphics_template.render(
-                width=r"0.5\textwidth",
-                path=run_information["frequency_pie"],
+                width=r"0.9\textwidth",
+                path=run_information["frequency_barh"],
             ),
         )
     run_information["frequency_float"] = frequency_float

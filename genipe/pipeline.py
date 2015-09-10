@@ -1675,8 +1675,8 @@ def gather_maf_stats(o_dir):
     | ``pct_maf_geq_01_lt_05`` | the percentage of markers with               |
     |                          | 1% >= MAF < 5%                               |
     +--------------------------+----------------------------------------------+
-    | ``frequency_pie``        | the name of the file containing the pie      |
-    |                          | chart (if it was created)                    |
+    | ``frequency_barh``       | the name of the file containing the bar plot |
+    |                          | (if it was created)                          |
     +--------------------------+----------------------------------------------+
 
     """
@@ -1774,76 +1774,61 @@ def gather_maf_stats(o_dir):
     else:
         logging.warning("There were no marker with MAF (something went wrong)")
 
-    # Generating a pie chart if matplotlib is installed
-    frequency_pie = ""
+    # Generating a bar plot if matplotlib is installed
+    frequency_barh = ""
     if (nb_marker_with_maf > 0) and HAS_MATPLOTLIB:
         # Creating a figure and axe
-        figure, axe = plt.subplots(1, 1, figsize=(6, 9))
+        figure, axe = plt.subplots(1, 1, figsize=(15, 3))
 
         # The colors
         colors = ["#0099CC", "#669900", "#FF8800"]
 
-        # The data for the pie chart
-        labels = [
-            "{:.1f}%".format(nb_maf_lt_01 / nb_marker_with_maf * 100),
-            "{:.1f}%".format(nb_maf_geq_01_lt_05 / nb_marker_with_maf * 100),
-            "{:.1f}%".format(nb_maf_geq_05 / nb_marker_with_maf * 100),
-        ]
+        # The labels
+        ylabels = [r"$MAF < 1\%$", r"$1\% \leq MAF < 5\%$", r"$MAF \geq 5\%$"]
+
+        # The data
         sizes = [nb_maf_lt_01, nb_maf_geq_01_lt_05, nb_maf_geq_05]
-        explode = (0.05, 0.05, 0.05)
-        wedges, texts = axe.pie(sizes, explode=explode, labels=labels,
-                                colors=colors, startangle=90,
-                                wedgeprops={"linewidth": 0},
-                                textprops={"fontsize": 12, "weight": "bold"})
 
-        # Changing the label parameters
-        for text in texts:
-            text.set_bbox({"boxstyle": "round", "fc": "#C0C0C0",
-                           "ec": "#C0C0C0"})
+        # Plotting the horizontal bar plot
+        axe.barh(bottom=range(len(sizes)), width=sizes, color=colors, lw=0,
+                 align="center")
 
-        # Shrink current axis by 50%
-        bbox = axe.get_position()
-        axe.set_position([bbox.x0, bbox.y0, bbox.width * 0.5,
-                         bbox.height * 0.5])
+        # Formatting the x tick labels
+        xticks = axe.get_xticks()
+        int_xticks = [int(xtick) for xtick in xticks]
+        if (xticks == int_xticks).all():
+            # The tick labels are integer
+            axe.set_xticklabels(["{:,d}".format(tick) for tick in int_xticks])
 
-        # If no restriction was performed while imputing, there will be a high
-        # majority of ultra rare variants... We need to move the text box if
-        # they touch
-        # Getting the renderer and the bboxes
-        renderer = figure.canvas.get_renderer()
-        bbox_1 = texts[1].get_window_extent(renderer=renderer)
-        bbox_2 = texts[2].get_window_extent(renderer=renderer)
-        while bbox_1.overlaps(bbox_2):
-            # Moving the first label a bit
-            x, y = texts[1].get_position()
-            texts[1].set_x(x + 0.006)
-            bbox_1 = texts[1].get_window_extent(renderer=renderer)
+        # Formatting the y tick labels
+        axe.set_yticks([0, 1, 2])
+        axe.set_yticklabels(ylabels, fontsize=18)
 
-            # Moving the second label (MAF >= 0.05)
-            x, y = texts[2].get_position()
-            texts[2].set_x(x - 0.036)
-            bbox_2 = texts[2].get_window_extent(renderer=renderer)
+        # Adding the xlabel
+        axe.set_xlabel("Number of sites", weight="bold", fontsize=18)
 
-        # Adding a legend in the margin with custom patches
-        ultra_rare = mpatches.Patch(color=colors[0], linewidth=3)
-        rare = mpatches.Patch(color=colors[1], linewidth=3)
-        common = mpatches.Patch(color=colors[2], linewidth=3)
-        axe.legend(
-            [ultra_rare, rare, common],
-            [r"$MAF < 1\%$", r"$1\% \leq MAF < 5\%$", r"$MAF \geq 5\%$"],
-            bbox_to_anchor=(1.3, 1),
-            loc="upper left",
-            ncol=1,
-            frameon=False,
-            fontsize=21,
-        )
+        # Removing the y axis
+        axe.spines["left"].set_visible(False)
+        axe.spines["right"].set_visible(False)
+        axe.get_yaxis().set_tick_params(left="off", right="off")
 
-        # Setting the axis to equal size
-        axe.axis("equal")
+        # Removing the x axis
+        axe.spines["top"].set_visible(False)
+        axe.get_xaxis().tick_bottom()
+
+        # Adding the annotation
+        xmin, xmax = axe.get_xlim()
+        annotations = [
+            "{:.1f}%".format(v / nb_marker_with_maf * 100) for v in sizes
+        ]
+        for i, annotation in enumerate(annotations):
+            axe.text((xmax - xmin) * 0.02, i, annotation, ha="left",
+                     va="center", weight="bold", fontsize=14,
+                     bbox=dict(boxstyle="round", fc="white", ec="white"))
 
         # Saving and closing the figure
-        frequency_pie = os.path.join(o_dir, "frequency_pie.pdf")
-        plt.savefig(frequency_pie, bbox_inches="tight", figure=figure)
+        frequency_barh = os.path.join(o_dir, "frequency_barh.pdf")
+        plt.savefig(frequency_barh, bbox_inches="tight", figure=figure)
         plt.close(figure)
 
     return {
@@ -1859,7 +1844,7 @@ def gather_maf_stats(o_dir):
         "pct_maf_lt_05":        "{:.1f}".format(pct_maf_lt_05),
         "pct_maf_lt_01":        "{:.1f}".format(pct_maf_lt_01),
         "pct_maf_geq_01_lt_05": "{:.1f}".format(pct_maf_geq_01_lt_05),
-        "frequency_pie":        frequency_pie,
+        "frequency_barh":       frequency_barh,
     }
 
 
