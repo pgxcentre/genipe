@@ -393,10 +393,10 @@ class TestMainPipeline(unittest.TestCase):
                       "marker_39", "marker_41", "marker_43", "marker_44"]
 
         # The PDF generated
-        frequency_pie = ""
+        frequency_barh = ""
         if HAS_MATPLOTLIB:
-            frequency_pie = os.path.join(self.output_dir.name,
-                                         "frequency_pie.pdf")
+            frequency_barh = os.path.join(self.output_dir.name,
+                                          "frequency_barh.pdf")
         # The expected results
         nb_sites = len(good_sites)
         expected_results = {
@@ -412,7 +412,7 @@ class TestMainPipeline(unittest.TestCase):
             "nb_maf_geq_01_lt_05":  "12",
             "pct_maf_geq_01_lt_05": "{:.1f}".format(12 / nb_sites * 100),
             "nb_maf_nan":           "0",
-            "frequency_pie":        frequency_pie,
+            "frequency_barh":       frequency_barh,
         }
 
         # Creating the files for the test
@@ -460,9 +460,9 @@ class TestMainPipeline(unittest.TestCase):
         # If matplotlib is installed, checking we have a figure (and not
         # otherwise)
         if HAS_MATPLOTLIB:
-            self.assertTrue(os.path.isfile(frequency_pie))
+            self.assertTrue(os.path.isfile(frequency_barh))
         else:
-            self.assertFalse(os.path.isfile(frequency_pie))
+            self.assertFalse(os.path.isfile(frequency_barh))
 
         # Testing an invalid entry
         changed_filename = filename_template.format(chrom=1, suffix="maf")

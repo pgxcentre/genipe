@@ -13,13 +13,23 @@
 
 
 import os
+import sys
 from setuptools import setup
 
 
 MAJOR = 1
 MINOR = 2
-MICRO = 1
-VERSION = "{}.{}.{}".format(MAJOR, MINOR, MICRO)
+MICRO = 2
+VERSION = "{0}.{1}.{2}".format(MAJOR, MINOR, MICRO)
+
+
+def check_python_version():
+    """Checks the python version, exits if < 3.3."""
+    python_major, python_minor = sys.version_info[:2]
+
+    if python_major != 3 or python_minor < 3:
+        sys.stderr.write("genipe requires python 3 (version 3.3 or higher)\n")
+        sys.exit(1)
 
 
 def write_version_file(fn=None):
@@ -40,6 +50,9 @@ def write_version_file(fn=None):
 
 
 def setup_package():
+    # Checking the python version prior to installation
+    check_python_version()
+
     # Saving the version into a file
     write_version_file()
 
@@ -66,7 +79,7 @@ def setup_package():
                 "imputed-stats=genipe.tools.imputed_stats:main",
             ],
         },
-        install_requires=["numpy >= 1.9.2", "jinja2 >= 2.7.3",
+        install_requires=["numpy >= 1.9.2", "Jinja2 >= 2.7.3",
                           "pandas >= 0.15.2", "setuptools >= 12.0.5"],
         packages=["genipe", "genipe.task", "genipe.db", "genipe.tools",
                   "genipe.formats", "genipe.reporting", "genipe.config",

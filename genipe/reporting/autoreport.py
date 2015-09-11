@@ -53,7 +53,7 @@ def generate_report(out_dir, run_opts, run_info):
     }
 
     # We want to copy the figures to the right place
-    figures = ["frequency_pie"]
+    figures = ["frequency_barh"]
     for figure in figures:
         assert figure in run_info, figure
         if run_info[figure] != "":
@@ -109,16 +109,26 @@ def _generate_background(templates, run_options, run_information):
         str: a string representation of the "background" section
 
     """
+    # Some assertion
+    assert "report_background" in run_options
+
+    # The background can either be a file or a string
+    background_content = run_options.report_background
+    if os.path.isfile(background_content):
+        with open(background_content, "r") as i_file:
+            background_content = " ".join(
+                line for line in i_file.read().splitlines() if line != ""
+            )
+
     # Loading the template
     section_template = templates.get_template("section_template.tex")
-    background = templates.get_template("parts/background.tex")
 
     # Returning the section
     return section_template.render(
         section_name="Background",
         section_type="section",
         section_label="sec:background",
-        section_content=background.render(**run_information),
+        section_content=sanitize_tex(background_content),
     )
 
 
@@ -165,15 +175,8 @@ def _generate_methods(templates, run_options, run_information):
 
     # The input files
     data_files = [
-        "{}.{}".format(run_options.bfile, ext) for ext in ["bed", "bim", "fam"]
+        "{}.{}".format(run_options.bfile, ext) for ext in ("bed", "bim", "fam")
     ]
-    data_files = [
-        format_tex(sanitize_tex(text), "texttt") for text in data_files
-    ]
-
-    # Creating the iteration
-    data_files = itemize_template.render(iteration_type="itemize",
-                                         iteration_list=data_files)
 
     # The text for the different steps
     steps = []
@@ -203,12 +206,12 @@ def _generate_methods(templates, run_options, run_information):
         format_tex("C", "texttt") + "/" + format_tex("G", "texttt") +
         sanitize_tex(
             ", duplicated markers (same position), and markers located on "
-            "special chromosomes (sexual or mitochondrial chromosomes) were "
-            "excluded from the imputation. "
+            "sexual or mitochondrial chromosomes were excluded from the "
+            "imputation. "
     ) + to_add_1 + format_tex(
         sanitize_tex(
             "In total, {ambiguous} ambiguous, {duplicated} duplicated and "
-            "{special} special markers were excluded.".format(
+            "{special} non-autosomal markers were excluded.".format(
                 ambiguous=run_information["nb_ambiguous"],
                 duplicated=run_information["nb_duplicates"],
                 special=run_information["nb_special_markers"],
@@ -294,7 +297,7 @@ def _generate_results(templates, run_options, run_information):
                           "nb_maf_geq_05", "nb_maf_lt_05", "nb_maf_lt_01",
                           "nb_maf_geq_01_lt_05", "pct_maf_geq_01",
                           "pct_maf_geq_05", "pct_maf_lt_05", "pct_maf_lt_01",
-                          "pct_maf_geq_01_lt_05", "frequency_pie"]
+                          "pct_maf_geq_01_lt_05", "frequency_barh"]
 
     for required_variable in required_variables:
         assert required_variable in run_information, required_variable
@@ -415,9 +418,9 @@ def _generate_results(templates, run_options, run_information):
         section_label="subsec:completion_rate",
     )
 
-    # Do we have a frequency pie?
+    # Do we have a frequency bar plot?
     frequency_float = ""
-    if run_information["frequency_pie"] != "":
+    if run_information["frequency_barh"] != "":
         frequency_float = create_float(
             template=float_template,
             float_type="figure",
@@ -428,11 +431,11 @@ def _generate_results(templates, run_options, run_information):
                 "more.".format(run_information["rate_threshold"],
                                run_information["prob_threshold"])
             )),
-            label="fig:frequency_pie",
+            label="fig:frequency_barh",
             placement="H",
             content=graphics_template.render(
-                width=r"0.5\textwidth",
-                path=run_information["frequency_pie"],
+                width=r"0.9\textwidth",
+                path=run_information["frequency_barh"],
             ),
         )
     run_information["frequency_float"] = frequency_float

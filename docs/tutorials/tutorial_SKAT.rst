@@ -9,6 +9,7 @@ Quick navigation
 3. :ref:`skat-tut-3`
 4. :ref:`skat-tut-4`
 5. :ref:`skat-tut-5`
+6. :ref:`skat-tut-6`
 
 SKAT analysis tutorial
 -----------------------
@@ -130,6 +131,7 @@ thresholds.
 Only the variants in this file will be considered by the ``imputed-stats``
 tool.
 
+
 .. _skat-tut-2:
 
 Creating a SNP sets file
@@ -189,6 +191,7 @@ variants. If you want to use custom weights based on something la
 deleteriousness prediction, you need to generate the weights manually and
 provide them in the SNP set file as shown here.
 
+
 .. _skat-tut-3:
 
 Format for the phenotypes file
@@ -219,6 +222,7 @@ As you can see, both continuous an discrete traits can be included in this
 file, as well as covariates. The covariates are included in the analysis using
 the ``--covar`` argument and the variable type of the outcome is given using
 the ``--outcome-type`` argument which can be set to `discrete` or `continuous`.
+
 
 .. _skat-tut-4:
 
@@ -282,6 +286,7 @@ The line by line explanation of this command is as follows:
     Also note that the SKAT-O algorithm can be used by using the ``--skat-o``
     flag.
 
+
 .. _skat-tut-5:
 
 Results
@@ -314,3 +319,85 @@ If you have any questions or problems, don't hesitate to contact us through our
 
 We are also very open to suggestions and improvements. If you have developed a
 new interesting feature, please send us a push request from Github.
+
+
+.. _skat-tut-6:
+
+Usage
+^^^^^^
+
+The following command will display the documentation for the SKAT analysis in
+the console:
+
+.. code-block:: console
+
+   $ imputed-stats skat --help
+   usage: imputed-stats skat [-h] [-v] [--debug] --impute2 FILE --sample FILE
+                             --pheno FILE [--extract-sites FILE] [--out FILE]
+                             [--nb-process INT] [--nb-lines INT] [--chrx]
+                             [--gender-column NAME] [--scale INT] [--prob FLOAT]
+                             [--maf FLOAT] [--covar NAME] [--categorical NAME]
+                             [--missing-value NAME] [--sample-column NAME]
+                             [--interaction NAME] --snp-sets FILE --outcome-type
+                             {continuous,discrete} [--skat-o] --pheno-name NAME
+
+   Uses the SKAT R package to analyze user defined gene sets. This script is part
+   of the 'genipe' package, version 1.2.2).
+
+   optional arguments:
+     -h, --help            show this help message and exit
+     -v, --version         show program's version number and exit
+     --debug               set the logging level to debug
+
+   Input Files:
+     --impute2 FILE        The output from IMPUTE2.
+     --sample FILE         The sample file (the order should be the same as in
+                           the IMPUTE2 files).
+     --pheno FILE          The file containing phenotypes and co variables.
+     --extract-sites FILE  A list of sites to extract for analysis (optional).
+
+   Output Options:
+     --out FILE            The prefix for the output files. [imputed_stats]
+
+   General Options:
+     --nb-process INT      The number of process to use. [1]
+     --nb-lines INT        The number of line to read at a time. [1000]
+     --chrx                The analysis is performed for the non pseudo-autosomal
+                           region of the chromosome X (male dosage will be
+                           divided by 2 to get values [0, 0.5] instead of [0, 1])
+                           (males are coded as 1 and option '--gender-column'
+                           should be used).
+     --gender-column NAME  The name of the gender column (use to exclude samples
+                           with unknown gender (i.e. not 1, male, or 2, female).
+                           If gender not available, use 'None'. [Gender]
+
+   Dosage Options:
+     --scale INT           Scale dosage so that values are in [0, n] (possible
+                           values are 1 (no scaling) or 2). [2]
+     --prob FLOAT          The minimal probability for which a genotype should be
+                           considered. [>=0.9]
+     --maf FLOAT           Minor allele frequency threshold for which marker will
+                           be skipped. [<0.01]
+
+   Phenotype Options:
+     --covar NAME          The co variable names (in the phenotype file),
+                           separated by coma.
+     --categorical NAME    The name of the variables that are categorical (note
+                           that the gender is always categorical). The variables
+                           are separated by coma.
+     --missing-value NAME  The missing value in the phenotype file.
+     --sample-column NAME  The name of the sample ID column (in the phenotype
+                           file). [sample_id]
+     --interaction NAME    Add an interaction between the genotype and this
+                           variable.
+
+   SKAT Options:
+     --snp-sets FILE       A file indicating a snp_set and an optional weight for
+                           every variant.
+     --outcome-type {continuous,discrete}
+                           The variable type for the outcome. This will be passed
+                           to SKAT.
+     --skat-o              By default, the regular SKAT is used. Setting this
+                           flag will use the SKAT-O algorithm instead.
+     --pheno-name NAME     The phenotype.
+

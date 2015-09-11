@@ -172,6 +172,12 @@ The following example shows two lines of the ``.impute2`` file.
    22 rs7289830 16058758 C A 0 0 1 0 0 1 0 1 0 ...
    22 rs6423472 16087621 A G 0 1 0 1 0 0 0 1 0 ...
 
+.. note::
+
+   When extracting using the ``impute2`` format, all the existing companion
+   files (``.maf``, ``.map``, etc.) will also be extracted and included in the
+   same directory (using the same output prefix).
+
 
 ``.dosage`` file
 """""""""""""""""
@@ -239,7 +245,7 @@ analysis in the console:
                             [--rate FLOAT] [--info FLOAT]
 
    Extract imputed markers located in a specific genomic region. This script is
-   part of the 'genipe' package, version 1.2.1).
+   part of the 'genipe' package, version 1.2.2).
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -276,4 +282,9 @@ analysis in the console:
      --info FLOAT          Extract markers with an information equal or higher to
                            the specified threshold. Can be use in combination
                            with '--maf', '--rate' and '--genomic'.
+
+.. note::
+
+   When using the ``--index`` option, only the indexation (of files without an
+   index) will be performed.
 
