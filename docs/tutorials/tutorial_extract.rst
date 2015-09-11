@@ -277,3 +277,8 @@ analysis in the console:
                            the specified threshold. Can be use in combination
                            with '--maf', '--rate' and '--genomic'.
 
+.. note::
+
+   When using the ``--index`` option, only the indexation (of files without an
+   index) will be performed.
+
