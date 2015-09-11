@@ -10,6 +10,7 @@
 import os
 import re
 import sys
+import shutil
 import logging
 import argparse
 from collections import namedtuple
@@ -268,6 +269,12 @@ def extract_companion_files(i_prefix, o_prefix, to_extract):
 
                 if row[info["index"]] in to_extract:
                     o_file.write(line)
+
+    # We need to copy the sample file
+    sample_fn = i_prefix + ".sample"
+    if os.path.isfile(sample_fn):
+        o_fn = o_prefix + ".sample"
+        shutil.copyfile(sample_fn, o_fn)
 
 
 def print_data(o_files, prob_t, *, line=None, row=None):
