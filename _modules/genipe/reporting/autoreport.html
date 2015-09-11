@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.reporting.autoreport &mdash; genipe 1.2.1 documentation</title>
+    <title>genipe.reporting.autoreport &mdash; genipe 1.2.2 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.2.1',
+        VERSION:     '1.2.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.2.1 documentation" href="../../../index.html" />
+    <link rel="top" title="genipe 1.2.2 documentation" href="../../../index.html" />
     <link rel="up" title="genipe" href="../../genipe.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
       </ul>
@@ -126,7 +126,7 @@
     <span class="p">}</span>
 
     <span class="c"># We want to copy the figures to the right place</span>
-    <span class="n">figures</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;frequency_pie&quot;</span><span class="p">]</span>
+    <span class="n">figures</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;frequency_barh&quot;</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">figure</span> <span class="ow">in</span> <span class="n">figures</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">figure</span> <span class="ow">in</span> <span class="n">run_info</span><span class="p">,</span> <span class="n">figure</span>
         <span class="k">if</span> <span class="n">run_info</span><span class="p">[</span><span class="n">figure</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
@@ -182,16 +182,26 @@
 <span class="sd">        str: a string representation of the &quot;background&quot; section</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># Some assertion</span>
+    <span class="k">assert</span> <span class="s">&quot;report_background&quot;</span> <span class="ow">in</span> <span class="n">run_options</span>
+
+    <span class="c"># The background can either be a file or a string</span>
+    <span class="n">background_content</span> <span class="o">=</span> <span class="n">run_options</span><span class="o">.</span><span class="n">report_background</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">background_content</span><span class="p">):</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">background_content</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">background_content</span> <span class="o">=</span> <span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
+                <span class="n">line</span> <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">()</span> <span class="k">if</span> <span class="n">line</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span>
+            <span class="p">)</span>
+
     <span class="c"># Loading the template</span>
     <span class="n">section_template</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;section_template.tex&quot;</span><span class="p">)</span>
-    <span class="n">background</span> <span class="o">=</span> <span class="n">templates</span><span class="o">.</span><span class="n">get_template</span><span class="p">(</span><span class="s">&quot;parts/background.tex&quot;</span><span class="p">)</span>
 
     <span class="c"># Returning the section</span>
     <span class="k">return</span> <span class="n">section_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
         <span class="n">section_name</span><span class="o">=</span><span class="s">&quot;Background&quot;</span><span class="p">,</span>
         <span class="n">section_type</span><span class="o">=</span><span class="s">&quot;section&quot;</span><span class="p">,</span>
         <span class="n">section_label</span><span class="o">=</span><span class="s">&quot;sec:background&quot;</span><span class="p">,</span>
-        <span class="n">section_content</span><span class="o">=</span><span class="n">background</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="o">**</span><span class="n">run_information</span><span class="p">),</span>
+        <span class="n">section_content</span><span class="o">=</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="n">background_content</span><span class="p">),</span>
     <span class="p">)</span>
 
 
@@ -238,15 +248,8 @@
 
     <span class="c"># The input files</span>
     <span class="n">data_files</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="s">&quot;{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_options</span><span class="o">.</span><span class="n">bfile</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span> <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">[</span><span class="s">&quot;bed&quot;</span><span class="p">,</span> <span class="s">&quot;bim&quot;</span><span class="p">,</span> <span class="s">&quot;fam&quot;</span><span class="p">]</span>
+        <span class="s">&quot;{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_options</span><span class="o">.</span><span class="n">bfile</span><span class="p">,</span> <span class="n">ext</span><span class="p">)</span> <span class="k">for</span> <span class="n">ext</span> <span class="ow">in</span> <span class="p">(</span><span class="s">&quot;bed&quot;</span><span class="p">,</span> <span class="s">&quot;bim&quot;</span><span class="p">,</span> <span class="s">&quot;fam&quot;</span><span class="p">)</span>
     <span class="p">]</span>
-    <span class="n">data_files</span> <span class="o">=</span> <span class="p">[</span>
-        <span class="n">format_tex</span><span class="p">(</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">data_files</span>
-    <span class="p">]</span>
-
-    <span class="c"># Creating the iteration</span>
-    <span class="n">data_files</span> <span class="o">=</span> <span class="n">itemize_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">iteration_type</span><span class="o">=</span><span class="s">&quot;itemize&quot;</span><span class="p">,</span>
-                                         <span class="n">iteration_list</span><span class="o">=</span><span class="n">data_files</span><span class="p">)</span>
 
     <span class="c"># The text for the different steps</span>
     <span class="n">steps</span> <span class="o">=</span> <span class="p">[]</span>
@@ -276,12 +279,12 @@
         <span class="n">format_tex</span><span class="p">(</span><span class="s">&quot;C&quot;</span><span class="p">,</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="o">+</span> <span class="s">&quot;/&quot;</span> <span class="o">+</span> <span class="n">format_tex</span><span class="p">(</span><span class="s">&quot;G&quot;</span><span class="p">,</span> <span class="s">&quot;texttt&quot;</span><span class="p">)</span> <span class="o">+</span>
         <span class="n">sanitize_tex</span><span class="p">(</span>
             <span class="s">&quot;, duplicated markers (same position), and markers located on &quot;</span>
-            <span class="s">&quot;special chromosomes (sexual or mitochondrial chromosomes) were &quot;</span>
-            <span class="s">&quot;excluded from the imputation. &quot;</span>
+            <span class="s">&quot;sexual or mitochondrial chromosomes were excluded from the &quot;</span>
+            <span class="s">&quot;imputation. &quot;</span>
     <span class="p">)</span> <span class="o">+</span> <span class="n">to_add_1</span> <span class="o">+</span> <span class="n">format_tex</span><span class="p">(</span>
         <span class="n">sanitize_tex</span><span class="p">(</span>
             <span class="s">&quot;In total, {ambiguous} ambiguous, {duplicated} duplicated and &quot;</span>
-            <span class="s">&quot;{special} special markers were excluded.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s">&quot;{special} non-autosomal markers were excluded.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">ambiguous</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;nb_ambiguous&quot;</span><span class="p">],</span>
                 <span class="n">duplicated</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;nb_duplicates&quot;</span><span class="p">],</span>
                 <span class="n">special</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;nb_special_markers&quot;</span><span class="p">],</span>
@@ -367,7 +370,7 @@
                           <span class="s">&quot;nb_maf_geq_05&quot;</span><span class="p">,</span> <span class="s">&quot;nb_maf_lt_05&quot;</span><span class="p">,</span> <span class="s">&quot;nb_maf_lt_01&quot;</span><span class="p">,</span>
                           <span class="s">&quot;nb_maf_geq_01_lt_05&quot;</span><span class="p">,</span> <span class="s">&quot;pct_maf_geq_01&quot;</span><span class="p">,</span>
                           <span class="s">&quot;pct_maf_geq_05&quot;</span><span class="p">,</span> <span class="s">&quot;pct_maf_lt_05&quot;</span><span class="p">,</span> <span class="s">&quot;pct_maf_lt_01&quot;</span><span class="p">,</span>
-                          <span class="s">&quot;pct_maf_geq_01_lt_05&quot;</span><span class="p">,</span> <span class="s">&quot;frequency_pie&quot;</span><span class="p">]</span>
+                          <span class="s">&quot;pct_maf_geq_01_lt_05&quot;</span><span class="p">,</span> <span class="s">&quot;frequency_barh&quot;</span><span class="p">]</span>
 
     <span class="k">for</span> <span class="n">required_variable</span> <span class="ow">in</span> <span class="n">required_variables</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">required_variable</span> <span class="ow">in</span> <span class="n">run_information</span><span class="p">,</span> <span class="n">required_variable</span>
@@ -488,9 +491,9 @@
         <span class="n">section_label</span><span class="o">=</span><span class="s">&quot;subsec:completion_rate&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="c"># Do we have a frequency pie?</span>
+    <span class="c"># Do we have a frequency bar plot?</span>
     <span class="n">frequency_float</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;frequency_pie&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;frequency_barh&quot;</span><span class="p">]</span> <span class="o">!=</span> <span class="s">&quot;&quot;</span><span class="p">:</span>
         <span class="n">frequency_float</span> <span class="o">=</span> <span class="n">create_float</span><span class="p">(</span>
             <span class="n">template</span><span class="o">=</span><span class="n">float_template</span><span class="p">,</span>
             <span class="n">float_type</span><span class="o">=</span><span class="s">&quot;figure&quot;</span><span class="p">,</span>
@@ -501,11 +504,11 @@
                 <span class="s">&quot;more.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;rate_threshold&quot;</span><span class="p">],</span>
                                <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;prob_threshold&quot;</span><span class="p">])</span>
             <span class="p">)),</span>
-            <span class="n">label</span><span class="o">=</span><span class="s">&quot;fig:frequency_pie&quot;</span><span class="p">,</span>
+            <span class="n">label</span><span class="o">=</span><span class="s">&quot;fig:frequency_barh&quot;</span><span class="p">,</span>
             <span class="n">placement</span><span class="o">=</span><span class="s">&quot;H&quot;</span><span class="p">,</span>
             <span class="n">content</span><span class="o">=</span><span class="n">graphics_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
-                <span class="n">width</span><span class="o">=</span><span class="s">r&quot;0.5\textwidth&quot;</span><span class="p">,</span>
-                <span class="n">path</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;frequency_pie&quot;</span><span class="p">],</span>
+                <span class="n">width</span><span class="o">=</span><span class="s">r&quot;0.9\textwidth&quot;</span><span class="p">,</span>
+                <span class="n">path</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s">&quot;frequency_barh&quot;</span><span class="p">],</span>
             <span class="p">),</span>
         <span class="p">)</span>
     <span class="n">run_information</span><span class="p">[</span><span class="s">&quot;frequency_float&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">frequency_float</span>
@@ -863,7 +866,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>

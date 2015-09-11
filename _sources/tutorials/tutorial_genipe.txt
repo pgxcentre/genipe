@@ -352,8 +352,8 @@ genome-wide imputation of the *HapMap* CEU dataset.
    ``--impute2-bin`` and/or the ``--plink-bin`` options if the SHAPEIT, IMPUTE2
    and/or the Plink binaries are in  the ``PATH`` variable.
 
-The following table describes the option used by :py:mod:`genipe` in the
-previous command (see the :ref:`genipe-usage` section for a full list):
+The following table describes the options **used by** :py:mod:`genipe` **in the
+previous command** (see the :ref:`genipe-usage` section for a full list):
 
 .. table::
 
@@ -409,6 +409,12 @@ previous command (see the :ref:`genipe-usage` section for a full list):
    The pipeline checks if output files are missing. If an output file is
    deleted, the step producing this file will be run again (but not the
    subsequent steps).
+
+
+.. note::
+
+   Four options will modify the report content: ``--report-number``,
+   ``--report-title``, ``--report-author`` and ``--report-background``.
 
 
 .. _genipe-tut-compile-report:

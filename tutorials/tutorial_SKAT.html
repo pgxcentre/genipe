@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>SKAT Tutorial &mdash; genipe 1.2.1 documentation</title>
+    <title>SKAT Tutorial &mdash; genipe 1.2.2 documentation</title>
     
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.2.1',
+        VERSION:     '1.2.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.2.1 documentation" href="../index.html" />
+    <link rel="top" title="genipe 1.2.2 documentation" href="../index.html" />
     <link rel="up" title="Short Tutorials" href="../tutorials.html" />
     <link rel="next" title="Linear Tutorial" href="tutorial_linear.html" />
     <link rel="prev" title="Survival Tutorial" href="tutorial_cox.html" />
@@ -51,7 +51,7 @@
         <li class="right" >
           <a href="tutorial_cox.html" title="Survival Tutorial"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>
@@ -72,6 +72,7 @@
 <li><a class="reference internal" href="#format-for-the-phenotypes-file">Format for the phenotypes file</a></li>
 <li><a class="reference internal" href="#running-the-script">Running the script</a></li>
 <li><a class="reference internal" href="#results">Results</a></li>
+<li><a class="reference internal" href="#usage">Usage</a></li>
 </ul>
 </li>
 </ul>
@@ -122,6 +123,7 @@
 <li><a class="reference internal" href="#skat-tut-3"><span>Format for the phenotypes file</span></a></li>
 <li><a class="reference internal" href="#skat-tut-4"><span>Running the script</span></a></li>
 <li><a class="reference internal" href="#skat-tut-5"><span>Results</span></a></li>
+<li><a class="reference internal" href="#skat-tut-6"><span>Usage</span></a></li>
 </ol>
 </div>
 <div class="section" id="skat-analysis-tutorial">
@@ -419,6 +421,82 @@ file to customize your analysis or to write new ones.</p>
 <p>We are also very open to suggestions and improvements. If you have developed a
 new interesting feature, please send us a push request from Github.</p>
 </div>
+<div class="section" id="usage">
+<span id="skat-tut-6"></span><h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
+<p>The following command will display the documentation for the SKAT analysis in
+the console:</p>
+<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> imputed-stats skat --help
+<span class="go">usage: imputed-stats skat [-h] [-v] [--debug] --impute2 FILE --sample FILE</span>
+<span class="go">                          --pheno FILE [--extract-sites FILE] [--out FILE]</span>
+<span class="go">                          [--nb-process INT] [--nb-lines INT] [--chrx]</span>
+<span class="go">                          [--gender-column NAME] [--scale INT] [--prob FLOAT]</span>
+<span class="go">                          [--maf FLOAT] [--covar NAME] [--categorical NAME]</span>
+<span class="go">                          [--missing-value NAME] [--sample-column NAME]</span>
+<span class="go">                          [--interaction NAME] --snp-sets FILE --outcome-type</span>
+<span class="go">                          {continuous,discrete} [--skat-o] --pheno-name NAME</span>
+
+<span class="go">Uses the SKAT R package to analyze user defined gene sets. This script is part</span>
+<span class="go">of the &#39;genipe&#39; package, version 1.2.2).</span>
+
+<span class="go">optional arguments:</span>
+<span class="go">  -h, --help            show this help message and exit</span>
+<span class="go">  -v, --version         show program&#39;s version number and exit</span>
+<span class="go">  --debug               set the logging level to debug</span>
+
+<span class="go">Input Files:</span>
+<span class="go">  --impute2 FILE        The output from IMPUTE2.</span>
+<span class="go">  --sample FILE         The sample file (the order should be the same as in</span>
+<span class="go">                        the IMPUTE2 files).</span>
+<span class="go">  --pheno FILE          The file containing phenotypes and co variables.</span>
+<span class="go">  --extract-sites FILE  A list of sites to extract for analysis (optional).</span>
+
+<span class="go">Output Options:</span>
+<span class="go">  --out FILE            The prefix for the output files. [imputed_stats]</span>
+
+<span class="go">General Options:</span>
+<span class="go">  --nb-process INT      The number of process to use. [1]</span>
+<span class="go">  --nb-lines INT        The number of line to read at a time. [1000]</span>
+<span class="go">  --chrx                The analysis is performed for the non pseudo-autosomal</span>
+<span class="go">                        region of the chromosome X (male dosage will be</span>
+<span class="go">                        divided by 2 to get values [0, 0.5] instead of [0, 1])</span>
+<span class="go">                        (males are coded as 1 and option &#39;--gender-column&#39;</span>
+<span class="go">                        should be used).</span>
+<span class="go">  --gender-column NAME  The name of the gender column (use to exclude samples</span>
+<span class="go">                        with unknown gender (i.e. not 1, male, or 2, female).</span>
+<span class="go">                        If gender not available, use &#39;None&#39;. [Gender]</span>
+
+<span class="go">Dosage Options:</span>
+<span class="go">  --scale INT           Scale dosage so that values are in [0, n] (possible</span>
+<span class="go">                        values are 1 (no scaling) or 2). [2]</span>
+<span class="go">  --prob FLOAT          The minimal probability for which a genotype should be</span>
+<span class="go">                        considered. [&gt;=0.9]</span>
+<span class="go">  --maf FLOAT           Minor allele frequency threshold for which marker will</span>
+<span class="go">                        be skipped. [&lt;0.01]</span>
+
+<span class="go">Phenotype Options:</span>
+<span class="go">  --covar NAME          The co variable names (in the phenotype file),</span>
+<span class="go">                        separated by coma.</span>
+<span class="go">  --categorical NAME    The name of the variables that are categorical (note</span>
+<span class="go">                        that the gender is always categorical). The variables</span>
+<span class="go">                        are separated by coma.</span>
+<span class="go">  --missing-value NAME  The missing value in the phenotype file.</span>
+<span class="go">  --sample-column NAME  The name of the sample ID column (in the phenotype</span>
+<span class="go">                        file). [sample_id]</span>
+<span class="go">  --interaction NAME    Add an interaction between the genotype and this</span>
+<span class="go">                        variable.</span>
+
+<span class="go">SKAT Options:</span>
+<span class="go">  --snp-sets FILE       A file indicating a snp_set and an optional weight for</span>
+<span class="go">                        every variant.</span>
+<span class="go">  --outcome-type {continuous,discrete}</span>
+<span class="go">                        The variable type for the outcome. This will be passed</span>
+<span class="go">                        to SKAT.</span>
+<span class="go">  --skat-o              By default, the regular SKAT is used. Setting this</span>
+<span class="go">                        flag will use the SKAT-O algorithm instead.</span>
+<span class="go">  --pheno-name NAME     The phenotype.</span>
+</pre></div>
+</div>
+</div>
 </div>
 </div>
 
@@ -443,7 +521,7 @@ new interesting feature, please send us a push request from Github.</p>
         <li class="right" >
           <a href="tutorial_cox.html" title="Survival Tutorial"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>

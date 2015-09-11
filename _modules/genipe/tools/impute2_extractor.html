@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tools.impute2_extractor &mdash; genipe 1.2.1 documentation</title>
+    <title>genipe.tools.impute2_extractor &mdash; genipe 1.2.2 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.2.1',
+        VERSION:     '1.2.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.2.1 documentation" href="../../../index.html" />
+    <link rel="top" title="genipe 1.2.2 documentation" href="../../../index.html" />
     <link rel="up" title="genipe" href="../../genipe.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
       </ul>
@@ -79,9 +79,11 @@
 <span class="c"># http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative</span>
 <span class="c"># Commons, PO Box 1866, Mountain View, CA 94042, USA.</span>
 
+
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
@@ -122,23 +124,34 @@
         <span class="c"># Parsing the options</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">parse_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
 
-        <span class="c"># Getting the output directory (dirname of the output prefix</span>
+        <span class="c"># Getting the output directory (dirname of the output prefix)</span>
         <span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">out</span><span class="p">)</span>
 
+        <span class="c"># The logging handlers</span>
+        <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">index_only</span><span class="p">:</span>
+            <span class="n">log_file</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">out</span> <span class="o">+</span> <span class="s">&quot;.log&quot;</span>
+            <span class="n">logging_fh</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&quot;w&quot;</span><span class="p">)</span>
+            <span class="n">handlers</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">logging_fh</span><span class="p">)</span>
+
         <span class="c"># Adding the logging capability</span>
-        <span class="n">log_file</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">out</span> <span class="o">+</span> <span class="s">&quot;.log&quot;</span>
-        <span class="n">logging_fh</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s">&quot;w&quot;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
             <span class="n">format</span><span class="o">=</span><span class="s">&quot;[</span><span class="si">%(asctime)s</span><span class="s"> </span><span class="si">%(levelname)s</span><span class="s">] </span><span class="si">%(message)s</span><span class="s">&quot;</span><span class="p">,</span>
             <span class="n">datefmt</span><span class="o">=</span><span class="s">&quot;%Y-%m-</span><span class="si">%d</span><span class="s"> %H:%M:%S&quot;</span><span class="p">,</span>
             <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
-            <span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(),</span> <span class="n">logging_fh</span><span class="p">]</span>
+            <span class="n">handlers</span><span class="o">=</span><span class="n">handlers</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Logging everything into &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">log_file</span><span class="p">))</span>
+
+        <span class="c"># First log</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">index_only</span><span class="p">:</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Logging everything into &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">log_file</span><span class="p">))</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Program arguments: &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])))</span>
 
         <span class="c"># Checking the options</span>
         <span class="n">check_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">index_only</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">index_files</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">)</span>
 
         <span class="c"># Gathering what needs to be extracted</span>
         <span class="n">to_extract</span> <span class="o">=</span> <span class="n">gather_extraction</span><span class="p">(</span>
@@ -176,6 +189,27 @@
     <span class="k">finally</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">logging_fh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
             <span class="n">logging_fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+
+
+<span class="k">def</span> <span class="nf">index_files</span><span class="p">(</span><span class="n">i_filenames</span><span class="p">):</span></div>
+<div class="viewcode-block" id="index_files"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.impute2_extractor.index_files">[docs]</a>    <span class="sd">&quot;&quot;&quot;Indexes the impute2 files.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        i_filenames (list): the list of input file names</span>
+
+<span class="sd">    This function uses the :py:func:`genipe.formats.index.get_index` to create</span>
+<span class="sd">    the index file if it&#39;s missing.</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        We won&#39;t catch the :py:class:`genipe.error.ProgramError` exception if</span>
+<span class="sd">        it&#39;s raised, since the message will be relevant to the user.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c"># For each input file</span>
+    <span class="k">for</span> <span class="n">i_filename</span> <span class="ow">in</span> <span class="n">i_filenames</span><span class="p">:</span>
+        <span class="n">get_index</span><span class="p">(</span><span class="n">i_filename</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s">&quot;chrom&quot;</span><span class="p">,</span> <span class="s">&quot;name&quot;</span><span class="p">,</span> <span class="s">&quot;pos&quot;</span><span class="p">],</span>
+                  <span class="n">sep</span><span class="o">=</span><span class="s">&quot; &quot;</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">extract_markers</span><span class="p">(</span><span class="n">i_filenames</span><span class="p">,</span> <span class="n">to_extract</span><span class="p">,</span> <span class="n">out_prefix</span><span class="p">,</span> <span class="n">out_format</span><span class="p">,</span> <span class="n">prob_t</span><span class="p">):</span></div>
@@ -242,6 +276,14 @@
         <span class="c"># Keeping track of what has been extracted</span>
         <span class="n">all_extracted</span> <span class="o">|=</span> <span class="n">extracted</span>
 
+        <span class="c"># Extracting the companion files (if impute2 and files are present)</span>
+        <span class="k">if</span> <span class="s">&quot;impute2&quot;</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">:</span>
+            <span class="n">extract_companion_files</span><span class="p">(</span>
+                <span class="n">i_prefix</span><span class="o">=</span><span class="n">get_file_prefix</span><span class="p">(</span><span class="n">i_filename</span><span class="p">),</span>
+                <span class="n">to_extract</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
+                <span class="n">o_prefix</span><span class="o">=</span><span class="n">out_prefix</span><span class="p">,</span>
+            <span class="p">)</span>
+
     <span class="c"># Closing the files</span>
     <span class="k">for</span> <span class="n">o_file</span> <span class="ow">in</span> <span class="n">o_files</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
         <span class="n">o_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -249,6 +291,63 @@
     <span class="c"># Extraction complete</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Extraction of {:,d} markers &quot;</span>
                  <span class="s">&quot;completed&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_extracted</span><span class="p">)))</span>
+
+
+<span class="k">def</span> <span class="nf">extract_companion_files</span><span class="p">(</span><span class="n">i_prefix</span><span class="p">,</span> <span class="n">o_prefix</span><span class="p">,</span> <span class="n">to_extract</span><span class="p">):</span></div>
+<div class="viewcode-block" id="extract_companion_files"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.impute2_extractor.extract_companion_files">[docs]</a>    <span class="sd">&quot;&quot;&quot;Extract markers from companion files (if they exists).</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        i_prefix (str): the prefix of the input file</span>
+<span class="sd">        o_prefix (str): the prefix of the output file</span>
+<span class="sd">        to_extract (set): the set of markers to extract</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">file_info</span> <span class="o">=</span> <span class="p">[</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&quot;.alleles&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;name&quot;</span><span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&quot;.completion_rates&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;name&quot;</span><span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&quot;.good_sites&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&quot;.impute2_info&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;name&quot;</span><span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&quot;.imputed_sites&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&quot;.maf&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s">&quot;name&quot;</span><span class="p">),</span>
+        <span class="nb">dict</span><span class="p">(</span><span class="n">suffix</span><span class="o">=</span><span class="s">&quot;.map&quot;</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
+    <span class="p">]</span>
+
+    <span class="k">for</span> <span class="n">info</span> <span class="ow">in</span> <span class="n">file_info</span><span class="p">:</span>
+        <span class="c"># The name of the input file</span>
+        <span class="n">i_fn</span> <span class="o">=</span> <span class="n">i_prefix</span> <span class="o">+</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;suffix&quot;</span><span class="p">]</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">i_fn</span><span class="p">):</span>
+            <span class="c"># The file doesn&#39;t exist, so we continue</span>
+            <span class="k">continue</span>
+
+        <span class="c"># The name of the output file</span>
+        <span class="n">o_fn</span> <span class="o">=</span> <span class="n">o_prefix</span> <span class="o">+</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;suffix&quot;</span><span class="p">]</span>
+
+        <span class="c"># If the file doesn&#39;t have a header, we just read line per line</span>
+        <span class="n">header</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">i_fn</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">,</span> <span class="nb">open</span><span class="p">(</span><span class="n">o_fn</span><span class="p">,</span> <span class="s">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">line</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">i_file</span><span class="p">):</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s">&quot;</span><span class="se">\r\n</span><span class="s">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">info</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s">&quot;sep&quot;</span><span class="p">,</span> <span class="s">&quot;</span><span class="se">\t</span><span class="s">&quot;</span><span class="p">))</span>
+                <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;header&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                    <span class="n">header</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">)}</span>
+                    <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: missing column {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                            <span class="n">i_fn</span><span class="p">,</span>
+                            <span class="n">info</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">],</span>
+                        <span class="p">))</span>
+
+                    <span class="n">info</span><span class="p">[</span><span class="s">&quot;index&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">header</span><span class="p">[</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]]</span>
+                    <span class="n">o_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+                    <span class="k">continue</span>
+
+                <span class="k">if</span> <span class="n">row</span><span class="p">[</span><span class="n">info</span><span class="p">[</span><span class="s">&quot;index&quot;</span><span class="p">]]</span> <span class="ow">in</span> <span class="n">to_extract</span><span class="p">:</span>
+                    <span class="n">o_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">line</span><span class="p">)</span>
+
+    <span class="c"># We need to copy the sample file</span>
+    <span class="n">sample_fn</span> <span class="o">=</span> <span class="n">i_prefix</span> <span class="o">+</span> <span class="s">&quot;.sample&quot;</span>
+    <span class="k">if</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">sample_fn</span><span class="p">):</span>
+        <span class="n">o_fn</span> <span class="o">=</span> <span class="n">o_prefix</span> <span class="o">+</span> <span class="s">&quot;.sample&quot;</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">sample_fn</span><span class="p">,</span> <span class="n">o_fn</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">print_data</span><span class="p">(</span><span class="n">o_files</span><span class="p">,</span> <span class="n">prob_t</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span></div>
@@ -449,11 +548,19 @@
 <span class="sd">        If there is a problem, a :py:class:`genipe.error.ProgramError` is</span>
 <span class="sd">        raised.</span>
 
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        Noting is checked (apart from the impute2 files) if indexation is asked</span>
+<span class="sd">        (``--index`` option).</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># Checking that the impute2 files exists</span>
     <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
             <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: no such file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">index_only</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">True</span>
 
     <span class="c"># Is there something to extract?</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">genomic</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">maf</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">rate</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
@@ -574,6 +681,15 @@
         <span class="n">help</span><span class="o">=</span><span class="s">&quot;The output from IMPUTE2.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
+    <span class="c"># Indexation options</span>
+    <span class="n">group</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s">&quot;Indexation Options&quot;</span><span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s">&quot;--index&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s">&quot;index_only&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&quot;Only perform the indexation.&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
     <span class="c"># The output files</span>
     <span class="n">group</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s">&quot;Output Options&quot;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -669,7 +785,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>

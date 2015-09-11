@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.formats package &mdash; genipe 1.2.1 documentation</title>
+    <title>genipe.formats package &mdash; genipe 1.2.2 documentation</title>
     
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.2.1',
+        VERSION:     '1.2.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.2.1 documentation" href="../index.html" />
+    <link rel="top" title="genipe 1.2.2 documentation" href="../index.html" />
     <link rel="up" title="genipe package" href="genipe.html" />
     <link rel="next" title="genipe.reporting package" href="genipe.reporting.html" />
     <link rel="prev" title="genipe.db package" href="genipe.db.html" />
@@ -51,7 +51,7 @@
         <li class="right" >
           <a href="genipe.db.html" title="genipe.db package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &raquo;</li> 
@@ -122,7 +122,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>impute2_line</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)"><em>list</em></a>) &#8211; a single line from IMPUTE2&#8217;s result (split by
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>impute2_line</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; a single line from IMPUTE2&#8217;s result (split by
 space)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a tuple containing the marker&#8217;s information (first five values
@@ -151,7 +151,7 @@ from the IMPUTE2&#8217;s result, split by space.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>prob_matrix</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)"><em>numpy.array</em></a>) &#8211; the probability matrix</li>
-<li><strong>min_prob</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#float" title="(in Jinja2 v2.8-dev)"><em>float</em></a>) &#8211; the probability threshold</li>
+<li><strong>min_prob</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) &#8211; the probability threshold</li>
 </ul>
 </td>
 </tr>
@@ -209,7 +209,7 @@ an Exception raised if there are any heterozygous males.</p>
 <li><strong>homo_probs</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)"><em>numpy.array</em></a>) &#8211; the probabilities for the homozygous genotype</li>
 <li><strong>hetero_probs</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)"><em>numpy.array</em></a>) &#8211; the probabilities for the heterozygous
 genotype</li>
-<li><strong>scale</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#int" title="(in Jinja2 v2.8-dev)"><em>int</em></a>) &#8211; the scale value</li>
+<li><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a>) &#8211; the scale value</li>
 </ul>
 </td>
 </tr>
@@ -258,8 +258,8 @@ probs (numpy.array): the probability matrix</dd>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the file</li>
-<li><strong>cols</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)"><em>list</em></a>) &#8211; a list containing column to keep (as int)</li>
-<li><strong>names</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.8-dev)"><em>list</em></a>) &#8211; the name corresponding to the column to keep (as str)</li>
+<li><strong>cols</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; a list containing column to keep (as int)</li>
+<li><strong>names</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the name corresponding to the column to keep (as str)</li>
 <li><strong>sep</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the field separator</li>
 </ul>
 </td>
@@ -267,7 +267,7 @@ probs (numpy.array): the probability matrix</dd>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the index</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">pandas.DataFrame</p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.16.2)">pandas.DataFrame</a></p>
 </td>
 </tr>
 </tbody>
@@ -324,7 +324,7 @@ format is bgzip, and the opening function.</p>
         <li class="right" >
           <a href="genipe.db.html" title="genipe.db package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &raquo;</li> 

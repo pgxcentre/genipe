@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.pipeline &mdash; genipe 1.2.1 documentation</title>
+    <title>genipe.pipeline &mdash; genipe 1.2.2 documentation</title>
     
     <link rel="stylesheet" href="../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../',
-        VERSION:     '1.2.1',
+        VERSION:     '1.2.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.2.1 documentation" href="../../index.html" />
+    <link rel="top" title="genipe 1.2.2 documentation" href="../../index.html" />
     <link rel="up" title="genipe" href="../genipe.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">genipe 1.2.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
       </ul>
@@ -1031,9 +1031,8 @@
 <span class="sd">    is on the reverse strand and needs flipping.</span>
 
 <span class="sd">    The information returned includes the initial number of markers and</span>
-<span class="sd">    samples, the number of ambiguous, duplicated, special (not on autosomal</span>
-<span class="sd">    chromosomes) markers, along with the number of markers to flip if the</span>
-<span class="sd">    reference was checked.</span>
+<span class="sd">    samples, the number of ambiguous, duplicated and non-autosomal markers,</span>
+<span class="sd">    along with the number of markers to flip if the reference was checked.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c"># The ambiguous genotypes</span>
@@ -1117,7 +1116,7 @@
         <span class="n">reference</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="c"># Logging</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;  - {:,d} special markers&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_special_markers</span><span class="p">))</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;  - {:,d} non-autosomal markers&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_special_markers</span><span class="p">))</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;  - {:,d} ambiguous markers removed&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_ambiguous</span><span class="p">))</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;  - {:,d} duplicated markers removed&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_dup</span><span class="p">))</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;  - {:,d} markers kept&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_kept</span><span class="p">))</span>
@@ -1749,8 +1748,8 @@
 <span class="sd">    | ``pct_maf_geq_01_lt_05`` | the percentage of markers with               |</span>
 <span class="sd">    |                          | 1% &gt;= MAF &lt; 5%                               |</span>
 <span class="sd">    +--------------------------+----------------------------------------------+</span>
-<span class="sd">    | ``frequency_pie``        | the name of the file containing the pie      |</span>
-<span class="sd">    |                          | chart (if it was created)                    |</span>
+<span class="sd">    | ``frequency_barh``       | the name of the file containing the bar plot |</span>
+<span class="sd">    |                          | (if it was created)                          |</span>
 <span class="sd">    +--------------------------+----------------------------------------------+</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
@@ -1848,76 +1847,61 @@
     <span class="k">else</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;There were no marker with MAF (something went wrong)&quot;</span><span class="p">)</span>
 
-    <span class="c"># Generating a pie chart if matplotlib is installed</span>
-    <span class="n">frequency_pie</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
+    <span class="c"># Generating a bar plot if matplotlib is installed</span>
+    <span class="n">frequency_barh</span> <span class="o">=</span> <span class="s">&quot;&quot;</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">nb_marker_with_maf</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span> <span class="ow">and</span> <span class="n">HAS_MATPLOTLIB</span><span class="p">:</span>
         <span class="c"># Creating a figure and axe</span>
-        <span class="n">figure</span><span class="p">,</span> <span class="n">axe</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">9</span><span class="p">))</span>
+        <span class="n">figure</span><span class="p">,</span> <span class="n">axe</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 
         <span class="c"># The colors</span>
         <span class="n">colors</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;#0099CC&quot;</span><span class="p">,</span> <span class="s">&quot;#669900&quot;</span><span class="p">,</span> <span class="s">&quot;#FF8800&quot;</span><span class="p">]</span>
 
-        <span class="c"># The data for the pie chart</span>
-        <span class="n">labels</span> <span class="o">=</span> <span class="p">[</span>
-            <span class="s">&quot;{:.1f}%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_maf_lt_01</span> <span class="o">/</span> <span class="n">nb_marker_with_maf</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span>
-            <span class="s">&quot;{:.1f}%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_maf_geq_01_lt_05</span> <span class="o">/</span> <span class="n">nb_marker_with_maf</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span>
-            <span class="s">&quot;{:.1f}%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_maf_geq_05</span> <span class="o">/</span> <span class="n">nb_marker_with_maf</span> <span class="o">*</span> <span class="mi">100</span><span class="p">),</span>
-        <span class="p">]</span>
+        <span class="c"># The labels</span>
+        <span class="n">ylabels</span> <span class="o">=</span> <span class="p">[</span><span class="s">r&quot;$MAF &lt; 1\%$&quot;</span><span class="p">,</span> <span class="s">r&quot;$1\% \leq MAF &lt; 5\%$&quot;</span><span class="p">,</span> <span class="s">r&quot;$MAF \geq 5\%$&quot;</span><span class="p">]</span>
+
+        <span class="c"># The data</span>
         <span class="n">sizes</span> <span class="o">=</span> <span class="p">[</span><span class="n">nb_maf_lt_01</span><span class="p">,</span> <span class="n">nb_maf_geq_01_lt_05</span><span class="p">,</span> <span class="n">nb_maf_geq_05</span><span class="p">]</span>
-        <span class="n">explode</span> <span class="o">=</span> <span class="p">(</span><span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">,</span> <span class="mf">0.05</span><span class="p">)</span>
-        <span class="n">wedges</span><span class="p">,</span> <span class="n">texts</span> <span class="o">=</span> <span class="n">axe</span><span class="o">.</span><span class="n">pie</span><span class="p">(</span><span class="n">sizes</span><span class="p">,</span> <span class="n">explode</span><span class="o">=</span><span class="n">explode</span><span class="p">,</span> <span class="n">labels</span><span class="o">=</span><span class="n">labels</span><span class="p">,</span>
-                                <span class="n">colors</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">startangle</span><span class="o">=</span><span class="mi">90</span><span class="p">,</span>
-                                <span class="n">wedgeprops</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;linewidth&quot;</span><span class="p">:</span> <span class="mi">0</span><span class="p">},</span>
-                                <span class="n">textprops</span><span class="o">=</span><span class="p">{</span><span class="s">&quot;fontsize&quot;</span><span class="p">:</span> <span class="mi">12</span><span class="p">,</span> <span class="s">&quot;weight&quot;</span><span class="p">:</span> <span class="s">&quot;bold&quot;</span><span class="p">})</span>
 
-        <span class="c"># Changing the label parameters</span>
-        <span class="k">for</span> <span class="n">text</span> <span class="ow">in</span> <span class="n">texts</span><span class="p">:</span>
-            <span class="n">text</span><span class="o">.</span><span class="n">set_bbox</span><span class="p">({</span><span class="s">&quot;boxstyle&quot;</span><span class="p">:</span> <span class="s">&quot;round&quot;</span><span class="p">,</span> <span class="s">&quot;fc&quot;</span><span class="p">:</span> <span class="s">&quot;#C0C0C0&quot;</span><span class="p">,</span>
-                           <span class="s">&quot;ec&quot;</span><span class="p">:</span> <span class="s">&quot;#C0C0C0&quot;</span><span class="p">})</span>
+        <span class="c"># Plotting the horizontal bar plot</span>
+        <span class="n">axe</span><span class="o">.</span><span class="n">barh</span><span class="p">(</span><span class="n">bottom</span><span class="o">=</span><span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">sizes</span><span class="p">)),</span> <span class="n">width</span><span class="o">=</span><span class="n">sizes</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+                 <span class="n">align</span><span class="o">=</span><span class="s">&quot;center&quot;</span><span class="p">)</span>
 
-        <span class="c"># Shrink current axis by 50%</span>
-        <span class="n">bbox</span> <span class="o">=</span> <span class="n">axe</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
-        <span class="n">axe</span><span class="o">.</span><span class="n">set_position</span><span class="p">([</span><span class="n">bbox</span><span class="o">.</span><span class="n">x0</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">y0</span><span class="p">,</span> <span class="n">bbox</span><span class="o">.</span><span class="n">width</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">,</span>
-                         <span class="n">bbox</span><span class="o">.</span><span class="n">height</span> <span class="o">*</span> <span class="mf">0.5</span><span class="p">])</span>
+        <span class="c"># Formatting the x tick labels</span>
+        <span class="n">xticks</span> <span class="o">=</span> <span class="n">axe</span><span class="o">.</span><span class="n">get_xticks</span><span class="p">()</span>
+        <span class="n">int_xticks</span> <span class="o">=</span> <span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">xtick</span><span class="p">)</span> <span class="k">for</span> <span class="n">xtick</span> <span class="ow">in</span> <span class="n">xticks</span><span class="p">]</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">xticks</span> <span class="o">==</span> <span class="n">int_xticks</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+            <span class="c"># The tick labels are integer</span>
+            <span class="n">axe</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([</span><span class="s">&quot;{:,d}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">tick</span><span class="p">)</span> <span class="k">for</span> <span class="n">tick</span> <span class="ow">in</span> <span class="n">int_xticks</span><span class="p">])</span>
 
-        <span class="c"># If no restriction was performed while imputing, there will be a high</span>
-        <span class="c"># majority of ultra rare variants... We need to move the text box if</span>
-        <span class="c"># they touch</span>
-        <span class="c"># Getting the renderer and the bboxes</span>
-        <span class="n">renderer</span> <span class="o">=</span> <span class="n">figure</span><span class="o">.</span><span class="n">canvas</span><span class="o">.</span><span class="n">get_renderer</span><span class="p">()</span>
-        <span class="n">bbox_1</span> <span class="o">=</span> <span class="n">texts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">(</span><span class="n">renderer</span><span class="o">=</span><span class="n">renderer</span><span class="p">)</span>
-        <span class="n">bbox_2</span> <span class="o">=</span> <span class="n">texts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">(</span><span class="n">renderer</span><span class="o">=</span><span class="n">renderer</span><span class="p">)</span>
-        <span class="k">while</span> <span class="n">bbox_1</span><span class="o">.</span><span class="n">overlaps</span><span class="p">(</span><span class="n">bbox_2</span><span class="p">):</span>
-            <span class="c"># Moving the first label a bit</span>
-            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">texts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
-            <span class="n">texts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_x</span><span class="p">(</span><span class="n">x</span> <span class="o">+</span> <span class="mf">0.006</span><span class="p">)</span>
-            <span class="n">bbox_1</span> <span class="o">=</span> <span class="n">texts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">(</span><span class="n">renderer</span><span class="o">=</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="c"># Formatting the y tick labels</span>
+        <span class="n">axe</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+        <span class="n">axe</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">(</span><span class="n">ylabels</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
 
-            <span class="c"># Moving the second label (MAF &gt;= 0.05)</span>
-            <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">texts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">get_position</span><span class="p">()</span>
-            <span class="n">texts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_x</span><span class="p">(</span><span class="n">x</span> <span class="o">-</span> <span class="mf">0.036</span><span class="p">)</span>
-            <span class="n">bbox_2</span> <span class="o">=</span> <span class="n">texts</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">get_window_extent</span><span class="p">(</span><span class="n">renderer</span><span class="o">=</span><span class="n">renderer</span><span class="p">)</span>
+        <span class="c"># Adding the xlabel</span>
+        <span class="n">axe</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s">&quot;Number of sites&quot;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">18</span><span class="p">)</span>
 
-        <span class="c"># Adding a legend in the margin with custom patches</span>
-        <span class="n">ultra_rare</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-        <span class="n">rare</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-        <span class="n">common</span> <span class="o">=</span> <span class="n">mpatches</span><span class="o">.</span><span class="n">Patch</span><span class="p">(</span><span class="n">color</span><span class="o">=</span><span class="n">colors</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
-        <span class="n">axe</span><span class="o">.</span><span class="n">legend</span><span class="p">(</span>
-            <span class="p">[</span><span class="n">ultra_rare</span><span class="p">,</span> <span class="n">rare</span><span class="p">,</span> <span class="n">common</span><span class="p">],</span>
-            <span class="p">[</span><span class="s">r&quot;$MAF &lt; 1\%$&quot;</span><span class="p">,</span> <span class="s">r&quot;$1\% \leq MAF &lt; 5\%$&quot;</span><span class="p">,</span> <span class="s">r&quot;$MAF \geq 5\%$&quot;</span><span class="p">],</span>
-            <span class="n">bbox_to_anchor</span><span class="o">=</span><span class="p">(</span><span class="mf">1.3</span><span class="p">,</span> <span class="mi">1</span><span class="p">),</span>
-            <span class="n">loc</span><span class="o">=</span><span class="s">&quot;upper left&quot;</span><span class="p">,</span>
-            <span class="n">ncol</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span>
-            <span class="n">frameon</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-            <span class="n">fontsize</span><span class="o">=</span><span class="mi">21</span><span class="p">,</span>
-        <span class="p">)</span>
+        <span class="c"># Removing the y axis</span>
+        <span class="n">axe</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s">&quot;left&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">axe</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s">&quot;right&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">axe</span><span class="o">.</span><span class="n">get_yaxis</span><span class="p">()</span><span class="o">.</span><span class="n">set_tick_params</span><span class="p">(</span><span class="n">left</span><span class="o">=</span><span class="s">&quot;off&quot;</span><span class="p">,</span> <span class="n">right</span><span class="o">=</span><span class="s">&quot;off&quot;</span><span class="p">)</span>
 
-        <span class="c"># Setting the axis to equal size</span>
-        <span class="n">axe</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s">&quot;equal&quot;</span><span class="p">)</span>
+        <span class="c"># Removing the x axis</span>
+        <span class="n">axe</span><span class="o">.</span><span class="n">spines</span><span class="p">[</span><span class="s">&quot;top&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">set_visible</span><span class="p">(</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">axe</span><span class="o">.</span><span class="n">get_xaxis</span><span class="p">()</span><span class="o">.</span><span class="n">tick_bottom</span><span class="p">()</span>
+
+        <span class="c"># Adding the annotation</span>
+        <span class="n">xmin</span><span class="p">,</span> <span class="n">xmax</span> <span class="o">=</span> <span class="n">axe</span><span class="o">.</span><span class="n">get_xlim</span><span class="p">()</span>
+        <span class="n">annotations</span> <span class="o">=</span> <span class="p">[</span>
+            <span class="s">&quot;{:.1f}%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">v</span> <span class="o">/</span> <span class="n">nb_marker_with_maf</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span> <span class="k">for</span> <span class="n">v</span> <span class="ow">in</span> <span class="n">sizes</span>
+        <span class="p">]</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">annotation</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">annotations</span><span class="p">):</span>
+            <span class="n">axe</span><span class="o">.</span><span class="n">text</span><span class="p">((</span><span class="n">xmax</span> <span class="o">-</span> <span class="n">xmin</span><span class="p">)</span> <span class="o">*</span> <span class="mf">0.02</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">annotation</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s">&quot;left&quot;</span><span class="p">,</span>
+                     <span class="n">va</span><span class="o">=</span><span class="s">&quot;center&quot;</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="s">&quot;bold&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">14</span><span class="p">,</span>
+                     <span class="n">bbox</span><span class="o">=</span><span class="nb">dict</span><span class="p">(</span><span class="n">boxstyle</span><span class="o">=</span><span class="s">&quot;round&quot;</span><span class="p">,</span> <span class="n">fc</span><span class="o">=</span><span class="s">&quot;white&quot;</span><span class="p">,</span> <span class="n">ec</span><span class="o">=</span><span class="s">&quot;white&quot;</span><span class="p">))</span>
 
         <span class="c"># Saving and closing the figure</span>
-        <span class="n">frequency_pie</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">o_dir</span><span class="p">,</span> <span class="s">&quot;frequency_pie.pdf&quot;</span><span class="p">)</span>
-        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">frequency_pie</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s">&quot;tight&quot;</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="n">figure</span><span class="p">)</span>
+        <span class="n">frequency_barh</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">o_dir</span><span class="p">,</span> <span class="s">&quot;frequency_barh.pdf&quot;</span><span class="p">)</span>
+        <span class="n">plt</span><span class="o">.</span><span class="n">savefig</span><span class="p">(</span><span class="n">frequency_barh</span><span class="p">,</span> <span class="n">bbox_inches</span><span class="o">=</span><span class="s">&quot;tight&quot;</span><span class="p">,</span> <span class="n">figure</span><span class="o">=</span><span class="n">figure</span><span class="p">)</span>
         <span class="n">plt</span><span class="o">.</span><span class="n">close</span><span class="p">(</span><span class="n">figure</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="p">{</span>
@@ -1933,7 +1917,7 @@
         <span class="s">&quot;pct_maf_lt_05&quot;</span><span class="p">:</span>        <span class="s">&quot;{:.1f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pct_maf_lt_05</span><span class="p">),</span>
         <span class="s">&quot;pct_maf_lt_01&quot;</span><span class="p">:</span>        <span class="s">&quot;{:.1f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pct_maf_lt_01</span><span class="p">),</span>
         <span class="s">&quot;pct_maf_geq_01_lt_05&quot;</span><span class="p">:</span> <span class="s">&quot;{:.1f}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">pct_maf_geq_01_lt_05</span><span class="p">),</span>
-        <span class="s">&quot;frequency_pie&quot;</span><span class="p">:</span>        <span class="n">frequency_pie</span><span class="p">,</span>
+        <span class="s">&quot;frequency_barh&quot;</span><span class="p">:</span>       <span class="n">frequency_barh</span><span class="p">,</span>
     <span class="p">}</span>
 
 
@@ -2503,6 +2487,15 @@
         <span class="n">default</span><span class="o">=</span><span class="s">&quot;Automatically generated by genipe&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s">&quot;The report author. [</span><span class="si">%(default)s</span><span class="s">]&quot;</span><span class="p">,</span>
     <span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s">&quot;--report-background&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s">&quot;BACKGROUND&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="s">&quot;The aim of this project is to perform genome-wide imputation &quot;</span>
+                <span class="s">&quot;using the study cohort.&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s">&quot;The report background section (can either be a string or a file &quot;</span>
+             <span class="s">&quot;containing the background. [General background]&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
 
     <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span>
 
@@ -2525,7 +2518,7 @@
         <li class="right" >
           <a href="../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../index.html">genipe 1.2.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../genipe.html" >genipe</a> &raquo;</li> 
       </ul>

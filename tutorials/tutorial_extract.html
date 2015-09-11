@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Site Extraction Tutorial &mdash; genipe 1.2.1 documentation</title>
+    <title>Site Extraction Tutorial &mdash; genipe 1.2.2 documentation</title>
     
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.2.1',
+        VERSION:     '1.2.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.2.1 documentation" href="../index.html" />
+    <link rel="top" title="genipe 1.2.2 documentation" href="../index.html" />
     <link rel="up" title="Short Tutorials" href="../tutorials.html" />
     <link rel="next" title="Input Files" href="../input_files.html" />
     <link rel="prev" title="Linear Mixed Effects Model Tutorial" href="tutorial_mixedlm.html" />
@@ -51,7 +51,7 @@
         <li class="right" >
           <a href="tutorial_mixedlm.html" title="Linear Mixed Effects Model Tutorial"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>
@@ -250,6 +250,12 @@ allele.</p>
 22 rs6423472 16087621 A G 0 1 0 1 0 0 0 1 0 ...
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When extracting using the <code class="docutils literal"><span class="pre">impute2</span></code> format, all the existing companion
+files (<code class="docutils literal"><span class="pre">.maf</span></code>, <code class="docutils literal"><span class="pre">.map</span></code>, etc.) will also be extracted and included in the
+same directory (using the same output prefix).</p>
+</div>
 </div>
 <div class="section" id="dosage-file">
 <h4><code class="docutils literal"><span class="pre">.dosage</span></code> file<a class="headerlink" href="#dosage-file" title="Permalink to this headline">¶</a></h4>
@@ -304,7 +310,7 @@ analysis in the console:</p>
 <span class="go">                         [--rate FLOAT] [--info FLOAT]</span>
 
 <span class="go">Extract imputed markers located in a specific genomic region. This script is</span>
-<span class="go">part of the &#39;genipe&#39; package, version 1.2.1).</span>
+<span class="go">part of the &#39;genipe&#39; package, version 1.2.2).</span>
 
 <span class="go">optional arguments:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
@@ -343,6 +349,11 @@ analysis in the console:</p>
 <span class="go">                        with &#39;--maf&#39;, &#39;--rate&#39; and &#39;--genomic&#39;.</span>
 </pre></div>
 </div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">When using the <code class="docutils literal"><span class="pre">--index</span></code> option, only the indexation (of files without an
+index) will be performed.</p>
+</div>
 </div>
 </div>
 </div>
@@ -368,7 +379,7 @@ analysis in the console:</p>
         <li class="right" >
           <a href="tutorial_mixedlm.html" title="Linear Mixed Effects Model Tutorial"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.1 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>
