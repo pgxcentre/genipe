@@ -7,9 +7,7 @@
 #   - python setup.py bdist_wheel
 
 # How to build for conda
-#   - python setup.py bdist_conda
-#   - conda convert -p all /PATH/TO/FILE -o conda_dist
-#   - cd conda_dist && rm -r win-* && conda index osx-64 linux-*
+#   - bash conda_build.sh
 
 
 import os
