@@ -108,7 +108,7 @@ class TestFormats(unittest.TestCase):
         expected_major = "A"
         observed_results = maf_from_probs(probs, "A", "B")
         observed_maf, observed_minor, observed_major = observed_results
-        self.assertAlmostEqual(expected_maf, observed_maf)
+        self.assertAlmostEqual(expected_maf, observed_maf, places=10)
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
@@ -119,7 +119,7 @@ class TestFormats(unittest.TestCase):
         expected_major = "B"
         observed_results = maf_from_probs(r_probs, "A", "B")
         observed_maf, observed_minor, observed_major = observed_results
-        self.assertAlmostEqual(expected_maf, observed_maf)
+        self.assertAlmostEqual(expected_maf, observed_maf, places=10)
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
@@ -129,7 +129,7 @@ class TestFormats(unittest.TestCase):
         expected_major = "A"
         observed_results = maf_from_probs(probs, "A", "B", gender)
         observed_maf, observed_minor, observed_major = observed_results
-        self.assertAlmostEqual(expected_maf, observed_maf)
+        self.assertAlmostEqual(expected_maf, observed_maf, places=10)
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
@@ -140,7 +140,7 @@ class TestFormats(unittest.TestCase):
         expected_major = "B"
         observed_results = maf_from_probs(r_probs, "A", "B", gender)
         observed_maf, observed_minor, observed_major = observed_results
-        self.assertAlmostEqual(expected_maf, observed_maf)
+        self.assertAlmostEqual(expected_maf, observed_maf, places=10)
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
@@ -150,7 +150,7 @@ class TestFormats(unittest.TestCase):
         expected_major = "A"
         observed_results = maf_from_probs(probs, "A", "B", unknown_gender)
         observed_maf, observed_minor, observed_major = observed_results
-        self.assertAlmostEqual(expected_maf, observed_maf)
+        self.assertAlmostEqual(expected_maf, observed_maf, places=10)
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
@@ -161,7 +161,7 @@ class TestFormats(unittest.TestCase):
         expected_major = "B"
         observed_results = maf_from_probs(r_probs, "A", "B", unknown_gender)
         observed_maf, observed_minor, observed_major = observed_results
-        self.assertAlmostEqual(expected_maf, observed_maf)
+        self.assertAlmostEqual(expected_maf, observed_maf, places=10)
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
@@ -170,8 +170,8 @@ class TestFormats(unittest.TestCase):
         tmp_probs = np.array(
             [[0.9, 0.1, 0.0],   # AA, male   (A)
              [0.0, 0.1, 0.9],   # BB, male   (B)
-             [0.9, 0.1, 0.0],   # AA, female (A)
-             [0.9, 0.1, 0.0],   # AA, female (A)
+             [0.9, 0.1, 0.0],   # AA, male   (A)
+             [0.9, 0.1, 0.0],   # AA, male   (A)
              [0.9, 0.1, 0.0],   # AA, male   (A)
              [0.9, 0.1, 0.0],   # AA, male   (A)
              [0.9, 0.1, 0.0],   # AA, male   (A)
@@ -186,7 +186,7 @@ class TestFormats(unittest.TestCase):
         expected_major = "A"
         observed_results = maf_from_probs(tmp_probs, "A", "B", tmp_gender)
         observed_maf, observed_minor, observed_major = observed_results
-        self.assertAlmostEqual(expected_maf, observed_maf)
+        self.assertAlmostEqual(expected_maf, observed_maf, places=10)
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
@@ -197,7 +197,7 @@ class TestFormats(unittest.TestCase):
         expected_major = "B"
         observed_results = maf_from_probs(tmp_r_probs, "A", "B", tmp_gender)
         observed_maf, observed_minor, observed_major = observed_results
-        self.assertAlmostEqual(expected_maf, observed_maf)
+        self.assertAlmostEqual(expected_maf, observed_maf, places=10)
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
@@ -208,7 +208,7 @@ class TestFormats(unittest.TestCase):
         expected_major = "A"
         observed_results = maf_from_probs(probs, "A", "B", tmp_gender)
         observed_maf, observed_minor, observed_major = observed_results
-        self.assertAlmostEqual(expected_maf, observed_maf)
+        self.assertAlmostEqual(expected_maf, observed_maf, places=10)
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
@@ -219,7 +219,7 @@ class TestFormats(unittest.TestCase):
         expected_major = "B"
         observed_results = maf_from_probs(r_probs, "A", "B", tmp_gender)
         observed_maf, observed_minor, observed_major = observed_results
-        self.assertAlmostEqual(expected_maf, observed_maf)
+        self.assertAlmostEqual(expected_maf, observed_maf, places=10)
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
 
@@ -254,6 +254,229 @@ class TestFormats(unittest.TestCase):
         self.assertEqual(expected_maf, observed_maf)
         self.assertEqual(expected_minor, observed_minor)
         self.assertEqual(expected_major, observed_major)
+
+        # An heterozygous male (using gender) should raise an exception
+        with self.assertRaises(ProgramError) as cm:
+            maf_from_probs(probs, "A", "B", np.ones(10, dtype=int), "marker_1")
+        self.assertEqual("marker_1: heterozygous male present",
+                         str(cm.exception))
+
+    def test_maf_dosage_from_probs(self):
+        """Tests the 'maf_dosage_from_probs' function."""
+        probs = np.array(
+            [[0.9, 0.1, 0.0],   # AA, male   (A)    0.1
+             [0.1, 0.9, 0.0],   # AB, female (AB)   0.9
+             [0.0, 0.1, 0.9],   # BB, male   (B)*   1.9
+             [0.9, 0.1, 0.0],   # AA, female (AA)   0.1
+             [0.0, 0.1, 0.9],   # BB, male   (B)    1.9
+             [0.9, 0.1, 0.0],   # AA, male   (A)    0.1
+             [0.9, 0.1, 0.0],   # AA, male   (A)    0.1
+             [0.1, 0.9, 0.0],   # AB, female (AB)*  0.9
+             [0.1, 0.9, 0.0],   # AB, female (AB)   0.9
+             [0.9, 0.1, 0.0]],  # AA, male   (A)    0.1
+            dtype=float,
+        )
+
+        # The reversed probability matrix
+        r_probs = np.array([i[::-1] for i in probs], dtype=float)
+
+        # The gender array (10 samples, 6 males, 4 females)
+        gender = np.array([1, 2, 1, 2, 1, 1, 1, 2, 2, 1], dtype=int)
+        unknown_gender = np.array([1, 2, 0, 2, 1, 1, 1, 0, 2, 1], dtype=int)
+
+        # Checking without gender
+        expected_maf = 7 / 20
+        expected_minor = "B"
+        expected_major = "A"
+        expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
+                                    0.9, 0.1], dtype=float)
+        observed_results = maf_dosage_from_probs(probs, "A", "B")
+        obs_dosage, obs_maf, obs_minor, obs_major = observed_results
+        self.assertAlmostEqual(expected_maf, obs_maf, places=10)
+        self.assertTrue(np.allclose(expected_dosage, obs_dosage))
+        self.assertEqual(expected_minor, obs_minor)
+        self.assertEqual(expected_major, obs_major)
+
+        # Reversing the matrix should give the same maf, but different major
+        # and minor allele
+        expected_maf = 7 / 20
+        expected_minor = "A"
+        expected_major = "B"
+        expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
+                                    0.9, 0.1], dtype=float)
+        observed_results = maf_dosage_from_probs(r_probs, "A", "B")
+        obs_dosage, obs_maf, obs_minor, obs_major = observed_results
+        self.assertAlmostEqual(expected_maf, obs_maf, places=10)
+        self.assertTrue(np.allclose(expected_dosage, obs_dosage))
+        self.assertEqual(expected_minor, obs_minor)
+        self.assertEqual(expected_major, obs_major)
+
+        # Checking with gender
+        expected_maf = 4.9 / 14
+        expected_minor = "B"
+        expected_major = "A"
+        expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
+                                    0.9, 0.1], dtype=float)
+        observed_results = maf_dosage_from_probs(probs, "A", "B", gender)
+        obs_dosage, obs_maf, obs_minor, obs_major = observed_results
+        self.assertAlmostEqual(expected_maf, obs_maf, places=10)
+        self.assertTrue(np.allclose(expected_dosage, obs_dosage))
+        self.assertEqual(expected_minor, obs_minor)
+        self.assertEqual(expected_major, obs_major)
+
+        # Reversing the matrix should give the same maf, but different major
+        # and minor allele
+        expected_maf = 4.9 / 14
+        expected_minor = "A"
+        expected_major = "B"
+        expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
+                                    0.9, 0.1], dtype=float)
+        observed_results = maf_dosage_from_probs(r_probs, "A", "B", gender)
+        obs_dosage, obs_maf, obs_minor, obs_major = observed_results
+        self.assertAlmostEqual(expected_maf, obs_maf, places=10)
+        self.assertTrue(np.allclose(expected_dosage, obs_dosage))
+        self.assertEqual(expected_minor, obs_minor)
+        self.assertEqual(expected_major, obs_major)
+
+        # Checking with gender, unknown samples
+        expected_maf = 3.05 / 11
+        expected_minor = "B"
+        expected_major = "A"
+        expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
+                                    0.9, 0.1], dtype=float)
+        obs_results = maf_dosage_from_probs(probs, "A", "B", unknown_gender)
+        obs_dosage, obs_maf, obs_minor, obs_major = obs_results
+        self.assertAlmostEqual(expected_maf, obs_maf, places=10)
+        self.assertTrue(np.allclose(expected_dosage, obs_dosage))
+        self.assertEqual(expected_minor, obs_minor)
+        self.assertEqual(expected_major, obs_major)
+
+        # Reversing the matrix should give the same maf, but different major
+        # and minor allele
+        expected_maf = 3.05 / 11
+        expected_minor = "A"
+        expected_major = "B"
+        expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
+                                    0.9, 0.1], dtype=float)
+        obs_results = maf_dosage_from_probs(r_probs, "A", "B", unknown_gender)
+        obs_dosage, obs_maf, obs_minor, obs_major = obs_results
+        self.assertAlmostEqual(expected_maf, obs_maf, places=10)
+        self.assertTrue(np.allclose(expected_dosage, obs_dosage))
+        self.assertEqual(expected_minor, obs_minor)
+        self.assertEqual(expected_major, obs_major)
+
+        # Checking with gender (only males)
+        tmp_gender = np.ones(10, dtype=int)
+        tmp_probs = np.array(
+            [[0.9, 0.1, 0.0],   # AA, male   (A)    0.1
+             [0.0, 0.1, 0.9],   # BB, male   (B)    1.9
+             [0.9, 0.1, 0.0],   # AA, male   (A)    0.1
+             [0.9, 0.1, 0.0],   # AA, male   (A)    0.1
+             [0.9, 0.1, 0.0],   # AA, male   (A)    0.1
+             [0.9, 0.1, 0.0],   # AA, male   (A)    0.1
+             [0.9, 0.1, 0.0],   # AA, male   (A)    0.1
+             [0.0, 0.1, 0.9],   # BB, male   (B)    1.9
+             [0.0, 0.1, 0.9],   # BB, male   (B)    1.9
+             [0.9, 0.1, 0.0]],  # AA, male   (A)    0.1
+            dtype=float,
+        )
+        tmp_r_probs = np.array([i[::-1] for i in tmp_probs], dtype=float)
+        expected_maf = 3.2 / 10
+        expected_minor = "B"
+        expected_major = "A"
+        expected_dosage = np.array([0.1, 1.9, 0.1, 0.1, 0.1, 0.1, 0.1, 1.9,
+                                    1.9, 0.1], dtype=float)
+        obs_results = maf_dosage_from_probs(tmp_probs, "A", "B", tmp_gender)
+        obs_dosage, obs_maf, obs_minor, obs_major = obs_results
+        self.assertAlmostEqual(expected_maf, obs_maf, places=10)
+        self.assertTrue(np.allclose(expected_dosage, obs_dosage))
+        self.assertEqual(expected_minor, obs_minor)
+        self.assertEqual(expected_major, obs_major)
+
+        # Reversing the matrix should give the same maf, but different major
+        # and minor allele
+        expected_maf = 3.2 / 10
+        expected_minor = "A"
+        expected_major = "B"
+        expected_dosage = np.array([0.1, 1.9, 0.1, 0.1, 0.1, 0.1, 0.1, 1.9,
+                                    1.9, 0.1], dtype=float)
+        obs_results = maf_dosage_from_probs(tmp_r_probs, "A", "B", tmp_gender)
+        obs_dosage, obs_maf, obs_minor, obs_major = obs_results
+        self.assertAlmostEqual(expected_maf, obs_maf, places=10)
+        self.assertTrue(np.allclose(expected_dosage, obs_dosage))
+        self.assertEqual(expected_minor, obs_minor)
+        self.assertEqual(expected_major, obs_major)
+
+        # Checking with gender (only females)
+        tmp_gender += 1
+        expected_maf = 7 / 20
+        expected_minor = "B"
+        expected_major = "A"
+        expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
+                                    0.9, 0.1], dtype=float)
+        obs_results = maf_dosage_from_probs(probs, "A", "B", tmp_gender)
+        obs_dosage, obs_maf, obs_minor, obs_major = obs_results
+        self.assertAlmostEqual(expected_maf, obs_maf, places=10)
+        self.assertTrue(np.allclose(expected_dosage, obs_dosage))
+        self.assertEqual(expected_minor, obs_minor)
+        self.assertEqual(expected_major, obs_major)
+
+        # Reversing the matrix should give the same maf, but different major
+        # and minor allele
+        expected_maf = 7 / 20
+        expected_minor = "A"
+        expected_major = "B"
+        expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
+                                    0.9, 0.1], dtype=float)
+        obs_results = maf_dosage_from_probs(r_probs, "A", "B", tmp_gender)
+        obs_dosage, obs_maf, obs_minor, obs_major = obs_results
+        self.assertAlmostEqual(expected_maf, obs_maf, places=10)
+        self.assertTrue(np.allclose(expected_dosage, obs_dosage))
+        self.assertEqual(expected_minor, obs_minor)
+        self.assertEqual(expected_major, obs_major)
+
+        # Checking empty probabilities (without gender)
+        tmp_probs = np.array([], dtype=float)
+        expected_maf = "NA"
+        expected_minor = "B"
+        expected_major = "A"
+        expected_dosage = np.array([], dtype=float)
+        observed_results = maf_dosage_from_probs(tmp_probs, "A", "B")
+        obs_dosage, obs_maf, obs_minor, obs_major = observed_results
+        self.assertEqual(expected_maf, obs_maf)
+        self.assertTrue(np.allclose(expected_dosage, obs_dosage))
+        self.assertEqual(expected_minor, obs_minor)
+        self.assertEqual(expected_major, obs_major)
+
+        # Checking empty probabilities (with gender)
+        expected_maf = "NA"
+        expected_minor = "B"
+        expected_major = "A"
+        expected_dosage = np.array([], dtype=float)
+        obs_results = maf_dosage_from_probs(tmp_probs, "A", "B", gender)
+        obs_dosage, obs_maf, obs_minor, obs_major = obs_results
+        self.assertEqual(expected_maf, obs_maf)
+        self.assertTrue(np.allclose(expected_dosage, obs_dosage))
+        self.assertEqual(expected_minor, obs_minor)
+        self.assertEqual(expected_major, obs_major)
+
+        # Checking all unknown gender
+        all_unknown = np.zeros(10, dtype=int)
+        expected_maf = "NA"
+        expected_minor = "B"
+        expected_major = "A"
+        expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
+                                    0.9, 0.1], dtype=float)
+        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+            obs_results = maf_dosage_from_probs(probs, "A", "B", all_unknown)
+        log_m = ["WARNING:root:All samples have unknown gender, "
+                 "MAF will be NA"]
+        obs_dosage, obs_maf, obs_minor, obs_major = obs_results
+        self.assertEqual(expected_maf, obs_maf)
+        self.assertTrue(np.allclose(expected_dosage, obs_dosage))
+        self.assertEqual(expected_minor, obs_minor)
+        self.assertEqual(expected_major, obs_major)
+        self.assertEqual(log_m, cm.output)
 
         # An heterozygous male (using gender) should raise an exception
         with self.assertRaises(ProgramError) as cm:
@@ -312,3 +535,12 @@ class TestFormats(unittest.TestCase):
         observed = hard_calls_from_probs(a1, a2, prob_matrix)
         self.assertEqual(expected.shape, observed.shape)
         self.assertTrue((expected == observed).all())
+
+    def _my_compatibility_assertLogs(self, logger=None, level=None):
+        """Compatibility 'assertLogs' function for Python 3.3."""
+        if hasattr(self, "assertLogs"):
+            return self.assertLogs(logger, level)
+
+        else:
+            from .python_3_3_compatibility import Python_3_4_AssertLogsContext
+            return Python_3_4_AssertLogsContext(self, logger, level)
