@@ -135,7 +135,8 @@ def maf_from_probs(prob_matrix, a1, a2, gender=None, site_name=None):
     return maf, minor, major
 
 
-def maf_dosage_from_probs(prob_matrix, a1, a2, gender=None, site_name=None):
+def maf_dosage_from_probs(prob_matrix, a1, a2, scale=2, gender=None,
+                          site_name=None):
     """Computes MAF and dosage vector from probs matrix.
 
     Args:
@@ -166,6 +167,7 @@ def maf_dosage_from_probs(prob_matrix, a1, a2, gender=None, site_name=None):
     dosage = dosage_from_probs(
         homo_probs=prob_matrix[:, 2],
         hetero_probs=prob_matrix[:, 1],
+        scale=scale,
     )
 
     set_no_maf = False
