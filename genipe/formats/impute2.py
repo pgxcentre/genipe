@@ -143,6 +143,7 @@ def maf_dosage_from_probs(prob_matrix, a1, a2, scale=2, gender=None,
         prob_matrix (numpy.array): the probability matrix
         a1 (str): the first allele
         a2 (str): the second allele
+        scale (int): the scale value
         gender (numpy.array): the gender of the samples
         site_name (str): the name for this site
 
