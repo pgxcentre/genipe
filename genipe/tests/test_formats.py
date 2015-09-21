@@ -317,7 +317,8 @@ class TestFormats(unittest.TestCase):
         expected_major = "A"
         expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
                                     0.9, 0.1], dtype=float)
-        observed_results = maf_dosage_from_probs(probs, "A", "B", gender)
+        observed_results = maf_dosage_from_probs(probs, "A", "B",
+                                                 gender=gender)
         obs_dosage, obs_maf, obs_minor, obs_major = observed_results
         self.assertAlmostEqual(expected_maf, obs_maf, places=10)
         self.assertTrue(np.allclose(expected_dosage, obs_dosage))
@@ -331,7 +332,8 @@ class TestFormats(unittest.TestCase):
         expected_major = "B"
         expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
                                     0.9, 0.1], dtype=float)
-        observed_results = maf_dosage_from_probs(r_probs, "A", "B", gender)
+        observed_results = maf_dosage_from_probs(r_probs, "A", "B",
+                                                 gender=gender)
         obs_dosage, obs_maf, obs_minor, obs_major = observed_results
         self.assertAlmostEqual(expected_maf, obs_maf, places=10)
         self.assertTrue(np.allclose(expected_dosage, obs_dosage))
@@ -344,7 +346,8 @@ class TestFormats(unittest.TestCase):
         expected_major = "A"
         expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
                                     0.9, 0.1], dtype=float)
-        obs_results = maf_dosage_from_probs(probs, "A", "B", unknown_gender)
+        obs_results = maf_dosage_from_probs(probs, "A", "B",
+                                            gender=unknown_gender)
         obs_dosage, obs_maf, obs_minor, obs_major = obs_results
         self.assertAlmostEqual(expected_maf, obs_maf, places=10)
         self.assertTrue(np.allclose(expected_dosage, obs_dosage))
@@ -358,7 +361,8 @@ class TestFormats(unittest.TestCase):
         expected_major = "B"
         expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
                                     0.9, 0.1], dtype=float)
-        obs_results = maf_dosage_from_probs(r_probs, "A", "B", unknown_gender)
+        obs_results = maf_dosage_from_probs(r_probs, "A", "B",
+                                            gender=unknown_gender)
         obs_dosage, obs_maf, obs_minor, obs_major = obs_results
         self.assertAlmostEqual(expected_maf, obs_maf, places=10)
         self.assertTrue(np.allclose(expected_dosage, obs_dosage))
@@ -386,7 +390,8 @@ class TestFormats(unittest.TestCase):
         expected_major = "A"
         expected_dosage = np.array([0.1, 1.9, 0.1, 0.1, 0.1, 0.1, 0.1, 1.9,
                                     1.9, 0.1], dtype=float)
-        obs_results = maf_dosage_from_probs(tmp_probs, "A", "B", tmp_gender)
+        obs_results = maf_dosage_from_probs(tmp_probs, "A", "B",
+                                            gender=tmp_gender)
         obs_dosage, obs_maf, obs_minor, obs_major = obs_results
         self.assertAlmostEqual(expected_maf, obs_maf, places=10)
         self.assertTrue(np.allclose(expected_dosage, obs_dosage))
@@ -400,7 +405,8 @@ class TestFormats(unittest.TestCase):
         expected_major = "B"
         expected_dosage = np.array([0.1, 1.9, 0.1, 0.1, 0.1, 0.1, 0.1, 1.9,
                                     1.9, 0.1], dtype=float)
-        obs_results = maf_dosage_from_probs(tmp_r_probs, "A", "B", tmp_gender)
+        obs_results = maf_dosage_from_probs(tmp_r_probs, "A", "B",
+                                            gender=tmp_gender)
         obs_dosage, obs_maf, obs_minor, obs_major = obs_results
         self.assertAlmostEqual(expected_maf, obs_maf, places=10)
         self.assertTrue(np.allclose(expected_dosage, obs_dosage))
@@ -414,7 +420,8 @@ class TestFormats(unittest.TestCase):
         expected_major = "A"
         expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
                                     0.9, 0.1], dtype=float)
-        obs_results = maf_dosage_from_probs(probs, "A", "B", tmp_gender)
+        obs_results = maf_dosage_from_probs(probs, "A", "B",
+                                            gender=tmp_gender)
         obs_dosage, obs_maf, obs_minor, obs_major = obs_results
         self.assertAlmostEqual(expected_maf, obs_maf, places=10)
         self.assertTrue(np.allclose(expected_dosage, obs_dosage))
@@ -428,7 +435,8 @@ class TestFormats(unittest.TestCase):
         expected_major = "B"
         expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
                                     0.9, 0.1], dtype=float)
-        obs_results = maf_dosage_from_probs(r_probs, "A", "B", tmp_gender)
+        obs_results = maf_dosage_from_probs(r_probs, "A", "B",
+                                            gender=tmp_gender)
         obs_dosage, obs_maf, obs_minor, obs_major = obs_results
         self.assertAlmostEqual(expected_maf, obs_maf, places=10)
         self.assertTrue(np.allclose(expected_dosage, obs_dosage))
@@ -453,7 +461,8 @@ class TestFormats(unittest.TestCase):
         expected_minor = "B"
         expected_major = "A"
         expected_dosage = np.array([], dtype=float)
-        obs_results = maf_dosage_from_probs(tmp_probs, "A", "B", gender)
+        obs_results = maf_dosage_from_probs(tmp_probs, "A", "B",
+                                            gender=gender)
         obs_dosage, obs_maf, obs_minor, obs_major = obs_results
         self.assertEqual(expected_maf, obs_maf)
         self.assertTrue(np.allclose(expected_dosage, obs_dosage))
@@ -468,7 +477,8 @@ class TestFormats(unittest.TestCase):
         expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
                                     0.9, 0.1], dtype=float)
         with self._my_compatibility_assertLogs(level="WARNING") as cm:
-            obs_results = maf_dosage_from_probs(probs, "A", "B", all_unknown)
+            obs_results = maf_dosage_from_probs(probs, "A", "B",
+                                                gender=all_unknown)
         log_m = ["WARNING:root:All samples have unknown gender, "
                  "MAF will be NA"]
         obs_dosage, obs_maf, obs_minor, obs_major = obs_results
@@ -480,7 +490,8 @@ class TestFormats(unittest.TestCase):
 
         # An heterozygous male (using gender) should raise an exception
         with self.assertRaises(ProgramError) as cm:
-            maf_from_probs(probs, "A", "B", np.ones(10, dtype=int), "marker_1")
+            maf_dosage_from_probs(probs, "A", "B", site_name="marker_1",
+                                  gender=np.ones(10, dtype=int))
         self.assertEqual("marker_1: heterozygous male present",
                          str(cm.exception))
 
