@@ -191,9 +191,59 @@ def _check_output_files(o_files, task):
                 if not _check_impute2_file(filename, task):
                     return False
 
+        elif filename.endswith(".snp.strand"):
+            # SHAPEIT alignment file might not exits
+            if not isfile(filename):
+                if not _check_shapeit_align_file(filename, task):
+                    return False
+
         elif not isfile(filename):
             return False
 
+    return True
+
+
+def _check_shapeit_align_file(fn, task=None):
+    """Checks the log to explain the absence of an .snp.strand file.
+
+    Args:
+        fn (str): the name of the file to check
+        task (str): the name of the task
+
+    Returns:
+        bool: ``True`` if everything is normal, ``False`` otherwise.
+
+    This function looks for known message in the log file. If the SNPs were
+    read from the legend file and the haplotypes were read from the hap file,
+    then there were no SNPs flip issue.
+
+    """
+    # The name of the summary file
+    log_fn = fn.replace(".snp.strand", "") + ".log"
+    if not os.path.isfile(log_fn):
+        # The log file doesn't exist...
+        return False
+
+    # Reading the content of the file
+    log = None
+    with open(log_fn, "r") as i_file:
+        log = i_file.read()
+
+    # Checking that the SNPs were read in the legend file (the strand error
+    # message is just after this notice).
+    match = re.search(r"\sReading SNPs in \[.+\]\n", log)
+    if not match:
+        return False
+
+    # Checking if the step after was run (i.e. meaning there were no strand
+    # issue)
+    match = re.search(r"\sReading reference haplotypes in \[.+\]\n", log)
+    if not match:
+        return False
+
+    # We are here, so it is normal that no *.snp.strand file exists
+    if task:
+        logging.info("{}: there are no flip issue".format(task))
     return True
 
 
@@ -218,7 +268,7 @@ def _check_impute2_file(fn, task=None):
     # The name of the summary file
     summary_fn = fn + "_summary"
     if not os.path.isfile(summary_fn):
-        # The summary file doesn't exists...
+        # The summary file doesn't exist...
         return False
 
     # Reading the file content
