@@ -112,7 +112,7 @@ def main():
         db_name = create_task_db(args.out_dir)
 
         # Creating the output directories
-        for chrom in autosomes:
+        for chrom in args.required_chrom_names:
             chr_dir = os.path.join(args.out_dir, "chr{}".format(chrom))
             if not os.path.isdir(chr_dir):
                 os.mkdir(chr_dir)
@@ -133,6 +133,16 @@ def main():
         # Getting Plink version
         run_information["plink_version"] = get_plink_version(
             "plink" if args.plink_bin is None else args.plink_bin
+        )
+
+        # Gathering the chromosome length from legend files
+        chromosome_length = get_chromosome_length(
+            required_chrom=args.required_chrom,
+            legend=args.legend_template,
+            legend_chr23=args.legend_chr23,
+            legend_par1=args.legend_par1,
+            legend_par2=args.legend_par2,
+            out_dir=args.out_dir,
         )
 
         # Excluding markers prior to phasing (ambiguous markers [A/T and [G/C]
@@ -188,9 +198,6 @@ def main():
             db_name,
             args,
         )
-
-        # Gathering the chromosome length from Ensembl REST API
-        chromosome_length = get_chromosome_length(args.out_dir)
 
         # Performs the imputation
         impute_markers(os.path.join(args.out_dir, "chr{chrom}",
@@ -559,10 +566,19 @@ def file_sorter(filename):
     return (int(r.group(1)), int(r.group(2)), int(r.group(3)))
 
 
-def get_chromosome_length(out_dir):
+def get_chromosome_length(required_chrom, legend, legend_chr23, legend_par1,
+                          legend_par2, out_dir):
     """Gets the chromosome length from Ensembl REST API.
 
     Args:
+        required_chrom (tuple): the list of required chromosomes
+        legend (str): the legend file template for the autosomal chromosomes
+        legend_chr23 (str): the legend file for the non pseudo-autosomal region
+                            of chromosome 23
+        legend_par1 (stR): the legend file for the first pseudo-autosomal
+                           region of chromosome 23
+        legend_par2 (stR): the legend file for the second pseudo-autosomal
+                           region of chromosome 23
         out_dir (str): the output directory
 
     Returns:
@@ -571,77 +587,88 @@ def get_chromosome_length(out_dir):
     """
     chrom_length = None
     filename = os.path.join(out_dir, "chromosome_lengths.txt")
-    if not os.path.isfile(filename):
-        logging.info("Gathering chromosome length (Ensembl, GRCh37)")
 
-        # The URL
-        url = ("http://grch37.rest.ensembl.org/info/assembly/homo_sapiens"
-               "?content-type=application/json")
-        try:
-            result = json.loads(urlopen(url).read().decode())
-
-            # Checking the build
-            if not result["assembly_name"].startswith("GRCh37") or \
-                    result["default_coord_system_version"] != "GRCh37":
-                raise GenipeError("{}: wrong "
-                                  "build".format(result["assembly_name"]))
-
-            # Gathering the chromosome length
-            chrom_length = {}
-            req_chrom = {str(i) for i in range(23)} | {"X"}
-            for region in result["top_level_region"]:
-                if region["name"] in req_chrom:
-                    chrom_length[region["name"]] = region["length"]
-
-        except HTTPError:
-            logging.warning("Ensembl GRCh37 not available... Using hard coded "
-                            "chromosome lengths")
-            chrom_length = {
-                "1": 249250621,
-                "2": 243199373,
-                "3": 198022430,
-                "4": 191154276,
-                "5": 180915260,
-                "6": 171115067,
-                "7": 159138663,
-                "8": 146364022,
-                "9": 141213431,
-                "10": 135534747,
-                "11": 135006516,
-                "12": 133851895,
-                "13": 115169878,
-                "14": 107349540,
-                "15": 102531392,
-                "16": 90354753,
-                "17": 81195210,
-                "18": 78077248,
-                "19": 59128983,
-                "20": 63025520,
-                "21": 48129895,
-                "22": 51304566,
-                "X": 155270560,
-            }
-
-        finally:
-            # Saving to file
-            with open(filename, "w") as o_file:
-                for chrom in sorted(chrom_length.keys()):
-                    print(chrom, chrom_length[chrom], sep="\t", file=o_file)
-
-    else:
+    redo = False
+    if os.path.isfile(filename):
         # Gathering from file
         logging.info("Gathering chromosome length ({})".format(filename))
         with open(filename, "r") as i_file:
             chrom_length = {}
             for line in i_file:
                 row = line.rstrip("\n").split("\t")
-                chrom_length[row[0]] = int(row[1])
+                if row[0] == "23" or row[0] == "25":
+                    chrom_length[int(row[0])] = [
+                        int(i) if i != "None" else None for i in row[1:]
+                    ]
+                    continue
+                chrom_length[int(row[0])] = int(row[1])
 
-    # Checking we have all the required data
-    required_chrom = {str(i) for i in autosomes}
-    if (set(chrom_length) & required_chrom) != required_chrom:
-        missing = ", ".join(sorted(required_chrom - set(chrom_length)))
-        raise GenipeError("missing autosomes: {}".format(missing))
+        # Checking we have all the required data
+        for chrom in required_chrom:
+            if chrom not in chrom_length:
+                logging.warning(
+                    "missing length for chromosome {}".format(chrom)
+                )
+                redo=True
+
+    if redo or (not os.path.isfile(filename)):
+        chrom_length = {}
+
+        # Computing for autosomes
+        for chrom in required_chrom:
+            if chrom not in autosomes:
+                continue
+
+            logging.info("Getting length for chromosome {}".format(chrom))
+            data = pd.read_csv(
+                legend.format(chrom=chrom),
+                sep=" ",
+                compression="gzip" if legend.endswith(".gz") else None,
+            )
+            chrom_length[chrom] = data.position.max()
+
+        # Computing for the non-pseudoautosomal region (if required)
+        if 23 in required_chrom:
+            non_pseudo = [None, None]
+            logging.info("Getting length for chromosome 23 (nonPAR)")
+            data = pd.read_csv(
+                legend_chr23,
+                sep=" ",
+                compression="gzip" if legend_chr23.endswith(".gz") else None,
+            )
+            non_pseudo = [data.position.min(), data.position.max()]
+
+            chrom_length[23] = tuple(non_pseudo)
+
+        # Computing for the two pseudo-autosomal regions (if required)
+        if 25 in required_chrom:
+            pseudo_autosomal = [None, None]
+            logging.info("Getting length for chromosome 23 (PAR1)")
+            data = pd.read_csv(
+                legend_par1,
+                sep=" ",
+                compression="gzip" if legend_par1.endswith(".gz") else None,
+            )
+            pseudo_autosomal[0] = data.position.max()
+
+            logging.info("Getting length for chromosome 23 (PAR2)")
+            data = pd.read_csv(
+                legend_par2,
+                sep=" ",
+                compression="gzip" if legend_par2.endswith(".gz") else None,
+            )
+            pseudo_autosomal[1] = data.position.min()
+
+            chrom_length[25] = tuple(pseudo_autosomal)
+
+        # Saving to file
+        with open(filename, "w") as o_file:
+            for chrom in sorted(chrom_length.keys()):
+                if chrom == 23 or chrom == 25:
+                    print(chrom, chrom_length[chrom][0],
+                          chrom_length[chrom][1], sep="\t", file=o_file)
+                    continue
+                print(chrom, chrom_length[chrom], sep="\t", file=o_file)
 
     return chrom_length
 

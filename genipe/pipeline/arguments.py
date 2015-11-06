@@ -431,12 +431,13 @@ def check_args(args):
 
     # The final chromosomal requirement
     chrom_names = []
-    for chrom in sorted(args.required_chrom):
+    args.required_chrom = tuple(sorted(args.required_chrom))
+    for chrom in args.required_chrom:
         if chrom == 25:
             chrom_names.extend(["25_1", "25_2"])
             continue
         chrom_names.append(chrom)
-    args.chrom_names = tuple(chrom_names)
+    args.required_chrom_names = tuple(chrom_names)
 
     # Checking IMPUTE2's sample file
     if not os.path.isfile(args.sample_file):
