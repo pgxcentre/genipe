@@ -15,7 +15,7 @@ from pkg_resources import resource_filename
 
 from .utils import *
 from .. import __version__
-from .. import chromosomes
+from .. import autosomes
 from ..error import GenipeError
 
 
@@ -206,7 +206,7 @@ def _generate_methods(templates, run_options, run_information):
         format_tex("C", "texttt") + "/" + format_tex("G", "texttt") +
         sanitize_tex(
             ", duplicated markers (same position), and markers located on "
-            "sexual or mitochondrial chromosomes were excluded from the "
+            "sexual or mitochondrial autosomes were excluded from the "
             "imputation. "
     ) + to_add_1 + format_tex(
         sanitize_tex(
@@ -326,8 +326,8 @@ def _generate_results(templates, run_options, run_information):
     # Creating the tables
     tables = ""
 
-    # Adding the table for each of the chromosomes
-    for chrom in chromosomes:
+    # Adding the table for each of the autosomes
+    for chrom in autosomes:
         # Getting the table 1
         table_1 = run_information["cross_validation_table_1_chrom"][chrom]
         for i in range(len(table_1)):
@@ -602,7 +602,7 @@ def _generate_annex(templates, run_options, run_information):
 
     # This section content
     content = ("The following tables show the execution time required by all "
-               "the different tasks. All tasks are split by chromosomes. "
+               "the different tasks. All tasks are split by autosomes. "
                "Execution times for imputation for each chromosome are means "
                "of individual segment times. Computing all genotyped markers' "
                "missing rate took {}.")

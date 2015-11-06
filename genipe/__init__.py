@@ -25,7 +25,7 @@ __status__ = "Production"
 
 
 # The chromosomes
-chromosomes = range(1, 23)
+autosomes = tuple(range(1, 23))
 
 
 # Checking once for 'pyfaidx' and 'matplotlib'

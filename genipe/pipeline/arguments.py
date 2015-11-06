@@ -12,7 +12,7 @@ import logging
 from shutil import which
 
 from ..error import GenipeError
-from .. import __version__, chromosomes, HAS_PYFAIDX
+from .. import __version__, autosomes, HAS_PYFAIDX
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -351,7 +351,7 @@ def check_args(args):
     # Checking IMPUTE2's files
     for template in (args.hap_template, args.legend_template,
                      args.map_template):
-        for chrom in chromosomes:
+        for chrom in autosomes:
             # Checking the haplotype file
             filename = template.format(chrom=chrom)
             if not os.path.isfile(filename):

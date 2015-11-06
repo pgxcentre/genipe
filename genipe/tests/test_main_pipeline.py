@@ -11,7 +11,7 @@ import os
 import unittest
 from tempfile import TemporaryDirectory
 
-from .. import chromosomes
+from .. import autosomes
 from ..pipeline.cli import *
 from ..error import GenipeError
 
@@ -89,7 +89,7 @@ class TestMainPipeline(unittest.TestCase):
         chrom_length = get_chromosome_length(self.output_dir.name)
         self.assertEqual(expected_chrom, chrom_length)
 
-        # Removing some chromosomes from the file
+        # Removing some autosomes from the file
         del expected_chrom["9"]
         del expected_chrom["12"]
         with open(chrom_filename, "w") as o_file:
@@ -99,7 +99,7 @@ class TestMainPipeline(unittest.TestCase):
         # Tests that an exception is raised if there is a missing chromosome
         with self.assertRaises(GenipeError) as e:
             get_chromosome_length(self.output_dir.name)
-        self.assertEqual("missing chromosomes: 12, 9", e.exception.message)
+        self.assertEqual("missing autosomes: 12, 9", e.exception.message)
 
     @unittest.skipIf(not HAS_PYFAIDX,
                      "optional requirement (pyfaidx) not satisfied")
@@ -419,7 +419,7 @@ class TestMainPipeline(unittest.TestCase):
         filename_template = os.path.join(self.output_dir.name, "chr{chrom}",
                                          "final_impute2",
                                          "chr{chrom}.imputed.{suffix}")
-        for chrom in chromosomes:
+        for chrom in autosomes:
             # Getting the name of the file
             maf_filename = filename_template.format(chrom=chrom, suffix="maf")
             good_sites_filename = filename_template.format(chrom=chrom,
@@ -504,7 +504,7 @@ class TestMainPipeline(unittest.TestCase):
         self.assertEqual(log_m, cm.output[0])
 
         # Clearing the good sites file to see if we have a warning
-        for chrom in chromosomes:
+        for chrom in autosomes:
             filename = filename_template.format(chrom=chrom,
                                                 suffix="good_sites")
             with open(filename, "w") as o_file:
@@ -572,7 +572,7 @@ class TestMainPipeline(unittest.TestCase):
         leg_template = os.path.join(self.output_dir.name, "chr{chrom}.leg.gz")
         map_template = os.path.join(self.output_dir.name, "chr{chrom}.map")
         for filename in [hap_template, leg_template, map_template]:
-            for chrom in chromosomes:
+            for chrom in autosomes:
                 with open(filename.format(chrom=chrom), "w") as o_file:
                     pass
         args.hap_template = hap_template
@@ -666,7 +666,7 @@ class TestMainPipeline(unittest.TestCase):
         # Deleting each of the template, legend or map file
         for template in [args.hap_template, args.legend_template,
                          args.map_template]:
-            for chrom in chromosomes:
+            for chrom in autosomes:
                 filename = template.format(chrom=chrom)
                 os.remove(filename)
                 self.assertFalse(os.path.isfile(filename))

@@ -21,7 +21,7 @@ from numpy import nan
 from ..formats.index import *
 from ..formats.impute2 import *
 from ..error import GenipeError
-from .. import __version__, chromosomes
+from .. import __version__, autosomes
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -516,7 +516,7 @@ def check_args(args):
         start = int(genomic_match.group(2))
         end = int(genomic_match.group(3))
 
-        if chrom not in chromosomes:
+        if chrom not in autosomes:
             raise GenipeError("{}: invalid chromosome".format(chrom))
 
         if end < start:

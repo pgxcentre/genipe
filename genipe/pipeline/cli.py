@@ -29,7 +29,7 @@ from ..error import GenipeError
 from ..config import parse_drmaa_config
 from ..reporting import generate_report
 from .arguments import parse_args, check_args
-from .. import __version__, chromosomes, HAS_PYFAIDX, HAS_MATPLOTLIB
+from .. import __version__, autosomes, HAS_PYFAIDX, HAS_MATPLOTLIB
 
 
 if HAS_MATPLOTLIB:
@@ -100,7 +100,6 @@ def main():
 
         # Checking the options
         check_args(args)
-        sys.exit(0)
 
         # Getting the task options
         args.task_options = None
@@ -113,7 +112,7 @@ def main():
         db_name = create_task_db(args.out_dir)
 
         # Creating the output directories
-        for chrom in chromosomes:
+        for chrom in autosomes:
             chr_dir = os.path.join(args.out_dir, "chr{}".format(chrom))
             if not os.path.isdir(chr_dir):
                 os.mkdir(chr_dir)
@@ -294,7 +293,7 @@ def phase_markers(prefix, o_prefix, db_name, options):
         "--thread", str(options.shapeit_thread),
     ]
 
-    for chrom in chromosomes:
+    for chrom in autosomes:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
@@ -321,7 +320,7 @@ def phase_markers(prefix, o_prefix, db_name, options):
 
     # Checking that all the sample files are the same
     compare_with = None
-    for chrom in chromosomes:
+    for chrom in autosomes:
         filename = o_prefix.format(chrom=chrom) + ".sample"
         compare_to = None
         with open(filename, "r") as i_file:
@@ -374,7 +373,7 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
             base_command.append(rule)
 
     # Each chromosome have multiple segments
-    for chrom in chromosomes:
+    for chrom in autosomes:
         assert str(chrom) in chrom_length
 
         length = chrom_length[str(chrom)]
@@ -451,7 +450,7 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t, info_t,
         "--info", str(info_t),
     ]
 
-    for chrom in chromosomes:
+    for chrom in autosomes:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
@@ -518,7 +517,7 @@ def compress_impute2_files(filename_template, db_name, options):
     commands_info = []
     base_command = ["bgzip", "-f"]
 
-    for chrom in chromosomes:
+    for chrom in autosomes:
         # The current output prefix
         filename = filename_template.format(chrom=chrom)
 
@@ -639,10 +638,10 @@ def get_chromosome_length(out_dir):
                 chrom_length[row[0]] = int(row[1])
 
     # Checking we have all the required data
-    required_chrom = {str(i) for i in chromosomes}
+    required_chrom = {str(i) for i in autosomes}
     if (set(chrom_length) & required_chrom) != required_chrom:
         missing = ", ".join(sorted(required_chrom - set(chrom_length)))
-        raise GenipeError("missing chromosomes: {}".format(missing))
+        raise GenipeError("missing autosomes: {}".format(missing))
 
     return chrom_length
 
@@ -684,7 +683,7 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
     o_prefix = os.path.join(options.out_dir, "chr{chrom}",
                             "chr{chrom}." + suffix)
 
-    for chrom in chromosomes:
+    for chrom in autosomes:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
@@ -727,7 +726,7 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
 
     # For each chromosome, we find markers to change strand
     nb_total = 0
-    for chrom in chromosomes:
+    for chrom in autosomes:
         # The SNP to print in the output file
         to_write = set()
 
@@ -798,7 +797,7 @@ def flip_markers(prefix, to_flip, db_name, options):
     o_prefix = os.path.join(options.out_dir, "chr{chrom}",
                             "chr{chrom}.flipped")
 
-    for chrom in chromosomes:
+    for chrom in autosomes:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
@@ -855,7 +854,7 @@ def final_exclusion(prefix, to_exclude, db_name, options):
     # The output files (for statistics)
     bims = []
 
-    for chrom in chromosomes:
+    for chrom in autosomes:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
@@ -1068,7 +1067,7 @@ def exclude_markers_before_phasing(prefix, db_name, options):
     # The output prefix
     o_prefix = os.path.join(options.out_dir, "chr{chrom}", "chr{chrom}")
 
-    for chrom in chromosomes:
+    for chrom in autosomes:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
@@ -1112,8 +1111,8 @@ def get_chrom_encoding(reference):
     Returns:
         dict: the chromosome encoding
 
-    The encoding is a dictionary where numerical chromosomes from 1 to 22 are
-    the keys, and the encoded chromosomes (the one present in the reference)
+    The encoding is a dictionary where numerical autosomes from 1 to 22 are
+    the keys, and the encoded autosomes (the one present in the reference)
     are the values. An example would be ``1 -> chr1``.
 
     """
@@ -1220,7 +1219,7 @@ def get_cross_validation_results(glob_pattern):
 
     The returned information includes the total number of genotyped tested, the
     total number of genotyped by chromosome, the two summary tables produced by
-    IMPUTE2 (but using weighted means) for all chromosomes, and the two summary
+    IMPUTE2 (but using weighted means) for all autosomes, and the two summary
     tables for each chromosome.
 
     """
@@ -1255,7 +1254,7 @@ def get_cross_validation_results(glob_pattern):
     final_nb_genotypes = 0
 
     # For each chromosome
-    for chrom in chromosomes:
+    for chrom in autosomes:
         filenames = glob(glob_pattern.format(chrom=chrom))
 
         # The total number of genotypes for this chromosome
@@ -1530,7 +1529,7 @@ def gather_imputation_stats(prob_t, completion_t, info_t, nb_samples, missing,
     # For each chromosome, get the statistics
     filename_template = os.path.join(o_dir, "chr{chrom}", "final_impute2",
                                      "chr{chrom}.imputed.{suffix}")
-    for chrom in chromosomes:
+    for chrom in autosomes:
         logging.info("  - chromosome {}".format(chrom))
 
         # First, we read the imputed sites
@@ -1689,7 +1688,7 @@ def gather_maf_stats(o_dir):
     # For each chromosome, get the MAF statistics
     filename_template = os.path.join(o_dir, "chr{chrom}", "final_impute2",
                                      "chr{chrom}.imputed.{suffix}")
-    for chrom in chromosomes:
+    for chrom in autosomes:
         logging.info("  - chromosome {}".format(chrom))
 
         # The name of the file
@@ -1866,7 +1865,7 @@ def gather_execution_time(db_name):
     impute2_exec_time = []
     merge_impute2_exec_time = []
     bgzip_exec_time = []
-    for chrom in chromosomes:
+    for chrom in autosomes:
         # Getting the time for 'plink_exclude'
         seconds = exec_time["plink_exclude_chr{}".format(chrom)]
         plink_exclude_exec_time.append([chrom, seconds])
