@@ -11,7 +11,7 @@ import os
 import logging
 from shutil import which
 
-from ..error import ProgramError
+from ..error import GenipeError
 from .. import __version__, chromosomes, HAS_PYFAIDX
 
 
@@ -334,19 +334,19 @@ def check_args(args):
     Returns:
         bool: `True` if everything is OK
 
-    If an option is invalid, a :py:class:`genipe.error.ProgramError` is raised.
+    If an option is invalid, a :py:class:`genipe.error.GenipeError` is raised.
 
     """
     # Checking the presence of the BED, BIM and BAM files
     for suffix in (".bed", ".bim", ".fam"):
         if not os.path.isfile(args.bfile + suffix):
-            raise ProgramError("{}: no such file".format(args.bfile + suffix))
+            raise GenipeError("{}: no such file".format(args.bfile + suffix))
 
     # Checking the thread
     if args.thread < 1:
-        raise ProgramError("thread should be one or more")
+        raise GenipeError("thread should be one or more")
     if args.shapeit_thread < 1:
-        raise ProgramError("thread should be one or more")
+        raise GenipeError("thread should be one or more")
 
     # Checking IMPUTE2's files
     for template in (args.hap_template, args.legend_template,
@@ -355,43 +355,43 @@ def check_args(args):
             # Checking the haplotype file
             filename = template.format(chrom=chrom)
             if not os.path.isfile(filename):
-                raise ProgramError("{}: no such file".format(filename))
+                raise GenipeError("{}: no such file".format(filename))
     if not os.path.isfile(args.sample_file):
-        raise ProgramError("{}: no such file".format(args.sample_file))
+        raise GenipeError("{}: no such file".format(args.sample_file))
 
     # Checking if bgzip is installed, if asking for compression
     if args.bgzip:
         if which("bgzip") is None:
-            raise ProgramError("bgzip: no installed")
+            raise GenipeError("bgzip: no installed")
 
     # Checking the SHAPEIT binary if required
     if args.shapeit_bin is not None:
         if not os.path.isfile(args.shapeit_bin):
-            raise ProgramError("{}: no such file".format(args.shapeit_bin))
+            raise GenipeError("{}: no such file".format(args.shapeit_bin))
     else:
         if which("shapeit") is None:
-            raise ProgramError("shapeit: not in the path (use --shapeit-bin)")
+            raise GenipeError("shapeit: not in the path (use --shapeit-bin)")
 
     # Checking the IMPUTE2 binary if required
     if args.impute2_bin is not None:
         if not os.path.isfile(args.impute2_bin):
-            raise ProgramError("{}: no such file".format(args.impute2_bin))
+            raise GenipeError("{}: no such file".format(args.impute2_bin))
     else:
         if which("impute2") is None:
-            raise ProgramError("impute2: not in the path (use --impute2-bin)")
+            raise GenipeError("impute2: not in the path (use --impute2-bin)")
 
     # Checking that Plink is in the path
     if args.plink_bin is not None:
         if not os.path.isfile(args.plink_bin):
-            raise ProgramError("{}: no such file".format(args.plink_bin))
+            raise GenipeError("{}: no such file".format(args.plink_bin))
     else:
         if which("plink") is None:
-            raise ProgramError("plink: not in the path (use --plink-bin)")
+            raise GenipeError("plink: not in the path (use --plink-bin)")
 
     # Checking the segment length
     if args.segment_length <= 0:
-        raise ProgramError("{}: invalid segment "
-                           "length".format(args.segment_length))
+        raise GenipeError("{}: invalid segment "
+                          "length".format(args.segment_length))
     if args.segment_length < 1e3:
         # This is too small.. We continue with a warning
         logging.warning("segment length ({:g} bp) is too "
@@ -404,16 +404,16 @@ def check_args(args):
     # Checking the preamble file (if required)
     if args.preamble is not None:
         if not os.path.isfile(args.preamble):
-            raise ProgramError("{}: no such file".format(args.preamble))
+            raise GenipeError("{}: no such file".format(args.preamble))
 
     # Checking the DRMAA configuration file
     if args.use_drmaa:
         if args.drmaa_config is None:
-            raise ProgramError("DRMAA configuration file was not provided "
-                               "(--drmaa-config), but DRMAA is used "
-                               "(--use-drmaa)")
+            raise GenipeError("DRMAA configuration file was not provided "
+                              "(--drmaa-config), but DRMAA is used "
+                              "(--use-drmaa)")
         if not os.path.isfile(args.drmaa_config):
-            raise ProgramError("{}: no such file".format(args.drmaa_config))
+            raise GenipeError("{}: no such file".format(args.drmaa_config))
 
     # Checking the reference file (if required)
     if args.reference is not None:
@@ -424,10 +424,10 @@ def check_args(args):
 
         else:
             if not os.path.isfile(args.reference):
-                raise ProgramError("{}: no such file".format(args.reference))
+                raise GenipeError("{}: no such file".format(args.reference))
 
             if not os.path.isfile(args.reference + ".fai"):
-                raise ProgramError("{}: should be indexed using "
-                                   "FAIDX".format(args.reference))
+                raise GenipeError("{}: should be indexed using "
+                                  "FAIDX".format(args.reference))
 
     return True

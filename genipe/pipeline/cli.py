@@ -25,7 +25,7 @@ import pandas as pd
 
 from ..db import *
 from ..task import launcher
-from ..error import ProgramError
+from ..error import GenipeError
 from ..config import parse_drmaa_config
 from ..reporting import generate_report
 from .arguments import parse_args, check_args
@@ -260,8 +260,8 @@ def main():
         logging.info("Cancelled by user")
         sys.exit(0)
 
-    # Catching the ProgramError
-    except ProgramError as e:
+    # Catching the GenipeError
+    except GenipeError as e:
         logging.error(e)
         parser.error(e.message)
 
@@ -330,7 +330,7 @@ def phase_markers(prefix, o_prefix, db_name, options):
                 compare_with = compare_to
 
         if compare_with != compare_to:
-            raise ProgramError("phased sample files are different...")
+            raise GenipeError("phased sample files are different...")
 
     # Returning the samples
     return [i.split(" ")[0] for i in compare_with.splitlines()[2:]]
@@ -489,7 +489,7 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t, info_t,
 
         # Checking if the file exists
         if not os.path.isfile(sample_file):
-            raise ProgramError("{}: no such file".format(sample_file))
+            raise GenipeError("{}: no such file".format(sample_file))
 
         # Copying the file
         copyfile(sample_file, c_prefix + ".sample")
@@ -584,8 +584,8 @@ def get_chromosome_length(out_dir):
             # Checking the build
             if not result["assembly_name"].startswith("GRCh37") or \
                     result["default_coord_system_version"] != "GRCh37":
-                raise ProgramError("{}: wrong "
-                                   "build".format(result["assembly_name"]))
+                raise GenipeError("{}: wrong "
+                                  "build".format(result["assembly_name"]))
 
             # Gathering the chromosome length
             chrom_length = {}
@@ -642,7 +642,7 @@ def get_chromosome_length(out_dir):
     required_chrom = {str(i) for i in chromosomes}
     if (set(chrom_length) & required_chrom) != required_chrom:
         missing = ", ".join(sorted(required_chrom - set(chrom_length)))
-        raise ProgramError("missing chromosomes: {}".format(missing))
+        raise GenipeError("missing chromosomes: {}".format(missing))
 
     return chrom_length
 
@@ -736,7 +736,7 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
 
         # Checking the input file exists
         if not os.path.isfile(chrom_filename):
-            raise ProgramError("{}: no such file".format(chrom_filename))
+            raise GenipeError("{}: no such file".format(chrom_filename))
 
         # Markers to flip
         with open(chrom_filename, "r") as i_file:
@@ -747,8 +747,8 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
             # Checking header
             for name in ("type", "main_id"):
                 if name not in header:
-                    raise ProgramError("{}: no column named "
-                                       "{}".format(chrom_filename, name))
+                    raise GenipeError("{}: no column named "
+                                      "{}".format(chrom_filename, name))
 
             # Reading the file
             for line in i_file:
@@ -1205,8 +1205,8 @@ def is_reversed(chrom, pos, a1, a2, reference, encoding):
         return True
 
     # If nothing works, raising an exception
-    raise ProgramError("chr{}: {}: {}: {}/{}: "
-                       "invalid".format(chrom, pos, ref, a1, a2))
+    raise GenipeError("chr{}: {}: {}: {}/{}: "
+                      "invalid".format(chrom, pos, ref, a1, a2))
 
 
 def get_cross_validation_results(glob_pattern):
@@ -1301,7 +1301,7 @@ def get_cross_validation_results(glob_pattern):
 
                 # We now should have data
                 if table_header is None:
-                    raise ProgramError("Problem with {}".format(filename))
+                    raise GenipeError("Problem with {}".format(filename))
 
                 # Now reading the data inside the tables
                 for line in i_file:
@@ -1700,7 +1700,7 @@ def gather_maf_stats(o_dir):
         # Checking the file exists
         for filename in [maf_filename, good_sites_filename]:
             if not os.path.isfile(filename):
-                raise ProgramError("{}: no such file".format(filename))
+                raise GenipeError("{}: no such file".format(filename))
 
         # Reading the list of good sites
         good_sites = None
@@ -1727,12 +1727,12 @@ def gather_maf_stats(o_dir):
         maf_description = maf.maf.describe()
         if maf_description["max"] > 0.5:
             bad = maf.loc[maf.maf.idxmax(), ["name", "maf"]]
-            raise ProgramError("{}: {}: invalid MAF".format(str(bad["name"]),
-                                                            round(bad.maf, 3)))
+            raise GenipeError("{}: {}: invalid MAF".format(str(bad["name"]),
+                                                           round(bad.maf, 3)))
         if maf_description["max"] < 0:
             bad = maf.loc[maf.maf.idxmin(), ["name", "maf"]]
-            raise ProgramError("{}: {}: invalid MAF".format(str(bad["name"]),
-                                                            round(bad.maf, 3)))
+            raise GenipeError("{}: {}: invalid MAF".format(str(bad["name"]),
+                                                           round(bad.maf, 3)))
 
         # Some of the true/false we need to keep (to not compute multiple time)
         maf_geq_01 = maf.maf >= 0.01
@@ -1750,7 +1750,7 @@ def gather_maf_stats(o_dir):
     # Checking
     nb_total = nb_maf_lt_01 + nb_maf_geq_01_lt_05 + nb_maf_geq_05
     if nb_total != nb_marker_with_maf:
-        raise ProgramError("something went wrong")
+        raise GenipeError("something went wrong")
 
     # Computing the percentages
     pct_maf_geq_01 = 0

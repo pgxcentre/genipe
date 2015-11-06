@@ -13,7 +13,7 @@ from tempfile import TemporaryDirectory
 
 from .. import chromosomes
 from ..pipeline.cli import *
-from ..error import ProgramError
+from ..error import GenipeError
 
 if HAS_PYFAIDX:
     import pyfaidx
@@ -97,7 +97,7 @@ class TestMainPipeline(unittest.TestCase):
                 print(k, v, sep="\t", file=o_file)
 
         # Tests that an exception is raised if there is a missing chromosome
-        with self.assertRaises(ProgramError) as e:
+        with self.assertRaises(GenipeError) as e:
             get_chromosome_length(self.output_dir.name)
         self.assertEqual("missing chromosomes: 12, 9", e.exception.message)
 
@@ -471,7 +471,7 @@ class TestMainPipeline(unittest.TestCase):
             print("marker_1", "0.6", sep="\t", file=o_file)
 
         # This should raise an exception
-        with self.assertRaises(ProgramError) as cm:
+        with self.assertRaises(GenipeError) as cm:
             gather_maf_stats(self.output_dir.name)
         self.assertEqual("{}: {}: invalid MAF".format("marker_1",
                                                       round(0.6, 3)),
@@ -484,7 +484,7 @@ class TestMainPipeline(unittest.TestCase):
             print("marker_1", "-0.01", sep="\t", file=o_file)
 
         # This should raise an exception
-        with self.assertRaises(ProgramError) as cm:
+        with self.assertRaises(GenipeError) as cm:
             gather_maf_stats(self.output_dir.name)
         self.assertEqual("{}: {}: invalid MAF".format("marker_1",
                                                       round(-0.01, 3)),
@@ -525,7 +525,7 @@ class TestMainPipeline(unittest.TestCase):
         self.assertFalse(os.path.isfile(removed_filename))
 
         # This should raise an exception
-        with self.assertRaises(ProgramError) as cm:
+        with self.assertRaises(GenipeError) as cm:
             gather_maf_stats(self.output_dir.name)
         self.assertEqual("{}: no such file".format(removed_filename),
                          str(cm.exception))
@@ -536,7 +536,7 @@ class TestMainPipeline(unittest.TestCase):
         self.assertFalse(os.path.isfile(removed_filename))
 
         # This should raise an exception
-        with self.assertRaises(ProgramError) as cm:
+        with self.assertRaises(GenipeError) as cm:
             gather_maf_stats(self.output_dir.name)
         self.assertEqual("{}: no such file".format(removed_filename),
                          str(cm.exception))
@@ -638,7 +638,7 @@ class TestMainPipeline(unittest.TestCase):
         # Now, setting an invalid thread number (negative or 0)
         for i in range(-1, 1):
             args.thread = i
-            with self.assertRaises(ProgramError) as cm:
+            with self.assertRaises(GenipeError) as cm:
                 check_args(args)
             self.assertEqual("thread should be one or more", str(cm.exception))
         args.thread = 2
@@ -647,7 +647,7 @@ class TestMainPipeline(unittest.TestCase):
         original_value = args.shapeit_thread
         for i in range(-1, 1):
             args.shapeit_thread = i
-            with self.assertRaises(ProgramError) as cm:
+            with self.assertRaises(GenipeError) as cm:
                 check_args(args)
             self.assertEqual("thread should be one or more", str(cm.exception))
         args.shapeit_thread = 2
@@ -656,7 +656,7 @@ class TestMainPipeline(unittest.TestCase):
         for extension in [".bed", ".bim", ".fam"]:
             os.remove(args.bfile + extension)
             self.assertFalse(os.path.isfile(args.bfile + extension))
-            with self.assertRaises(ProgramError) as cm:
+            with self.assertRaises(GenipeError) as cm:
                 check_args(args)
             self.assertEqual("{}: no such file".format(args.bfile + extension),
                              str(cm.exception))
@@ -670,7 +670,7 @@ class TestMainPipeline(unittest.TestCase):
                 filename = template.format(chrom=chrom)
                 os.remove(filename)
                 self.assertFalse(os.path.isfile(filename))
-                with self.assertRaises(ProgramError) as cm:
+                with self.assertRaises(GenipeError) as cm:
                     check_args(args)
                 self.assertEqual("{}: no such file".format(filename),
                                  str(cm.exception))
@@ -680,7 +680,7 @@ class TestMainPipeline(unittest.TestCase):
         # Deleting the sample file
         os.remove(args.sample_file)
         self.assertFalse(os.path.isfile(args.sample_file))
-        with self.assertRaises(ProgramError) as cm:
+        with self.assertRaises(GenipeError) as cm:
             check_args(args)
         self.assertEqual("{}: no such file".format(args.sample_file),
                          str(cm.exception))
@@ -690,7 +690,7 @@ class TestMainPipeline(unittest.TestCase):
         # Deleting the shapeit dummy binary
         os.remove(args.shapeit_bin)
         self.assertFalse(os.path.isfile(args.shapeit_bin))
-        with self.assertRaises(ProgramError) as cm:
+        with self.assertRaises(GenipeError) as cm:
             check_args(args)
         self.assertEqual("{}: no such file".format(args.shapeit_bin),
                          str(cm.exception))
@@ -701,7 +701,7 @@ class TestMainPipeline(unittest.TestCase):
         original_value = args.shapeit_bin
         args.shapeit_bin = None
         if which("shapeit") is None:
-            with self.assertRaises(ProgramError) as cm:
+            with self.assertRaises(GenipeError) as cm:
                 check_args(args)
             self.assertEqual("shapeit: not in the path (use --shapeit-bin)",
                              str(cm.exception))
@@ -712,7 +712,7 @@ class TestMainPipeline(unittest.TestCase):
         # Deleting the impute2 dummy binary
         os.remove(args.impute2_bin)
         self.assertFalse(os.path.isfile(args.impute2_bin))
-        with self.assertRaises(ProgramError) as cm:
+        with self.assertRaises(GenipeError) as cm:
             check_args(args)
         self.assertEqual("{}: no such file".format(args.impute2_bin),
                          str(cm.exception))
@@ -723,7 +723,7 @@ class TestMainPipeline(unittest.TestCase):
         original_value = args.impute2_bin
         args.impute2_bin = None
         if which("impute2") is None:
-            with self.assertRaises(ProgramError) as cm:
+            with self.assertRaises(GenipeError) as cm:
                 check_args(args)
             self.assertEqual("impute2: not in the path (use --impute2-bin)",
                              str(cm.exception))
@@ -734,7 +734,7 @@ class TestMainPipeline(unittest.TestCase):
         # Deleting the plink dummy binary
         os.remove(args.plink_bin)
         self.assertFalse(os.path.isfile(args.plink_bin))
-        with self.assertRaises(ProgramError) as cm:
+        with self.assertRaises(GenipeError) as cm:
             check_args(args)
         self.assertEqual("{}: no such file".format(args.plink_bin),
                          str(cm.exception))
@@ -745,7 +745,7 @@ class TestMainPipeline(unittest.TestCase):
         original_value = args.plink_bin
         args.plink_bin = None
         if which("plink") is None:
-            with self.assertRaises(ProgramError) as cm:
+            with self.assertRaises(GenipeError) as cm:
                 check_args(args)
             self.assertEqual("plink: not in the path (use --plink-bin)",
                              str(cm.exception))
@@ -756,7 +756,7 @@ class TestMainPipeline(unittest.TestCase):
         # If bgzip is not in the path, it should raise an error
         args.bgzip = True
         if which("bgzip") is None:
-            with self.assertRaises(ProgramError) as cm:
+            with self.assertRaises(GenipeError) as cm:
                 check_args(args)
             self.assertEqual("bgzip: no installed", str(cm.exception))
         else:
@@ -786,7 +786,7 @@ class TestMainPipeline(unittest.TestCase):
 
             else:
                 # Invalid
-                with self.assertRaises(ProgramError) as cm:
+                with self.assertRaises(GenipeError) as cm:
                     check_args(args)
                 error_m = "{}: invalid segment length"
                 self.assertEqual(error_m.format(value), str(cm.exception))
@@ -795,7 +795,7 @@ class TestMainPipeline(unittest.TestCase):
         # Deleting the preamble file
         os.remove(args.preamble)
         self.assertFalse(os.path.isfile(args.preamble))
-        with self.assertRaises(ProgramError) as cm:
+        with self.assertRaises(GenipeError) as cm:
             check_args(args)
         self.assertEqual("{}: no such file".format(args.preamble),
                          str(cm.exception))
@@ -807,7 +807,7 @@ class TestMainPipeline(unittest.TestCase):
         # Deleting the drmaa config file
         os.remove(args.drmaa_config)
         self.assertFalse(os.path.isfile(args.drmaa_config))
-        with self.assertRaises(ProgramError) as cm:
+        with self.assertRaises(GenipeError) as cm:
             check_args(args)
         self.assertEqual("{}: no such file".format(args.drmaa_config),
                          str(cm.exception))
@@ -816,7 +816,7 @@ class TestMainPipeline(unittest.TestCase):
         original_value = args.drmaa_config
         args.drmaa_config = None
         self.assertFalse(os.path.isfile(original_value))
-        with self.assertRaises(ProgramError) as cm:
+        with self.assertRaises(GenipeError) as cm:
             check_args(args)
         self.assertEqual(
             "DRMAA configuration file was not provided (--drmaa-config), but "
@@ -837,7 +837,7 @@ class TestMainPipeline(unittest.TestCase):
         if HAS_PYFAIDX:
             os.remove(args.reference + ".fai")
             self.assertFalse(os.path.isfile(args.reference + ".fai"))
-            with self.assertRaises(ProgramError) as cm:
+            with self.assertRaises(GenipeError) as cm:
                 check_args(args)
             self.assertEqual(
                 "{}: should be indexed using FAIDX".format(args.reference),
@@ -847,7 +847,7 @@ class TestMainPipeline(unittest.TestCase):
             # Removing the reference file should raise an exception
             os.remove(args.reference)
             self.assertFalse(os.path.isfile(args.reference))
-            with self.assertRaises(ProgramError) as cm:
+            with self.assertRaises(GenipeError) as cm:
                 check_args(args)
             self.assertEqual("{}: no such file".format(args.reference),
                              str(cm.exception))

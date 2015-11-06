@@ -25,7 +25,7 @@ import pandas as pd
 
 from .. import __version__
 from ..formats.impute2 import *
-from ..error import ProgramError
+from ..error import GenipeError
 
 
 __author__ = ["Louis-Philippe Lemieux Perreault", "Marc-Andre Legault"]
@@ -178,8 +178,8 @@ def main(args=None):
         logging.info("Cancelled by user")
         sys.exit(0)
 
-    # Catching the ProgramError
-    except ProgramError as e:
+    # Catching the GenipeError
+    except GenipeError as e:
         logging.error(e)
         parser.error(e.message)
 
@@ -300,14 +300,14 @@ def skat_read_snp_set(i_filename):
     """
     skat_info = pd.read_csv(i_filename, sep="\t", header=0)
     if "variant" not in skat_info.columns:
-        raise ProgramError("The SKAT SNP set file needs to have a 'variant' "
-                           "column containing the ID of every variant of "
-                           "interest.")
+        raise GenipeError("The SKAT SNP set file needs to have a 'variant' "
+                          "column containing the ID of every variant of "
+                          "interest.")
 
     if "snp_set" not in skat_info.columns:
-        raise ProgramError("The SKAT SNP set file needs to have a 'snp_set' "
-                           "column containing the SNP set ID for every "
-                           "variant. The user is free to choose the SNP ID")
+        raise GenipeError("The SKAT SNP set file needs to have a 'snp_set' "
+                          "column containing the SNP set ID for every "
+                          "variant. The user is free to choose the SNP ID")
 
     return skat_info
 
@@ -380,7 +380,7 @@ def skat_parse_impute2(impute2_filename, samples, markers_to_extract,
         os.makedirs(dir_name)
     else:
         # This should not happen because the folder name contains a timestamp
-        raise ProgramError("A folder named '{}' already exists.".format(
+        raise GenipeError("A folder named '{}' already exists.".format(
             dir_name
         ))
 
@@ -562,14 +562,14 @@ def _skat_run_job(script_filename):
     # Getting the p value
     p_match = re.search(r"_PYTHON_HOOK_PVAL:\[(.+)\]", out)
     if p_match is None:
-        raise ProgramError("SKAT did not return properly. See script "
-                           "'{}' for details.".format(script_filename))
+        raise GenipeError("SKAT did not return properly. See script "
+                          "'{}' for details.".format(script_filename))
 
     # Getting the Q value
     q_match = re.search(r"_PYTHON_HOOK_QVAL:\[(.+)\]", out)
     if q_match is None:
-        raise ProgramError("SKAT did not return properly. See script "
-                           "'{}' for details.".format(script_filename))
+        raise GenipeError("SKAT did not return properly. See script "
+                          "'{}' for details.".format(script_filename))
 
     if q_match.group(1) == "NA":
         # For SKAT-O, the Q will be set to NA.
@@ -835,8 +835,8 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
         # Closing the proc
         if proc is not None:
             if proc.wait() != 0:
-                raise ProgramError("{}: problem while reading the GZ "
-                                   "file".format(impute2_filename))
+                raise GenipeError("{}: problem while reading the GZ "
+                                  "file".format(impute2_filename))
 
 
 def process_impute2_site(site_info):
@@ -1147,59 +1147,59 @@ def check_args(args):
 
     Note
     ----
-        If there is a problem, a :py:class:`genipe.error.ProgramError` is
+        If there is a problem, a :py:class:`genipe.error.GenipeError` is
         raised.
 
     """
     # Checking if we have the requirements
     if args.analysis_type == "cox":
         if not HAS_LIFELINES:
-            raise ProgramError("missing optional module: lifelines")
+            raise GenipeError("missing optional module: lifelines")
 
     elif args.analysis_type in {"linear", "logistic", "mixedlm"}:
         if not HAS_STATSMODELS:
-            raise ProgramError("missing optional module: statsmodels")
+            raise GenipeError("missing optional module: statsmodels")
 
     elif args.analysis_type == "skat":
         if not HAS_R:
-            raise ProgramError("R is not installed")
+            raise GenipeError("R is not installed")
         if not HAS_SKAT:
-            raise ProgramError("R library missing: SKAT")
+            raise GenipeError("R library missing: SKAT")
 
     # Checking the required input files
     for filename in [args.impute2, args.sample, args.pheno]:
         if not os.path.isfile(filename):
-            raise ProgramError("{}: no such file".format(filename))
+            raise GenipeError("{}: no such file".format(filename))
 
     # Checking the optional input files
     for filename in [args.extract_sites]:
         if filename is not None:
             if not os.path.isfile(filename):
-                raise ProgramError("{}: no such file".format(filename))
+                raise GenipeError("{}: no such file".format(filename))
 
     # Checking the number of process
     on_mac_os = platform.system() == "Darwin"
     if args.nb_process < 1:
-        raise ProgramError("{}: invalid number of "
-                           "processes".format(args.nb_process))
+        raise GenipeError("{}: invalid number of "
+                          "processes".format(args.nb_process))
     if (args.nb_process > 1 and on_mac_os and args.analysis_type != "skat"):
-        raise ProgramError("multiprocessing is not supported on Mac OS when "
-                           "using linear regression, logistic regression or "
-                           "Cox.")
+        raise GenipeError("multiprocessing is not supported on Mac OS when "
+                          "using linear regression, logistic regression or "
+                          "Cox.")
 
     # Checking the number of lines to read
     if args.nb_lines < 1:
-        raise ProgramError("{}: invalid number of lines to "
-                           "read".format(args.nb_lines))
+        raise GenipeError("{}: invalid number of lines to "
+                          "read".format(args.nb_lines))
 
     # Checking the MAF threshold
     if args.maf < 0 or args.maf > 1:
-        raise ProgramError("{}: invalid MAF".format(args.maf))
+        raise GenipeError("{}: invalid MAF".format(args.maf))
 
     # Checking the probability threshold
     if args.prob < 0 or args.prob > 1:
-        raise ProgramError("{}: invalid probability "
-                           "threshold".format(args.prob))
+        raise GenipeError("{}: invalid probability "
+                          "threshold".format(args.prob))
 
     # Reading all the variables in the phenotype file
     header = None
@@ -1209,7 +1209,7 @@ def check_args(args):
     # Checking the restricted columns
     restricted_columns = {"_D1", "_D2", "_D3", "_MaxD", "_GenoD", "_Inter"}
     if len(restricted_columns & header) != 0:
-        raise ProgramError("{}: {}: restricted variables".format(
+        raise GenipeError("{}: {}: restricted variables".format(
             args.pheno,
             restricted_columns & header,
         ))
@@ -1222,7 +1222,7 @@ def check_args(args):
         variables_to_check = {args.pheno_name}
     for variable in variables_to_check:
         if variable not in header:
-            raise ProgramError("{}: {}: missing variable for {}".format(
+            raise GenipeError("{}: {}: missing variable for {}".format(
                 args.pheno,
                 variable,
                 args.analysis_type,
@@ -1234,13 +1234,13 @@ def check_args(args):
         categorical_set = set(args.categorical.split(","))
     for name in categorical_set:
         if name not in header:
-            raise ProgramError("{}: {}: missing categorical value".format(
+            raise GenipeError("{}: {}: missing categorical value".format(
                 args.pheno,
                 name,
             ))
         if args.pheno_name in categorical_set:
-            raise ProgramError("{}: {}: should not be in categorical "
-                               "list".format(args.pheno, args.pheno_name))
+            raise GenipeError("{}: {}: should not be in categorical "
+                              "list".format(args.pheno, args.pheno_name))
     args.categorical = categorical_set
 
     # Checking the co-variables
@@ -1249,7 +1249,7 @@ def check_args(args):
         covar_list = args.covar.split(",")
     for covar in covar_list:
         if covar not in header:
-            raise ProgramError("{}: {}: missing co-variable".format(
+            raise GenipeError("{}: {}: missing co-variable".format(
                 args.pheno,
                 covar,
             ))
@@ -1257,7 +1257,7 @@ def check_args(args):
 
     # Checking the sample column
     if args.sample_column not in header:
-        raise ProgramError("{}: {}: no such column (--sample-column)".format(
+        raise GenipeError("{}: {}: no such column (--sample-column)".format(
             args.pheno,
             args.sample_column,
         ))
@@ -1265,7 +1265,7 @@ def check_args(args):
     # Checking the gender column (only if required)
     if args.gender_column != "None":
         if args.gender_column not in header:
-            raise ProgramError(
+            raise GenipeError(
                 "{}: {}: no such column (--gender-column)".format(
                     args.pheno,
                     args.gender_column,
@@ -1275,7 +1275,7 @@ def check_args(args):
     # Checking the interaction column (if required)
     if args.interaction is not None:
         if args.interaction not in header:
-            raise ProgramError(
+            raise GenipeError(
                 "{}: {}: no such column (--interaction)".format(
                     args.pheno,
                     args.interaction,

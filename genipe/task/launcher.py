@@ -20,7 +20,7 @@ from tempfile import NamedTemporaryFile
 from multiprocessing.pool import ThreadPool
 
 from ..db import *
-from ..error import ProgramError
+from ..error import GenipeError
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -141,8 +141,8 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
                 logging.info("Task '{}': {} in {:,d} "
                              "seconds".format(result[1], result[2], result[3]))
         if len(problems) > 0:
-            raise ProgramError("the following task did not work: " +
-                               repr(problems))
+            raise GenipeError("the following task did not work: " +
+                              repr(problems))
 
     else:
         try:
@@ -156,7 +156,7 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
                         result[3],
                     ))
                 else:
-                    raise ProgramError(
+                    raise GenipeError(
                         "problem executing {}".format(data["name"])
                     )
 

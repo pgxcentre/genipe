@@ -16,7 +16,7 @@ from pkg_resources import resource_filename
 from .utils import *
 from .. import __version__
 from .. import chromosomes
-from ..error import ProgramError
+from ..error import GenipeError
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -82,7 +82,7 @@ def generate_report(out_dir, run_opts, run_info):
             print(main_template.render(**report_data), file=o_file)
 
     except FileNotFoundError:
-        raise ProgramError("{}: cannot write file".format(report_filename))
+        raise GenipeError("{}: cannot write file".format(report_filename))
 
     # Copying the bibliography file
     bib_file = resource_filename(__name__, "templates/biblio/references.bib")

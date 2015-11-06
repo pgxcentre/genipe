@@ -20,7 +20,7 @@ from numpy import nan
 
 from ..formats.index import *
 from ..formats.impute2 import *
-from ..error import ProgramError
+from ..error import GenipeError
 from .. import __version__, chromosomes
 
 
@@ -104,8 +104,8 @@ def main(args=None):
         logging.info("Cancelled by user")
         sys.exit(0)
 
-    # Catching the ProgramError
-    except ProgramError as e:
+    # Catching the GenipeError
+    except GenipeError as e:
         logging.error(e)
         parser.error(e.message)
 
@@ -129,7 +129,7 @@ def index_files(i_filenames):
 
     Note
     ----
-        We won't catch the :py:class:`genipe.error.ProgramError` exception if
+        We won't catch the :py:class:`genipe.error.GenipeError` exception if
         it's raised, since the message will be relevant to the user.
 
     """
@@ -258,7 +258,7 @@ def extract_companion_files(i_prefix, o_prefix, to_extract):
                 if info["header"] and i == 0:
                     header = {name: i for i, name in enumerate(row)}
                     if info["name"] not in header:
-                        raise ProgramError("{}: missing column {}".format(
+                        raise GenipeError("{}: missing column {}".format(
                             i_fn,
                             info["name"],
                         ))
@@ -472,7 +472,7 @@ def check_args(args):
 
     Note
     ----
-        If there is a problem, a :py:class:`genipe.error.ProgramError` is
+        If there is a problem, a :py:class:`genipe.error.GenipeError` is
         raised.
 
     Note
@@ -484,7 +484,7 @@ def check_args(args):
     # Checking that the impute2 files exists
     for filename in args.impute2:
         if not os.path.isfile(filename):
-            raise ProgramError("{}: no such file".format(filename))
+            raise GenipeError("{}: no such file".format(filename))
 
     if args.index_only:
         return True
@@ -492,11 +492,11 @@ def check_args(args):
     # Is there something to extract?
     if not args.genomic and not args.maf and not args.rate and not args.info:
         if args.extract is None:
-            raise ProgramError("nothing to extract: use '--extract', "
-                               "'--genomic', '--maf' or '--rate'")
+            raise GenipeError("nothing to extract: use '--extract', "
+                              "'--genomic', '--maf' or '--rate'")
 
     elif args.extract is not None:
-        raise ProgramError("'--extract' can only be use alone")
+        raise GenipeError("'--extract' can only be use alone")
 
     # What extensions to look for after checking arguments
     extensions = set()
@@ -504,20 +504,20 @@ def check_args(args):
     # If extract, check the file
     if args.extract is not None:
         if not os.path.isfile(args.extract):
-            raise ProgramError("{}: no such file".format(args.extract))
+            raise GenipeError("{}: no such file".format(args.extract))
 
     # If genomic, we check the format
     if args.genomic is not None:
         genomic_match = re.match(r"(.+):(\d+)-(\d+)$", args.genomic)
         if not genomic_match:
-            raise ProgramError("{}: no a valid genomic "
-                               "region".format(args.genomic))
+            raise GenipeError("{}: no a valid genomic "
+                              "region".format(args.genomic))
         chrom = int(genomic_match.group(1).replace("chr", ""))
         start = int(genomic_match.group(2))
         end = int(genomic_match.group(3))
 
         if chrom not in chromosomes:
-            raise ProgramError("{}: invalid chromosome".format(chrom))
+            raise GenipeError("{}: invalid chromosome".format(chrom))
 
         if end < start:
             start, end = end, start
@@ -530,27 +530,27 @@ def check_args(args):
         extensions.add("map")
         extensions.add("maf")
         if args.maf < 0 or args.maf > 0.5:
-            raise ProgramError("{}: invalid MAF".format(args.maf))
+            raise GenipeError("{}: invalid MAF".format(args.maf))
 
     # If completion rate, we check what's required
     if args.rate is not None:
         extensions.add("map")
         extensions.add("completion_rates")
         if args.rate < 0 or args.rate > 1:
-            raise ProgramError("{}: invalid rate".format(args.rate))
+            raise GenipeError("{}: invalid rate".format(args.rate))
 
     # If info, we check what's required
     if args.info is not None:
         extensions.add("map")
         extensions.add("impute2_info")
         if args.info < 0 or args.info > 1:
-            raise ProgramError("{}: invalid information "
-                               "value".format(args.info))
+            raise GenipeError("{}: invalid information "
+                              "value".format(args.info))
 
     # Checking the probability threshold
     if args.prob < 0 or args.prob > 1:
-        raise ProgramError("{}: invalid probability "
-                           "threshold".format(args.prob))
+        raise GenipeError("{}: invalid probability "
+                          "threshold".format(args.prob))
 
     # Checking the other files (for each impute2 file)
     for filename in args.impute2:
@@ -558,12 +558,12 @@ def check_args(args):
         for f_extension in extensions:
             fn = f_prefix + "." + f_extension
             if not os.path.isfile(fn):
-                raise ProgramError("{}: no such file".format(fn))
+                raise GenipeError("{}: no such file".format(fn))
 
     # Checking the output format
     for out_format in args.out_format:
         if out_format not in {"impute2", "dosage", "calls"}:
-            raise ProgramError("{}: invalid output format".format(out_format))
+            raise GenipeError("{}: invalid output format".format(out_format))
 
     return True
 
