@@ -11,8 +11,8 @@ import os
 import unittest
 from tempfile import TemporaryDirectory
 
-from ..pipeline import *
 from .. import chromosomes
+from ..pipeline.cli import *
 from ..error import ProgramError
 
 if HAS_PYFAIDX:

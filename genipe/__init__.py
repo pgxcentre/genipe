@@ -7,6 +7,8 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 
+import importlib
+
 try:
     from .version import genipe_version as __version__
 except ImportError:
@@ -22,7 +24,13 @@ __email__ = "louis-philippe.lemieux.perreault@statgen.org"
 __status__ = "Production"
 
 
+# The chromosomes
 chromosomes = range(1, 23)
+
+
+# Checking once for 'pyfaidx' and 'matplotlib'
+HAS_PYFAIDX = importlib.find_loader("pyfaidx") is not None
+HAS_MATPLOTLIB = importlib.find_loader("matplotlib") is not None
 
 
 def test(verbosity=1):
