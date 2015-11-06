@@ -12,7 +12,7 @@ import logging
 from shutil import which
 
 from ..error import GenipeError
-from .. import __version__, autosomes, HAS_PYFAIDX
+from .. import __version__, autosomes, chromosomes, HAS_PYFAIDX
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -71,6 +71,16 @@ def parse_args(parser):
 
     # The output options
     group = parser.add_argument_group("Output Options")
+    group.add_argument(
+        "--chrom",
+        type=int,
+        nargs="+",
+        metavar="CHROM",
+        choices=chromosomes,
+        default=chromosomes,
+        dest="required_chrom",
+        help="The chromosomes to process.",
+    )
     group.add_argument(
         "--output-dir",
         type=str,
@@ -142,7 +152,6 @@ def parse_args(parser):
         "--hap-template",
         type=str,
         metavar="TEMPLATE",
-        required=True,
         help="The template for IMPUTE2's haplotype files (replace the "
              "chromosome number by '{chrom}', e.g. "
              "'1000GP_Phase3_chr{chrom}.hap.gz').",
@@ -151,7 +160,6 @@ def parse_args(parser):
         "--legend-template",
         type=str,
         metavar="TEMPLATE",
-        required=True,
         help="The template for IMPUTE2's legend files (replace the chromosome "
              "number by '{chrom}', e.g. "
              "'1000GP_Phase3_chr{chrom}.legend.gz').",
@@ -160,7 +168,6 @@ def parse_args(parser):
         "--map-template",
         type=str,
         metavar="TEMPLATE",
-        required=True,
         help="The template for IMPUTE2's map files (replace the chromosome "
              "number by '{chrom}', e.g. "
              "'genetic_map_chr{chrom}_combined_b37.txt').",
@@ -179,6 +186,7 @@ def parse_args(parser):
         "--hap-nonPAR",
         type=str,
         metavar="FILE",
+        dest="hap_chr23",
         help="The IMPUTE2's haplotype file for the non-pseudoautosomal region "
              "of chromosome 23.",
     )
@@ -186,6 +194,7 @@ def parse_args(parser):
         "--hap-PAR1",
         type=str,
         metavar="FILE",
+        dest="hap_par1",
         help="The IMPUTE2's haplotype file for the first pseudoautosomal "
              "region of chromosome 23.",
     )
@@ -193,6 +202,7 @@ def parse_args(parser):
         "--hap-PAR2",
         type=str,
         metavar="FILE",
+        dest="hap_par2",
         help="The IMPUTE2's haplotype file for the second pseudoautosomal "
              "region of chromosome 23.",
     )
@@ -200,6 +210,7 @@ def parse_args(parser):
         "--legend-nonPAR",
         type=str,
         metavar="FILE",
+        dest="legend_chr23",
         help="The IMPUTE2's legend file for the non-pseudoautosomal region "
              "of chromosome 23.",
     )
@@ -207,6 +218,7 @@ def parse_args(parser):
         "--legend-PAR1",
         type=str,
         metavar="FILE",
+        dest="legend_par1",
         help="The IMPUTE2's legend file for the first pseudoautosomal "
              "region of chromosome 23.",
     )
@@ -214,6 +226,7 @@ def parse_args(parser):
         "--legend-PAR2",
         type=str,
         metavar="FILE",
+        dest="legend_par2",
         help="The IMPUTE2's legend file for the second pseudoautosomal "
              "region of chromosome 23.",
     )
@@ -221,6 +234,7 @@ def parse_args(parser):
         "--map-nonPAR",
         type=str,
         metavar="FILE",
+        dest="map_chr23",
         help="The IMPUTE2's map file for the non-pseudoautosomal region "
              "of chromosome 23.",
     )
@@ -228,6 +242,7 @@ def parse_args(parser):
         "--map-PAR1",
         type=str,
         metavar="FILE",
+        dest="map_par1",
         help="The IMPUTE2's map file for the first pseudoautosomal "
              "region of chromosome 23.",
     )
@@ -235,6 +250,7 @@ def parse_args(parser):
         "--map-PAR2",
         type=str,
         metavar="FILE",
+        dest="map_par2",
         help="The IMPUTE2's map file for the second pseudoautosomal "
              "region of chromosome 23.",
     )
@@ -348,14 +364,81 @@ def check_args(args):
     if args.shapeit_thread < 1:
         raise GenipeError("thread should be one or more")
 
-    # Checking IMPUTE2's files
-    for template in (args.hap_template, args.legend_template,
-                     args.map_template):
-        for chrom in autosomes:
-            # Checking the haplotype file
-            filename = template.format(chrom=chrom)
-            if not os.path.isfile(filename):
-                raise GenipeError("{}: no such file".format(filename))
+    # Checking IMPUTE2's templates (if required)
+    for chrom in args.required_chrom:
+        if chrom in autosomes:
+            if args.hap_template is None:
+                raise GenipeError(
+                    "chr{} requires '--hap-template'".format(chrom)
+                )
+
+            if args.legend_template is None:
+                raise GenipeError(
+                    "chr{} requires '--legend-template'".format(chrom)
+                )
+
+            if args.map_template is None:
+                raise GenipeError(
+                    "chr{} requires '--map-template'".format(chrom)
+                )
+
+            for template in (args.hap_template, args.legend_template,
+                             args.map_template):
+                filename = template.format(chrom=chrom)
+                if not os.path.isfile(filename):
+                    raise GenipeError("{}: no such file".format(filename))
+
+    # Checking the non pseudo-autosomal region of chromosome 23
+    if 23 in args.required_chrom:
+        if args.hap_chr23 is None:
+            raise GenipeError("chr23 requires '--hap-nonPAR'")
+        if not os.path.isfile(args.hap_chr23):
+            raise GenipeError("{}: no such file".format(args.hap_chr23))
+
+        if args.legend_chr23 is None:
+            raise GenipeError("chr23 requires '--legend-nonPAR'")
+        if not os.path.isfile(args.legend_chr23):
+            raise GenipeError("{}: no such file".format(args.legend_chr23))
+
+        if args.map_chr23 is None:
+            raise GenipeError("chr23 requires '--map-nonPAR'")
+        if not os.path.isfile(args.map_chr23):
+            raise GenipeError("{}: no such file".format(args.map_chr23))
+
+    # Checking the pseudo-autosomal region of chromosome 23
+    if 25 in args.required_chrom:
+        for i in ("1", "2"):
+            if vars(args)["hap_par" + i] is None:
+                raise GenipeError("chr25 requires '--hap-PAR" + i + "'")
+            if not os.path.isfile(vars(args)["hap_par" + i]):
+                raise GenipeError(
+                    "{}: no such file".format(vars(args)["hap_par" + i])
+                )
+
+            if vars(args)["legend_par" + i] is None:
+                raise GenipeError("chr25 requires '--legend-PAR" + i + "'")
+            if not os.path.isfile(vars(args)["legend_par" + i]):
+                raise GenipeError(
+                    "{}: no such file".format(vars(args)["legend_par" + i])
+                )
+
+            if vars(args)["map_par" + i] is None:
+                raise GenipeError("chr25 requires '--map-PAR" + i + "'")
+            if not os.path.isfile(vars(args)["map_par" + i]):
+                raise GenipeError(
+                    "{}: no such file".format(vars(args)["map_par" + i])
+                )
+
+    # The final chromosomal requirement
+    chrom_names = []
+    for chrom in sorted(args.required_chrom):
+        if chrom == 25:
+            chrom_names.extend(["25_1", "25_2"])
+            continue
+        chrom_names.append(chrom)
+    args.chrom_names = tuple(chrom_names)
+
+    # Checking IMPUTE2's sample file
     if not os.path.isfile(args.sample_file):
         raise GenipeError("{}: no such file".format(args.sample_file))
 
