@@ -148,12 +148,12 @@ def main():
         # Excluding markers prior to phasing (ambiguous markers [A/T and [G/C]
         # and duplicated markers and finds markers to flip if there is a
         # reference genome available
-        numbers = find_exclusion_before_phasing(
-            prefix=args.bfile,
-            db_name=db_name,
-            options=args,
-        )
-        run_information.update(numbers)
+#        numbers = find_exclusion_before_phasing(
+#            prefix=args.bfile,
+#            db_name=db_name,
+#            options=args,
+#        )
+#        run_information.update(numbers)
 
         exclude_markers_before_phasing(
             required_chrom=args.required_chrom,
@@ -209,16 +209,18 @@ def main():
             options=args,
         )
         run_information.update(numbers)
-        sys.exit(0)
 
         # Phasing the data
         samples = phase_markers(
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.final"),
-            os.path.join(args.out_dir, "chr{chrom}",
-                         "chr{chrom}.final.phased"),
-            db_name,
-            args,
+            required_chrom=args.required_chrom_names,
+            prefix=os.path.join(args.out_dir, "chr{chrom}",
+                                "chr{chrom}.final"),
+            o_prefix=os.path.join(args.out_dir, "chr{chrom}",
+                                  "chr{chrom}.final.phased"),
+            db_name=db_name,
+            options=args,
         )
+        sys.exit(0)
 
         # Performs the imputation
         impute_markers(os.path.join(args.out_dir, "chr{chrom}",
@@ -297,10 +299,11 @@ def main():
         raise
 
 
-def phase_markers(prefix, o_prefix, db_name, options):
+def phase_markers(required_chrom, prefix, o_prefix, db_name, options):
     """Phase markers using shapeit.
 
     Args:
+        required_chrom (tuple): the list of chromosome to phase
         prefix (str): the prefix template of the input files
         o_prefix (str): the prefix template of the output files
         db_name (str): the name of the DB saving tasks' information
@@ -321,16 +324,33 @@ def phase_markers(prefix, o_prefix, db_name, options):
         "--thread", str(options.shapeit_thread),
     ]
 
-    for chrom in autosomes:
+    for chrom in required_chrom:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
+        # The reference files
+        map_filename = options.map_template.format(chrom=chrom)
+
+        # The specific reference files for the chromosome 23
+        if chrom == 23:
+            map_filename = options.map_chr23
+
+        elif chrom == "25_1":
+            map_filename = options.map_par1
+
+        elif chrom == "25_2":
+            map_filename = options.map_par2
+
         remaining_command = [
             "-B", prefix.format(chrom=chrom),
-            "-M", options.map_template.format(chrom=chrom),
+            "-M", map_filename,
             "-O", c_prefix,
             "-L", c_prefix + ".log",
         ]
+
+        if chrom == 23:
+            remaining_command.append("--chrX")
+
         commands_info.append({
             "task_id": "shapeit_phase_chr{}".format(chrom),
             "name": "SHAPEIT phase chr{}".format(chrom),
@@ -348,7 +368,7 @@ def phase_markers(prefix, o_prefix, db_name, options):
 
     # Checking that all the sample files are the same
     compare_with = None
-    for chrom in autosomes:
+    for chrom in required_chrom:
         filename = o_prefix.format(chrom=chrom) + ".sample"
         compare_to = None
         with open(filename, "r") as i_file:
