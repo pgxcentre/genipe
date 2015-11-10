@@ -162,46 +162,54 @@ def main():
             chrom_length=chromosome_length,
             options=args,
         )
-        sys.exit(0)
 
         # Computing the marker missing rate
         missing_rate = compute_marker_missing_rate(args.bfile, db_name, args)
 
         # Checking the strand
         numbers = check_strand(
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}"),
-            "_1",
-            db_name,
-            args,
+            required_chrom=args.required_chrom_names,
+            prefix=os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}"),
+            id_suffix="_1",
+            db_name=db_name,
+            options=args,
         )
         run_information.update(numbers)
 
         # Flipping the markers
         flip_markers(
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}"),
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.to_flip"),
-            db_name,
-            args,
+            required_chrom=args.required_chrom_names,
+            prefix=os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}"),
+            to_flip=os.path.join(args.out_dir, "chr{chrom}",
+                                 "chr{chrom}.to_flip"),
+            db_name=db_name,
+            options=args,
         )
 
         # Checking the strand
         numbers = check_strand(
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.flipped"),
-            "_2",
-            db_name,
-            args,
+            required_chrom=args.required_chrom_names,
+            prefix=os.path.join(args.out_dir, "chr{chrom}",
+                                "chr{chrom}.flipped"),
+            id_suffix="_2",
+            db_name=db_name,
+            options=args,
             exclude=True,
         )
         run_information.update(numbers)
 
         # The final marker exclusion
         numbers = final_exclusion(
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.flipped"),
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.to_exclude"),
-            db_name,
-            args,
+            required_chrom=args.required_chrom_names,
+            prefix=os.path.join(args.out_dir, "chr{chrom}",
+                                "chr{chrom}.flipped"),
+            to_exclude=os.path.join(args.out_dir, "chr{chrom}",
+                                    "chr{chrom}.to_exclude"),
+            db_name=db_name,
+            options=args,
         )
         run_information.update(numbers)
+        sys.exit(0)
 
         # Phasing the data
         samples = phase_markers(
@@ -686,10 +694,12 @@ def get_chromosome_length(required_chrom, legend, legend_chr23, legend_par1,
     return chrom_length
 
 
-def check_strand(prefix, id_suffix, db_name, options, exclude=False):
+def check_strand(required_chrom, prefix, id_suffix, db_name, options,
+                 exclude=False):
     """Checks the strand using SHAPEIT2.
 
     Args:
+        required_chrom (tuple): the list of chromosome to check
         prefix (str): the prefix template of the input files
         id_suffix (str): the suffix of the task
         db_name (str): the name of the DB saving tasks' information
@@ -723,16 +733,37 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
     o_prefix = os.path.join(options.out_dir, "chr{chrom}",
                             "chr{chrom}." + suffix)
 
-    for chrom in autosomes:
+    for chrom in required_chrom:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
+        # The reference files
+        map_filename = options.map_template.format(chrom=chrom)
+        hap_filename = options.hap_template.format(chrom=chrom)
+        legend_filename = options.legend_template.format(chrom=chrom)
+
+        # The specific reference files for the chromosome 23
+        if chrom == 23:
+            map_filename = options.map_chr23
+            hap_filename = options.hap_chr23
+            legend_filename = options.legend_chr23
+
+        elif chrom == "25_1":
+            map_filename = options.map_par1
+            hap_filename = options.hap_par1
+            legend_filename = options.legend_par1
+
+        elif chrom == "25_2":
+            map_filename = options.map_par2
+            hap_filename = options.hap_par2
+            legend_filename = options.legend_par2
+
         remaining_command = [
             "-B", prefix.format(chrom=chrom),
-            "-M", options.map_template.format(chrom=chrom),
+            "-M", map_filename,
             "--input-ref",
-            options.hap_template.format(chrom=chrom),
-            options.legend_template.format(chrom=chrom),
+            hap_filename,
+            legend_filename,
             options.sample_file,
             "--output-log", c_prefix,
         ]
@@ -766,7 +797,7 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
 
     # For each chromosome, we find markers to change strand
     nb_total = 0
-    for chrom in autosomes:
+    for chrom in required_chrom:
         # The SNP to print in the output file
         to_write = set()
 
@@ -775,7 +806,9 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
 
         # Checking the input file exists
         if not os.path.isfile(chrom_filename):
-            raise GenipeError("{}: no such file".format(chrom_filename))
+            with open(chrom_o_filename, "w") as o_file:
+                pass
+            continue
 
         # Markers to flip
         with open(chrom_filename, "r") as i_file:
@@ -811,10 +844,11 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
     return {"nb_{}".format(what): "{:,d}".format(nb_total)}
 
 
-def flip_markers(prefix, to_flip, db_name, options):
+def flip_markers(required_chrom, prefix, to_flip, db_name, options):
     """Flip markers.
 
     Args:
+        required_chrom (tuple): the list of chromosomes to flip
         prefix (str): the prefix template of the input files
         to_flip (str): the name of the file containing markers to flip
         db_name (str): the name of the DB saving tasks' information
@@ -837,7 +871,7 @@ def flip_markers(prefix, to_flip, db_name, options):
     o_prefix = os.path.join(options.out_dir, "chr{chrom}",
                             "chr{chrom}.flipped")
 
-    for chrom in autosomes:
+    for chrom in required_chrom:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
@@ -862,10 +896,11 @@ def flip_markers(prefix, to_flip, db_name, options):
     logging.info("Done flipping markers")
 
 
-def final_exclusion(prefix, to_exclude, db_name, options):
+def final_exclusion(required_chrom, prefix, to_exclude, db_name, options):
     """Flip markers.
 
     Args:
+        required_chrom (tuple): the list of chromosome to extract
         prefix (str): the prefix template of the input files
         to_exclude (str): the name of the file containing the markers to
                           exclude
@@ -894,7 +929,7 @@ def final_exclusion(prefix, to_exclude, db_name, options):
     # The output files (for statistics)
     bims = []
 
-    for chrom in autosomes:
+    for chrom in required_chrom:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
