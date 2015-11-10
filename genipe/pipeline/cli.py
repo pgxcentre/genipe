@@ -777,7 +777,7 @@ def check_strand(required_chrom, prefix, id_suffix, db_name, options,
 
     # Executing command
     logging.info("Checking strand of markers")
-    launcher.launch_tasks(commands_info, options.thread, check_rc=False,
+    launcher.launch_tasks(commands_info, options.thread,
                           hpc=options.use_drmaa,
                           hpc_options=options.task_options,
                           out_dir=options.out_dir, preamble=options.preamble)

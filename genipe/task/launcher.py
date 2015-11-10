@@ -203,6 +203,44 @@ def _check_output_files(o_files, task):
     return True
 
 
+def _check_shapeit_failed_rc(fn, task=None):
+    """Checks the log to explain a failure return code.
+
+    Args:
+        fn (str): the name of the file to check
+        task (str): the name of the task
+
+    Returns:
+        bool: ``True`` if everything is norma, ``False`` otherwise
+
+    This function looks for a known error message in the log file. If the
+    message ``ERROR: Reference and Main panels are not well aligned:`` appears
+    in the log file, then it's normal that the job failed.
+
+    """
+    # The name of the log file
+    log_fn = fn.replace(".snp.strand", "") + ".log"
+    if not os.path.isfile(log_fn):
+        # The log file doesn't exist...
+        return False
+
+    # Reading the content of the file
+    log = None
+    with open(log_fn, "r") as i_file:
+        log = i_file.read()
+
+    # Checking that the SNPs were read in the legend file (the strand error
+    # message is just after this notice).
+    match = re.search(
+        r"\sERROR: Reference and Main panels are not well aligned:\n",
+        log,
+    )
+
+    if match is None:
+        return False
+    return True
+
+
 def _check_shapeit_align_file(fn, task=None):
     """Checks the log to explain the absence of an .snp.strand file.
 
@@ -218,7 +256,7 @@ def _check_shapeit_align_file(fn, task=None):
     then there were no SNPs flip issue.
 
     """
-    # The name of the summary file
+    # The name of the log file
     log_fn = fn.replace(".snp.strand", "") + ".log"
     if not os.path.isfile(log_fn):
         # The log file doesn't exist...
@@ -232,13 +270,13 @@ def _check_shapeit_align_file(fn, task=None):
     # Checking that the SNPs were read in the legend file (the strand error
     # message is just after this notice).
     match = re.search(r"\sReading SNPs in \[.+\]\n", log)
-    if not match:
+    if match is None:
         return False
 
     # Checking if the step after was run (i.e. meaning there were no strand
     # issue)
     match = re.search(r"\sReading reference haplotypes in \[.+\]\n", log)
-    if not match:
+    if match is None:
         return False
 
     # We are here, so it is normal that no *.snp.strand file exists
@@ -282,7 +320,7 @@ def _check_impute2_file(fn, task=None):
         "nothing for IMPUTE2 to analyze; the program will quit now.",
         summary,
     )
-    if match:
+    if match is not None:
         if task:
             logging.warning("{}: there are no SNPs in the imputation "
                             "interval".format(task))
@@ -295,7 +333,7 @@ def _check_impute2_file(fn, task=None):
         "imputation.",
         summary,
     )
-    if match:
+    if match is not None:
         if task:
             logging.warning("{}: there are no type 2 SNPs for this "
                             "run".format(task))
@@ -308,7 +346,7 @@ def _check_impute2_file(fn, task=None):
         "analysis or print output files.",
         summary,
     )
-    if match:
+    if match is not None:
         if task:
             logging.warning("{}: no SNPs in the output file".format(task))
         return True
@@ -367,12 +405,7 @@ def _execute_command(command_info):
     outs, errs = proc.communicate()
     rc = proc.returncode
     if check_rc and rc != 0:
-        if not task_id.startswith("impute2"):
-            # There was a problem...
-            logging.debug("'{}' exit status problem".format(task_id))
-            return False, name, "problem", None
-
-        else:
+        if task_id.startswith("impute2"):
             # Task is IMPUTE2, and it might be normal according to message in
             # the summary file
             impute2_fn = None
@@ -383,6 +416,21 @@ def _execute_command(command_info):
             if not _check_impute2_file(impute2_fn):
                 logging.debug("'{}' exit status problem".format(task_id))
                 return False, name, "problem", None
+
+        elif task_id.startswith("shapeit_check"):
+            shapeit_fn = None
+            for fn in command_info["o_files"]:
+                if fn.endswith(".alignments.snp.strand"):
+                    shapeit_fn = fn
+                    break
+            if not _check_shapeit_failed_rc(shapeit_fn):
+                logging.debug("'{}' exit status problem".format(task_id))
+                return False, name, "problem", None
+
+        else:
+            # There was a problem...
+            logging.debug("'{}' exit status problem".format(task_id))
+            return False, name, "problem", None
 
     # Checking all the required files were generated
     if not _check_output_files(command_info["o_files"], task_id):
@@ -522,12 +570,7 @@ def _execute_command_drmaa(command_info):
         return False, name, "problem", None
 
     if check_rc and ret_val.exitStatus != 0:
-        if not task_id.startswith("impute2"):
-            # There was a problem...
-            logging.debug("'{}' exit status problem".format(task_id))
-            return False, name, "problem", None
-
-        else:
+        if task_id.startswith("impute2"):
             # Task is IMPUTE2, and it might be normal according to message in
             # the summary file
             impute2_fn = None
@@ -538,6 +581,21 @@ def _execute_command_drmaa(command_info):
             if not _check_impute2_file(impute2_fn):
                 logging.debug("'{}' exit status problem".format(task_id))
                 return False, name, "problem", None
+
+        elif task_id.startswith("shapeit_check"):
+            shapeit_fn = None
+            for fn in command_info["o_files"]:
+                if fn.endswith(".alignments.snp.strand"):
+                    shapeit_fn = fn
+                    break
+            if not _check_shapeit_failed_rc(shapeit_fn):
+                logging.debug("'{}' exit status problem".format(task_id))
+                return False, name, "problem", None
+
+        else:
+            # There was a problem...
+            logging.debug("'{}' exit status problem".format(task_id))
+            return False, name, "problem", None
 
     # Checking all the required files were generated
     if not _check_output_files(command_info["o_files"], task_id):
