@@ -148,12 +148,12 @@ def main():
         # Excluding markers prior to phasing (ambiguous markers [A/T and [G/C]
         # and duplicated markers and finds markers to flip if there is a
         # reference genome available
-#        numbers = find_exclusion_before_phasing(
-#            prefix=args.bfile,
-#            db_name=db_name,
-#            options=args,
-#        )
-#        run_information.update(numbers)
+        numbers = find_exclusion_before_phasing(
+            prefix=args.bfile,
+            db_name=db_name,
+            options=args,
+        )
+        run_information.update(numbers)
 
         exclude_markers_before_phasing(
             required_chrom=args.required_chrom,
@@ -220,14 +220,19 @@ def main():
             db_name=db_name,
             options=args,
         )
-        sys.exit(0)
 
         # Performs the imputation
-        impute_markers(os.path.join(args.out_dir, "chr{chrom}",
-                                    "chr{chrom}.final.phased.haps"),
-                       os.path.join(args.out_dir, "chr{chrom}",
+        impute_markers(
+            required_chrom=args.required_chrom_names,
+            phased_haplotypes=os.path.join(args.out_dir, "chr{chrom}",
+                                           "chr{chrom}.final.phased.haps"),
+            out_prefix=os.path.join(args.out_dir, "chr{chrom}",
                                     "chr{chrom}.{start}_{end}.impute2"),
-                       chromosome_length, db_name, args)
+            chrom_length=chromosome_length,
+            db_name=db_name,
+            options=args,
+        )
+        sys.exit(0)
 
         # Getting the weighed average for cross-validation
         numbers = get_cross_validation_results(
@@ -383,11 +388,12 @@ def phase_markers(required_chrom, prefix, o_prefix, db_name, options):
     return [i.split(" ")[0] for i in compare_with.splitlines()[2:]]
 
 
-def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
-                   options):
+def impute_markers(required_chrom, phased_haplotypes, out_prefix, chrom_length,
+                   db_name, options):
     """Imputes the markers using IMPUTE2.
 
     Args:
+        required_chrom (tuple): the list of chromosome to phase
         phased_haplotypes (str): the template for the haplotype files
         out_prefix (str): the prefix template of the output files
         chrom_length (dict): the length of each chromosome
@@ -397,6 +403,12 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
     A template contains the string ``{chrom}``, which will be replaced by the
     chromosome number (e.g. ``genipe/chr{chrom}/chr{chrom}.final`` will be
     replaced by ``genipe/chr1/chr1.final``).
+
+    Note
+    ----
+        When imputing the pseudo-autosomal regions of chromosome 23, the
+        '-chrX' and '-Xpar' options are used. This combination of options
+        reduces the ``-Ne`` value by 25%.
 
     """
     # Are we skipping DRMAA options?
@@ -421,11 +433,47 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
             base_command.append(rule)
 
     # Each chromosome have multiple segments
-    for chrom in autosomes:
-        assert str(chrom) in chrom_length
+    for chrom in required_chrom:
+        # The length of the chromosome
+        length = None
+        if chrom == "25_1" or chrom == "25_2":
+            assert 25 in chrom_length
+            length = chrom_length[25]
+        else:
+            assert chrom in chrom_length
+            length = chrom_length[chrom]
 
-        length = chrom_length[str(chrom)]
+        # The starting position of the chromosome
         start = 1
+
+        # If this is chromosome 23, length is a list containing two values: the
+        # starting position, and the ending position of the non
+        # pseudo-autosomal region
+        if chrom == 23:
+            assert len(length) == 2
+            start = length[0]
+            length = length[1]
+
+        # If this is the first pseudo-autosomal region of chromosome 23, the
+        # length is a list containing three values: the ending position of the
+        # first pseudo-autosomal region, the starting position of the second
+        # pseudo-autosomal region, and the ending position of the second
+        # pseudo-autosomal region.
+        elif chrom == "25_1":
+            assert len(length) == 3
+            start = 1
+            length = length[0]
+
+        # If this is the first pseudo-autosomal region of chromosome 23, the
+        # length is a list containing three values: the ending position of the
+        # first pseudo-autosomal region, the starting position of the second
+        # pseudo-autosomal region, and the ending position of the second
+        # pseudo-autosomal region.
+        elif chrom == "25_2":
+            assert len(length) == 3
+            start = length[1]
+            length = length[2]
+
         while start < length:
             end = start + floor(options.segment_length) - 1
 
@@ -435,15 +483,44 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
             # The task ID
             task_id = "impute2_chr{}_{}_{}".format(chrom, start, end)
 
+            # The reference files
+            map_filename = options.map_template.format(chrom=chrom)
+            hap_filename = options.hap_template.format(chrom=chrom)
+            legend_filename = options.legend_template.format(chrom=chrom)
+
+            # The specific reference files for the chromosome 23
+            if chrom == 23:
+                map_filename = options.map_chr23
+                hap_filename = options.hap_chr23
+                legend_filename = options.legend_chr23
+
+            elif chrom == "25_1":
+                map_filename = options.map_par1
+                hap_filename = options.hap_par1
+                legend_filename = options.legend_par1
+
+            elif chrom == "25_2":
+                map_filename = options.map_par2
+                hap_filename = options.hap_par2
+                legend_filename = options.legend_par2
+
             # The command for this segment
             remaining_command = [
                 "-known_haps_g", phased_haplotypes.format(chrom=chrom),
-                "-h", options.hap_template.format(chrom=chrom),
-                "-l", options.legend_template.format(chrom=chrom),
-                "-m", options.map_template.format(chrom=chrom),
+                "-h", hap_filename,
+                "-l", legend_filename,
+                "-m", map_filename,
                 "-int", str(start), str(end),
                 "-o", c_prefix,
             ]
+
+            if chrom == 23:
+                # We add the '-chrX' flag
+                remaining_command.append("-chrX")
+
+            if chrom == "25_1" or chrom == "25_2":
+                remaining_command.extend(["-chrX", "-Xpar"])
+
             commands_info.append({
                 "task_id": task_id,
                 "name": "IMPUTE2 chr{} from {} to {}".format(chrom, start,
@@ -683,7 +760,7 @@ def get_chromosome_length(required_chrom, legend, legend_chr23, legend_par1,
 
         # Computing for the two pseudo-autosomal regions (if required)
         if 25 in required_chrom:
-            pseudo_autosomal = [None, None]
+            pseudo_autosomal = [None, None, None]
             logging.info("Getting length for chromosome 23 (PAR1)")
             data = pd.read_csv(
                 legend_par1,
@@ -699,6 +776,7 @@ def get_chromosome_length(required_chrom, legend, legend_chr23, legend_par1,
                 compression="gzip" if legend_par2.endswith(".gz") else None,
             )
             pseudo_autosomal[1] = data.position.min()
+            pseudo_autosomal[2] = data.position.max()
 
             chrom_length[25] = tuple(pseudo_autosomal)
 
@@ -706,9 +784,9 @@ def get_chromosome_length(required_chrom, legend, legend_chr23, legend_par1,
         with open(filename, "w") as o_file:
             for chrom in sorted(chrom_length.keys()):
                 if chrom == 23 or chrom == 25:
-                    print(chrom, chrom_length[chrom][0],
-                          chrom_length[chrom][1], sep="\t", file=o_file)
+                    print(chrom, *chrom_length[chrom], sep="\t", file=o_file)
                     continue
+
                 print(chrom, chrom_length[chrom], sep="\t", file=o_file)
 
     return chrom_length
@@ -1363,7 +1441,7 @@ def extract_chromosome_23(chrom, prefix, bim, chrom_length, base_command):
 
     """
     # Getting the chromosome lower and upper bound
-    lower_bound, upper_bound = chrom_length[chrom]
+    lower_bound, upper_bound = chrom_length[chrom][:2]
 
     # Finding the markers to extract
     in_region = []
