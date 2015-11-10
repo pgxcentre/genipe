@@ -148,8 +148,21 @@ def main():
         # Excluding markers prior to phasing (ambiguous markers [A/T and [G/C]
         # and duplicated markers and finds markers to flip if there is a
         # reference genome available
-        numbers = exclude_markers_before_phasing(args.bfile, db_name, args)
+        numbers = find_exclusion_before_phasing(
+            prefix=args.bfile,
+            db_name=db_name,
+            options=args,
+        )
         run_information.update(numbers)
+
+        exclude_markers_before_phasing(
+            required_chrom=args.required_chrom,
+            prefix=args.bfile,
+            db_name=db_name,
+            chrom_length=chromosome_length,
+            options=args,
+        )
+        sys.exit(0)
 
         # Computing the marker missing rate
         missing_rate = compute_marker_missing_rate(args.bfile, db_name, args)
@@ -609,7 +622,7 @@ def get_chromosome_length(required_chrom, legend, legend_chr23, legend_par1,
                 logging.warning(
                     "missing length for chromosome {}".format(chrom)
                 )
-                redo=True
+                redo = True
 
     if redo or (not os.path.isfile(filename)):
         chrom_length = {}
@@ -964,8 +977,8 @@ def compute_marker_missing_rate(prefix, db_name, options):
     return pd.read_csv(o_prefix + ".lmiss", delim_whitespace=True)
 
 
-def exclude_markers_before_phasing(prefix, db_name, options):
-    """Finds and excludes ambiguous markers (A/T and G/C) or duplicated.
+def find_exclusion_before_phasing(prefix, db_name, options):
+    """Finds ambiguous markers (A/T and G/C) or duplicated.
 
     Args:
         prefix (str): the prefix of the input files
@@ -1077,12 +1090,52 @@ def exclude_markers_before_phasing(prefix, db_name, options):
         with open(o_filename, "w") as o_file:
             print(*to_flip, sep="\n", file=o_file)
 
+    return {
+        "initial_nb_markers": "{:,d}".format(nb_markers),
+        "initial_nb_samples": "{:,d}".format(nb_samples),
+        "nb_ambiguous":       "{:,d}".format(nb_ambiguous),
+        "nb_duplicates":      "{:,d}".format(nb_dup),
+        "nb_special_markers": "{:,d}".format(nb_special_markers),
+        "nb_flip_reference":  "{:,d}".format(len(to_flip)),
+        "reference_checked":  options.reference is not None
+    }
+
+
+def exclude_markers_before_phasing(required_chrom, prefix, db_name,
+                                   chrom_length, options):
+    """Finds and excludes ambiguous markers (A/T and G/C) or duplicated.
+
+    Args:
+        required_chrom (tuple): the list of required chromosomes
+        prefix (str): the prefix of the input files
+        db_name (str): the name of the DB saving tasks' information
+        chrom_length (dict): the length of each chromosomes
+        options (argparse.Namespace): the pipeline options
+
+    Returns:
+        dict: information about the data set
+
+    If required, the function uses :py:func:`is_reversed` to check if a marker
+    is on the reverse strand and needs flipping.
+
+    The information returned includes the initial number of markers and
+    samples, the number of ambiguous, duplicated and non-autosomal markers,
+    along with the number of markers to flip if the reference was checked.
+
+    """
+    # Needs to flip?
+    to_flip = set()
+    filename = os.path.join(options.out_dir, "markers_to_flip.txt")
+    if os.path.isfile(filename):
+        with open(filename, "r") as i_file:
+            to_flip = set(i_file.read().splitlines())
+
     # The commands to run
     commands_info = []
     base_command = [
         "plink" if options.plink_bin is None else options.plink_bin,
         "--noweb",
-        "--exclude", os.path.join(options.out_dir, "markers_to_exclude.txt"),
+        "--bfile", prefix,
         "--make-bed",
     ]
 
@@ -1094,14 +1147,41 @@ def exclude_markers_before_phasing(prefix, db_name, options):
     # The output prefix
     o_prefix = os.path.join(options.out_dir, "chr{chrom}", "chr{chrom}")
 
-    for chrom in autosomes:
+    bim = None
+    processed_chrom_23 = []
+    for chrom in required_chrom:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
+        if chrom not in autosomes:
+            # This is a region of chromosome 23
+            # Reading the BIM file if required
+            if bim is None:
+                bim = read_bim(prefix + ".bim", (23, 25))
+
+            # Getting the command(s) for chromosome 23
+            commands = extract_chromosome_23(
+                chrom=chrom,
+                prefix=c_prefix,
+                bim=bim,
+                chrom_length=chrom_length,
+                base_command=base_command,
+            )
+
+            # Adding the command(s) to execute
+            for command in commands:
+                command["task_db"] = db_name
+                commands_info.append(command)
+
+            # Continuing to the next chromosome
+            processed_chrom_23.append(chrom)
+            continue
+
         remaining_command = [
-            "--bfile", prefix,
             "--chr", str(chrom),
             "--out", c_prefix,
+            "--exclude", os.path.join(options.out_dir,
+                                      "markers_to_exclude.txt"),
         ]
         commands_info.append({
             "task_id": "plink_exclude_chr{}".format(chrom),
@@ -1118,15 +1198,221 @@ def exclude_markers_before_phasing(prefix, db_name, options):
                           out_dir=options.out_dir, preamble=options.preamble)
     logging.info("Done excluding and splitting markers")
 
-    return {
-        "initial_nb_markers": "{:,d}".format(nb_markers),
-        "initial_nb_samples": "{:,d}".format(nb_samples),
-        "nb_ambiguous":       "{:,d}".format(nb_ambiguous),
-        "nb_duplicates":      "{:,d}".format(nb_dup),
-        "nb_special_markers": "{:,d}".format(nb_special_markers),
-        "nb_flip_reference":  "{:,d}".format(len(to_flip)),
-        "reference_checked":  options.reference is not None
-    }
+    # Reordering the chromosomes (if required)
+    commands_info = []
+    for chrom in processed_chrom_23:
+        base_command = [
+            "plink" if options.plink_bin is None else options.plink_bin,
+            "--noweb",
+            "--make-bed",
+        ]
+        commands = reorder_chromosome_23(
+            chrom=chrom,
+            prefix=o_prefix.format(chrom=chrom),
+            base_command=base_command,
+        )
+
+        for command in commands:
+            command["task_db"] = db_name
+            commands_info.append(command)
+
+    # Executing command
+    logging.info("Reordering markers")
+    launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
+                          hpc_options=options.task_options,
+                          out_dir=options.out_dir, preamble=options.preamble)
+    logging.info("Done reordering markers")
+
+
+def reorder_chromosome_23(chrom, prefix, base_command):
+    """Reorders chromosome 23 markers.
+
+    Args:
+        chrom (int): the chromosome to reorder
+        prefix (str): the prefix of the output files
+        base_command (list): the base command
+
+    Returns:
+        list: a list of command information to run for chromosome 23
+
+    """
+    command_info = []
+    if chrom == 23:
+        remaining_command = [
+            "--bfile", prefix + "_not_ordered",
+            "--out", prefix,
+        ]
+
+        command_info.append({
+            "task_id": "plink_reorder_chr{}".format(chrom),
+            "name": "plink reorder chr{}".format(chrom),
+            "command": base_command + remaining_command,
+            "o_files": [prefix + ext for ext in (".bed", ".bim", ".fam")],
+        })
+
+    elif chrom == 25:
+        new_prefix = os.path.join(
+            os.path.dirname(prefix) + "{suffix}",
+            os.path.basename(prefix) + "{suffix}",
+        )
+
+        for suffix in ("_1", "_2"):
+            remaining_command = [
+                "--bfile", new_prefix.format(suffix=suffix) + "_not_ordered",
+                "--out", new_prefix.format(suffix=suffix),
+            ]
+
+            command_info.append({
+                "task_id": "plink_reorder_chr{}{}".format(chrom, suffix),
+                "name": "plink reorder chr{}{}".format(chrom, suffix),
+                "command": base_command + remaining_command,
+                "o_files": [new_prefix.format(suffix=suffix) + ext
+                            for ext in (".bed", ".bim", ".fam")],
+            })
+
+    else:
+        raise GenipeError("{}: not a valid chromosome 23 region".format(chrom))
+
+    return command_info
+
+
+def extract_chromosome_23(chrom, prefix, bim, chrom_length, base_command):
+    """Creates the command to extract the chromosome 23 regions.
+
+    Args:
+        chrom (int): the chromosome to extract
+        prefix (str): the prefix of the output files
+        bim (pandas.DataFrame): the BIM file
+        chrom_length (dict): the length of each of the chromosomes
+        base_command (list): the base command
+
+    Returns:
+        list: a list of command information to run for chromosome 23
+
+    Note
+    ----
+        Chromosome 23 represents the non pseudo-autosomal region. Chromosome 25
+        represents the two pseudo-autosomal region of chromosome 23.
+
+    Warning
+    -------
+        It is assume that chromosome 25 positions (pseudo-autosomal regions)
+        are relative to chromosome 23 positions.
+
+    Note
+    ----
+        Markers are dispatched to correct chromosome (23 or 25, for non- and
+        pseudo-autosomal region) according to their genomic location. If a
+        marker should be located on chromosome 23, but is located on chromosome
+        25, its mapping information is changed.
+
+    """
+    # Getting the chromosome lower and upper bound
+    lower_bound, upper_bound = chrom_length[chrom]
+
+    # Finding the markers to extract
+    in_region = []
+    if chrom == 23:
+        in_region.append((bim.pos >= lower_bound) & (bim.pos <= upper_bound))
+
+    elif chrom == 25:
+        in_region.append(bim.pos <= lower_bound)
+        in_region.append(bim.pos >= upper_bound)
+
+    else:
+        raise GenipeError("{}: not a valid chromosome 23 region".format(chrom))
+
+    # Creating the file(s) for marker extraction
+    command_info = []
+    for i, subset in enumerate(in_region):
+        # The list of markers
+        markers = bim.loc[subset, :]
+
+        # The new prefix and the name of the file for extraction
+        suffix = ""
+        new_prefix = prefix
+        if len(in_region) > 1:
+            suffix = "_{}".format(i+1)
+            new_prefix = os.path.join(
+                os.path.dirname(prefix) + suffix,
+                os.path.basename(prefix) + suffix,
+            )
+        extract_fn = new_prefix + "_extract"
+
+        # Writing the file
+        with open(extract_fn, "w") as o_file:
+            for marker in markers.name:
+                print(marker, file=o_file)
+
+        # The command to launch
+        command = base_command + [
+            "--extract", extract_fn,
+            "--out", new_prefix + "_not_ordered",
+        ]
+
+        # Checking if a map update is required
+        wrong_chrom = 25 if chrom == 23 else 23
+        if wrong_chrom in markers.chrom.unique():
+            wrong_markers = markers.chrom == wrong_chrom
+            nb = markers.loc[wrong_markers, :].shape[0]
+            logging.warning("{} marker{} {} located on chromosome {}, but "
+                            "should be located on chromosome {} (they will be "
+                            "repositioned on chromosome {})".format(
+                                nb,
+                                "s" if nb > 1 else "",
+                                "are" if nb > 1 else "",
+                                wrong_chrom,
+                                chrom,
+                                chrom,
+                            ))
+
+            # Creating the update map file
+            with open(new_prefix + "_update_chr", "w") as o_file:
+                for marker in markers.loc[wrong_markers, "name"]:
+                    print(marker, chrom, sep="\t", file=o_file)
+
+            # Adding to the command
+            command.extend([
+                "--update-map", new_prefix + "_update_chr",
+                "--update-chr",
+            ])
+
+        command_info.append({
+            "task_id": "plink_exclude_chr{}{}".format(chrom, suffix),
+            "name": "plink exclude chr{}{}".format(chrom, suffix),
+            "command": command,
+            "o_files": [new_prefix + "_not_ordered" + ext
+                        for ext in (".bed", ".bim", ".fam")],
+        })
+
+    return command_info
+
+
+def read_bim(bim_fn, chromosomes=tuple()):
+    """Reads a BIM file and extracts chromosomes.
+
+    Args:
+        bim_fn (str): the name of the BIM file
+        chromosomes (list): the list of chromosome to extract
+
+    Returns:
+        pandas.DataFrame: the BIM file content
+
+    """
+    data = pd.read_csv(
+        bim_fn,
+        delim_whitespace=True,
+        names=["chrom", "name", "cm", "pos", "a1", "a2"],
+    )
+
+    if len(chromosomes) == 0:
+        return data
+
+    to_extract = data.chrom == chromosomes[0]
+    for chrom in chromosomes[1:]:
+        to_extract |= (data.chrom == chrom)
+
+    return data.loc[to_extract, :]
 
 
 def get_chrom_encoding(reference):
