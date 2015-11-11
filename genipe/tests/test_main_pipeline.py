@@ -42,15 +42,33 @@ class TestMainPipeline(unittest.TestCase):
 
     def test_file_sorter(self):
         """Tests the 'file_sorter' function."""
-        filenames = ["chr1.1000_100000.impute2", "chr2.10000_1002300.impute2",
-                     "chr1.1_100.impute2", "/some/path/chr1.1_10.impute2",
-                     "chr1.100000_2000000.impute2.some_extension"]
-        expected_filenames = ["/some/path/chr1.1_10.impute2",
-                              "chr1.1_100.impute2", "chr1.1000_100000.impute2",
-                              "chr1.100000_2000000.impute2.some_extension",
-                              "chr2.10000_1002300.impute2"]
+        filenames = [
+            "chr1.1000_100000.impute2",
+            "chr2.10000_1002300.impute2",
+            "chr1.1_100.impute2",
+            "/some/path/chr1.1_10.impute2",
+            "chr25_1.3_40.impute2",
+            "chr23.100_400.impute2",
+            "some/path/to_file/chr25_2.1000_1500.impute2.gz",
+            "chr25_2.1600_1650.impute2.gz",
+            "chr1.100000_2000000.impute2.some_extension",
+        ]
+        expected_filenames = [
+            "/some/path/chr1.1_10.impute2",
+            "chr1.1_100.impute2",
+            "chr1.1000_100000.impute2",
+            "chr1.100000_2000000.impute2.some_extension",
+            "chr2.10000_1002300.impute2",
+            "chr23.100_400.impute2",
+            "chr25_1.3_40.impute2",
+            "some/path/to_file/chr25_2.1000_1500.impute2.gz",
+            "chr25_2.1600_1650.impute2.gz",
+        ]
         expected_results = [(1, 1000, 100000), (2, 10000, 1002300),
-                            (1, 1, 100), (1, 1, 10), (1, 100000, 2000000)]
+                            (1, 1, 100), (1, 1, 10), (25, 3, 40),
+                            (23, 100, 400), (25, 1000, 1500),
+                            (25, 1600, 1650),
+                            (1, 100000, 2000000)]
 
         # Trying the function
         for filename, expected in zip(filenames, expected_results):

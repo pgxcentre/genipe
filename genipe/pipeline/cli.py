@@ -734,8 +734,8 @@ def file_sorter(filename):
     ``chr22.1_50000.impute2`` should return ``(22, 1, 50000)``.
 
     """
-    r = re.search(r"chr(\d+)\.(\d+)_(\d+)\.impute2", filename)
-    return (int(r.group(1)), int(r.group(2)), int(r.group(3)))
+    r = re.search(r"chr(\d+)(_[12])?\.(\d+)_(\d+)\.impute2", filename)
+    return (int(r.group(1)), int(r.group(3)), int(r.group(4)))
 
 
 def get_chromosome_length(required_chrom, legend, legend_chr23, legend_par1,
