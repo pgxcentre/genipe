@@ -148,12 +148,12 @@ def main():
         # Excluding markers prior to phasing (ambiguous markers [A/T and [G/C]
         # and duplicated markers and finds markers to flip if there is a
         # reference genome available
-        numbers = find_exclusion_before_phasing(
-            prefix=args.bfile,
-            db_name=db_name,
-            options=args,
-        )
-        run_information.update(numbers)
+#        numbers = find_exclusion_before_phasing(
+#            prefix=args.bfile,
+#            db_name=db_name,
+#            options=args,
+#        )
+#        run_information.update(numbers)
 
         exclude_markers_before_phasing(
             required_chrom=args.required_chrom,
@@ -232,23 +232,29 @@ def main():
             db_name=db_name,
             options=args,
         )
-        sys.exit(0)
 
         # Getting the weighed average for cross-validation
         numbers = get_cross_validation_results(
-            os.path.join(args.out_dir, "chr{chrom}",
-                         "chr{chrom}.*.impute2_summary"),
+            required_chrom=args.required_chrom_names,
+            glob_pattern=os.path.join(args.out_dir, "chr{chrom}",
+                                      "chr{chrom}.*.impute2_summary"),
         )
         run_information.update(numbers)
 
         # Merging the impute2 files
-        merge_impute2_files(os.path.join(args.out_dir, "chr{chrom}",
-                                         "chr{chrom}.*.impute2"),
-                            os.path.join(args.out_dir, "chr{chrom}",
-                                         "final_impute2",
-                                         "chr{chrom}.imputed"),
-                            args.probability, args.completion, args.info,
-                            db_name, args)
+        merge_impute2_files(
+            required_chrom=args.required_chrom_names,
+            in_glob=os.path.join(args.out_dir, "chr{chrom}",
+                                 "chr{chrom}.*.impute2"),
+            o_prefix=os.path.join(args.out_dir, "chr{chrom}", "final_impute2",
+                                  "chr{chrom}.imputed"),
+            probability_t=args.probability,
+            completion_t=args.completion,
+            info_t=args.info,
+            db_name=db_name,
+            options=args,
+        )
+        sys.exit(0)
 
         # If required, zipping the impute2 files
         if args.bgzip:
@@ -555,11 +561,12 @@ def impute_markers(required_chrom, phased_haplotypes, out_prefix, chrom_length,
     logging.info("Done imputing markers")
 
 
-def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t, info_t,
-                        db_name, options):
+def merge_impute2_files(required_chrom, in_glob, o_prefix, probability_t,
+                        completion_t, info_t, db_name, options):
     """Merges impute2 files.
 
     Args:
+        required_chrom (tuple): the list of required chromosomes to merge
         in_glob (str): the template that will be used to find files with the
                        :py:mod:`glob` module
         o_prefix (str): the prefix template of the output files
@@ -582,24 +589,44 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t, info_t,
         "--info", str(info_t),
     ]
 
-    for chrom in autosomes:
+    for chrom in required_chrom:
+        if chrom == "25_2":
+            # We want to skip the second pseudo-autosomal region of chromosome
+            # 23, since we are going to merge it with the first one
+            continue
+
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
+        if chrom == "25_1":
+            c_prefix = o_prefix.format(chrom=25)
 
         # Checking that the output directory exists
         if not os.path.isdir(os.path.dirname(c_prefix)):
-            os.mkdir(os.path.dirname(c_prefix))
+            os.makedirs(os.path.dirname(c_prefix))
 
         remaining_command = [
             "--prefix", c_prefix,
-            "--chr", str(chrom),
+            "--chr", "25" if chrom == "25_1" else str(chrom),
             "-i",
         ]
+
+        # Adding the files
         filenames = sorted(glob(in_glob.format(chrom=chrom)), key=file_sorter)
+        if chrom == "25_1":
+            filenames += sorted(glob(in_glob.format(chrom="25_2")),
+                                key=file_sorter)
         remaining_command.extend(filenames)
+
+        # The task id and task name
+        task_id = "merge_impute2_chr{}".format(chrom)
+        task_name = "Merge imputed chr{}".format(chrom)
+        if chrom == "25_1":
+            task_id = "merge_impute2_chr{}".format(25)
+            task_name = "Merge imputed chr{}".format(25)
+
         commands_info.append({
-            "task_id": "merge_impute2_chr{}".format(chrom),
-            "name": "Merge imputed chr{}".format(chrom),
+            "task_id": task_id,
+            "name": task_name,
             "command": base_command + remaining_command,
             "task_db": db_name,
             "o_files": [c_prefix + ext for ext in (".alleles",
@@ -621,6 +648,26 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t, info_t,
         # Checking if the file exists
         if not os.path.isfile(sample_file):
             raise GenipeError("{}: no such file".format(sample_file))
+
+        # Checking that samples files are the same for the two pseudo-autosomal
+        # regions of the chromosome 23
+        if chrom == "25_1":
+            other_sample_file = os.path.join(
+                os.path.dirname(in_glob),
+                "chr{chrom}.final.phased.sample",
+            ).format(chrom="25_2")
+
+            # Checking the file exits
+            if not os.path.isfile(other_sample_file):
+                raise GenipeError("{}: no such file".format(other_sample_file))
+
+            # Comparing
+            with open(sample_file, "r") as f1, \
+                    open(other_sample_file, "r") as f2:
+                for line_f1, line_f2 in zip(f1, f2):
+                    if line_f1 != line_f2:
+                        raise GenipeError("the two pseudo-autosomal regions "
+                                          "have different sample files...")
 
         # Copying the file
         copyfile(sample_file, c_prefix + ".sample")
@@ -1662,10 +1709,12 @@ def is_reversed(chrom, pos, a1, a2, reference, encoding):
                       "invalid".format(chrom, pos, ref, a1, a2))
 
 
-def get_cross_validation_results(glob_pattern):
+def get_cross_validation_results(required_chrom, glob_pattern):
     """Creates a weighted mean for each chromosome for cross-validation.
 
     Args:
+        required_chrom (tuple): the list of chromosome to gather cross
+                                validation statistics
         glob_pattern (str): the pattern used to find files using :py:mod:`glob`
 
     Returns:
@@ -1708,8 +1757,17 @@ def get_cross_validation_results(glob_pattern):
     final_nb_genotypes = 0
 
     # For each chromosome
-    for chrom in autosomes:
+    for chrom in required_chrom:
+        if chrom == "25_2":
+            # We want to skip the second pseudo-autosomal region of chromosome
+            # 23, since we want to merge it with the first in the final results
+            continue
+
         filenames = glob(glob_pattern.format(chrom=chrom))
+        if chrom == "25_1":
+            # We want to merge the files from the second pseudo-autosomal
+            # region of chromosome 23
+            filenames += glob(glob_pattern.format(chrom="25_2"))
 
         # The total number of genotypes for this chromosome
         tot_chrom_nb_genotypes = 0
@@ -1837,6 +1895,11 @@ def get_cross_validation_results(glob_pattern):
                 "{:.1f}".format(nb_called / tot_chrom_nb_genotypes * 100),
                 "{:.1f}".format(weighted_concordance),
             ])
+
+        # We want to save the two pseudo-autosomal regions of chromosome 23
+        # together
+        if (chrom == "25_1") or (chrom == "25_2"):
+            chrom = 25
 
         # Saving the tables
         per_chrom_table_1[chrom] = table_1_data
