@@ -148,12 +148,12 @@ def main():
         # Excluding markers prior to phasing (ambiguous markers [A/T and [G/C]
         # and duplicated markers and finds markers to flip if there is a
         # reference genome available
-#        numbers = find_exclusion_before_phasing(
-#            prefix=args.bfile,
-#            db_name=db_name,
-#            options=args,
-#        )
-#        run_information.update(numbers)
+        numbers = find_exclusion_before_phasing(
+            prefix=args.bfile,
+            db_name=db_name,
+            options=args,
+        )
+        run_information.update(numbers)
 
         exclude_markers_before_phasing(
             required_chrom=args.required_chrom,
@@ -254,14 +254,18 @@ def main():
             db_name=db_name,
             options=args,
         )
-        sys.exit(0)
 
         # If required, zipping the impute2 files
         if args.bgzip:
-            compress_impute2_files(os.path.join(args.out_dir, "chr{chrom}",
-                                                "final_impute2",
-                                                "chr{chrom}.imputed.impute2"),
-                                   db_name, args)
+            compress_impute2_files(
+                required_chrom=args.required_chrom,
+                filename_template=os.path.join(args.out_dir, "chr{chrom}",
+                                               "final_impute2",
+                                               "chr{chrom}.imputed.impute2"),
+                db_name=db_name,
+                options=args,
+            )
+        sys.exit(0)
 
         # Gathering the imputation statistics
         numbers = gather_imputation_stats(args.probability, args.completion,
@@ -680,10 +684,12 @@ def merge_impute2_files(required_chrom, in_glob, o_prefix, probability_t,
     logging.info("Done merging reports")
 
 
-def compress_impute2_files(filename_template, db_name, options):
+def compress_impute2_files(required_chrom, filename_template, db_name,
+                           options):
     """Merges impute2 files.
 
     Args:
+        required_chrom (tuple): the list of chromosome to compress
         filename_template (str): the template for the final IMPUTE2 file
         db_name (str): the name of the DB saving tasks' information
         options (argparse.Namespace): the pipeline options
@@ -696,7 +702,7 @@ def compress_impute2_files(filename_template, db_name, options):
     commands_info = []
     base_command = ["bgzip", "-f"]
 
-    for chrom in autosomes:
+    for chrom in required_chrom:
         # The current output prefix
         filename = filename_template.format(chrom=chrom)
 
