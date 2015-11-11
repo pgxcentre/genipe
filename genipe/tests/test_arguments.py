@@ -145,6 +145,34 @@ class TestArguments(unittest.TestCase):
         """Tests under normal utilization"""
         self.assertTrue(check_args(self.args))
 
+    def test_chromosome_names_autosome_only(self):
+        """Tests the required chromosome names with autosomes only."""
+        # Asking just for sexual chromosomes
+        self.args.required_chrom = [
+            chrom
+            for chrom in self.args.required_chrom
+            if chrom in autosomes
+        ]
+
+        # The expected value
+        expected = tuple(self.args.required_chrom)
+
+        # Comparing
+        check_args(self.args)
+        self.assertEqual(expected, self.args.required_chrom_names)
+
+    def test_chromosome_names_(self):
+        """Tests the required chromosome names with autosomes only."""
+        # The expected value
+        expected = tuple(
+            chrom for chrom in self.args.required_chrom if chrom != 25
+        )
+        expected = expected + ("25_1", "25_2")
+
+        # Comparing
+        check_args(self.args)
+        self.assertEqual(expected, self.args.required_chrom_names)
+
     def test_invalid_thread(self):
         """Tests with an invalid thread number."""
         for i in range(-1, 1):
@@ -180,9 +208,9 @@ class TestArguments(unittest.TestCase):
                 pass
             self.assertTrue(os.path.isfile(self.args.bfile + ext))
 
-    def test_missing_template_autosomes(self):
-        """Tests with missing template file (autosome)."""
-        # Deleting each of the template files
+    def test_missing_legend_autosomes(self):
+        """Tests with missing legend file (autosome)."""
+        # Deleting each of the legend files
         for chrom in self.args.required_chrom:
             if chrom not in autosomes:
                 continue
@@ -203,8 +231,8 @@ class TestArguments(unittest.TestCase):
                 pass
             self.assertTrue(os.path.isfile(filename))
 
-    def test_missing_template_autosomes_no_autosomes(self):
-        """Tests with missing template file (autosome, but none required)."""
+    def test_missing_legend_autosomes_no_autosomes(self):
+        """Tests with missing legend file (autosome, but none required)."""
         # Asking just for sexual chromosomes
         self.args.required_chrom = [
             chrom
@@ -212,7 +240,7 @@ class TestArguments(unittest.TestCase):
             if chrom not in autosomes
         ]
 
-        # Deleting
+        # Deleting the legend files
         for chrom in self.args.required_chrom:
             if chrom not in autosomes:
                 continue
@@ -224,8 +252,8 @@ class TestArguments(unittest.TestCase):
         # Checking everything works fine
         self.assertTrue(check_args(self.args))
 
-    def test_missing_template_chr23(self):
-        """Tests with missing template file (non pseudo-autosomal region)."""
+    def test_missing_legend_chr23(self):
+        """Tests with missing legend file (non pseudo-autosomal region)."""
         # Deleting the legend file
         os.remove(self.args.legend_chr23)
         self.assertFalse(os.path.isfile(self.args.legend_chr23))
@@ -236,8 +264,8 @@ class TestArguments(unittest.TestCase):
         self.assertEqual("{}: no such file".format(self.args.legend_chr23),
                          str(cm.exception))
 
-    def test_missing_template_chr23_no_chr23(self):
-        """Tests with missing template file (chr23, but not asked)."""
+    def test_missing_legend_chr23_no_chr23(self):
+        """Tests with missing legend file (chr23, but not asked)."""
         self.args.required_chrom = [
             chrom
             for chrom in self.args.required_chrom
@@ -251,8 +279,8 @@ class TestArguments(unittest.TestCase):
         # Checking everything works
         self.assertTrue(check_args(self.args))
 
-    def test_missing_template_chr25_par1(self):
-        """Tests with missing template file (pseudo-autosomal region 1)."""
+    def test_missing_legend_chr25_par1(self):
+        """Tests with missing legend file (pseudo-autosomal region 1)."""
         # Deleting the legend file
         os.remove(self.args.legend_par1)
         self.assertFalse(os.path.isfile(self.args.legend_par1))
@@ -263,8 +291,8 @@ class TestArguments(unittest.TestCase):
         self.assertEqual("{}: no such file".format(self.args.legend_par1),
                          str(cm.exception))
 
-    def test_missing_template_chr25_par1_no_chr25_par1(self):
-        """Tests with missing template file (PAR1, but not asked)."""
+    def test_missing_legend_chr25_par1_no_chr25_par1(self):
+        """Tests with missing legend file (PAR1, but not asked)."""
         self.args.required_chrom = [
             chrom
             for chrom in self.args.required_chrom
@@ -278,8 +306,8 @@ class TestArguments(unittest.TestCase):
         # Checking everything works
         self.assertTrue(check_args(self.args))
 
-    def test_missing_template_chr25_par2(self):
-        """Tests with missing template file (pseudo-autosomal region 2)."""
+    def test_missing_legend_chr25_par2(self):
+        """Tests with missing legend file (pseudo-autosomal region 2)."""
         # Deleting the legend file
         os.remove(self.args.legend_par2)
         self.assertFalse(os.path.isfile(self.args.legend_par2))
@@ -290,8 +318,8 @@ class TestArguments(unittest.TestCase):
         self.assertEqual("{}: no such file".format(self.args.legend_par2),
                          str(cm.exception))
 
-    def test_missing_template_chr25_par2_no_chr25_par2(self):
-        """Tests with missing template file (PAR2, but not asked)."""
+    def test_missing_legend_chr25_par2_no_chr25_par2(self):
+        """Tests with missing legend file (PAR2, but not asked)."""
         self.args.required_chrom = [
             chrom
             for chrom in self.args.required_chrom
@@ -307,7 +335,7 @@ class TestArguments(unittest.TestCase):
 
     def test_missing_map_autosomes(self):
         """Tests with missing map file (autosome)."""
-        # Deleting each of the template, legend or map file
+        # Deleting each of the map files
         for chrom in self.args.required_chrom:
             if chrom not in autosomes:
                 continue
@@ -330,14 +358,14 @@ class TestArguments(unittest.TestCase):
 
     def test_missing_map_autosomes_no_autosomes(self):
         """Tests with missing map file (autosome), but none required."""
-        # Deleting each of the template, legend or map file
+        # Deleting each of the map files
         self.args.required_chrom = [
             chrom
             for chrom in self.args.required_chrom
             if chrom not in autosomes
         ]
 
-        # Deleting
+        # Deleting all the map files
         for chrom in self.args.required_chrom:
             if chrom not in autosomes:
                 continue
@@ -349,9 +377,90 @@ class TestArguments(unittest.TestCase):
         # Checking everything works
         self.assertTrue(check_args(self.args))
 
+    def test_missing_map_chr23(self):
+        """Tests with missing map file (non pseudo-autosomal region)."""
+        # Deleting the map file
+        os.remove(self.args.map_chr23)
+        self.assertFalse(os.path.isfile(self.args.map_chr23))
+
+        # Checking the exception is raised
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual("{}: no such file".format(self.args.map_chr23),
+                         str(cm.exception))
+
+    def test_missing_map_chr23_no_chr23(self):
+        """Tests with missing map file (chr23, but not asked)."""
+        self.args.required_chrom = [
+            chrom
+            for chrom in self.args.required_chrom
+            if chrom != 23
+        ]
+
+        # Deleting the map file
+        os.remove(self.args.map_chr23)
+        self.assertFalse(os.path.isfile(self.args.map_chr23))
+
+        # Checking everything works
+        self.assertTrue(check_args(self.args))
+
+    def test_missing_map_chr25_par1(self):
+        """Tests with missing map file (pseudo-autosomal region 1)."""
+        # Deleting the map file
+        os.remove(self.args.map_par1)
+        self.assertFalse(os.path.isfile(self.args.map_par1))
+
+        # Checking the exception is raised
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual("{}: no such file".format(self.args.map_par1),
+                         str(cm.exception))
+
+    def test_missing_map_chr25_par1_no_chr25_par1(self):
+        """Tests with missing map file (PAR1, but not asked)."""
+        self.args.required_chrom = [
+            chrom
+            for chrom in self.args.required_chrom
+            if chrom != 25
+        ]
+
+        # Deleting the map file
+        os.remove(self.args.map_par1)
+        self.assertFalse(os.path.isfile(self.args.map_par1))
+
+        # Checking everything works
+        self.assertTrue(check_args(self.args))
+
+    def test_missing_map_chr25_par2(self):
+        """Tests with missing map file (pseudo-autosomal region 2)."""
+        # Deleting the map file
+        os.remove(self.args.map_par2)
+        self.assertFalse(os.path.isfile(self.args.map_par2))
+
+        # Checking the exception is raised
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual("{}: no such file".format(self.args.map_par2),
+                         str(cm.exception))
+
+    def test_missing_map_chr25_par2_no_chr25_par2(self):
+        """Tests with missing map file (PAR2, but not asked)."""
+        self.args.required_chrom = [
+            chrom
+            for chrom in self.args.required_chrom
+            if chrom != 25
+        ]
+
+        # Deleting the map file
+        os.remove(self.args.map_par2)
+        self.assertFalse(os.path.isfile(self.args.map_par2))
+
+        # Checking everything works
+        self.assertTrue(check_args(self.args))
+
     def test_missing_hap_autosomes(self):
         """Tests with missing haplotype file (autosome)."""
-        # Deleting each of the template, legend or map file
+        # Deleting each of the hap files
         for chrom in self.args.required_chrom:
             if chrom not in autosomes:
                 continue
@@ -380,7 +489,7 @@ class TestArguments(unittest.TestCase):
             if chrom not in autosomes
         ]
 
-        # Deleting
+        # Deleting each of the hap files
         for chrom in self.args.required_chrom:
             if chrom not in autosomes:
                 continue
@@ -389,6 +498,87 @@ class TestArguments(unittest.TestCase):
             filename = self.args.hap_template.format(chrom=chrom)
             os.remove(filename)
             self.assertFalse(os.path.isfile(filename))
+
+        # Checking everything works
+        self.assertTrue(check_args(self.args))
+
+    def test_missing_hap_chr23(self):
+        """Tests with missing hap file (non pseudo-autosomal region)."""
+        # Deleting the hap file
+        os.remove(self.args.hap_chr23)
+        self.assertFalse(os.path.isfile(self.args.hap_chr23))
+
+        # Checking the exception is raised
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual("{}: no such file".format(self.args.hap_chr23),
+                         str(cm.exception))
+
+    def test_missing_hap_chr23_no_chr23(self):
+        """Tests with missing hap file (chr23, but not asked)."""
+        self.args.required_chrom = [
+            chrom
+            for chrom in self.args.required_chrom
+            if chrom != 23
+        ]
+
+        # Deleting the hap file
+        os.remove(self.args.hap_chr23)
+        self.assertFalse(os.path.isfile(self.args.hap_chr23))
+
+        # Checking everything works
+        self.assertTrue(check_args(self.args))
+
+    def test_missing_hap_chr25_par1(self):
+        """Tests with missing hap file (pseudo-autosomal region 1)."""
+        # Deleting the hap file
+        os.remove(self.args.hap_par1)
+        self.assertFalse(os.path.isfile(self.args.hap_par1))
+
+        # Checking the exception is raised
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual("{}: no such file".format(self.args.hap_par1),
+                         str(cm.exception))
+
+    def test_missing_hap_chr25_par1_no_chr25_par1(self):
+        """Tests with missing hap file (PAR1, but not asked)."""
+        self.args.required_chrom = [
+            chrom
+            for chrom in self.args.required_chrom
+            if chrom != 25
+        ]
+
+        # Deleting the hap file
+        os.remove(self.args.hap_par1)
+        self.assertFalse(os.path.isfile(self.args.hap_par1))
+
+        # Checking everything works
+        self.assertTrue(check_args(self.args))
+
+    def test_missing_hap_chr25_par2(self):
+        """Tests with missing hap file (pseudo-autosomal region 2)."""
+        # Deleting the hap file
+        os.remove(self.args.hap_par2)
+        self.assertFalse(os.path.isfile(self.args.hap_par2))
+
+        # Checking the exception is raised
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual("{}: no such file".format(self.args.hap_par2),
+                         str(cm.exception))
+
+    def test_missing_hap_chr25_par2_no_chr25_par2(self):
+        """Tests with missing hap file (PAR2, but not asked)."""
+        self.args.required_chrom = [
+            chrom
+            for chrom in self.args.required_chrom
+            if chrom != 25
+        ]
+
+        # Deleting the hap file
+        os.remove(self.args.hap_par2)
+        self.assertFalse(os.path.isfile(self.args.hap_par2))
 
         # Checking everything works
         self.assertTrue(check_args(self.args))
