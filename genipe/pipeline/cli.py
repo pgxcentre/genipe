@@ -722,10 +722,11 @@ def get_chromosome_length(required_chrom, legend, legend_chr23, legend_par1,
             for line in i_file:
                 row = line.rstrip("\n").split("\t")
                 if row[0] == "23" or row[0] == "25":
-                    chrom_length[int(row[0])] = [
+                    chrom_length[int(row[0])] = tuple(
                         int(i) if i != "None" else None for i in row[1:]
-                    ]
+                    )
                     continue
+
                 chrom_length[int(row[0])] = int(row[1])
 
         # Checking we have all the required data

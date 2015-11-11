@@ -9,6 +9,7 @@
 
 import os
 import unittest
+from random import randint
 from tempfile import TemporaryDirectory
 
 from .. import autosomes
@@ -61,45 +62,144 @@ class TestMainPipeline(unittest.TestCase):
 
     def test_get_chromosome_length(self):
         """Tests the 'get_chromosome_length' function."""
-        # Tests that all chromosome are there
-        expected_chrom = {str(i) for i in range(1, 23)} | {"X"}
-        chrom_length = get_chromosome_length(self.output_dir.name)
-        self.assertTrue(len(expected_chrom - set(chrom_length.keys())) == 0)
+        # The expected chromosome
+        expected_chrom = {3, 6, 9, 23, 25}
+        expected_length = {}
+
+        # Writing some legend file for different chromosome
+        legend_template = os.path.join(self.output_dir.name,
+                                       "chr{chrom}.legend")
+        legend_chr23 = os.path.join(self.output_dir.name,
+                                    "chr23_nonPAR.legend")
+        legend_par1 = os.path.join(self.output_dir.name, "chr23_PAR1.legend")
+        legend_par2 = os.path.join(self.output_dir.name, "chr23_PAR2.legend")
+        for chrom in expected_chrom:
+            if chrom == 23:
+                # Getting the positions and expected length
+                positions = sorted([randint(5000, 100000) for i in range(100)])
+                expected_length[chrom] = (min(positions), max(positions))
+
+                # Writing the positions to file
+                with open(legend_chr23, "w") as o_file:
+                    print("id", "position", file=o_file)
+                    for i, position in enumerate(positions):
+                        print("marker_{}".format(i+1), position, file=o_file)
+
+                # Continuing to next chromosome
+                continue
+
+            if chrom == 25:
+                # Getting the positions and expected length
+                positions = sorted([randint(1, 4999) for i in range(100)])
+                expected_length[chrom] = [max(positions)]
+
+                # Writing the positions to file
+                with open(legend_par1, "w") as o_file:
+                    print("id", "position", file=o_file)
+                    for i, position in enumerate(positions):
+                        print("marker_{}".format(i+1), position, file=o_file)
+
+                # Getting the positions and expected length
+                positions = sorted([
+                    randint(100000, 200000) for i in range(100)
+                ])
+                expected_length[chrom].extend([min(positions), max(positions)])
+                expected_length[chrom] = tuple(expected_length[chrom])
+
+                # Writing the positions to file
+                with open(legend_par2, "w") as o_file:
+                    print("id", "position", file=o_file)
+                    for i, position in enumerate(positions):
+                        print("marker_{}".format(i+1), position, file=o_file)
+
+                # Continuing to next chromosome
+                continue
+
+            # Getting the position and saving the expected length
+            positions = sorted([randint(1, 2000000) for i in range(1000)])
+            expected_length[chrom] = max(positions)
+
+            # Saving the file
+            with open(legend_template.format(chrom=chrom), "w") as o_file:
+                print("id", "position", file=o_file)
+                for i, position in enumerate(positions):
+                    print("marker_{}".format(i+1), position, file=o_file)
+
+        # Getting the chromosome length
+        chrom_length = get_chromosome_length(
+            required_chrom=expected_chrom,
+            legend=legend_template,
+            legend_chr23=legend_chr23,
+            legend_par1=legend_par1,
+            legend_par2=legend_par2,
+            out_dir=self.output_dir.name,
+        )
+
+        # Checking the expected length
+        self.assertEqual(expected_length, chrom_length)
+
+        # Checking the file was created
         self.assertTrue(os.path.isfile(os.path.join(self.output_dir.name,
                                                     "chromosome_lengths.txt")))
 
         # Tests that we correctly read the file
-        expected_chrom = {"1": 249250621, "10": 135534747, "11": 135006516,
-                          "12": 133851895, "13": 115169878, "14": 107349540,
-                          "15": 102531392, "16": 90354753, "17": 81195210,
-                          "18": 78077248, "19": 59128983, "2": 243199373,
-                          "20": 63025520, "21": 48129895, "22": 51304566,
-                          "3": 198022430, "4": 191154276, "5": 180915260,
-                          "6": 171115067, "7": 159138663, "8": 146364022,
-                          "9": 141213431}
+        expected_chrom = {6: expected_length[6], 9: expected_length[9],
+                          23: expected_length[23], 25: expected_length[25]}
 
         # Writing the file
         chrom_filename = os.path.join(self.output_dir.name,
                                       "chromosome_lengths.txt")
         with open(chrom_filename, "w") as o_file:
-            for k, v in expected_chrom.items():
-                print(k, v, sep="\t", file=o_file)
+            for chrom, length in expected_chrom.items():
+                if (chrom == 23) or (chrom == 25):
+                    print(chrom, *length, sep="\t", file=o_file)
+                else:
+                    print(chrom, length, sep="\t", file=o_file)
 
         # Comparing what we got
-        chrom_length = get_chromosome_length(self.output_dir.name)
+        chrom_length = get_chromosome_length(
+            required_chrom=expected_chrom.keys(),
+            legend=legend_template,
+            legend_chr23=legend_chr23,
+            legend_par1=legend_par1,
+            legend_par2=legend_par2,
+            out_dir=self.output_dir.name,
+        )
         self.assertEqual(expected_chrom, chrom_length)
 
         # Removing some autosomes from the file
-        del expected_chrom["9"]
-        del expected_chrom["12"]
+        del expected_chrom[9]
+        del expected_chrom[23]
+        del expected_chrom[25]
         with open(chrom_filename, "w") as o_file:
-            for k, v in expected_chrom.items():
-                print(k, v, sep="\t", file=o_file)
+            for chrom, length in expected_chrom.items():
+                if (chrom == 23) or (chrom == 25):
+                    print(chrom, *length, sep="\t", file=o_file)
+                else:
+                    print(chrom, length, sep="\t", file=o_file)
+        expected_chrom[9] = expected_length[9]
+        expected_chrom[23] = expected_length[23]
+        expected_chrom[25] = expected_length[25]
 
-        # Tests that an exception is raised if there is a missing chromosome
-        with self.assertRaises(GenipeError) as e:
-            get_chromosome_length(self.output_dir.name)
-        self.assertEqual("missing autosomes: 12, 9", e.exception.message)
+        # Tests that a warning is logged if there is a missing chromosome
+        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+            chrom_length = get_chromosome_length(
+                required_chrom=sorted(expected_chrom.keys()),
+                legend=legend_template,
+                legend_chr23=legend_chr23,
+                legend_par1=legend_par1,
+                legend_par2=legend_par2,
+                out_dir=self.output_dir.name,
+            )
+        log_m = [
+            "WARNING:root:missing length for chromosome 9",
+            "WARNING:root:missing length for chromosome 23",
+            "WARNING:root:missing length for chromosome 25",
+        ]
+        self.assertEqual(log_m, cm.output)
+
+        # Testing the content
+        self.assertEqual(expected_chrom, chrom_length)
 
     @unittest.skipIf(not HAS_PYFAIDX,
                      "optional requirement (pyfaidx) not satisfied")
