@@ -514,9 +514,16 @@ def impute_markers(required_chrom, phased_haplotypes, out_prefix, chrom_length,
                 "-o", c_prefix,
             ]
 
+            print(phased_haplotypes.format(chrom=chrom))
             if chrom == 23:
+                # Getting the sample file (from the phased haplotypes file)
+                sample_file = os.path.splitext(
+                    phased_haplotypes.format(chrom=chrom),
+                )[0] + ".sample"
+
                 # We add the '-chrX' flag
                 remaining_command.append("-chrX")
+                remaining_command.extend(["-sample_known_haps_g", sample_file])
 
             if chrom == "25_1" or chrom == "25_2":
                 remaining_command.extend(["-chrX", "-Xpar"])
