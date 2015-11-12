@@ -567,7 +567,10 @@ class TestMainPipeline(unittest.TestCase):
         self.assertEqual(0, len(content))
 
         # Executing the command (getting the observed data)
-        observed = gather_maf_stats(self.output_dir.name)
+        observed = gather_maf_stats(
+            required_chrom=autosomes,
+            o_dir=self.output_dir.name,
+        )
 
         # Checking the observed results
         self.assertEqual(len(expected_results), len(observed))
@@ -590,7 +593,10 @@ class TestMainPipeline(unittest.TestCase):
 
         # This should raise an exception
         with self.assertRaises(GenipeError) as cm:
-            gather_maf_stats(self.output_dir.name)
+            gather_maf_stats(
+                required_chrom=autosomes,
+                o_dir=self.output_dir.name,
+            )
         self.assertEqual("{}: {}: invalid MAF".format("marker_1",
                                                       round(0.6, 3)),
                          str(cm.exception))
@@ -603,7 +609,10 @@ class TestMainPipeline(unittest.TestCase):
 
         # This should raise an exception
         with self.assertRaises(GenipeError) as cm:
-            gather_maf_stats(self.output_dir.name)
+            gather_maf_stats(
+                required_chrom=autosomes,
+                o_dir=self.output_dir.name,
+            )
         self.assertEqual("{}: {}: invalid MAF".format("marker_1",
                                                       round(-0.01, 3)),
                          str(cm.exception))
@@ -616,7 +625,10 @@ class TestMainPipeline(unittest.TestCase):
 
         # This should issue a warning
         with self._my_compatibility_assertLogs(level="WARNING") as cm:
-            gather_maf_stats(self.output_dir.name)
+            gather_maf_stats(
+                required_chrom=autosomes,
+                o_dir=self.output_dir.name,
+            )
         log_m = "WARNING:root:chr1: good sites with invalid MAF (NaN)"
         self.assertEqual(1, len(cm.output))
         self.assertEqual(log_m, cm.output[0])
@@ -630,7 +642,10 @@ class TestMainPipeline(unittest.TestCase):
 
         # This should issue a warning
         with self._my_compatibility_assertLogs(level="WARNING") as cm:
-            gather_maf_stats(self.output_dir.name)
+            gather_maf_stats(
+                required_chrom=autosomes,
+                o_dir=self.output_dir.name,
+            )
         log_m = ("WARNING:root:There were no marker with MAF (something went "
                  "wrong)")
         self.assertEqual(1, len(cm.output))
@@ -644,7 +659,10 @@ class TestMainPipeline(unittest.TestCase):
 
         # This should raise an exception
         with self.assertRaises(GenipeError) as cm:
-            gather_maf_stats(self.output_dir.name)
+            gather_maf_stats(
+                required_chrom=autosomes,
+                o_dir=self.output_dir.name,
+            )
         self.assertEqual("{}: no such file".format(removed_filename),
                          str(cm.exception))
 
@@ -655,7 +673,10 @@ class TestMainPipeline(unittest.TestCase):
 
         # This should raise an exception
         with self.assertRaises(GenipeError) as cm:
-            gather_maf_stats(self.output_dir.name)
+            gather_maf_stats(
+                required_chrom=autosomes,
+                o_dir=self.output_dir.name,
+            )
         self.assertEqual("{}: no such file".format(removed_filename),
                          str(cm.exception))
 
