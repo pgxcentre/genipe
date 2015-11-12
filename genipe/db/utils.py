@@ -71,7 +71,7 @@ def _create_db_connection(db_name):
     """
     conn = sqlite3.connect(
         db_name,
-        timeout=360,
+        timeout=1800,
         detect_types=sqlite3.PARSE_DECLTYPES | sqlite3.PARSE_COLNAMES,
     )
     c = conn.cursor()
