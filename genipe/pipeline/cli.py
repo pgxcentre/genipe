@@ -148,12 +148,12 @@ def main():
         # Excluding markers prior to phasing (ambiguous markers [A/T and [G/C]
         # and duplicated markers and finds markers to flip if there is a
         # reference genome available
-#        numbers = find_exclusion_before_phasing(
-#            prefix=args.bfile,
-#            db_name=db_name,
-#            options=args,
-#        )
-#        run_information.update(numbers)
+        numbers = find_exclusion_before_phasing(
+            prefix=args.bfile,
+            db_name=db_name,
+            options=args,
+        )
+        run_information.update(numbers)
 
         exclude_markers_before_phasing(
             required_chrom=args.required_chrom,
@@ -300,7 +300,6 @@ def main():
             db_name=db_name,
         )
         run_information.update(exec_time)
-        sys.exit(0)
 
         # Creating the output directory for the report (if it doesn't exits)
         report_dir = os.path.join(args.out_dir, "report")
@@ -536,7 +535,6 @@ def impute_markers(required_chrom, phased_haplotypes, out_prefix, chrom_length,
                 "-o", c_prefix,
             ]
 
-            print(phased_haplotypes.format(chrom=chrom))
             if chrom == 23:
                 # Getting the sample file (from the phased haplotypes file)
                 sample_file = os.path.splitext(
@@ -1246,7 +1244,7 @@ def find_exclusion_before_phasing(prefix, db_name, options):
             a2 = row[5]
 
             is_special = False
-            if chrom in {"23", "24", "25", "26"}:
+            if chrom in {"24", "26"}:
                 nb_special_markers += 1
                 is_special = True
 
@@ -1283,7 +1281,7 @@ def find_exclusion_before_phasing(prefix, db_name, options):
         reference.close()
 
     # Logging
-    logging.info("  - {:,d} non-autosomal markers".format(nb_special_markers))
+    logging.info("  - {:,d} Y/mito markers".format(nb_special_markers))
     logging.info("  - {:,d} ambiguous markers removed".format(nb_ambiguous))
     logging.info("  - {:,d} duplicated markers removed".format(nb_dup))
     logging.info("  - {:,d} markers kept".format(nb_kept))
@@ -2404,29 +2402,35 @@ def gather_execution_time(required_chrom, db_name):
     merge_impute2_exec_time = []
     bgzip_exec_time = []
     for chrom in required_chrom:
+        chrom_name = chrom
+        if chrom == "25_1":
+            chrom_name = "25 (PAR1)"
+        elif chrom == "25_2":
+            chrom_name = "25 (PAR2)"
+
         # Getting the time for 'plink_exclude'
         seconds = exec_time["plink_exclude_chr{}".format(chrom)]
-        plink_exclude_exec_time.append([chrom, seconds])
+        plink_exclude_exec_time.append([chrom_name, seconds])
 
         # Getting the time for 'shapeit_check_1'
         seconds = exec_time["shapeit_check_chr{}_1".format(chrom)]
-        shapeit_check_1_exec_time.append([chrom, seconds])
+        shapeit_check_1_exec_time.append([chrom_name, seconds])
 
         # Getting the time for 'plink_flip'
         seconds = exec_time["plink_flip_chr{}".format(chrom)]
-        plink_flip_exec_time.append([chrom, seconds])
+        plink_flip_exec_time.append([chrom_name, seconds])
 
         # Getting the time for 'shapeit_check_2'
         seconds = exec_time["shapeit_check_chr{}_2".format(chrom)]
-        shapeit_check_2_exec_time.append([chrom, seconds])
+        shapeit_check_2_exec_time.append([chrom_name, seconds])
 
         # Getting the time for 'plink_final_exclude'
         seconds = exec_time["plink_final_exclude_chr{}".format(chrom)]
-        plink_final_exec_time.append([chrom, seconds])
+        plink_final_exec_time.append([chrom_name, seconds])
 
         # Getting the time for 'shapeit_phase'
         seconds = exec_time["shapeit_phase_chr{}".format(chrom)]
-        shapeit_phase_exec_time.append([chrom, seconds])
+        shapeit_phase_exec_time.append([chrom_name, seconds])
 
         # Getting the execution times for the imputation step
         chr_imputation_tasks = [
@@ -2437,7 +2441,7 @@ def gather_execution_time(required_chrom, db_name):
             exec_time[task_name] for task_name in chr_imputation_tasks
         ]
         impute2_exec_time.append([
-            chrom,
+            chrom_name,
             len(chr_imputation_tasks),
             int(round(sum(seconds) / len(seconds), 0)),
             max(seconds),
