@@ -148,12 +148,12 @@ def main():
         # Excluding markers prior to phasing (ambiguous markers [A/T and [G/C]
         # and duplicated markers and finds markers to flip if there is a
         # reference genome available
-        numbers = find_exclusion_before_phasing(
-            prefix=args.bfile,
-            db_name=db_name,
-            options=args,
-        )
-        run_information.update(numbers)
+#        numbers = find_exclusion_before_phasing(
+#            prefix=args.bfile,
+#            db_name=db_name,
+#            options=args,
+#        )
+#        run_information.update(numbers)
 
         exclude_markers_before_phasing(
             required_chrom=args.required_chrom,
@@ -265,16 +265,24 @@ def main():
                 db_name=db_name,
                 options=args,
             )
-        sys.exit(0)
 
         # Gathering the imputation statistics
-        numbers = gather_imputation_stats(args.probability, args.completion,
-                                          args.info, len(samples),
-                                          missing_rate, args.out_dir)
+        numbers = gather_imputation_stats(
+            required_chrom=args.required_chrom,
+            prob_t=args.probability,
+            completion_t=args.completion,
+            info_t=args.info,
+            nb_samples=len(samples),
+            missing=missing_rate,
+            o_dir=args.out_dir,
+        )
         run_information.update(numbers)
 
         # Gathering the MAF statistics
-        numbers = gather_maf_stats(args.out_dir)
+        numbers = gather_maf_stats(
+            required_chrom=args.required_chrom,
+            o_dir=args.out_dir,
+        )
         run_information.update(numbers)
 
         # Checking that the number of good sites equals the number of sites
@@ -287,8 +295,12 @@ def main():
                                                           nb_sites_with_maf))
 
         # Gathering the execution time
-        exec_time = gather_execution_time(db_name)
+        exec_time = gather_execution_time(
+            required_chrom=args.required_chrom_names,
+            db_name=db_name,
+        )
         run_information.update(exec_time)
+        sys.exit(0)
 
         # Creating the output directory for the report (if it doesn't exits)
         report_dir = os.path.join(args.out_dir, "report")
@@ -1960,11 +1972,12 @@ def get_cross_validation_results(required_chrom, glob_pattern):
     }
 
 
-def gather_imputation_stats(prob_t, completion_t, info_t, nb_samples, missing,
-                            o_dir):
+def gather_imputation_stats(required_chrom, prob_t, completion_t, info_t,
+                            nb_samples, missing, o_dir):
     """Gathers imputation statistics from the merged dataset.
 
     Args:
+        required_chrom (tuple): the chromosome to gather statistics from
         prob_t (float): the probability threshold (>= t)
         completion_t (float): the completion threshold (>= t)
         info_t (float): the information threshold (>= t)
@@ -2052,7 +2065,7 @@ def gather_imputation_stats(prob_t, completion_t, info_t, nb_samples, missing,
     # For each chromosome, get the statistics
     filename_template = os.path.join(o_dir, "chr{chrom}", "final_impute2",
                                      "chr{chrom}.imputed.{suffix}")
-    for chrom in autosomes:
+    for chrom in required_chrom:
         logging.info("  - chromosome {}".format(chrom))
 
         # First, we read the imputed sites
@@ -2152,10 +2165,11 @@ def gather_imputation_stats(prob_t, completion_t, info_t, nb_samples, missing,
     }
 
 
-def gather_maf_stats(o_dir):
+def gather_maf_stats(required_chrom, o_dir):
     """Gather minor allele frequencies from imputation.
 
     Args:
+        required_chrom (tuple): the list of chromosome to gather statistics
         o_dir (str): the output directory
 
     Returns:
@@ -2211,7 +2225,7 @@ def gather_maf_stats(o_dir):
     # For each chromosome, get the MAF statistics
     filename_template = os.path.join(o_dir, "chr{chrom}", "final_impute2",
                                      "chr{chrom}.imputed.{suffix}")
-    for chrom in autosomes:
+    for chrom in required_chrom:
         logging.info("  - chromosome {}".format(chrom))
 
         # The name of the file
@@ -2365,10 +2379,11 @@ def gather_maf_stats(o_dir):
     }
 
 
-def gather_execution_time(db_name):
+def gather_execution_time(required_chrom, db_name):
     """Gather all the execution times.
 
     Args:
+        required_chrom (tuple): the list of chromosomes to gather statistics
         db_name (str): the name of the DB
 
     Returns:
@@ -2388,7 +2403,7 @@ def gather_execution_time(db_name):
     impute2_exec_time = []
     merge_impute2_exec_time = []
     bgzip_exec_time = []
-    for chrom in autosomes:
+    for chrom in required_chrom:
         # Getting the time for 'plink_exclude'
         seconds = exec_time["plink_exclude_chr{}".format(chrom)]
         plink_exclude_exec_time.append([chrom, seconds])
@@ -2427,6 +2442,13 @@ def gather_execution_time(db_name):
             int(round(sum(seconds) / len(seconds), 0)),
             max(seconds),
         ])
+
+        # The last tasks involve only chromosome 25 (both pseudo-autosomal
+        # regions)
+        if chrom == "25_2":
+            continue
+        elif chrom == "25_1":
+            chrom = 25
 
         # Getting the time for 'merge_impute2'
         seconds = exec_time["merge_impute2_chr{}".format(chrom)]
