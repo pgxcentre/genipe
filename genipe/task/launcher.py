@@ -19,7 +19,7 @@ from subprocess import Popen, PIPE
 from tempfile import NamedTemporaryFile
 from multiprocessing.pool import ThreadPool
 
-from ..db import *
+from ..db import utils as db
 from ..error import GenipeError
 
 
@@ -66,9 +66,9 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
         o_files = to_process[i]["o_files"]
 
         # Checking if we need to run this task
-        if check_task_completion(task_id, db_name):
+        if db.check_task_completion(task_id, db_name):
             if _check_output_files(o_files, task_id):
-                run_time = get_task_runtime(task_id, db_name)
+                run_time = db.get_task_runtime(task_id, db_name)
                 logging.info("Task '{}': already performed in {:,d} "
                              "seconds".format(task_name, run_time))
                 continue
@@ -76,7 +76,7 @@ def launch_tasks(to_process, nb_threads, check_rc=True, hpc=False,
             else:
                 # The DB said the task was completed, but there is a missing
                 # output files. Setting this task completion to '0'
-                mark_task_incomplete(task_id, db_name)
+                db.mark_task_incomplete(task_id, db_name)
 
         # The name of the task
         task_id = to_process[i]["task_id"]
@@ -384,18 +384,18 @@ def _execute_command(command_info):
 
     logging.debug("Checking status for '{}'".format(task_id))
     # Checking if the command was completed
-    if check_task_completion(task_id, db_name):
+    if db.check_task_completion(task_id, db_name):
         if _check_output_files(command_info["o_files"], task_id):
             logging.debug("'{}' completed".format(task_id))
-            runtime = get_task_runtime(task_id, db_name)
+            runtime = db.get_task_runtime(task_id, db_name)
             return True, name, "already performed", runtime
         else:
             logging.debug("'{}' problem with output files".format(task_id))
-            mark_task_incomplete(task_id, db_name)
+            db.mark_task_incomplete(task_id, db_name)
     logging.debug("'{}' to run".format(task_id))
 
     # Creating a new entry in the database
-    create_task_entry(task_id, db_name)
+    db.create_task_entry(task_id, db_name)
 
     # Launching the command
     proc = Popen(command, stdout=PIPE, stderr=PIPE)
@@ -438,11 +438,11 @@ def _execute_command(command_info):
         return False, name, "problem", None
 
     # The task was performed correctly, so we update to completed
-    mark_task_completed(task_id, db_name)
+    db.mark_task_completed(task_id, db_name)
 
     # Everything when well
     logging.debug("'{}' everything was fine".format(task_id))
-    return True, name, "performed", get_task_runtime(task_id, db_name)
+    return True, name, "performed", db.get_task_runtime(task_id, db_name)
 
 
 def _execute_command_drmaa(command_info):
@@ -490,14 +490,14 @@ def _execute_command_drmaa(command_info):
 
     # Checking if the command was completed
     logging.debug("Checking status for '{}'".format(task_id))
-    if check_task_completion(task_id, db_name):
+    if db.check_task_completion(task_id, db_name):
         if _check_output_files(command_info["o_files"], task_id):
             logging.debug("'{}' completed".format(task_id))
-            runtime = get_task_runtime(task_id, db_name)
+            runtime = db.get_task_runtime(task_id, db_name)
             return True, name, "already performed", runtime
         else:
             logging.debug("'{}' problem with output files".format(task_id))
-            mark_task_incomplete(task_id, db_name)
+            db.mark_task_incomplete(task_id, db_name)
     else:
         logging.debug("'{}' to run because not completed".format(task_id))
     logging.debug("'{}' to run".format(task_id))
@@ -535,7 +535,7 @@ def _execute_command_drmaa(command_info):
         job.nativeSpecification = command_info["nodes"]
 
     # Creating a new entry in the database
-    create_task_entry(task_id, db_name)
+    db.create_task_entry(task_id, db_name)
 
     # Running the job
     job_id = drmaa_session.runJob(job)
@@ -608,9 +608,9 @@ def _execute_command_drmaa(command_info):
     end_time = float(ret_val.resourceUsage["end_time"])
 
     # The task was performed correctly, so we update to completed
-    mark_drmaa_task_completed(task_id, launch_time, start_time, end_time,
-                              db_name)
+    db.mark_drmaa_task_completed(task_id, launch_time, start_time, end_time,
+                                 db_name)
 
     # Everything when well
     logging.debug("'{}' everything was fine".format(task_id))
-    return True, name, "performed", get_task_runtime(task_id, db_name)
+    return True, name, "performed", db.get_task_runtime(task_id, db_name)

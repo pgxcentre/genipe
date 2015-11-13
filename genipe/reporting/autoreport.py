@@ -13,7 +13,7 @@ from datetime import date
 
 from pkg_resources import resource_filename
 
-from .utils import *
+from . import utils
 from .. import __version__
 from ..error import GenipeError
 
@@ -36,19 +36,19 @@ def generate_report(out_dir, run_opts, run_info):
 
     """
     # Configuring Jinja2
-    jinja2_env = config_jinja2()
+    jinja2_env = utils.config_jinja2()
 
     # Gathering the report data
     today = date.today()
     report_data = {
-        "report_number":   sanitize_tex(run_opts.report_number),
-        "title":           sanitize_tex(run_opts.report_title),
-        "author":          sanitize_tex(run_opts.report_author),
-        "month":           sanitize_tex("{:%B}".format(today)),
-        "day":             sanitize_tex("{:%d}".format(today)),
-        "year":            sanitize_tex("{:%Y}".format(today)),
-        "package_name":    sanitize_tex(__name__.split(".")[0]),
-        "package_version": sanitize_tex(__version__),
+        "report_number":   utils.sanitize_tex(run_opts.report_number),
+        "title":           utils.sanitize_tex(run_opts.report_title),
+        "author":          utils.sanitize_tex(run_opts.report_author),
+        "month":           utils.sanitize_tex("{:%B}".format(today)),
+        "day":             utils.sanitize_tex("{:%d}".format(today)),
+        "year":            utils.sanitize_tex("{:%Y}".format(today)),
+        "package_name":    utils.sanitize_tex(__name__.split(".")[0]),
+        "package_version": utils.sanitize_tex(__version__),
     }
 
     # We want to copy the figures to the right place
@@ -127,7 +127,7 @@ def _generate_background(templates, run_options, run_information):
         section_name="Background",
         section_type="section",
         section_label="sec:background",
-        section_content=sanitize_tex(background_content),
+        section_content=utils.sanitize_tex(background_content),
     )
 
 
@@ -161,16 +161,19 @@ def _generate_methods(templates, run_options, run_information):
     # Are there any filtering rules?
     filtering_rules = ""
     if run_options.filtering_rules is not None:
-        filtering_rules = sanitize_tex(" (filtering out sites where")
+        filtering_rules = utils.sanitize_tex(" (filtering out sites where")
         for i, rule in enumerate(run_options.filtering_rules):
             p = ", "
             if i == 0:
                 p = " "
             elif i == len(run_options.filtering_rules) - 1:
                 p = " or "
-            p = sanitize_tex(p)
-            filtering_rules += p + format_tex(sanitize_tex(rule), "texttt")
-        filtering_rules += sanitize_tex(")")
+            p = utils.sanitize_tex(p)
+            filtering_rules += p + utils.format_tex(
+                utils.sanitize_tex(rule),
+                "texttt",
+            )
+        filtering_rules += utils.sanitize_tex(")")
 
     # The input files
     data_files = [
@@ -184,12 +187,12 @@ def _generate_methods(templates, run_options, run_information):
     to_add_1 = ""
     to_add_2 = ""
     if run_information["reference_checked"]:
-        to_add_1 = sanitize_tex(
+        to_add_1 = utils.sanitize_tex(
             "An initial strand check was also performed using the human "
             "reference genome. "
         )
-        to_add_2 = format_tex(
-            sanitize_tex(
+        to_add_2 = utils.format_tex(
+            utils.sanitize_tex(
                 " Also, {nb_flip} markers were flipped because of strand "
                 "issue.".format(
                     nb_flip=run_information["nb_flip_reference"],
@@ -199,16 +202,18 @@ def _generate_methods(templates, run_options, run_information):
         )
 
     # The ambiguous and duplicated markers that were removed
-    steps.append(wrap_tex(sanitize_tex(
+    steps.append(utils.wrap_tex(utils.sanitize_tex(
         "Ambiguous markers with alleles "
-    ) + format_tex("A", "texttt") + "/" + format_tex("T", "texttt") + " and " +
-        format_tex("C", "texttt") + "/" + format_tex("G", "texttt") +
-        sanitize_tex(
+    ) + utils.format_tex("A", "texttt") + "/" +
+        utils.format_tex("T", "texttt") + " and " +
+        utils.format_tex("C", "texttt") + "/" +
+        utils.format_tex("G", "texttt") +
+        utils.sanitize_tex(
             ", duplicated markers (same position), and markers located on "
             "the mitochondrial or the Y chromosomes were excluded from the "
             "imputation. "
-    ) + to_add_1 + format_tex(
-        sanitize_tex(
+    ) + to_add_1 + utils.format_tex(
+        utils.sanitize_tex(
             "In total, {ambiguous} ambiguous, {duplicated} duplicated and "
             "{special} Y/mitochondrial markers were excluded.".format(
                 ambiguous=run_information["nb_ambiguous"],
@@ -220,11 +225,11 @@ def _generate_methods(templates, run_options, run_information):
     ) + to_add_2))
 
     # The number of markers that were flipped
-    steps.append(wrap_tex(sanitize_tex(
+    steps.append(utils.wrap_tex(utils.sanitize_tex(
         "Markers' strand was checked using the SHAPEIT algorithm and "
         "IMPUTE2's reference files. "
-    ) + format_tex(
-        sanitize_tex(
+    ) + utils.format_tex(
+        utils.sanitize_tex(
             "In total, {nb_markers} markers had an incorrect strand and "
             "were flipped using Plink.".format(
                 nb_markers=run_information["nb_flip"],
@@ -234,11 +239,11 @@ def _generate_methods(templates, run_options, run_information):
     )))
 
     # The number of excluded markers because of strand problem
-    steps.append(wrap_tex(sanitize_tex(
+    steps.append(utils.wrap_tex(utils.sanitize_tex(
         "The strand of each marker was checked again using SHAPEIT against "
         "IMPUTE2's reference files. "
-    ) + format_tex(
-        sanitize_tex(
+    ) + utils.format_tex(
+        utils.sanitize_tex(
             "In total, {nb_markers} markers were found to still be on the "
             "wrong strand, and were hence excluded from the final dataset "
             "using Plink.".format(
@@ -312,14 +317,14 @@ def _generate_results(templates, run_options, run_information):
 
     # The header of the two kind of tables
     header_table_1 = [
-        format_tex(sanitize_tex("Interval"), "textbf"),
-        format_tex(sanitize_tex("Nb Geno"), "textbf"),
-        format_tex(sanitize_tex("Concordance (%)"), "textbf"),
+        utils.format_tex(utils.sanitize_tex("Interval"), "textbf"),
+        utils.format_tex(utils.sanitize_tex("Nb Geno"), "textbf"),
+        utils.format_tex(utils.sanitize_tex("Concordance (%)"), "textbf"),
     ]
     header_table_2 = [
-        format_tex(sanitize_tex("Interval"), "textbf"),
-        format_tex(sanitize_tex("Called (%)"), "textbf"),
-        format_tex(sanitize_tex("Concordance (%)"), "textbf"),
+        utils.format_tex(utils.sanitize_tex("Interval"), "textbf"),
+        utils.format_tex(utils.sanitize_tex("Called (%)"), "textbf"),
+        utils.format_tex(utils.sanitize_tex("Concordance (%)"), "textbf"),
     ]
 
     # Creating the tables
@@ -330,8 +335,8 @@ def _generate_results(templates, run_options, run_information):
         # Getting the table 1
         table_1 = run_information["cross_validation_table_1_chrom"][chrom]
         for i in range(len(table_1)):
-            table_1[i][0] = tex_inline_math(table_1[i][0])
-        table_1 = create_tabular(
+            table_1[i][0] = utils.tex_inline_math(table_1[i][0])
+        table_1 = utils.create_tabular(
             template=tabular_template,
             header=header_table_1,
             col_align=["c", "r", "r"],
@@ -341,10 +346,10 @@ def _generate_results(templates, run_options, run_information):
         # Getting the table 2
         table_2 = run_information["cross_validation_table_2_chrom"][chrom]
         for i in range(len(table_2)):
-            table_2[i][0] = tex_inline_math(
+            table_2[i][0] = utils.tex_inline_math(
                 table_2[i][0].replace(">=", r"\geq "),
             )
-        table_2 = create_tabular(
+        table_2 = utils.create_tabular(
             template=tabular_template,
             header=header_table_2,
             col_align=["c", "r", "r"],
@@ -356,10 +361,10 @@ def _generate_results(templates, run_options, run_information):
         nb_genotypes = nb_genotypes[chrom]
 
         # Adding the float
-        tables += create_float(
+        tables += utils.create_float(
             template=float_template,
             float_type="table",
-            caption=wrap_tex(sanitize_tex(
+            caption=utils.wrap_tex(utils.sanitize_tex(
                 "IMPUTE2's internal cross-validation for chromosome {}. "
                 "Tables show the percentage of concordance between genotyped "
                 "calls and imputed calls for {:,d} "
@@ -373,26 +378,36 @@ def _generate_results(templates, run_options, run_information):
     # Adding the table for all the chromosomes (Table 1)
     table_1 = run_information["cross_validation_table_1"]
     for i in range(len(table_1)):
-        table_1[i][0] = tex_inline_math(table_1[i][0])
-    table_1 = create_tabular(template=tabular_template, header=header_table_1,
-                             col_align=["c", "r", "r"], data=table_1)
+        table_1[i][0] = utils.tex_inline_math(table_1[i][0])
+    table_1 = utils.create_tabular(
+        template=tabular_template,
+        header=header_table_1,
+        col_align=["c", "r", "r"],
+        data=table_1,
+    )
 
     # Adding the table for all the chromosomes (Table 2)
     table_2 = run_information["cross_validation_table_2"]
     for i in range(len(table_2)):
-        table_2[i][0] = tex_inline_math(table_2[i][0].replace(">=", r"\geq "))
-    table_2 = create_tabular(template=tabular_template, header=header_table_2,
-                             col_align=["c", "r", "r"], data=table_2)
+        table_2[i][0] = utils.tex_inline_math(
+            table_2[i][0].replace(">=", r"\geq "),
+        )
+    table_2 = utils.create_tabular(
+        template=tabular_template,
+        header=header_table_2,
+        col_align=["c", "r", "r"],
+        data=table_2,
+    )
 
     # The number of genotypes
     nb_genotypes = run_information["cross_validation_final_nb_genotypes"]
 
     # Adding the float
     if len(run_options.required_chrom) > 1:
-        tables += "\n\n" + create_float(
+        tables += "\n\n" + utils.create_float(
             template=float_template,
             float_type="table",
-            caption=wrap_tex(sanitize_tex(
+            caption=utils.wrap_tex(utils.sanitize_tex(
                 "IMPUTE2's internal cross-validation across the genome. "
                 "Tables show the percentage of concordance between genotyped "
                 "calls and imputed calls for {:,d} "
@@ -427,10 +442,10 @@ def _generate_results(templates, run_options, run_information):
     # Do we have a frequency bar plot?
     frequency_float = ""
     if run_information["frequency_barh"] != "":
-        frequency_float = create_float(
+        frequency_float = utils.create_float(
             template=float_template,
             float_type="figure",
-            caption=wrap_tex(sanitize_tex(
+            caption=utils.wrap_tex(utils.sanitize_tex(
                 "Proportions of minor allele frequencies for imputed "
                 "sites with a completion rate of {}% or "
                 "more at a probability of {}% or "
@@ -488,79 +503,110 @@ def _generate_conclusions(templates, run_options, run_information):
     itemize_template = templates.get_template("iterate_template.tex")
 
     # Adding the required information (output directories)
-    run_information["output_dir"] = sanitize_tex(run_options.out_dir)
-    run_information["output_dir_chrom"] = sanitize_tex(
+    run_information["output_dir"] = utils.sanitize_tex(run_options.out_dir)
+    run_information["output_dir_chrom"] = utils.sanitize_tex(
         os.path.join(run_options.out_dir, "chr*")
     )
-    run_information["output_final_impute2"] = sanitize_tex(
+    run_information["output_final_impute2"] = utils.sanitize_tex(
         os.path.join(run_options.out_dir, "chr*", "final_impute2")
     )
 
     # Output files
     output_files = [
-        wrap_tex(
-            format_tex(sanitize_tex("chr*.imputed.alleles"), "texttt") +
-            sanitize_tex(": description of the reference and alternative "
-                         "allele at each site.")
+        utils.wrap_tex(
+            utils.format_tex(utils.sanitize_tex("chr*.imputed.alleles"),
+                             "texttt") +
+            utils.sanitize_tex(": description of the reference and "
+                               "alternative allele at each site.")
         ),
-        wrap_tex(
-            format_tex(sanitize_tex("chr*.imputed.completion_rates"),
-                       "texttt") +
-            sanitize_tex(": number of missing values and completion rate for "
-                         "all site (using a probability threshold ") +
-            tex_inline_math(
+        utils.wrap_tex(
+            utils.format_tex(
+                utils.sanitize_tex("chr*.imputed.completion_rates"),
+                "texttt",
+            ) +
+            utils.sanitize_tex(": number of missing values and completion "
+                               "rate for all site (using a probability "
+                               "threshold ") +
+            utils.tex_inline_math(
                 r"\geq {}\%".format(run_information["prob_threshold"])
             ) + ")."
         ),
-        wrap_tex(
-            format_tex(sanitize_tex("chr*.imputed.good_sites"), "texttt") +
-            sanitize_tex(": list of sites which pass the information "
-                         "threshold (") +
-            tex_inline_math(
+        utils.wrap_tex(
+            utils.format_tex(
+                utils.sanitize_tex("chr*.imputed.good_sites"),
+                "texttt",
+            ) +
+            utils.sanitize_tex(": list of sites which pass the information "
+                               "threshold (") +
+            utils.tex_inline_math(
                 r"\geq {}".format(run_information["info_threshold"])
-            ) + sanitize_tex(") and the completion rate threshold (") +
-            tex_inline_math(
+            ) + utils.sanitize_tex(") and the completion rate threshold (") +
+            utils.tex_inline_math(
                 r"\geq {}\%".format(run_information["rate_threshold"])
-            ) + sanitize_tex(") using the probability threshold ") +
-            tex_inline_math(
+            ) + utils.sanitize_tex(") using the probability threshold ") +
+            utils.tex_inline_math(
                 r"\geq {}\%".format(run_information["prob_threshold"])
             ) + "."
         ),
-        wrap_tex(
-            format_tex(sanitize_tex("chr*.imputed.impute2"), "texttt") +
-            sanitize_tex(": imputation results (merged from all segments).")
+        utils.wrap_tex(
+            utils.format_tex(
+                utils.sanitize_tex("chr*.imputed.impute2"),
+                "texttt",
+            ) +
+            utils.sanitize_tex(": imputation results (merged from all "
+                               "segments).")
         ),
-        wrap_tex(
-            format_tex(sanitize_tex("chr*.imputed.impute2_info"), "texttt") +
-            sanitize_tex(": the IMPUTE2 marker-wise information file (merged "
-                         "from all segments).")
+        utils.wrap_tex(
+            utils.format_tex(
+                utils.sanitize_tex("chr*.imputed.impute2_info"),
+                "texttt",
+            ) +
+            utils.sanitize_tex(": the IMPUTE2 marker-wise information file "
+                               "(merged from all segments).")
         ),
-        wrap_tex(
-            format_tex(sanitize_tex("chr*.imputed.imputed_sites"), "texttt") +
-            sanitize_tex(": list of imputed sites (excluding sites that were "
-                         "previously genotyped in the study cohort).")
+        utils.wrap_tex(
+            utils.format_tex(
+                utils.sanitize_tex("chr*.imputed.imputed_sites"),
+                "texttt",
+            ) +
+            utils.sanitize_tex(": list of imputed sites (excluding sites that "
+                               "were previously genotyped in the study "
+                               "cohort).")
         ),
-        wrap_tex(
-            format_tex(sanitize_tex("chr*.imputed.log"), "texttt") +
-            sanitize_tex(": log file of the merging procedure.")
+        utils.wrap_tex(
+            utils.format_tex(
+                utils.sanitize_tex("chr*.imputed.log"),
+                "texttt",
+            ) +
+            utils.sanitize_tex(": log file of the merging procedure.")
         ),
-        wrap_tex(
-            format_tex(sanitize_tex("chr*.imputed.maf"), "texttt") +
-            sanitize_tex(": minor allele frequency (along with minor allele "
-                         "identification) for all sites using the probability "
-                         "threshold ") +
-            tex_inline_math(
+        utils.wrap_tex(
+            utils.format_tex(
+                utils.sanitize_tex("chr*.imputed.maf"),
+                "texttt",
+            ) +
+            utils.sanitize_tex(": minor allele frequency (along with minor "
+                               "allele identification) for all sites using "
+                               "the probability threshold ") +
+            utils.tex_inline_math(
                 r"\geq {}\%".format(run_information["prob_threshold"])
             ) + "."
         ),
-        wrap_tex(
-            format_tex(sanitize_tex("chr*.imputed.map"), "texttt") +
-            sanitize_tex(": a map file describing the genomic location of "
-                         "all sites.")
+        utils.wrap_tex(
+            utils.format_tex(
+                utils.sanitize_tex("chr*.imputed.map"),
+                "texttt",
+            ) +
+            utils.sanitize_tex(": a map file describing the genomic location "
+                               "of all sites.")
         ),
-        wrap_tex(
-            format_tex(sanitize_tex("chr*.imputed.sample"), "texttt") +
-            sanitize_tex(": the sample file generated by the phasing step.")
+        utils.wrap_tex(
+            utils.format_tex(
+                utils.sanitize_tex("chr*.imputed.sample"),
+                "texttt",
+            ) +
+            utils.sanitize_tex(": the sample file generated by the phasing "
+                               "step.")
         ),
     ]
 
@@ -612,15 +658,17 @@ def _generate_annex(templates, run_options, run_information):
                "Execution times for imputation for each chromosome are means "
                "of individual segment times. Computing all genotyped markers' "
                "missing rate took {}.")
-    content = wrap_tex(sanitize_tex(content.format(format_time(
-        run_information["plink_missing_exec_time"],
-        written_time=True,
-    ))))
+    content = utils.wrap_tex(utils.sanitize_tex(content.format(
+        utils.format_time(
+            run_information["plink_missing_exec_time"],
+            written_time=True,
+        ),
+    )))
 
     # The header of the tables
     table_header = [
-        format_tex(sanitize_tex("Chrom"), "textbf"),
-        format_tex(sanitize_tex("Time"), "textbf"),
+        utils.format_tex(utils.sanitize_tex("Chrom"), "textbf"),
+        utils.format_tex(utils.sanitize_tex("Time"), "textbf"),
     ]
 
     # Getting the first table (plink_exclude_chr*)
@@ -686,10 +734,10 @@ def _generate_annex(templates, run_options, run_information):
     # Getting the seventh table (impute2_chr*)
     content += _generate_time_float(
         table=run_information["impute2_exec_time"],
-        header=[format_tex(sanitize_tex("Chrom"), "textbf"),
-                format_tex(sanitize_tex("Nb Seg."), "textbf"),
-                format_tex(sanitize_tex("Mean T."), "textbf"),
-                format_tex(sanitize_tex("Max T."), "textbf")],
+        header=[utils.format_tex(utils.sanitize_tex("Chrom"), "textbf"),
+                utils.format_tex(utils.sanitize_tex("Nb Seg."), "textbf"),
+                utils.format_tex(utils.sanitize_tex("Mean T."), "textbf"),
+                utils.format_tex(utils.sanitize_tex("Max T."), "textbf")],
         task_name="impute2_chr*",
         label="impute2_exec_time",
         tabular_t=tabular_template,
@@ -745,7 +793,7 @@ def _generate_time_float(task_name, label, table, header, tabular_t, float_t,
         sep = len(table)
 
     # Adding the first table
-    table_1 = create_tabular(
+    table_1 = utils.create_tabular(
         template=tabular_t,
         header=header,
         col_align=["r"] * len(header),
@@ -756,7 +804,7 @@ def _generate_time_float(task_name, label, table, header, tabular_t, float_t,
     table_2 = ""
     if two_tables:
         table_2 = r"\hspace{1cm}"
-        table_2 += create_tabular(
+        table_2 += utils.create_tabular(
             template=tabular_t,
             header=header,
             col_align=["r"] * len(header),
@@ -764,15 +812,15 @@ def _generate_time_float(task_name, label, table, header, tabular_t, float_t,
         )
 
     # The caption
-    caption = sanitize_tex("Execution time for the '")
-    caption += format_tex(sanitize_tex(task_name), "texttt")
-    caption += sanitize_tex("' tasks.")
+    caption = utils.sanitize_tex("Execution time for the '")
+    caption += utils.format_tex(utils.sanitize_tex(task_name), "texttt")
+    caption += utils.sanitize_tex("' tasks.")
 
     # Returning the float
-    return create_float(
+    return utils.create_float(
         template=float_t,
         float_type="table",
-        caption=wrap_tex(caption),
+        caption=utils.wrap_tex(caption),
         label="tab:{}".format(label),
         placement="H",
         content=table_1 + table_2,
@@ -792,5 +840,5 @@ def _format_time_columns(table, first_col):
     """
     for i in range(len(table)):
         for j in range(first_col, len(table[i])):
-            table[i][j] = colorize_time(table[i][j])
+            table[i][j] = utils.colorize_time(table[i][j])
     return table

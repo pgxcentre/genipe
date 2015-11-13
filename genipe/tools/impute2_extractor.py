@@ -18,8 +18,8 @@ from collections import namedtuple
 import pandas as pd
 from numpy import nan
 
-from ..formats.index import *
-from ..formats.impute2 import *
+from ..formats import index
+from ..formats import impute2
 from ..error import GenipeError
 from .. import __version__, autosomes
 
@@ -135,8 +135,8 @@ def index_files(i_filenames):
     """
     # For each input file
     for i_filename in i_filenames:
-        get_index(i_filename, cols=[0, 1, 2], names=["chrom", "name", "pos"],
-                  sep=" ")
+        index.get_index(i_filename, cols=[0, 1, 2],
+                        names=["chrom", "name", "pos"], sep=" ")
 
 
 def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
@@ -169,15 +169,15 @@ def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
         extracted = set()
 
         # Finding the name of the file containing the index
-        file_index = get_index(i_filename, cols=[0, 1, 2],
-                               names=["chrom", "name", "pos"], sep=" ")
+        file_index = index.get_index(i_filename, cols=[0, 1, 2],
+                                     names=["chrom", "name", "pos"], sep=" ")
 
         # Keeping only required values from the index
         file_index = file_index[file_index.name.isin(names)]
 
         # Getting all the markers value
         logging.info("Extracting {:,d} markers".format(len(file_index)))
-        with get_open_func(i_filename)(i_filename, "r") as i_file:
+        with index.get_open_func(i_filename)(i_filename, "r") as i_file:
             for seek_value in file_index.seek.values:
                 # Seeking
                 i_file.seek(int(seek_value))
@@ -301,18 +301,25 @@ def print_data(o_files, prob_t, *, line=None, row=None):
     probabilities = None
     if "dosage" in o_files or "calls" in o_files:
         # Getting the informations
-        marker_info, probabilities = matrix_from_line(row)
+        marker_info, probabilities = impute2.matrix_from_line(row)
         chrom, name, pos, a1, a2 = marker_info
 
         # Getting the good calls
-        good_calls = get_good_probs(probabilities, min_prob=prob_t)
+        good_calls = impute2.get_good_probs(probabilities, min_prob=prob_t)
 
     # Dosage?
     if "dosage" in o_files:
         # Getting the maf
-        maf, minor, major = maf_from_probs(probabilities[good_calls, :], 0, 2)
-        dosage = dosage_from_probs(probabilities[:, minor],
-                                   probabilities[:, 1], scale=2)
+        maf, minor, major = impute2.maf_from_probs(
+            prob_matrix=probabilities[good_calls, :],
+            a1=0,
+            a2=2,
+        )
+        dosage = impute2.dosage_from_probs(
+            homo_probs=probabilities[:, minor],
+            hetero_probs=probabilities[:, 1],
+            scale=2,
+        )
         dosage[~good_calls] = nan
 
         alleles = [a1, nan, a2]
@@ -321,7 +328,7 @@ def print_data(o_files, prob_t, *, line=None, row=None):
 
     # Hard calls?
     if "calls" in o_files:
-        calls = hard_calls_from_probs(a1, a2, probabilities)
+        calls = impute2.hard_calls_from_probs(a1, a2, probabilities)
         calls[~good_calls] = "0 0"
         print(chrom, name, "0", pos, *calls, sep="\t", file=o_files["calls"])
 

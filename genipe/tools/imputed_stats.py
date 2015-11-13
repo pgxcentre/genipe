@@ -20,11 +20,10 @@ from subprocess import Popen, PIPE
 from collections import namedtuple
 
 import jinja2
-import numpy as np
 import pandas as pd
 
 from .. import __version__
-from ..formats.impute2 import *
+from ..formats import impute2
 from ..error import GenipeError
 
 
@@ -648,7 +647,7 @@ def _skat_parse_line(line, markers_of_interest, samples, gender=None):
     line = line.split(" ")
     # info_tuple contains: chrom, name, pos, a1, a2
     # proba_matrix is a matrix of sample x (aa, ab, bb)
-    info_tuple, proba_matrix = matrix_from_line(line)
+    info_tuple, proba_matrix = impute2.matrix_from_line(line)
 
     chrom, name, pos, a1, a2 = info_tuple
 
@@ -659,10 +658,16 @@ def _skat_parse_line(line, markers_of_interest, samples, gender=None):
     # We need to compute the dosage vector.
     # This is given wrt to the minor and major alleles, so we need to get the
     # MAF to identify those.
-    maf, minor_i, major_i = maf_from_probs(proba_matrix, 0, 2, gender, name)
+    maf, minor_i, major_i = impute2.maf_from_probs(
+        prob_matrix=proba_matrix,
+        a1=0,
+        a2=2,
+        gender=gender,
+        site_name=name,
+    )
 
     # We don't pass a scale parameter, because we want additive coding.
-    dosage = dosage_from_probs(
+    dosage = impute2.dosage_from_probs(
         homo_probs=proba_matrix[:, minor_i],
         hetero_probs=proba_matrix[:, 1],
     )
@@ -850,7 +855,7 @@ def process_impute2_site(site_info):
 
     """
     # Getting the probability matrix and site information
-    (chrom, name, pos, a1, a2), geno = matrix_from_line(site_info.row)
+    (chrom, name, pos, a1, a2), geno = impute2.matrix_from_line(site_info.row)
 
     # The name of the dosage column
     dosage_columns = ["_D1", "_D2", "_D3"]
@@ -874,7 +879,7 @@ def process_impute2_site(site_info):
 
     # Keeping only good quality markers
     data = data[
-        get_good_probs(data[dosage_columns].values, site_info.prob_t)
+        impute2.get_good_probs(data[dosage_columns].values, site_info.prob_t)
     ]
 
     # FIXME: Quick and dirty fix for mixedlm...
@@ -907,9 +912,13 @@ def process_impute2_site(site_info):
         gender = t_data[site_info.gender_c].values
 
     # Computing the frequency
-    maf, minor, major = maf_from_probs(t_data[dosage_columns].values,
-                                       dosage_columns[0], dosage_columns[-1],
-                                       gender, name)
+    maf, minor, major = impute2.maf_from_probs(
+        prob_matrix=t_data[dosage_columns].values,
+        a1=dosage_columns[0],
+        a2=dosage_columns[-1],
+        gender=gender,
+        site_name=name,
+    )
 
     # What we want to print
     to_return = [chrom, pos, name, allele_encoding[major],
@@ -921,7 +930,7 @@ def process_impute2_site(site_info):
         return to_return
 
     # Computing the dosage on the minor allele
-    data["_GenoD"] = dosage_from_probs(
+    data["_GenoD"] = impute2.dosage_from_probs(
         homo_probs=data[minor],
         hetero_probs=data[dosage_columns[1]],
         scale=site_info.scale,

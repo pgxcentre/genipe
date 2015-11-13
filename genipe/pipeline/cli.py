@@ -23,8 +23,8 @@ from collections import defaultdict
 
 import pandas as pd
 
-from ..db import *
 from ..task import launcher
+from ..db import utils as db
 from ..error import GenipeError
 from ..config import parse_drmaa_config
 from ..reporting import generate_report
@@ -109,7 +109,7 @@ def main():
             args.preamble = read_preamble(args.preamble)
 
         # Creating the database
-        db_name = create_task_db(args.out_dir)
+        db_name = db.create_task_db(args.out_dir)
 
         # Creating the output directories
         for chrom in args.required_chrom_names:
@@ -2389,7 +2389,7 @@ def gather_execution_time(required_chrom, db_name):
 
     """
     # Getting all the execution time from the DB
-    exec_time = get_all_runtimes(db_name)
+    exec_time = db.get_all_runtimes(db_name)
 
     # Getting the execution time for the steps
     plink_exclude_exec_time = []
