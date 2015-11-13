@@ -71,7 +71,7 @@ def setup_package():
         license="CC BY-NC 4.0",
         entry_points={
             "console_scripts": [
-                "genipe-launcher=genipe.pipeline:main",
+                "genipe-launcher=genipe.pipeline.cli:main",
                 "impute2-merger=genipe.tools.impute2_merger:main",
                 "impute2-extractor=genipe.tools.impute2_extractor:main",
                 "imputed-stats=genipe.tools.imputed_stats:main",
@@ -79,9 +79,9 @@ def setup_package():
         },
         install_requires=["numpy >= 1.9.2", "Jinja2 >= 2.7.3",
                           "pandas >= 0.15.2", "setuptools >= 12.0.5"],
-        packages=["genipe", "genipe.task", "genipe.db", "genipe.tools",
-                  "genipe.formats", "genipe.reporting", "genipe.config",
-                  "genipe.tests"],
+        packages=["genipe", "genipe.pipeline", "genipe.task", "genipe.db",
+                  "genipe.tools", "genipe.formats", "genipe.reporting",
+                  "genipe.config", "genipe.tests"],
         package_data={"genipe.reporting": ["templates/*.tex",
                                            "templates/biblio/*",
                                            "templates/utils/*",

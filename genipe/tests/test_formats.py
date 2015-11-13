@@ -13,7 +13,7 @@ from tempfile import TemporaryDirectory
 import numpy as np
 
 from ..formats import *
-from ..error import ProgramError
+from ..error import GenipeError
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -256,7 +256,7 @@ class TestFormats(unittest.TestCase):
         self.assertEqual(expected_major, observed_major)
 
         # An heterozygous male (using gender) should raise an exception
-        with self.assertRaises(ProgramError) as cm:
+        with self.assertRaises(GenipeError) as cm:
             maf_from_probs(probs, "A", "B", np.ones(10, dtype=int), "marker_1")
         self.assertEqual("marker_1: heterozygous male present",
                          str(cm.exception))
@@ -489,7 +489,7 @@ class TestFormats(unittest.TestCase):
         self.assertEqual(log_m, cm.output)
 
         # An heterozygous male (using gender) should raise an exception
-        with self.assertRaises(ProgramError) as cm:
+        with self.assertRaises(GenipeError) as cm:
             maf_dosage_from_probs(probs, "A", "B", site_name="marker_1",
                                   gender=np.ones(10, dtype=int))
         self.assertEqual("marker_1: heterozygous male present",

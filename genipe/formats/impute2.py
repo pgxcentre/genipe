@@ -11,7 +11,7 @@ import logging
 
 import numpy as np
 
-from ..error import ProgramError
+from ..error import GenipeError
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -120,8 +120,8 @@ def maf_from_probs(prob_matrix, a1, a2, gender=None, site_name=None):
 
         # There shouldn't be heterozygous genotypes for males
         if males_nb_geno[1] > 0:
-            raise ProgramError("{}: heterozygous male "
-                               "present".format(site_name))
+            raise GenipeError("{}: heterozygous male "
+                              "present".format(site_name))
 
         # Computing the frequencies
         maf = males_nb_geno[2] + (females_nb_geno[2] * 2) + females_nb_geno[1]
@@ -185,8 +185,8 @@ def maf_dosage_from_probs(prob_matrix, a1, a2, scale=2, gender=None,
         males_nb_geno = np.bincount(np.argmax(prob_matrix[m], axis=1),
                                     minlength=3)
         if males_nb_geno[1] > 0:
-            raise ProgramError("{}: heterozygous male "
-                               "present".format(site_name))
+            raise GenipeError("{}: heterozygous male "
+                              "present".format(site_name))
 
         # The number of alleles
         nb_alleles = m.sum() + (f.sum() * 2)

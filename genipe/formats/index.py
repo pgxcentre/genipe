@@ -15,7 +15,7 @@ import logging
 import numpy as np
 import pandas as pd
 
-from ..error import ProgramError
+from ..error import GenipeError
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -103,7 +103,7 @@ def get_open_func(fn, return_fmt=False):
         bgzip = i_file.read(3) == b"\x1f\x8b\x08"
 
     if bgzip and not HAS_BIOPYTHON:
-        raise ProgramError("needs BioPython to index a bgzip file")
+        raise GenipeError("needs BioPython to index a bgzip file")
 
     open_func = open
     if bgzip:
@@ -118,7 +118,7 @@ def get_open_func(fn, return_fmt=False):
             pass
 
     except ValueError:
-        raise ProgramError("{}: use bgzip for compression...".format(fn))
+        raise GenipeError("{}: use bgzip for compression...".format(fn))
 
     if return_fmt:
         return bgzip, open_func
@@ -151,10 +151,10 @@ def get_index(fn, cols, names, sep):
 
     # Checking the names are there
     if len(set(names) - (set(file_index.columns) - {'seek'})) != 0:
-        raise ProgramError("{}: missing index columns: reindex".format(fn))
+        raise GenipeError("{}: missing index columns: reindex".format(fn))
 
     if "seek" not in file_index.columns:
-        raise ProgramError("{}: invalid index: reindex".format(fn))
+        raise GenipeError("{}: invalid index: reindex".format(fn))
 
     return file_index
 
@@ -191,7 +191,7 @@ def read_index(fn):
     index = None
     with open(fn, "rb") as i_file:
         if i_file.read(len(_CHECK_STRING)) != _CHECK_STRING:
-            raise ProgramError("{}: not a valid index file".format(fn))
+            raise GenipeError("{}: not a valid index file".format(fn))
 
         index = pd.read_csv(io.StringIO(
             zlib.decompress(i_file.read()).decode(encoding="utf-8"),

@@ -23,29 +23,23 @@ from collections import defaultdict
 
 import pandas as pd
 
-from .db import *
-from . import __version__
-from . import chromosomes
-from .task import launcher
-from .error import ProgramError
-from .config import parse_drmaa_config
-from .reporting import generate_report
+from ..db import *
+from ..task import launcher
+from ..error import GenipeError
+from ..config import parse_drmaa_config
+from ..reporting import generate_report
+from .arguments import parse_args, check_args
+from .. import __version__, autosomes, HAS_PYFAIDX, HAS_MATPLOTLIB
 
 
-try:
+if HAS_MATPLOTLIB:
     import matplotlib as mpl
     mpl.use("Agg")
     import matplotlib.pyplot as plt
     import matplotlib.patches as mpatches
-    HAS_MATPLOTLIB = True
-except ImportError:
-    HAS_MATPLOTLIB = False
 
-try:
+if HAS_PYFAIDX:
     from pyfaidx import Fasta
-    HAS_PYFAIDX = True
-except ImportError:
-    HAS_PYFAIDX = False
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -118,7 +112,7 @@ def main():
         db_name = create_task_db(args.out_dir)
 
         # Creating the output directories
-        for chrom in chromosomes:
+        for chrom in args.required_chrom_names:
             chr_dir = os.path.join(args.out_dir, "chr{}".format(chrom))
             if not os.path.isdir(chr_dir):
                 os.mkdir(chr_dir)
@@ -141,101 +135,154 @@ def main():
             "plink" if args.plink_bin is None else args.plink_bin
         )
 
+        # Gathering the chromosome length from legend files
+        chromosome_length = get_chromosome_length(
+            required_chrom=args.required_chrom,
+            legend=args.legend_template,
+            legend_chr23=args.legend_chr23,
+            legend_par1=args.legend_par1,
+            legend_par2=args.legend_par2,
+            out_dir=args.out_dir,
+        )
+
         # Excluding markers prior to phasing (ambiguous markers [A/T and [G/C]
         # and duplicated markers and finds markers to flip if there is a
         # reference genome available
-        numbers = exclude_markers_before_phasing(args.bfile, db_name, args)
+        numbers = find_exclusion_before_phasing(
+            prefix=args.bfile,
+            db_name=db_name,
+            options=args,
+        )
         run_information.update(numbers)
+
+        exclude_markers_before_phasing(
+            required_chrom=args.required_chrom,
+            prefix=args.bfile,
+            db_name=db_name,
+            chrom_length=chromosome_length,
+            options=args,
+        )
 
         # Computing the marker missing rate
         missing_rate = compute_marker_missing_rate(args.bfile, db_name, args)
 
         # Checking the strand
         numbers = check_strand(
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}"),
-            "_1",
-            db_name,
-            args,
+            required_chrom=args.required_chrom_names,
+            prefix=os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}"),
+            id_suffix="_1",
+            db_name=db_name,
+            options=args,
         )
         run_information.update(numbers)
 
         # Flipping the markers
         flip_markers(
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}"),
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.to_flip"),
-            db_name,
-            args,
+            required_chrom=args.required_chrom_names,
+            prefix=os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}"),
+            to_flip=os.path.join(args.out_dir, "chr{chrom}",
+                                 "chr{chrom}.to_flip"),
+            db_name=db_name,
+            options=args,
         )
 
         # Checking the strand
         numbers = check_strand(
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.flipped"),
-            "_2",
-            db_name,
-            args,
+            required_chrom=args.required_chrom_names,
+            prefix=os.path.join(args.out_dir, "chr{chrom}",
+                                "chr{chrom}.flipped"),
+            id_suffix="_2",
+            db_name=db_name,
+            options=args,
             exclude=True,
         )
         run_information.update(numbers)
 
         # The final marker exclusion
         numbers = final_exclusion(
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.flipped"),
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.to_exclude"),
-            db_name,
-            args,
+            required_chrom=args.required_chrom_names,
+            prefix=os.path.join(args.out_dir, "chr{chrom}",
+                                "chr{chrom}.flipped"),
+            to_exclude=os.path.join(args.out_dir, "chr{chrom}",
+                                    "chr{chrom}.to_exclude"),
+            db_name=db_name,
+            options=args,
         )
         run_information.update(numbers)
 
         # Phasing the data
         samples = phase_markers(
-            os.path.join(args.out_dir, "chr{chrom}", "chr{chrom}.final"),
-            os.path.join(args.out_dir, "chr{chrom}",
-                         "chr{chrom}.final.phased"),
-            db_name,
-            args,
+            required_chrom=args.required_chrom_names,
+            prefix=os.path.join(args.out_dir, "chr{chrom}",
+                                "chr{chrom}.final"),
+            o_prefix=os.path.join(args.out_dir, "chr{chrom}",
+                                  "chr{chrom}.final.phased"),
+            db_name=db_name,
+            options=args,
         )
 
-        # Gathering the chromosome length from Ensembl REST API
-        chromosome_length = get_chromosome_length(args.out_dir)
-
         # Performs the imputation
-        impute_markers(os.path.join(args.out_dir, "chr{chrom}",
-                                    "chr{chrom}.final.phased.haps"),
-                       os.path.join(args.out_dir, "chr{chrom}",
+        impute_markers(
+            required_chrom=args.required_chrom_names,
+            phased_haplotypes=os.path.join(args.out_dir, "chr{chrom}",
+                                           "chr{chrom}.final.phased.haps"),
+            out_prefix=os.path.join(args.out_dir, "chr{chrom}",
                                     "chr{chrom}.{start}_{end}.impute2"),
-                       chromosome_length, db_name, args)
+            chrom_length=chromosome_length,
+            db_name=db_name,
+            options=args,
+        )
 
         # Getting the weighed average for cross-validation
         numbers = get_cross_validation_results(
-            os.path.join(args.out_dir, "chr{chrom}",
-                         "chr{chrom}.*.impute2_summary"),
+            required_chrom=args.required_chrom_names,
+            glob_pattern=os.path.join(args.out_dir, "chr{chrom}",
+                                      "chr{chrom}.*.impute2_summary"),
         )
         run_information.update(numbers)
 
         # Merging the impute2 files
-        merge_impute2_files(os.path.join(args.out_dir, "chr{chrom}",
-                                         "chr{chrom}.*.impute2"),
-                            os.path.join(args.out_dir, "chr{chrom}",
-                                         "final_impute2",
-                                         "chr{chrom}.imputed"),
-                            args.probability, args.completion, args.info,
-                            db_name, args)
+        merge_impute2_files(
+            required_chrom=args.required_chrom_names,
+            in_glob=os.path.join(args.out_dir, "chr{chrom}",
+                                 "chr{chrom}.*.impute2"),
+            o_prefix=os.path.join(args.out_dir, "chr{chrom}", "final_impute2",
+                                  "chr{chrom}.imputed"),
+            probability_t=args.probability,
+            completion_t=args.completion,
+            info_t=args.info,
+            db_name=db_name,
+            options=args,
+        )
 
         # If required, zipping the impute2 files
         if args.bgzip:
-            compress_impute2_files(os.path.join(args.out_dir, "chr{chrom}",
-                                                "final_impute2",
-                                                "chr{chrom}.imputed.impute2"),
-                                   db_name, args)
+            compress_impute2_files(
+                required_chrom=args.required_chrom,
+                filename_template=os.path.join(args.out_dir, "chr{chrom}",
+                                               "final_impute2",
+                                               "chr{chrom}.imputed.impute2"),
+                db_name=db_name,
+                options=args,
+            )
 
         # Gathering the imputation statistics
-        numbers = gather_imputation_stats(args.probability, args.completion,
-                                          args.info, len(samples),
-                                          missing_rate, args.out_dir)
+        numbers = gather_imputation_stats(
+            required_chrom=args.required_chrom,
+            prob_t=args.probability,
+            completion_t=args.completion,
+            info_t=args.info,
+            nb_samples=len(samples),
+            missing=missing_rate,
+            o_dir=args.out_dir,
+        )
         run_information.update(numbers)
 
         # Gathering the MAF statistics
-        numbers = gather_maf_stats(args.out_dir)
+        numbers = gather_maf_stats(
+            required_chrom=args.required_chrom,
+            o_dir=args.out_dir,
+        )
         run_information.update(numbers)
 
         # Checking that the number of good sites equals the number of sites
@@ -248,7 +295,10 @@ def main():
                                                           nb_sites_with_maf))
 
         # Gathering the execution time
-        exec_time = gather_execution_time(db_name)
+        exec_time = gather_execution_time(
+            required_chrom=args.required_chrom_names,
+            db_name=db_name,
+        )
         run_information.update(exec_time)
 
         # Creating the output directory for the report (if it doesn't exits)
@@ -265,8 +315,8 @@ def main():
         logging.info("Cancelled by user")
         sys.exit(0)
 
-    # Catching the ProgramError
-    except ProgramError as e:
+    # Catching the GenipeError
+    except GenipeError as e:
         logging.error(e)
         parser.error(e.message)
 
@@ -275,10 +325,11 @@ def main():
         raise
 
 
-def phase_markers(prefix, o_prefix, db_name, options):
+def phase_markers(required_chrom, prefix, o_prefix, db_name, options):
     """Phase markers using shapeit.
 
     Args:
+        required_chrom (tuple): the list of chromosome to phase
         prefix (str): the prefix template of the input files
         o_prefix (str): the prefix template of the output files
         db_name (str): the name of the DB saving tasks' information
@@ -299,16 +350,33 @@ def phase_markers(prefix, o_prefix, db_name, options):
         "--thread", str(options.shapeit_thread),
     ]
 
-    for chrom in chromosomes:
+    for chrom in required_chrom:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
+        # The reference files
+        map_filename = options.map_template.format(chrom=chrom)
+
+        # The specific reference files for the chromosome 23
+        if chrom == 23:
+            map_filename = options.map_chr23
+
+        elif chrom == "25_1":
+            map_filename = options.map_par1
+
+        elif chrom == "25_2":
+            map_filename = options.map_par2
+
         remaining_command = [
             "-B", prefix.format(chrom=chrom),
-            "-M", options.map_template.format(chrom=chrom),
+            "-M", map_filename,
             "-O", c_prefix,
             "-L", c_prefix + ".log",
         ]
+
+        if chrom == 23:
+            remaining_command.append("--chrX")
+
         commands_info.append({
             "task_id": "shapeit_phase_chr{}".format(chrom),
             "name": "SHAPEIT phase chr{}".format(chrom),
@@ -326,7 +394,7 @@ def phase_markers(prefix, o_prefix, db_name, options):
 
     # Checking that all the sample files are the same
     compare_with = None
-    for chrom in chromosomes:
+    for chrom in required_chrom:
         filename = o_prefix.format(chrom=chrom) + ".sample"
         compare_to = None
         with open(filename, "r") as i_file:
@@ -335,17 +403,18 @@ def phase_markers(prefix, o_prefix, db_name, options):
                 compare_with = compare_to
 
         if compare_with != compare_to:
-            raise ProgramError("phased sample files are different...")
+            raise GenipeError("phased sample files are different...")
 
     # Returning the samples
     return [i.split(" ")[0] for i in compare_with.splitlines()[2:]]
 
 
-def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
-                   options):
+def impute_markers(required_chrom, phased_haplotypes, out_prefix, chrom_length,
+                   db_name, options):
     """Imputes the markers using IMPUTE2.
 
     Args:
+        required_chrom (tuple): the list of chromosome to phase
         phased_haplotypes (str): the template for the haplotype files
         out_prefix (str): the prefix template of the output files
         chrom_length (dict): the length of each chromosome
@@ -355,6 +424,12 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
     A template contains the string ``{chrom}``, which will be replaced by the
     chromosome number (e.g. ``genipe/chr{chrom}/chr{chrom}.final`` will be
     replaced by ``genipe/chr1/chr1.final``).
+
+    Note
+    ----
+        When imputing the pseudo-autosomal regions of chromosome 23, the
+        '-chrX' and '-Xpar' options are used. This combination of options
+        reduces the ``-Ne`` value by 25%.
 
     """
     # Are we skipping DRMAA options?
@@ -379,11 +454,47 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
             base_command.append(rule)
 
     # Each chromosome have multiple segments
-    for chrom in chromosomes:
-        assert str(chrom) in chrom_length
+    for chrom in required_chrom:
+        # The length of the chromosome
+        length = None
+        if chrom == "25_1" or chrom == "25_2":
+            assert 25 in chrom_length
+            length = chrom_length[25]
+        else:
+            assert chrom in chrom_length
+            length = chrom_length[chrom]
 
-        length = chrom_length[str(chrom)]
+        # The starting position of the chromosome
         start = 1
+
+        # If this is chromosome 23, length is a list containing two values: the
+        # starting position, and the ending position of the non
+        # pseudo-autosomal region
+        if chrom == 23:
+            assert len(length) == 2
+            start = length[0]
+            length = length[1]
+
+        # If this is the first pseudo-autosomal region of chromosome 23, the
+        # length is a list containing three values: the ending position of the
+        # first pseudo-autosomal region, the starting position of the second
+        # pseudo-autosomal region, and the ending position of the second
+        # pseudo-autosomal region.
+        elif chrom == "25_1":
+            assert len(length) == 3
+            start = 1
+            length = length[0]
+
+        # If this is the first pseudo-autosomal region of chromosome 23, the
+        # length is a list containing three values: the ending position of the
+        # first pseudo-autosomal region, the starting position of the second
+        # pseudo-autosomal region, and the ending position of the second
+        # pseudo-autosomal region.
+        elif chrom == "25_2":
+            assert len(length) == 3
+            start = length[1]
+            length = length[2]
+
         while start < length:
             end = start + floor(options.segment_length) - 1
 
@@ -393,15 +504,50 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
             # The task ID
             task_id = "impute2_chr{}_{}_{}".format(chrom, start, end)
 
+            # The reference files
+            map_filename = options.map_template.format(chrom=chrom)
+            hap_filename = options.hap_template.format(chrom=chrom)
+            legend_filename = options.legend_template.format(chrom=chrom)
+
+            # The specific reference files for the chromosome 23
+            if chrom == 23:
+                map_filename = options.map_chr23
+                hap_filename = options.hap_chr23
+                legend_filename = options.legend_chr23
+
+            elif chrom == "25_1":
+                map_filename = options.map_par1
+                hap_filename = options.hap_par1
+                legend_filename = options.legend_par1
+
+            elif chrom == "25_2":
+                map_filename = options.map_par2
+                hap_filename = options.hap_par2
+                legend_filename = options.legend_par2
+
             # The command for this segment
             remaining_command = [
                 "-known_haps_g", phased_haplotypes.format(chrom=chrom),
-                "-h", options.hap_template.format(chrom=chrom),
-                "-l", options.legend_template.format(chrom=chrom),
-                "-m", options.map_template.format(chrom=chrom),
+                "-h", hap_filename,
+                "-l", legend_filename,
+                "-m", map_filename,
                 "-int", str(start), str(end),
                 "-o", c_prefix,
             ]
+
+            if chrom == 23:
+                # Getting the sample file (from the phased haplotypes file)
+                sample_file = os.path.splitext(
+                    phased_haplotypes.format(chrom=chrom),
+                )[0] + ".sample"
+
+                # We add the '-chrX' flag
+                remaining_command.append("-chrX")
+                remaining_command.extend(["-sample_known_haps_g", sample_file])
+
+            if chrom == "25_1" or chrom == "25_2":
+                remaining_command.extend(["-chrX", "-Xpar"])
+
             commands_info.append({
                 "task_id": task_id,
                 "name": "IMPUTE2 chr{} from {} to {}".format(chrom, start,
@@ -429,11 +575,12 @@ def impute_markers(phased_haplotypes, out_prefix, chrom_length, db_name,
     logging.info("Done imputing markers")
 
 
-def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t, info_t,
-                        db_name, options):
+def merge_impute2_files(required_chrom, in_glob, o_prefix, probability_t,
+                        completion_t, info_t, db_name, options):
     """Merges impute2 files.
 
     Args:
+        required_chrom (tuple): the list of required chromosomes to merge
         in_glob (str): the template that will be used to find files with the
                        :py:mod:`glob` module
         o_prefix (str): the prefix template of the output files
@@ -456,24 +603,44 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t, info_t,
         "--info", str(info_t),
     ]
 
-    for chrom in chromosomes:
+    for chrom in required_chrom:
+        if chrom == "25_2":
+            # We want to skip the second pseudo-autosomal region of chromosome
+            # 23, since we are going to merge it with the first one
+            continue
+
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
+        if chrom == "25_1":
+            c_prefix = o_prefix.format(chrom=25)
 
         # Checking that the output directory exists
         if not os.path.isdir(os.path.dirname(c_prefix)):
-            os.mkdir(os.path.dirname(c_prefix))
+            os.makedirs(os.path.dirname(c_prefix))
 
         remaining_command = [
             "--prefix", c_prefix,
-            "--chr", str(chrom),
+            "--chr", "25" if chrom == "25_1" else str(chrom),
             "-i",
         ]
+
+        # Adding the files
         filenames = sorted(glob(in_glob.format(chrom=chrom)), key=file_sorter)
+        if chrom == "25_1":
+            filenames += sorted(glob(in_glob.format(chrom="25_2")),
+                                key=file_sorter)
         remaining_command.extend(filenames)
+
+        # The task id and task name
+        task_id = "merge_impute2_chr{}".format(chrom)
+        task_name = "Merge imputed chr{}".format(chrom)
+        if chrom == "25_1":
+            task_id = "merge_impute2_chr{}".format(25)
+            task_name = "Merge imputed chr{}".format(25)
+
         commands_info.append({
-            "task_id": "merge_impute2_chr{}".format(chrom),
-            "name": "Merge imputed chr{}".format(chrom),
+            "task_id": task_id,
+            "name": task_name,
             "command": base_command + remaining_command,
             "task_db": db_name,
             "o_files": [c_prefix + ext for ext in (".alleles",
@@ -494,7 +661,27 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t, info_t,
 
         # Checking if the file exists
         if not os.path.isfile(sample_file):
-            raise ProgramError("{}: no such file".format(sample_file))
+            raise GenipeError("{}: no such file".format(sample_file))
+
+        # Checking that samples files are the same for the two pseudo-autosomal
+        # regions of the chromosome 23
+        if chrom == "25_1":
+            other_sample_file = os.path.join(
+                os.path.dirname(in_glob),
+                "chr{chrom}.final.phased.sample",
+            ).format(chrom="25_2")
+
+            # Checking the file exits
+            if not os.path.isfile(other_sample_file):
+                raise GenipeError("{}: no such file".format(other_sample_file))
+
+            # Comparing
+            with open(sample_file, "r") as f1, \
+                    open(other_sample_file, "r") as f2:
+                for line_f1, line_f2 in zip(f1, f2):
+                    if line_f1 != line_f2:
+                        raise GenipeError("the two pseudo-autosomal regions "
+                                          "have different sample files...")
 
         # Copying the file
         copyfile(sample_file, c_prefix + ".sample")
@@ -507,10 +694,12 @@ def merge_impute2_files(in_glob, o_prefix, probability_t, completion_t, info_t,
     logging.info("Done merging reports")
 
 
-def compress_impute2_files(filename_template, db_name, options):
+def compress_impute2_files(required_chrom, filename_template, db_name,
+                           options):
     """Merges impute2 files.
 
     Args:
+        required_chrom (tuple): the list of chromosome to compress
         filename_template (str): the template for the final IMPUTE2 file
         db_name (str): the name of the DB saving tasks' information
         options (argparse.Namespace): the pipeline options
@@ -523,7 +712,7 @@ def compress_impute2_files(filename_template, db_name, options):
     commands_info = []
     base_command = ["bgzip", "-f"]
 
-    for chrom in chromosomes:
+    for chrom in required_chrom:
         # The current output prefix
         filename = filename_template.format(chrom=chrom)
 
@@ -561,14 +750,23 @@ def file_sorter(filename):
     ``chr22.1_50000.impute2`` should return ``(22, 1, 50000)``.
 
     """
-    r = re.search(r"chr(\d+)\.(\d+)_(\d+)\.impute2", filename)
-    return (int(r.group(1)), int(r.group(2)), int(r.group(3)))
+    r = re.search(r"chr(\d+)(_[12])?\.(\d+)_(\d+)\.impute2", filename)
+    return (int(r.group(1)), int(r.group(3)), int(r.group(4)))
 
 
-def get_chromosome_length(out_dir):
+def get_chromosome_length(required_chrom, legend, legend_chr23, legend_par1,
+                          legend_par2, out_dir):
     """Gets the chromosome length from Ensembl REST API.
 
     Args:
+        required_chrom (tuple): the list of required chromosomes
+        legend (str): the legend file template for the autosomal chromosomes
+        legend_chr23 (str): the legend file for the non pseudo-autosomal region
+                            of chromosome 23
+        legend_par1 (stR): the legend file for the first pseudo-autosomal
+                           region of chromosome 23
+        legend_par2 (stR): the legend file for the second pseudo-autosomal
+                           region of chromosome 23
         out_dir (str): the output directory
 
     Returns:
@@ -577,85 +775,100 @@ def get_chromosome_length(out_dir):
     """
     chrom_length = None
     filename = os.path.join(out_dir, "chromosome_lengths.txt")
-    if not os.path.isfile(filename):
-        logging.info("Gathering chromosome length (Ensembl, GRCh37)")
 
-        # The URL
-        url = ("http://grch37.rest.ensembl.org/info/assembly/homo_sapiens"
-               "?content-type=application/json")
-        try:
-            result = json.loads(urlopen(url).read().decode())
-
-            # Checking the build
-            if not result["assembly_name"].startswith("GRCh37") or \
-                    result["default_coord_system_version"] != "GRCh37":
-                raise ProgramError("{}: wrong "
-                                   "build".format(result["assembly_name"]))
-
-            # Gathering the chromosome length
-            chrom_length = {}
-            req_chrom = {str(i) for i in range(23)} | {"X"}
-            for region in result["top_level_region"]:
-                if region["name"] in req_chrom:
-                    chrom_length[region["name"]] = region["length"]
-
-        except HTTPError:
-            logging.warning("Ensembl GRCh37 not available... Using hard coded "
-                            "chromosome lengths")
-            chrom_length = {
-                "1": 249250621,
-                "2": 243199373,
-                "3": 198022430,
-                "4": 191154276,
-                "5": 180915260,
-                "6": 171115067,
-                "7": 159138663,
-                "8": 146364022,
-                "9": 141213431,
-                "10": 135534747,
-                "11": 135006516,
-                "12": 133851895,
-                "13": 115169878,
-                "14": 107349540,
-                "15": 102531392,
-                "16": 90354753,
-                "17": 81195210,
-                "18": 78077248,
-                "19": 59128983,
-                "20": 63025520,
-                "21": 48129895,
-                "22": 51304566,
-                "X": 155270560,
-            }
-
-        finally:
-            # Saving to file
-            with open(filename, "w") as o_file:
-                for chrom in sorted(chrom_length.keys()):
-                    print(chrom, chrom_length[chrom], sep="\t", file=o_file)
-
-    else:
+    redo = False
+    if os.path.isfile(filename):
         # Gathering from file
         logging.info("Gathering chromosome length ({})".format(filename))
         with open(filename, "r") as i_file:
             chrom_length = {}
             for line in i_file:
                 row = line.rstrip("\n").split("\t")
-                chrom_length[row[0]] = int(row[1])
+                if row[0] == "23" or row[0] == "25":
+                    chrom_length[int(row[0])] = tuple(
+                        int(i) if i != "None" else None for i in row[1:]
+                    )
+                    continue
 
-    # Checking we have all the required data
-    required_chrom = {str(i) for i in chromosomes}
-    if (set(chrom_length) & required_chrom) != required_chrom:
-        missing = ", ".join(sorted(required_chrom - set(chrom_length)))
-        raise ProgramError("missing chromosomes: {}".format(missing))
+                chrom_length[int(row[0])] = int(row[1])
+
+        # Checking we have all the required data
+        for chrom in required_chrom:
+            if chrom not in chrom_length:
+                logging.warning(
+                    "missing length for chromosome {}".format(chrom)
+                )
+                redo = True
+
+    if redo or (not os.path.isfile(filename)):
+        chrom_length = {}
+
+        # Computing for autosomes
+        for chrom in required_chrom:
+            if chrom not in autosomes:
+                continue
+
+            logging.info("Getting length for chromosome {}".format(chrom))
+            data = pd.read_csv(
+                legend.format(chrom=chrom),
+                sep=" ",
+                compression="gzip" if legend.endswith(".gz") else None,
+            )
+            chrom_length[chrom] = data.position.max()
+
+        # Computing for the non-pseudoautosomal region (if required)
+        if 23 in required_chrom:
+            non_pseudo = [None, None]
+            logging.info("Getting length for chromosome 23 (nonPAR)")
+            data = pd.read_csv(
+                legend_chr23,
+                sep=" ",
+                compression="gzip" if legend_chr23.endswith(".gz") else None,
+            )
+            non_pseudo = [data.position.min(), data.position.max()]
+
+            chrom_length[23] = tuple(non_pseudo)
+
+        # Computing for the two pseudo-autosomal regions (if required)
+        if 25 in required_chrom:
+            pseudo_autosomal = [None, None, None]
+            logging.info("Getting length for chromosome 23 (PAR1)")
+            data = pd.read_csv(
+                legend_par1,
+                sep=" ",
+                compression="gzip" if legend_par1.endswith(".gz") else None,
+            )
+            pseudo_autosomal[0] = data.position.max()
+
+            logging.info("Getting length for chromosome 23 (PAR2)")
+            data = pd.read_csv(
+                legend_par2,
+                sep=" ",
+                compression="gzip" if legend_par2.endswith(".gz") else None,
+            )
+            pseudo_autosomal[1] = data.position.min()
+            pseudo_autosomal[2] = data.position.max()
+
+            chrom_length[25] = tuple(pseudo_autosomal)
+
+        # Saving to file
+        with open(filename, "w") as o_file:
+            for chrom in sorted(chrom_length.keys()):
+                if chrom == 23 or chrom == 25:
+                    print(chrom, *chrom_length[chrom], sep="\t", file=o_file)
+                    continue
+
+                print(chrom, chrom_length[chrom], sep="\t", file=o_file)
 
     return chrom_length
 
 
-def check_strand(prefix, id_suffix, db_name, options, exclude=False):
+def check_strand(required_chrom, prefix, id_suffix, db_name, options,
+                 exclude=False):
     """Checks the strand using SHAPEIT2.
 
     Args:
+        required_chrom (tuple): the list of chromosome to check
         prefix (str): the prefix template of the input files
         id_suffix (str): the suffix of the task
         db_name (str): the name of the DB saving tasks' information
@@ -689,16 +902,37 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
     o_prefix = os.path.join(options.out_dir, "chr{chrom}",
                             "chr{chrom}." + suffix)
 
-    for chrom in chromosomes:
+    for chrom in required_chrom:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
+        # The reference files
+        map_filename = options.map_template.format(chrom=chrom)
+        hap_filename = options.hap_template.format(chrom=chrom)
+        legend_filename = options.legend_template.format(chrom=chrom)
+
+        # The specific reference files for the chromosome 23
+        if chrom == 23:
+            map_filename = options.map_chr23
+            hap_filename = options.hap_chr23
+            legend_filename = options.legend_chr23
+
+        elif chrom == "25_1":
+            map_filename = options.map_par1
+            hap_filename = options.hap_par1
+            legend_filename = options.legend_par1
+
+        elif chrom == "25_2":
+            map_filename = options.map_par2
+            hap_filename = options.hap_par2
+            legend_filename = options.legend_par2
+
         remaining_command = [
             "-B", prefix.format(chrom=chrom),
-            "-M", options.map_template.format(chrom=chrom),
+            "-M", map_filename,
             "--input-ref",
-            options.hap_template.format(chrom=chrom),
-            options.legend_template.format(chrom=chrom),
+            hap_filename,
+            legend_filename,
             options.sample_file,
             "--output-log", c_prefix,
         ]
@@ -712,7 +946,7 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
 
     # Executing command
     logging.info("Checking strand of markers")
-    launcher.launch_tasks(commands_info, options.thread, check_rc=False,
+    launcher.launch_tasks(commands_info, options.thread,
                           hpc=options.use_drmaa,
                           hpc_options=options.task_options,
                           out_dir=options.out_dir, preamble=options.preamble)
@@ -732,7 +966,7 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
 
     # For each chromosome, we find markers to change strand
     nb_total = 0
-    for chrom in chromosomes:
+    for chrom in required_chrom:
         # The SNP to print in the output file
         to_write = set()
 
@@ -741,7 +975,9 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
 
         # Checking the input file exists
         if not os.path.isfile(chrom_filename):
-            raise ProgramError("{}: no such file".format(chrom_filename))
+            with open(chrom_o_filename, "w") as o_file:
+                pass
+            continue
 
         # Markers to flip
         with open(chrom_filename, "r") as i_file:
@@ -752,8 +988,8 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
             # Checking header
             for name in ("type", "main_id"):
                 if name not in header:
-                    raise ProgramError("{}: no column named "
-                                       "{}".format(chrom_filename, name))
+                    raise GenipeError("{}: no column named "
+                                      "{}".format(chrom_filename, name))
 
             # Reading the file
             for line in i_file:
@@ -777,10 +1013,11 @@ def check_strand(prefix, id_suffix, db_name, options, exclude=False):
     return {"nb_{}".format(what): "{:,d}".format(nb_total)}
 
 
-def flip_markers(prefix, to_flip, db_name, options):
+def flip_markers(required_chrom, prefix, to_flip, db_name, options):
     """Flip markers.
 
     Args:
+        required_chrom (tuple): the list of chromosomes to flip
         prefix (str): the prefix template of the input files
         to_flip (str): the name of the file containing markers to flip
         db_name (str): the name of the DB saving tasks' information
@@ -803,7 +1040,7 @@ def flip_markers(prefix, to_flip, db_name, options):
     o_prefix = os.path.join(options.out_dir, "chr{chrom}",
                             "chr{chrom}.flipped")
 
-    for chrom in chromosomes:
+    for chrom in required_chrom:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
@@ -828,10 +1065,11 @@ def flip_markers(prefix, to_flip, db_name, options):
     logging.info("Done flipping markers")
 
 
-def final_exclusion(prefix, to_exclude, db_name, options):
+def final_exclusion(required_chrom, prefix, to_exclude, db_name, options):
     """Flip markers.
 
     Args:
+        required_chrom (tuple): the list of chromosome to extract
         prefix (str): the prefix template of the input files
         to_exclude (str): the name of the file containing the markers to
                           exclude
@@ -860,7 +1098,7 @@ def final_exclusion(prefix, to_exclude, db_name, options):
     # The output files (for statistics)
     bims = []
 
-    for chrom in chromosomes:
+    for chrom in required_chrom:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
@@ -943,8 +1181,8 @@ def compute_marker_missing_rate(prefix, db_name, options):
     return pd.read_csv(o_prefix + ".lmiss", delim_whitespace=True)
 
 
-def exclude_markers_before_phasing(prefix, db_name, options):
-    """Finds and excludes ambiguous markers (A/T and G/C) or duplicated.
+def find_exclusion_before_phasing(prefix, db_name, options):
+    """Finds ambiguous markers (A/T and G/C) or duplicated.
 
     Args:
         prefix (str): the prefix of the input files
@@ -1006,7 +1244,7 @@ def exclude_markers_before_phasing(prefix, db_name, options):
             a2 = row[5]
 
             is_special = False
-            if chrom in {"23", "24", "25", "26"}:
+            if chrom in {"24", "26"}:
                 nb_special_markers += 1
                 is_special = True
 
@@ -1043,7 +1281,7 @@ def exclude_markers_before_phasing(prefix, db_name, options):
         reference.close()
 
     # Logging
-    logging.info("  - {:,d} non-autosomal markers".format(nb_special_markers))
+    logging.info("  - {:,d} Y/mito markers".format(nb_special_markers))
     logging.info("  - {:,d} ambiguous markers removed".format(nb_ambiguous))
     logging.info("  - {:,d} duplicated markers removed".format(nb_dup))
     logging.info("  - {:,d} markers kept".format(nb_kept))
@@ -1056,12 +1294,52 @@ def exclude_markers_before_phasing(prefix, db_name, options):
         with open(o_filename, "w") as o_file:
             print(*to_flip, sep="\n", file=o_file)
 
+    return {
+        "initial_nb_markers": "{:,d}".format(nb_markers),
+        "initial_nb_samples": "{:,d}".format(nb_samples),
+        "nb_ambiguous":       "{:,d}".format(nb_ambiguous),
+        "nb_duplicates":      "{:,d}".format(nb_dup),
+        "nb_special_markers": "{:,d}".format(nb_special_markers),
+        "nb_flip_reference":  "{:,d}".format(len(to_flip)),
+        "reference_checked":  options.reference is not None
+    }
+
+
+def exclude_markers_before_phasing(required_chrom, prefix, db_name,
+                                   chrom_length, options):
+    """Finds and excludes ambiguous markers (A/T and G/C) or duplicated.
+
+    Args:
+        required_chrom (tuple): the list of required chromosomes
+        prefix (str): the prefix of the input files
+        db_name (str): the name of the DB saving tasks' information
+        chrom_length (dict): the length of each chromosomes
+        options (argparse.Namespace): the pipeline options
+
+    Returns:
+        dict: information about the data set
+
+    If required, the function uses :py:func:`is_reversed` to check if a marker
+    is on the reverse strand and needs flipping.
+
+    The information returned includes the initial number of markers and
+    samples, the number of ambiguous, duplicated and non-autosomal markers,
+    along with the number of markers to flip if the reference was checked.
+
+    """
+    # Needs to flip?
+    to_flip = set()
+    filename = os.path.join(options.out_dir, "markers_to_flip.txt")
+    if os.path.isfile(filename):
+        with open(filename, "r") as i_file:
+            to_flip = set(i_file.read().splitlines())
+
     # The commands to run
     commands_info = []
     base_command = [
         "plink" if options.plink_bin is None else options.plink_bin,
         "--noweb",
-        "--exclude", os.path.join(options.out_dir, "markers_to_exclude.txt"),
+        "--bfile", prefix,
         "--make-bed",
     ]
 
@@ -1073,14 +1351,41 @@ def exclude_markers_before_phasing(prefix, db_name, options):
     # The output prefix
     o_prefix = os.path.join(options.out_dir, "chr{chrom}", "chr{chrom}")
 
-    for chrom in chromosomes:
+    bim = None
+    processed_chrom_23 = []
+    for chrom in required_chrom:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
 
+        if chrom not in autosomes:
+            # This is a region of chromosome 23
+            # Reading the BIM file if required
+            if bim is None:
+                bim = read_bim(prefix + ".bim", (23, 25))
+
+            # Getting the command(s) for chromosome 23
+            commands = extract_chromosome_23(
+                chrom=chrom,
+                prefix=c_prefix,
+                bim=bim,
+                chrom_length=chrom_length,
+                base_command=base_command,
+            )
+
+            # Adding the command(s) to execute
+            for command in commands:
+                command["task_db"] = db_name
+                commands_info.append(command)
+
+            # Continuing to the next chromosome
+            processed_chrom_23.append(chrom)
+            continue
+
         remaining_command = [
-            "--bfile", prefix,
             "--chr", str(chrom),
             "--out", c_prefix,
+            "--exclude", os.path.join(options.out_dir,
+                                      "markers_to_exclude.txt"),
         ]
         commands_info.append({
             "task_id": "plink_exclude_chr{}".format(chrom),
@@ -1097,15 +1402,221 @@ def exclude_markers_before_phasing(prefix, db_name, options):
                           out_dir=options.out_dir, preamble=options.preamble)
     logging.info("Done excluding and splitting markers")
 
-    return {
-        "initial_nb_markers": "{:,d}".format(nb_markers),
-        "initial_nb_samples": "{:,d}".format(nb_samples),
-        "nb_ambiguous":       "{:,d}".format(nb_ambiguous),
-        "nb_duplicates":      "{:,d}".format(nb_dup),
-        "nb_special_markers": "{:,d}".format(nb_special_markers),
-        "nb_flip_reference":  "{:,d}".format(len(to_flip)),
-        "reference_checked":  options.reference is not None
-    }
+    # Reordering the chromosomes (if required)
+    commands_info = []
+    for chrom in processed_chrom_23:
+        base_command = [
+            "plink" if options.plink_bin is None else options.plink_bin,
+            "--noweb",
+            "--make-bed",
+        ]
+        commands = reorder_chromosome_23(
+            chrom=chrom,
+            prefix=o_prefix.format(chrom=chrom),
+            base_command=base_command,
+        )
+
+        for command in commands:
+            command["task_db"] = db_name
+            commands_info.append(command)
+
+    # Executing command
+    logging.info("Reordering markers")
+    launcher.launch_tasks(commands_info, options.thread, hpc=options.use_drmaa,
+                          hpc_options=options.task_options,
+                          out_dir=options.out_dir, preamble=options.preamble)
+    logging.info("Done reordering markers")
+
+
+def reorder_chromosome_23(chrom, prefix, base_command):
+    """Reorders chromosome 23 markers.
+
+    Args:
+        chrom (int): the chromosome to reorder
+        prefix (str): the prefix of the output files
+        base_command (list): the base command
+
+    Returns:
+        list: a list of command information to run for chromosome 23
+
+    """
+    command_info = []
+    if chrom == 23:
+        remaining_command = [
+            "--bfile", prefix + "_not_ordered",
+            "--out", prefix,
+        ]
+
+        command_info.append({
+            "task_id": "plink_reorder_chr{}".format(chrom),
+            "name": "plink reorder chr{}".format(chrom),
+            "command": base_command + remaining_command,
+            "o_files": [prefix + ext for ext in (".bed", ".bim", ".fam")],
+        })
+
+    elif chrom == 25:
+        new_prefix = os.path.join(
+            os.path.dirname(prefix) + "{suffix}",
+            os.path.basename(prefix) + "{suffix}",
+        )
+
+        for suffix in ("_1", "_2"):
+            remaining_command = [
+                "--bfile", new_prefix.format(suffix=suffix) + "_not_ordered",
+                "--out", new_prefix.format(suffix=suffix),
+            ]
+
+            command_info.append({
+                "task_id": "plink_reorder_chr{}{}".format(chrom, suffix),
+                "name": "plink reorder chr{}{}".format(chrom, suffix),
+                "command": base_command + remaining_command,
+                "o_files": [new_prefix.format(suffix=suffix) + ext
+                            for ext in (".bed", ".bim", ".fam")],
+            })
+
+    else:
+        raise GenipeError("{}: not a valid chromosome 23 region".format(chrom))
+
+    return command_info
+
+
+def extract_chromosome_23(chrom, prefix, bim, chrom_length, base_command):
+    """Creates the command to extract the chromosome 23 regions.
+
+    Args:
+        chrom (int): the chromosome to extract
+        prefix (str): the prefix of the output files
+        bim (pandas.DataFrame): the BIM file
+        chrom_length (dict): the length of each of the chromosomes
+        base_command (list): the base command
+
+    Returns:
+        list: a list of command information to run for chromosome 23
+
+    Note
+    ----
+        Chromosome 23 represents the non pseudo-autosomal region. Chromosome 25
+        represents the two pseudo-autosomal region of chromosome 23.
+
+    Warning
+    -------
+        It is assume that chromosome 25 positions (pseudo-autosomal regions)
+        are relative to chromosome 23 positions.
+
+    Note
+    ----
+        Markers are dispatched to correct chromosome (23 or 25, for non- and
+        pseudo-autosomal region) according to their genomic location. If a
+        marker should be located on chromosome 23, but is located on chromosome
+        25, its mapping information is changed.
+
+    """
+    # Getting the chromosome lower and upper bound
+    lower_bound, upper_bound = chrom_length[chrom][:2]
+
+    # Finding the markers to extract
+    in_region = []
+    if chrom == 23:
+        in_region.append((bim.pos >= lower_bound) & (bim.pos <= upper_bound))
+
+    elif chrom == 25:
+        in_region.append(bim.pos <= lower_bound)
+        in_region.append(bim.pos >= upper_bound)
+
+    else:
+        raise GenipeError("{}: not a valid chromosome 23 region".format(chrom))
+
+    # Creating the file(s) for marker extraction
+    command_info = []
+    for i, subset in enumerate(in_region):
+        # The list of markers
+        markers = bim.loc[subset, :]
+
+        # The new prefix and the name of the file for extraction
+        suffix = ""
+        new_prefix = prefix
+        if len(in_region) > 1:
+            suffix = "_{}".format(i+1)
+            new_prefix = os.path.join(
+                os.path.dirname(prefix) + suffix,
+                os.path.basename(prefix) + suffix,
+            )
+        extract_fn = new_prefix + "_extract"
+
+        # Writing the file
+        with open(extract_fn, "w") as o_file:
+            for marker in markers.name:
+                print(marker, file=o_file)
+
+        # The command to launch
+        command = base_command + [
+            "--extract", extract_fn,
+            "--out", new_prefix + "_not_ordered",
+        ]
+
+        # Checking if a map update is required
+        wrong_chrom = 25 if chrom == 23 else 23
+        if wrong_chrom in markers.chrom.unique():
+            wrong_markers = markers.chrom == wrong_chrom
+            nb = markers.loc[wrong_markers, :].shape[0]
+            logging.warning("{} marker{} {} located on chromosome {}, but "
+                            "should be located on chromosome {} (they will be "
+                            "repositioned on chromosome {})".format(
+                                nb,
+                                "s" if nb > 1 else "",
+                                "are" if nb > 1 else "",
+                                wrong_chrom,
+                                chrom,
+                                chrom,
+                            ))
+
+            # Creating the update map file
+            with open(new_prefix + "_update_chr", "w") as o_file:
+                for marker in markers.loc[wrong_markers, "name"]:
+                    print(marker, chrom, sep="\t", file=o_file)
+
+            # Adding to the command
+            command.extend([
+                "--update-map", new_prefix + "_update_chr",
+                "--update-chr",
+            ])
+
+        command_info.append({
+            "task_id": "plink_exclude_chr{}{}".format(chrom, suffix),
+            "name": "plink exclude chr{}{}".format(chrom, suffix),
+            "command": command,
+            "o_files": [new_prefix + "_not_ordered" + ext
+                        for ext in (".bed", ".bim", ".fam")],
+        })
+
+    return command_info
+
+
+def read_bim(bim_fn, chromosomes=tuple()):
+    """Reads a BIM file and extracts chromosomes.
+
+    Args:
+        bim_fn (str): the name of the BIM file
+        chromosomes (list): the list of chromosome to extract
+
+    Returns:
+        pandas.DataFrame: the BIM file content
+
+    """
+    data = pd.read_csv(
+        bim_fn,
+        delim_whitespace=True,
+        names=["chrom", "name", "cm", "pos", "a1", "a2"],
+    )
+
+    if len(chromosomes) == 0:
+        return data
+
+    to_extract = data.chrom == chromosomes[0]
+    for chrom in chromosomes[1:]:
+        to_extract |= (data.chrom == chrom)
+
+    return data.loc[to_extract, :]
 
 
 def get_chrom_encoding(reference):
@@ -1117,8 +1628,8 @@ def get_chrom_encoding(reference):
     Returns:
         dict: the chromosome encoding
 
-    The encoding is a dictionary where numerical chromosomes from 1 to 22 are
-    the keys, and the encoded chromosomes (the one present in the reference)
+    The encoding is a dictionary where numerical autosomes from 1 to 22 are
+    the keys, and the encoded autosomes (the one present in the reference)
     are the values. An example would be ``1 -> chr1``.
 
     """
@@ -1210,14 +1721,16 @@ def is_reversed(chrom, pos, a1, a2, reference, encoding):
         return True
 
     # If nothing works, raising an exception
-    raise ProgramError("chr{}: {}: {}: {}/{}: "
-                       "invalid".format(chrom, pos, ref, a1, a2))
+    raise GenipeError("chr{}: {}: {}: {}/{}: "
+                      "invalid".format(chrom, pos, ref, a1, a2))
 
 
-def get_cross_validation_results(glob_pattern):
+def get_cross_validation_results(required_chrom, glob_pattern):
     """Creates a weighted mean for each chromosome for cross-validation.
 
     Args:
+        required_chrom (tuple): the list of chromosome to gather cross
+                                validation statistics
         glob_pattern (str): the pattern used to find files using :py:mod:`glob`
 
     Returns:
@@ -1225,7 +1738,7 @@ def get_cross_validation_results(glob_pattern):
 
     The returned information includes the total number of genotyped tested, the
     total number of genotyped by chromosome, the two summary tables produced by
-    IMPUTE2 (but using weighted means) for all chromosomes, and the two summary
+    IMPUTE2 (but using weighted means) for all autosomes, and the two summary
     tables for each chromosome.
 
     """
@@ -1260,8 +1773,17 @@ def get_cross_validation_results(glob_pattern):
     final_nb_genotypes = 0
 
     # For each chromosome
-    for chrom in chromosomes:
+    for chrom in required_chrom:
+        if chrom == "25_2":
+            # We want to skip the second pseudo-autosomal region of chromosome
+            # 23, since we want to merge it with the first in the final results
+            continue
+
         filenames = glob(glob_pattern.format(chrom=chrom))
+        if chrom == "25_1":
+            # We want to merge the files from the second pseudo-autosomal
+            # region of chromosome 23
+            filenames += glob(glob_pattern.format(chrom="25_2"))
 
         # The total number of genotypes for this chromosome
         tot_chrom_nb_genotypes = 0
@@ -1306,7 +1828,7 @@ def get_cross_validation_results(glob_pattern):
 
                 # We now should have data
                 if table_header is None:
-                    raise ProgramError("Problem with {}".format(filename))
+                    raise GenipeError("Problem with {}".format(filename))
 
                 # Now reading the data inside the tables
                 for line in i_file:
@@ -1390,6 +1912,11 @@ def get_cross_validation_results(glob_pattern):
                 "{:.1f}".format(weighted_concordance),
             ])
 
+        # We want to save the two pseudo-autosomal regions of chromosome 23
+        # together
+        if (chrom == "25_1") or (chrom == "25_2"):
+            chrom = 25
+
         # Saving the tables
         per_chrom_table_1[chrom] = table_1_data
         per_chrom_table_2[chrom] = table_2_data
@@ -1443,11 +1970,12 @@ def get_cross_validation_results(glob_pattern):
     }
 
 
-def gather_imputation_stats(prob_t, completion_t, info_t, nb_samples, missing,
-                            o_dir):
+def gather_imputation_stats(required_chrom, prob_t, completion_t, info_t,
+                            nb_samples, missing, o_dir):
     """Gathers imputation statistics from the merged dataset.
 
     Args:
+        required_chrom (tuple): the chromosome to gather statistics from
         prob_t (float): the probability threshold (>= t)
         completion_t (float): the completion threshold (>= t)
         info_t (float): the information threshold (>= t)
@@ -1535,7 +2063,7 @@ def gather_imputation_stats(prob_t, completion_t, info_t, nb_samples, missing,
     # For each chromosome, get the statistics
     filename_template = os.path.join(o_dir, "chr{chrom}", "final_impute2",
                                      "chr{chrom}.imputed.{suffix}")
-    for chrom in chromosomes:
+    for chrom in required_chrom:
         logging.info("  - chromosome {}".format(chrom))
 
         # First, we read the imputed sites
@@ -1635,10 +2163,11 @@ def gather_imputation_stats(prob_t, completion_t, info_t, nb_samples, missing,
     }
 
 
-def gather_maf_stats(o_dir):
+def gather_maf_stats(required_chrom, o_dir):
     """Gather minor allele frequencies from imputation.
 
     Args:
+        required_chrom (tuple): the list of chromosome to gather statistics
         o_dir (str): the output directory
 
     Returns:
@@ -1694,7 +2223,7 @@ def gather_maf_stats(o_dir):
     # For each chromosome, get the MAF statistics
     filename_template = os.path.join(o_dir, "chr{chrom}", "final_impute2",
                                      "chr{chrom}.imputed.{suffix}")
-    for chrom in chromosomes:
+    for chrom in required_chrom:
         logging.info("  - chromosome {}".format(chrom))
 
         # The name of the file
@@ -1705,7 +2234,7 @@ def gather_maf_stats(o_dir):
         # Checking the file exists
         for filename in [maf_filename, good_sites_filename]:
             if not os.path.isfile(filename):
-                raise ProgramError("{}: no such file".format(filename))
+                raise GenipeError("{}: no such file".format(filename))
 
         # Reading the list of good sites
         good_sites = None
@@ -1732,12 +2261,12 @@ def gather_maf_stats(o_dir):
         maf_description = maf.maf.describe()
         if maf_description["max"] > 0.5:
             bad = maf.loc[maf.maf.idxmax(), ["name", "maf"]]
-            raise ProgramError("{}: {}: invalid MAF".format(str(bad["name"]),
-                                                            round(bad.maf, 3)))
+            raise GenipeError("{}: {}: invalid MAF".format(str(bad["name"]),
+                                                           round(bad.maf, 3)))
         if maf_description["max"] < 0:
             bad = maf.loc[maf.maf.idxmin(), ["name", "maf"]]
-            raise ProgramError("{}: {}: invalid MAF".format(str(bad["name"]),
-                                                            round(bad.maf, 3)))
+            raise GenipeError("{}: {}: invalid MAF".format(str(bad["name"]),
+                                                           round(bad.maf, 3)))
 
         # Some of the true/false we need to keep (to not compute multiple time)
         maf_geq_01 = maf.maf >= 0.01
@@ -1755,7 +2284,7 @@ def gather_maf_stats(o_dir):
     # Checking
     nb_total = nb_maf_lt_01 + nb_maf_geq_01_lt_05 + nb_maf_geq_05
     if nb_total != nb_marker_with_maf:
-        raise ProgramError("something went wrong")
+        raise GenipeError("something went wrong")
 
     # Computing the percentages
     pct_maf_geq_01 = 0
@@ -1848,10 +2377,11 @@ def gather_maf_stats(o_dir):
     }
 
 
-def gather_execution_time(db_name):
+def gather_execution_time(required_chrom, db_name):
     """Gather all the execution times.
 
     Args:
+        required_chrom (tuple): the list of chromosomes to gather statistics
         db_name (str): the name of the DB
 
     Returns:
@@ -1871,30 +2401,36 @@ def gather_execution_time(db_name):
     impute2_exec_time = []
     merge_impute2_exec_time = []
     bgzip_exec_time = []
-    for chrom in chromosomes:
+    for chrom in required_chrom:
+        chrom_name = chrom
+        if chrom == "25_1":
+            chrom_name = "25 (PAR1)"
+        elif chrom == "25_2":
+            chrom_name = "25 (PAR2)"
+
         # Getting the time for 'plink_exclude'
         seconds = exec_time["plink_exclude_chr{}".format(chrom)]
-        plink_exclude_exec_time.append([chrom, seconds])
+        plink_exclude_exec_time.append([chrom_name, seconds])
 
         # Getting the time for 'shapeit_check_1'
         seconds = exec_time["shapeit_check_chr{}_1".format(chrom)]
-        shapeit_check_1_exec_time.append([chrom, seconds])
+        shapeit_check_1_exec_time.append([chrom_name, seconds])
 
         # Getting the time for 'plink_flip'
         seconds = exec_time["plink_flip_chr{}".format(chrom)]
-        plink_flip_exec_time.append([chrom, seconds])
+        plink_flip_exec_time.append([chrom_name, seconds])
 
         # Getting the time for 'shapeit_check_2'
         seconds = exec_time["shapeit_check_chr{}_2".format(chrom)]
-        shapeit_check_2_exec_time.append([chrom, seconds])
+        shapeit_check_2_exec_time.append([chrom_name, seconds])
 
         # Getting the time for 'plink_final_exclude'
         seconds = exec_time["plink_final_exclude_chr{}".format(chrom)]
-        plink_final_exec_time.append([chrom, seconds])
+        plink_final_exec_time.append([chrom_name, seconds])
 
         # Getting the time for 'shapeit_phase'
         seconds = exec_time["shapeit_phase_chr{}".format(chrom)]
-        shapeit_phase_exec_time.append([chrom, seconds])
+        shapeit_phase_exec_time.append([chrom_name, seconds])
 
         # Getting the execution times for the imputation step
         chr_imputation_tasks = [
@@ -1905,11 +2441,18 @@ def gather_execution_time(db_name):
             exec_time[task_name] for task_name in chr_imputation_tasks
         ]
         impute2_exec_time.append([
-            chrom,
+            chrom_name,
             len(chr_imputation_tasks),
             int(round(sum(seconds) / len(seconds), 0)),
             max(seconds),
         ])
+
+        # The last tasks involve only chromosome 25 (both pseudo-autosomal
+        # regions)
+        if chrom == "25_2":
+            continue
+        elif chrom == "25_1":
+            chrom = 25
 
         # Getting the time for 'merge_impute2'
         seconds = exec_time["merge_impute2_chr{}".format(chrom)]
@@ -2084,347 +2627,6 @@ def get_plink_version(binary):
     logging.info("Will be using Plink version {}".format(version))
 
     return version
-
-
-def check_args(args):
-    """Checks the arguments and options.
-
-    Args:
-        args (argparse.Namespace): the arguments and options
-
-    Returns:
-        bool: `True` if everything is OK
-
-    If an option is invalid, a :py:class:`genipe.error.ProgramError` is raised.
-
-    """
-    # Checking the presence of the BED, BIM and BAM files
-    for suffix in (".bed", ".bim", ".fam"):
-        if not os.path.isfile(args.bfile + suffix):
-            raise ProgramError("{}: no such file".format(args.bfile + suffix))
-
-    # Checking the thread
-    if args.thread < 1:
-        raise ProgramError("thread should be one or more")
-    if args.shapeit_thread < 1:
-        raise ProgramError("thread should be one or more")
-
-    # Checking IMPUTE2's files
-    for template in (args.hap_template, args.legend_template,
-                     args.map_template):
-        for chrom in chromosomes:
-            # Checking the haplotype file
-            filename = template.format(chrom=chrom)
-            if not os.path.isfile(filename):
-                raise ProgramError("{}: no such file".format(filename))
-    if not os.path.isfile(args.sample_file):
-        raise ProgramError("{}: no such file".format(args.sample_file))
-
-    # Checking if bgzip is installed, if asking for compression
-    if args.bgzip:
-        if which("bgzip") is None:
-            raise ProgramError("bgzip: no installed")
-
-    # Checking the SHAPEIT binary if required
-    if args.shapeit_bin is not None:
-        if not os.path.isfile(args.shapeit_bin):
-            raise ProgramError("{}: no such file".format(args.shapeit_bin))
-    else:
-        if which("shapeit") is None:
-            raise ProgramError("shapeit: not in the path (use --shapeit-bin)")
-
-    # Checking the IMPUTE2 binary if required
-    if args.impute2_bin is not None:
-        if not os.path.isfile(args.impute2_bin):
-            raise ProgramError("{}: no such file".format(args.impute2_bin))
-    else:
-        if which("impute2") is None:
-            raise ProgramError("impute2: not in the path (use --impute2-bin)")
-
-    # Checking that Plink is in the path
-    if args.plink_bin is not None:
-        if not os.path.isfile(args.plink_bin):
-            raise ProgramError("{}: no such file".format(args.plink_bin))
-    else:
-        if which("plink") is None:
-            raise ProgramError("plink: not in the path (use --plink-bin)")
-
-    # Checking the segment length
-    if args.segment_length <= 0:
-        raise ProgramError("{}: invalid segment "
-                           "length".format(args.segment_length))
-    if args.segment_length < 1e3:
-        # This is too small.. We continue with a warning
-        logging.warning("segment length ({:g} bp) is too "
-                        "small".format(args.segment_length))
-    if args.segment_length > 5e6:
-        # This is too big... We continue with a warning
-        logging.warning("segment length ({:g} bp) is more than "
-                        "5Mb".format(args.segment_length))
-
-    # Checking the preamble file (if required)
-    if args.preamble is not None:
-        if not os.path.isfile(args.preamble):
-            raise ProgramError("{}: no such file".format(args.preamble))
-
-    # Checking the DRMAA configuration file
-    if args.use_drmaa:
-        if args.drmaa_config is None:
-            raise ProgramError("DRMAA configuration file was not provided "
-                               "(--drmaa-config), but DRMAA is used "
-                               "(--use-drmaa)")
-        if not os.path.isfile(args.drmaa_config):
-            raise ProgramError("{}: no such file".format(args.drmaa_config))
-
-    # Checking the reference file (if required)
-    if args.reference is not None:
-        if not HAS_PYFAIDX:
-            logging.warning("pyfaidx is not installed, can not perform "
-                            "initial strand check")
-            args.reference = None
-
-        else:
-            if not os.path.isfile(args.reference):
-                raise ProgramError("{}: no such file".format(args.reference))
-
-            if not os.path.isfile(args.reference + ".fai"):
-                raise ProgramError("{}: should be indexed using "
-                                   "FAIDX".format(args.reference))
-
-    return True
-
-
-def parse_args(parser):
-    """Parses the command line options and arguments.
-
-    Args:
-        parser (argparse.ArgumentParser): the parser object
-
-    Returns:
-        argparse.Namespace: the parsed options and arguments
-
-    """
-    parser.add_argument(
-        "-v",
-        "--version",
-        action="version",
-        version="%(prog)s {}".format(__version__),
-    )
-    parser.add_argument(
-        "--debug",
-        action="store_true",
-        help="set the logging level to debug",
-    )
-    parser.add_argument(
-        "--thread",
-        type=int,
-        default=1,
-        help="number of threads [%(default)d]",
-    )
-
-    # The input files
-    group = parser.add_argument_group("Input Options")
-    group.add_argument(
-        "--bfile",
-        type=str,
-        metavar="PREFIX",
-        required=True,
-        help="The prefix of the binary pedfiles (input data).",
-    )
-    group.add_argument(
-        "--reference",
-        type=str,
-        metavar="FILE",
-        help="The human reference to perform an initial strand check (useful "
-             "for genotyped markers not in the IMPUTE2 reference files) "
-             "(optional).",
-    )
-
-    # The output options
-    group = parser.add_argument_group("Output Options")
-    group.add_argument(
-        "--output-dir",
-        type=str,
-        metavar="DIR",
-        default="genipe",
-        dest="out_dir",
-        help="The name of the output directory. [%(default)s]",
-    )
-    group.add_argument(
-        "--bgzip",
-        action="store_true",
-        help="Use bgzip to compress the impute2 files.",
-    )
-
-    # The HPC options
-    group = parser.add_argument_group("HPC Options")
-    group.add_argument(
-        "--use-drmaa",
-        action="store_true",
-        help="Launch tasks using DRMAA.",
-    )
-    group.add_argument(
-        "--drmaa-config",
-        type=str,
-        metavar="FILE",
-        help="The configuration file for tasks (use this option when "
-             "launching tasks using DRMAA). This file should describe the "
-             "walltime and the number of nodes/processors to use for each "
-             "task.",
-    )
-    group.add_argument(
-        "--preamble",
-        type=str,
-        metavar="FILE",
-        help="This option should be used when using DRMAA on a HPC to load "
-             "required module and set environment variables. The content of "
-             "the file will be added between the 'shebang' line and the tool "
-             "command.",
-    )
-
-    # The SHAPEIT software options
-    group = parser.add_argument_group("SHAPEIT Options")
-    group.add_argument(
-        "--shapeit-bin",
-        type=str,
-        metavar="BINARY",
-        help="The SHAPEIT binary if it's not in the path.",
-    )
-    group.add_argument(
-        "--shapeit-thread",
-        type=int,
-        metavar="INT",
-        default=1,
-        help="The number of thread for phasing. [%(default)d]",
-    )
-
-    # The Plink option
-    group = parser.add_argument_group("Plink Options")
-    group.add_argument(
-        "--plink-bin",
-        type=str,
-        metavar="BINARY",
-        help="The Plink binary if it's not in the path.",
-    )
-
-    # The IMPUTE2 software options
-    group = parser.add_argument_group("IMPUTE2 Options")
-    group.add_argument(
-        "--impute2-bin",
-        type=str,
-        metavar="BINARY",
-        help="The IMPUTE2 binary if it's not in the path.",
-    )
-    group.add_argument(
-        "--segment-length",
-        type=float,
-        metavar="BP",
-        default=5e6,
-        help="The length of a single segment for imputation. [%(default).1g]",
-    )
-    group.add_argument(
-        "--hap-template",
-        type=str,
-        metavar="TEMPLATE",
-        required=True,
-        help="The template for IMPUTE2's haplotype files (replace the "
-             "chromosome number by '{chrom}', e.g. "
-             "'1000GP_Phase3_chr{chrom}.hap.gz').",
-    )
-    group.add_argument(
-        "--legend-template",
-        type=str,
-        metavar="TEMPLATE",
-        required=True,
-        help="The template for IMPUTE2's legend files (replace the chromosome "
-             "number by '{chrom}', e.g. "
-             "'1000GP_Phase3_chr{chrom}.legend.gz').",
-    )
-    group.add_argument(
-        "--map-template",
-        type=str,
-        metavar="TEMPLATE",
-        required=True,
-        help="The template for IMPUTE2's map files (replace the chromosome "
-             "number by '{chrom}', e.g. "
-             "'genetic_map_chr{chrom}_combined_b37.txt').",
-    )
-    group.add_argument(
-        "--sample-file",
-        type=str,
-        metavar="FILE",
-        required=True,
-        help="The name of IMPUTE2's sample file.",
-    )
-    group.add_argument(
-        "--filtering-rules",
-        type=str,
-        metavar="RULE",
-        nargs="+",
-        help="IMPUTE2 filtering rules (optional).",
-    )
-
-    # The impute2 file merger options
-    group = parser.add_argument_group("IMPUTE2 Merger Options")
-    group.add_argument(
-        "--probability",
-        type=float,
-        metavar="FLOAT",
-        default=0.9,
-        help="The probability threshold for no calls. [<%(default).1f]",
-    )
-    group.add_argument(
-        "--completion",
-        type=float,
-        metavar="FLOAT",
-        default=0.98,
-        help="The completion rate threshold for site exclusion. "
-             "[<%(default).2f]",
-    )
-    group.add_argument(
-        "--info",
-        type=float,
-        metavar="FLOAT",
-        default=0,
-        help="The measure of the observed statistical information associated "
-             "with the allele frequency estimate threshold for site "
-             "exclusion. [<%(default).2f]",
-    )
-
-    # The automatic report options
-    group = parser.add_argument_group("Automatic Report Options")
-    group.add_argument(
-        "--report-number",
-        type=str,
-        metavar="NB",
-        default="genipe automatic report",
-        help="The report number. [%(default)s]",
-    )
-    group.add_argument(
-        "--report-title",
-        type=str,
-        metavar="TITLE",
-        default="genipe: Automatic genome-wide imputation",
-        help="The report title. [%(default)s]",
-    )
-    group.add_argument(
-        "--report-author",
-        type=str,
-        metavar="AUTHOR",
-        default="Automatically generated by genipe",
-        help="The report author. [%(default)s]",
-    )
-    group.add_argument(
-        "--report-background",
-        type=str,
-        metavar="BACKGROUND",
-        default="The aim of this project is to perform genome-wide imputation "
-                "using the study cohort.",
-        help="The report background section (can either be a string or a file "
-             "containing the background. [General background]",
-    )
-
-    return parser.parse_args()
 
 
 if __name__ == "__main__":

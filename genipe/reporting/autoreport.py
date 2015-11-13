@@ -15,8 +15,7 @@ from pkg_resources import resource_filename
 
 from .utils import *
 from .. import __version__
-from .. import chromosomes
-from ..error import ProgramError
+from ..error import GenipeError
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -82,7 +81,7 @@ def generate_report(out_dir, run_opts, run_info):
             print(main_template.render(**report_data), file=o_file)
 
     except FileNotFoundError:
-        raise ProgramError("{}: cannot write file".format(report_filename))
+        raise GenipeError("{}: cannot write file".format(report_filename))
 
     # Copying the bibliography file
     bib_file = resource_filename(__name__, "templates/biblio/references.bib")
@@ -150,7 +149,7 @@ def _generate_methods(templates, run_options, run_information):
                           "initial_nb_samples", "nb_duplicates",
                           "nb_ambiguous", "nb_flip", "nb_exclude",
                           "nb_phasing_markers", "nb_flip_reference",
-                          "reference_checked"]
+                          "nb_special_markers", "reference_checked"]
     for required_variable in required_variables:
         assert required_variable in run_information, required_variable
 
@@ -206,12 +205,12 @@ def _generate_methods(templates, run_options, run_information):
         format_tex("C", "texttt") + "/" + format_tex("G", "texttt") +
         sanitize_tex(
             ", duplicated markers (same position), and markers located on "
-            "sexual or mitochondrial chromosomes were excluded from the "
+            "the mitochondrial or the Y chromosomes were excluded from the "
             "imputation. "
     ) + to_add_1 + format_tex(
         sanitize_tex(
             "In total, {ambiguous} ambiguous, {duplicated} duplicated and "
-            "{special} non-autosomal markers were excluded.".format(
+            "{special} Y/mitochondrial markers were excluded.".format(
                 ambiguous=run_information["nb_ambiguous"],
                 duplicated=run_information["nb_duplicates"],
                 special=run_information["nb_special_markers"],
@@ -327,7 +326,7 @@ def _generate_results(templates, run_options, run_information):
     tables = ""
 
     # Adding the table for each of the chromosomes
-    for chrom in chromosomes:
+    for chrom in run_options.required_chrom:
         # Getting the table 1
         table_1 = run_information["cross_validation_table_1_chrom"][chrom]
         for i in range(len(table_1)):
@@ -371,14 +370,14 @@ def _generate_results(templates, run_options, run_information):
             content=table_1 + r"\hfill" + table_2,
         )
 
-    # Adding the table for all the autosomes (Table 1)
+    # Adding the table for all the chromosomes (Table 1)
     table_1 = run_information["cross_validation_table_1"]
     for i in range(len(table_1)):
         table_1[i][0] = tex_inline_math(table_1[i][0])
     table_1 = create_tabular(template=tabular_template, header=header_table_1,
                              col_align=["c", "r", "r"], data=table_1)
 
-    # Adding the table for all the autosomes (Table 2)
+    # Adding the table for all the chromosomes (Table 2)
     table_2 = run_information["cross_validation_table_2"]
     for i in range(len(table_2)):
         table_2[i][0] = tex_inline_math(table_2[i][0].replace(">=", r"\geq "))
@@ -389,24 +388,31 @@ def _generate_results(templates, run_options, run_information):
     nb_genotypes = run_information["cross_validation_final_nb_genotypes"]
 
     # Adding the float
-    tables += "\n\n" + create_float(
-        template=float_template,
-        float_type="table",
-        caption=wrap_tex(sanitize_tex(
-            "IMPUTE2's internal cross-validation across the genome. Tables "
-            "show the percentage of concordance between genotyped calls and "
-            "imputed calls for {:,d} genotypes.".format(nb_genotypes)
-        )),
-        label="tab:cross_validation",
-        placement="H",
-        content=table_1 + r"\hfill" + table_2,
-    )
+    if len(run_options.required_chrom) > 1:
+        tables += "\n\n" + create_float(
+            template=float_template,
+            float_type="table",
+            caption=wrap_tex(sanitize_tex(
+                "IMPUTE2's internal cross-validation across the genome. "
+                "Tables show the percentage of concordance between genotyped "
+                "calls and imputed calls for {:,d} "
+                "genotypes.".format(nb_genotypes)
+            )),
+            label="tab:cross_validation",
+            placement="H",
+            content=table_1 + r"\hfill" + table_2,
+        )
 
     # Creating the cross-validation subsection
     cross_validation_content = section_template.render(
         section_name="Cross-validation",
         section_type="subsection",
-        section_content=cross_validation.render(tables=tables),
+        section_content=cross_validation.render(
+            single_chromosome=len(run_options.required_chrom) == 1,
+            first_chrom=run_options.required_chrom[0],
+            last_chrom=run_options.required_chrom[-1],
+            tables=tables,
+        ),
         section_label="subsec:cross_validation",
     )
 
@@ -732,19 +738,30 @@ def _generate_time_float(task_name, label, table, header, tabular_t, float_t,
         str: a LaTeX float
 
     """
-    assert len(table) == 22
+    two_tables = True
+    sep = len(table) // 2
+    if len(table) <= 11:
+        two_tables = False
+        sep = len(table)
 
     # Adding the first table
-    table_1 = create_tabular(template=tabular_t, header=header,
-                             col_align=["r"] * len(header),
-                             data=_format_time_columns(table[:11],
-                                                       first_time_col))
+    table_1 = create_tabular(
+        template=tabular_t,
+        header=header,
+        col_align=["r"] * len(header),
+        data=_format_time_columns(table[:sep], first_time_col),
+    )
 
     # Adding the second table
-    table_2 = create_tabular(template=tabular_t, header=header,
-                             col_align=["r"] * len(header),
-                             data=_format_time_columns(table[11:],
-                                                       first_time_col))
+    table_2 = ""
+    if two_tables:
+        table_2 = r"\hspace{1cm}"
+        table_2 += create_tabular(
+            template=tabular_t,
+            header=header,
+            col_align=["r"] * len(header),
+            data=_format_time_columns(table[sep:], first_time_col),
+        )
 
     # The caption
     caption = sanitize_tex("Execution time for the '")
@@ -758,7 +775,7 @@ def _generate_time_float(task_name, label, table, header, tabular_t, float_t,
         caption=wrap_tex(caption),
         label="tab:{}".format(label),
         placement="H",
-        content=table_1 + r"\hspace{1cm}" + table_2,
+        content=table_1 + table_2,
     )
 
 
