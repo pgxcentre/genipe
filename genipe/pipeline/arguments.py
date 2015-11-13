@@ -494,7 +494,7 @@ def check_args(args):
     if args.use_drmaa:
         if not HAS_DRMAA:
             raise GenipeError("The --use-drmaa option was used, but the drmaa "
-                              "module is not installed.")
+                              "module is not installed")
 
         if args.drmaa_config is None:
             raise GenipeError("DRMAA configuration file was not provided "
