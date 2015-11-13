@@ -9,12 +9,14 @@
 
 import os
 import unittest
-from random import randint
+from shutil import which
 from tempfile import TemporaryDirectory
 
 from .. import autosomes
-from ..pipeline.cli import *
+from .. import HAS_PYFAIDX
 from ..error import GenipeError
+from ..pipeline import arguments
+from ..pipeline.arguments import check_args
 
 if HAS_PYFAIDX:
     import pyfaidx
@@ -118,7 +120,7 @@ class TestArguments(unittest.TestCase):
         self.args.preamble = preamble
 
         # use_drmaa
-        self.args.use_drmaa = True
+        self.args.use_drmaa = False
 
         # drmaa_config
         drmaa_config = os.path.join(self.output_dir.name, "drmaa_config.txt")
@@ -742,8 +744,27 @@ class TestArguments(unittest.TestCase):
         self.args.preamble = None
         self.assertTrue(check_args(self.args))
 
+    def test_missing_drmaa_module(self):
+        """Tests with a missing DRMAA module."""
+        # Setting DRMAA to true
+        self.args.use_drmaa = True
+        arguments.HAS_DRMAA = False
+
+        # Checking the exception is raised
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual(
+            "The --use-drmaa option was used, but the drmaa module is not "
+            "installed",
+            str(cm.exception),
+        )
+
     def test_missing_drmaa_config(self):
         """Tests with a missing DRMAA config file."""
+        # Setting DRMAA to true
+        self.args.use_drmaa = True
+        arguments.HAS_DRMAA = True
+
         # Deleting the drmaa config file
         os.remove(self.args.drmaa_config)
         self.assertFalse(os.path.isfile(self.args.drmaa_config))
@@ -756,6 +777,10 @@ class TestArguments(unittest.TestCase):
 
     def test_missing_drmaa_config_none(self):
         """Tests with a missing DRMAA config file, but with a None setting."""
+        # Setting DRMAA to true
+        self.args.use_drmaa = True
+        arguments.HAS_DRMAA = True
+
         # Removing the DRMAA config file
         os.remove(self.args.drmaa_config)
         self.assertFalse(os.path.isfile(self.args.drmaa_config))
@@ -772,6 +797,10 @@ class TestArguments(unittest.TestCase):
 
     def test_missing_drmaa_config_none_false(self):
         """Tests with a missing drmaa config file, but None and False."""
+        # Setting DRMAA to True
+        self.args.use_drmaa = True
+        arguments.HAS_DRMAA = True
+
         # Changing the configuration
         os.remove(self.args.drmaa_config)
         self.assertFalse(os.path.isfile(self.args.drmaa_config))
