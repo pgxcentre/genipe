@@ -33,6 +33,7 @@ chromosomes = tuple(autosomes) + chromosomes_23
 # Checking once for 'pyfaidx' and 'matplotlib'
 HAS_PYFAIDX = importlib.find_loader("pyfaidx") is not None
 HAS_MATPLOTLIB = importlib.find_loader("matplotlib") is not None
+HAS_DRMAA = importlib.find_loader("drmaa") is not None
 
 
 def test(verbosity=1):

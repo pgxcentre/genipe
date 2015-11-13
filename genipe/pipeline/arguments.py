@@ -12,7 +12,7 @@ import logging
 from shutil import which
 
 from ..error import GenipeError
-from .. import __version__, autosomes, chromosomes, HAS_PYFAIDX
+from .. import __version__, autosomes, chromosomes, HAS_PYFAIDX, HAS_DRMAA
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -492,6 +492,10 @@ def check_args(args):
 
     # Checking the DRMAA configuration file
     if args.use_drmaa:
+        if not HAS_DRMAA:
+            raise GenipeError("The --use-drmaa option was used, but the drmaa "
+                              "module is not installed.")
+
         if args.drmaa_config is None:
             raise GenipeError("DRMAA configuration file was not provided "
                               "(--drmaa-config), but DRMAA is used "
