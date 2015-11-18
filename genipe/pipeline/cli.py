@@ -155,7 +155,7 @@ def main():
         )
         run_information.update(numbers)
 
-        exclude_markers_before_phasing(
+        chr23_to_skip = exclude_markers_before_phasing(
             required_chrom=args.required_chrom,
             prefix=args.bfile,
             db_name=db_name,
@@ -165,6 +165,24 @@ def main():
 
         # Computing the marker missing rate
         missing_rate = compute_marker_missing_rate(args.bfile, db_name, args)
+
+        # Removing required regions (chromosome 23)
+        for region in sorted(chr23_to_skip):
+            logging.warning("{}: no marker left for analysis".format(region))
+        args.required_chrom_names = tuple(
+            chrom for chrom in args.required_chrom_names
+            if chrom not in chr23_to_skip
+        )
+
+        # Do we need to exclude chromosome 23?
+        if ("25_1" in chr23_to_skip) and ("25_2" in chr23_to_skip):
+            logging.warning("No marker left in entire non pseudo-autosomal "
+                            "region (chr25)")
+            chr23_to_skip.add(25)
+        args.required_chrom = tuple(
+            chrom for chrom in args.required_chrom
+            if chrom not in chr23_to_skip
+        )
 
         # Checking the strand
         numbers = check_strand(
@@ -1317,7 +1335,8 @@ def exclude_markers_before_phasing(required_chrom, prefix, db_name,
         options (argparse.Namespace): the pipeline options
 
     Returns:
-        dict: information about the data set
+        set: a set of chromosome 23 regions to skip (because there were no
+             markers left).
 
     If required, the function uses :py:func:`is_reversed` to check if a marker
     is on the reverse strand and needs flipping.
@@ -1353,6 +1372,7 @@ def exclude_markers_before_phasing(required_chrom, prefix, db_name,
 
     bim = None
     processed_chrom_23 = []
+    chr23_regions_to_skip = set()
     for chrom in required_chrom:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
@@ -1364,7 +1384,7 @@ def exclude_markers_before_phasing(required_chrom, prefix, db_name,
                 bim = read_bim(prefix + ".bim", (23, 25))
 
             # Getting the command(s) for chromosome 23
-            commands = extract_chromosome_23(
+            chr23_regions_to_skip, commands = extract_chromosome_23(
                 chrom=chrom,
                 prefix=c_prefix,
                 bim=bim,
@@ -1412,6 +1432,7 @@ def exclude_markers_before_phasing(required_chrom, prefix, db_name,
         ]
         commands = reorder_chromosome_23(
             chrom=chrom,
+            to_skip=chr23_regions_to_skip,
             prefix=o_prefix.format(chrom=chrom),
             base_command=base_command,
         )
@@ -1427,12 +1448,15 @@ def exclude_markers_before_phasing(required_chrom, prefix, db_name,
                           out_dir=options.out_dir, preamble=options.preamble)
     logging.info("Done reordering markers")
 
+    return chr23_regions_to_skip
 
-def reorder_chromosome_23(chrom, prefix, base_command):
+
+def reorder_chromosome_23(chrom, to_skip, prefix, base_command):
     """Reorders chromosome 23 markers.
 
     Args:
         chrom (int): the chromosome to reorder
+        to_skip (set): the set of regions to skip (if necessary)
         prefix (str): the prefix of the output files
         base_command (list): the base command
 
@@ -1461,6 +1485,10 @@ def reorder_chromosome_23(chrom, prefix, base_command):
         )
 
         for suffix in ("_1", "_2"):
+            # Do we need to skip this region?
+            if "{}{}".format(chrom, suffix) in to_skip:
+                continue
+
             remaining_command = [
                 "--bfile", new_prefix.format(suffix=suffix) + "_not_ordered",
                 "--out", new_prefix.format(suffix=suffix),
@@ -1515,22 +1543,34 @@ def extract_chromosome_23(chrom, prefix, bim, chrom_length, base_command):
     lower_bound, upper_bound = chrom_length[chrom][:2]
 
     # Finding the markers to extract
+    region_names = []
     in_region = []
     if chrom == 23:
+        region_names.append(23)
         in_region.append((bim.pos >= lower_bound) & (bim.pos <= upper_bound))
 
     elif chrom == 25:
+        region_names.extend(["25_1", "25_2"])
         in_region.append(bim.pos <= lower_bound)
         in_region.append(bim.pos >= upper_bound)
 
     else:
         raise GenipeError("{}: not a valid chromosome 23 region".format(chrom))
 
+    # Region to skip
+    region_to_skip = set()
+
     # Creating the file(s) for marker extraction
     command_info = []
-    for i, subset in enumerate(in_region):
+    for i, (region_name, subset) in enumerate(zip(region_names, in_region)):
         # The list of markers
         markers = bim.loc[subset, :]
+
+        # Are there any markers left?
+        if markers.shape[0] == 0:
+            # We need to skip this region in downstream analysis
+            region_to_skip.add(region_name)
+            continue
 
         # The new prefix and the name of the file for extraction
         suffix = ""
@@ -1589,7 +1629,7 @@ def extract_chromosome_23(chrom, prefix, bim, chrom_length, base_command):
                         for ext in (".bed", ".bim", ".fam")],
         })
 
-    return command_info
+    return region_to_skip, command_info
 
 
 def read_bim(bim_fn, chromosomes=tuple()):
