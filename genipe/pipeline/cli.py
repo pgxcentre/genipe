@@ -1566,12 +1566,6 @@ def extract_chromosome_23(chrom, prefix, bim, chrom_length, base_command):
         # The list of markers
         markers = bim.loc[subset, :]
 
-        # Are there any markers left?
-        if markers.shape[0] == 0:
-            # We need to skip this region in downstream analysis
-            region_to_skip.add(region_name)
-            continue
-
         # The new prefix and the name of the file for extraction
         suffix = ""
         new_prefix = prefix
@@ -1587,6 +1581,13 @@ def extract_chromosome_23(chrom, prefix, bim, chrom_length, base_command):
         with open(extract_fn, "w") as o_file:
             for marker in markers.name:
                 print(marker, file=o_file)
+
+        # Are there any markers left?
+        if markers.shape[0] == 0:
+            # We need to skip this region in downstream analysis
+            # Note that the file *_extract will exist, but will be empty
+            region_to_skip.add(region_name)
+            continue
 
         # The command to launch
         command = base_command + [
