@@ -418,7 +418,6 @@ def phase_markers(required_chrom, prefix, o_prefix, db_name, options):
         with open(filename, "r") as i_file:
             compare_to = i_file.read()
             if compare_with is None:
-                print("Using chr{} for comparison".format(chrom))
                 compare_with = compare_to
 
         if compare_with != compare_to:
