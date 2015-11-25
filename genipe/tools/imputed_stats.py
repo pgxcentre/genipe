@@ -992,7 +992,13 @@ def samples_with_hetero_calls(data, hetero_c):
     Returns:
         pandas.Index: samples where call is heterozygous
 
+    Note
+    ----
+        If there are no data (i.e. no males), an empty list is returned.
+
     """
+    if data.shape[0] == 0:
+        return []
     return data[data.idxmax(axis=1) == hetero_c].index
 
 
