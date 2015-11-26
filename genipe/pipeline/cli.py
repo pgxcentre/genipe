@@ -1815,9 +1815,10 @@ def get_cross_validation_results(required_chrom, glob_pattern):
 
     # For each chromosome
     for chrom in required_chrom:
-        if chrom == "25_2":
+        if (chrom == "25_2") and ("25_1" in required_chrom):
             # We want to skip the second pseudo-autosomal region of chromosome
-            # 23, since we want to merge it with the first in the final results
+            # 23 if the first one is in the required chromosomes, since we want
+            # to merge it with the first in the final results
             continue
 
         filenames = glob(glob_pattern.format(chrom=chrom))
