@@ -622,9 +622,10 @@ def merge_impute2_files(required_chrom, in_glob, o_prefix, probability_t,
     ]
 
     for chrom in required_chrom:
-        if chrom == "25_2":
+        if (chrom == "25_2") and ("25_1" in required_chrom):
             # We want to skip the second pseudo-autosomal region of chromosome
-            # 23, since we are going to merge it with the first one
+            # 23 if the first one is present, since we are going to merge it
+            # with the first one
             continue
 
         # The current output prefix
@@ -689,17 +690,24 @@ def merge_impute2_files(required_chrom, in_glob, o_prefix, probability_t,
                 "chr{chrom}.final.phased.sample",
             ).format(chrom="25_2")
 
-            # Checking the file exits
-            if not os.path.isfile(other_sample_file):
-                raise GenipeError("{}: no such file".format(other_sample_file))
+            # The "25_2" sample file could not exists if 25_2 is not in the
+            # required chromosome
+            if "25_2" in required_chrom:
+                # Checking the file exits
+                if not os.path.isfile(other_sample_file):
+                    raise GenipeError(
+                        "{}: no such file".format(other_sample_file),
+                    )
 
-            # Comparing
-            with open(sample_file, "r") as f1, \
-                    open(other_sample_file, "r") as f2:
-                for line_f1, line_f2 in zip(f1, f2):
-                    if line_f1 != line_f2:
-                        raise GenipeError("the two pseudo-autosomal regions "
-                                          "have different sample files...")
+                # Comparing
+                with open(sample_file, "r") as f1, \
+                        open(other_sample_file, "r") as f2:
+                    for line_f1, line_f2 in zip(f1, f2):
+                        if line_f1 != line_f2:
+                            raise GenipeError(
+                                "the two pseudo-autosomal regions have "
+                                "different sample files...",
+                            )
 
         # Copying the file
         copyfile(sample_file, c_prefix + ".sample")
