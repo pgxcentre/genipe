@@ -1946,10 +1946,15 @@ def get_cross_validation_results(required_chrom, glob_pattern):
             if weight != 0:
                 weighted_concordance = concordance / weight
 
+            # Computing the percentage of called genotypes
+            pct_called = 0
+            if tot_chrom_nb_genotypes != 0:
+                pct_called = nb_called / tot_chrom_nb_genotypes * 100
+
             # Saving the data for the current chromosome
             table_2_data.append([
                 interval,
-                "{:.1f}".format(nb_called / tot_chrom_nb_genotypes * 100),
+                "{:.1f}".format(pct_called),
                 "{:.1f}".format(weighted_concordance),
             ])
 
