@@ -260,7 +260,7 @@ def main():
         run_information.update(numbers)
 
         # Merging the impute2 files
-        merge_impute2_files(
+        chrom_to_skip = merge_impute2_files(
             required_chrom=args.required_chrom_names,
             in_glob=os.path.join(args.out_dir, "chr{chrom}",
                                  "chr{chrom}.*.impute2"),
@@ -271,6 +271,12 @@ def main():
             info_t=args.info,
             db_name=db_name,
             options=args,
+        )
+
+        # Do we need to exclude chromosomes?
+        args.required_chrom = tuple(
+            chrom for chrom in args.required_chrom
+            if chrom not in chrom_to_skip
         )
 
         # If required, zipping the impute2 files
@@ -608,6 +614,9 @@ def merge_impute2_files(required_chrom, in_glob, o_prefix, probability_t,
         db_name (str): the name of the DB saving tasks' information
         options (argparse.Namespace): the pipeline options
 
+    Returns:
+        set: a set containing the chromosome to skip.
+
     A template contains the string ``{chrom}``, which will be replaced by the
     chromosome number (e.g. ``genipe/chr{chrom}/chr{chrom}.final`` will be
     replaced by ``genipe/chr1/chr1.final``).
@@ -620,6 +629,9 @@ def merge_impute2_files(required_chrom, in_glob, o_prefix, probability_t,
         "--completion", str(completion_t),
         "--info", str(info_t),
     ]
+
+    # The chromosome to skip (if required) because no IMPUTE2 files
+    chrom_to_skip = set()
 
     for chrom in required_chrom:
         if (chrom == "25_2") and ("25_1" in required_chrom):
@@ -649,6 +661,15 @@ def merge_impute2_files(required_chrom, in_glob, o_prefix, probability_t,
             filenames += sorted(glob(in_glob.format(chrom="25_2")),
                                 key=file_sorter)
         remaining_command.extend(filenames)
+
+        # Are there any files?
+        if len(filenames) == 0:
+            skip_chrom = chrom
+            if (chrom == "25_1") or (chrom == "25_2"):
+                skip_chrom = 25
+            logging.warning("chr{}: no IMPUTE2 file left".format(skip_chrom))
+            chrom_to_skip.add(skip_chrom)
+            continue
 
         # The task id and task name
         task_id = "merge_impute2_chr{}".format(chrom)
@@ -718,6 +739,8 @@ def merge_impute2_files(required_chrom, in_glob, o_prefix, probability_t,
                           hpc_options=options.task_options,
                           out_dir=options.out_dir, preamble=options.preamble)
     logging.info("Done merging reports")
+
+    return chrom_to_skip
 
 
 def compress_impute2_files(required_chrom, filename_template, db_name,
