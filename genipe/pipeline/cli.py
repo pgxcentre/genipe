@@ -162,6 +162,11 @@ def main():
             chrom_length=chromosome_length,
             options=args,
         )
+        run_information["no_marker_left"] = [
+            {"25_1": "25 (PAR1)", "25_2": "25 (PAR2)"}.get(chrom, chrom)
+            for chrom in args.required_chrom_names
+            if chrom in chr23_to_skip
+        ]
 
         # Computing the marker missing rate
         missing_rate = compute_marker_missing_rate(args.bfile, db_name, args)
@@ -272,6 +277,10 @@ def main():
             db_name=db_name,
             options=args,
         )
+        run_information["no_imputed_sites"] = [
+            chrom for chrom in args.required_chrom
+            if chrom in chrom_to_skip
+        ]
 
         # Do we need to exclude chromosomes?
         args.required_chrom = tuple(
