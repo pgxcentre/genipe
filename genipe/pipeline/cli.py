@@ -1460,6 +1460,8 @@ def exclude_markers_before_phasing(required_chrom, prefix, db_name,
             "plink" if options.plink_bin is None else options.plink_bin,
             "--noweb",
             "--make-bed",
+            "--exclude", os.path.join(options.out_dir,
+                                      "markers_to_exclude.txt"),
         ]
         commands = reorder_chromosome_23(
             chrom=chrom,
