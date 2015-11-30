@@ -2525,16 +2525,19 @@ def gather_execution_time(required_chrom, db_name):
             max(seconds),
         ])
 
-        # The last tasks involve only chromosome 25 (both pseudo-autosomal
+        # The last two tasks involve only chromosome 25 (both pseudo-autosomal
         # regions)
         if chrom == "25_2":
-            continue
+            if "25_1" in required_chrom:
+                continue
+            chrom = 25
         elif chrom == "25_1":
             chrom = 25
 
         # Getting the time for 'merge_impute2'
-        seconds = exec_time["merge_impute2_chr{}".format(chrom)]
-        merge_impute2_exec_time.append([chrom, seconds])
+        seconds = exec_time.get("merge_impute2_chr{}".format(chrom), None)
+        if seconds:
+            merge_impute2_exec_time.append([chrom, seconds])
 
         # Getting the time for 'bgzip' if required
         seconds = exec_time.get("bgzip_chr{}".format(chrom), None)
