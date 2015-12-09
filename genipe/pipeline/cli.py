@@ -1165,6 +1165,24 @@ def final_exclusion(required_chrom, prefix, to_exclude, db_name, options):
             "--exclude", to_exclude.format(chrom=chrom),
             "--out", c_prefix,
         ]
+
+        # If chromosome 23 and a "*.nosex" file exists, we need to exclude the
+        # samples (because of gender unknown)
+        if chrom == 23:
+            if os.path.isfile(prefix.format(chrom=chrom) + ".nosex"):
+                # Counting the number of samples without known gender
+                nb_samples = 0
+                with open(prefix.format(chrom=chrom) + ".nosex", "r") as f:
+                    for line in f:
+                        nb_samples += 1
+                logging.warning(
+                    "{:,d} samples with unknown gender, they will be excluded "
+                    "from the chr23 analysis".format(nb_samples)
+                )
+
+                remaining_command += ["--remove",
+                                      prefix.format(chrom=chrom) + ".nosex"]
+
         commands_info.append({
             "task_id": "plink_final_exclude_chr{}".format(chrom),
             "name": "plink final exclude chr{}".format(chrom),
