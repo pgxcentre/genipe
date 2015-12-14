@@ -436,7 +436,14 @@ def phase_markers(required_chrom, prefix, o_prefix, db_name, options):
                 compare_with = compare_to
 
         if compare_with != compare_to:
-            raise GenipeError("phased sample files are different...")
+            if chrom == 23:
+                # This might be normal, since we need to remove samples without
+                # gender information
+                logging.warning("phased sample file is different for "
+                                "chromosome 23 (non pseudo-autosomal region).")
+
+            else:
+                raise GenipeError("phased sample files are different...")
 
     # Returning the samples
     return [i.split(" ")[0] for i in compare_with.splitlines()[2:]]
@@ -1156,6 +1163,7 @@ def final_exclusion(required_chrom, prefix, to_exclude, db_name, options):
     # The output files (for statistics)
     bims = []
 
+    nb_samples_no_gender = 0
     for chrom in required_chrom:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
@@ -1171,13 +1179,12 @@ def final_exclusion(required_chrom, prefix, to_exclude, db_name, options):
         if chrom == 23:
             if os.path.isfile(prefix.format(chrom=chrom) + ".nosex"):
                 # Counting the number of samples without known gender
-                nb_samples = 0
                 with open(prefix.format(chrom=chrom) + ".nosex", "r") as f:
                     for line in f:
-                        nb_samples += 1
+                        nb_samples_no_gender += 1
                 logging.warning(
                     "{:,d} samples with unknown gender, they will be excluded "
-                    "from the chr23 analysis".format(nb_samples)
+                    "from the chr23 analysis".format(nb_samples_no_gender)
                 )
 
                 remaining_command += ["--remove",
@@ -1206,7 +1213,10 @@ def final_exclusion(required_chrom, prefix, to_exclude, db_name, options):
             for line in i_file:
                 nb_markers += 1
 
-    return {"nb_phasing_markers": "{:,d}".format(nb_markers)}
+    return {
+        "nb_phasing_markers": "{:,d}".format(nb_markers),
+        "nb_samples_no_gender": "{:,d}".format(nb_samples_no_gender),
+    }
 
 
 def compute_marker_missing_rate(prefix, db_name, options):

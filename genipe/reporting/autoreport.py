@@ -150,7 +150,8 @@ def _generate_methods(templates, run_options, run_information):
                           "nb_ambiguous", "nb_flip", "nb_exclude",
                           "nb_phasing_markers", "nb_flip_reference",
                           "nb_special_markers", "reference_checked",
-                          "no_marker_left", "no_imputed_sites"]
+                          "no_marker_left", "no_imputed_sites",
+                          "nb_samples_no_gender"]
     for required_variable in required_variables:
         assert required_variable in run_information, required_variable
 

@@ -37,7 +37,11 @@ skipped for downstream analysis.\\
 
 \textbf{In total, \VAR{ nb_phasing_markers } markers were used for phasing
 using SHAPEIT.} IMPUTE2 was then used to impute markers genome-wide using its
-reference file\VAR{ filtering_rules }.\BLOCK{ if no_imputed_sites|length > 0 }\\
+reference file\VAR{ filtering_rules }.\BLOCK{ if nb_samples_no_gender != "0" } A
+total of \VAR{ nb_samples_no_gender }}
+sample\VAR{ "" if nb_samples_no_gender == "1" else "s" } did not have gender
+information, and were skip for chromosome X
+imputation.\BLOCK{ endif }\BLOCK{ if no_imputed_sites|length > 0 }\\
 
 Chromosome\BLOCK{ if no_imputed_sites|length > 1}s\BLOCK{ endif }
  \VAR{ no_imputed_sites[:-1]|join(", ") }\BLOCK{ if no_imputed_sites|length > 1 }
