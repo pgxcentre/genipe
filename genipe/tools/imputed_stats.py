@@ -21,6 +21,7 @@ from collections import namedtuple
 
 import jinja2
 import pandas as pd
+from numpy.linalg.linalg import LinAlgError
 
 from .. import __version__
 from ..formats import impute2
@@ -977,7 +978,7 @@ def process_impute2_site(site_info):
         )
     except LinAlgError as e:
         # Something strange happened...
-        logging.warning("{}: numpy LinAlgError: {}".format(name, str(e))
+        logging.warning("{}: numpy LinAlgError: {}".format(name, str(e)))
 
     # Extending the list to return
     if len(results) == 0:
