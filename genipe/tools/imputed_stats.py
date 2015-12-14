@@ -964,15 +964,20 @@ def process_impute2_site(site_info):
             result_from_column = "_Inter"
 
     # Fitting
-    results = _fit_map[site_info.analysis_type](
-        data=data,
-        groups=data.index.values,
-        time_to_event=site_info.time_to_event,
-        event=site_info.event,
-        formula=site_info.formula,
-        result_col=result_from_column,
-        use_ml=site_info.use_ml,
-    )
+    results = []
+    try:
+        results = _fit_map[site_info.analysis_type](
+            data=data,
+            groups=data.index.values,
+            time_to_event=site_info.time_to_event,
+            event=site_info.event,
+            formula=site_info.formula,
+            result_col=result_from_column,
+            use_ml=site_info.use_ml,
+        )
+    except LinAlgError as e:
+        # Something strange happened...
+        logging.warning("{}: numpy LinAlgError: {}".format(name, str(e))
 
     # Extending the list to return
     if len(results) == 0:
