@@ -21,6 +21,7 @@ from collections import namedtuple
 
 import jinja2
 import pandas as pd
+from numpy.linalg.linalg import LinAlgError
 
 from .. import __version__
 from ..formats import impute2
@@ -964,15 +965,20 @@ def process_impute2_site(site_info):
             result_from_column = "_Inter"
 
     # Fitting
-    results = _fit_map[site_info.analysis_type](
-        data=data,
-        groups=data.index.values,
-        time_to_event=site_info.time_to_event,
-        event=site_info.event,
-        formula=site_info.formula,
-        result_col=result_from_column,
-        use_ml=site_info.use_ml,
-    )
+    results = []
+    try:
+        results = _fit_map[site_info.analysis_type](
+            data=data,
+            groups=data.index.values,
+            time_to_event=site_info.time_to_event,
+            event=site_info.event,
+            formula=site_info.formula,
+            result_col=result_from_column,
+            use_ml=site_info.use_ml,
+        )
+    except LinAlgError as e:
+        # Something strange happened...
+        logging.warning("{}: numpy LinAlgError: {}".format(name, str(e)))
 
     # Extending the list to return
     if len(results) == 0:
@@ -992,7 +998,13 @@ def samples_with_hetero_calls(data, hetero_c):
     Returns:
         pandas.Index: samples where call is heterozygous
 
+    Note
+    ----
+        If there are no data (i.e. no males), an empty list is returned.
+
     """
+    if data.shape[0] == 0:
+        return []
     return data[data.idxmax(axis=1) == hetero_c].index
 
 

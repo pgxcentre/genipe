@@ -155,16 +155,39 @@ def main():
         )
         run_information.update(numbers)
 
-        exclude_markers_before_phasing(
+        chr23_to_skip = exclude_markers_before_phasing(
             required_chrom=args.required_chrom,
             prefix=args.bfile,
             db_name=db_name,
             chrom_length=chromosome_length,
             options=args,
         )
+        run_information["no_marker_left"] = [
+            {"25_1": "25 (PAR1)", "25_2": "25 (PAR2)"}.get(chrom, chrom)
+            for chrom in args.required_chrom_names
+            if chrom in chr23_to_skip
+        ]
 
         # Computing the marker missing rate
         missing_rate = compute_marker_missing_rate(args.bfile, db_name, args)
+
+        # Removing required regions (chromosome 23)
+        for region in sorted(chr23_to_skip):
+            logging.warning("{}: no marker left for analysis".format(region))
+        args.required_chrom_names = tuple(
+            chrom for chrom in args.required_chrom_names
+            if chrom not in chr23_to_skip
+        )
+
+        # Do we need to exclude chromosome 23?
+        if ("25_1" in chr23_to_skip) and ("25_2" in chr23_to_skip):
+            logging.warning("No marker left in entire non pseudo-autosomal "
+                            "region (chr25)")
+            chr23_to_skip.add(25)
+        args.required_chrom = tuple(
+            chrom for chrom in args.required_chrom
+            if chrom not in chr23_to_skip
+        )
 
         # Checking the strand
         numbers = check_strand(
@@ -242,7 +265,7 @@ def main():
         run_information.update(numbers)
 
         # Merging the impute2 files
-        merge_impute2_files(
+        chrom_to_skip = merge_impute2_files(
             required_chrom=args.required_chrom_names,
             in_glob=os.path.join(args.out_dir, "chr{chrom}",
                                  "chr{chrom}.*.impute2"),
@@ -253,6 +276,16 @@ def main():
             info_t=args.info,
             db_name=db_name,
             options=args,
+        )
+        run_information["no_imputed_sites"] = [
+            chrom for chrom in args.required_chrom
+            if chrom in chrom_to_skip
+        ]
+
+        # Do we need to exclude chromosomes?
+        args.required_chrom = tuple(
+            chrom for chrom in args.required_chrom
+            if chrom not in chrom_to_skip
         )
 
         # If required, zipping the impute2 files
@@ -399,11 +432,18 @@ def phase_markers(required_chrom, prefix, o_prefix, db_name, options):
         compare_to = None
         with open(filename, "r") as i_file:
             compare_to = i_file.read()
-            if chrom == 1:
+            if compare_with is None:
                 compare_with = compare_to
 
         if compare_with != compare_to:
-            raise GenipeError("phased sample files are different...")
+            if chrom == 23:
+                # This might be normal, since we need to remove samples without
+                # gender information
+                logging.warning("phased sample file is different for "
+                                "chromosome 23 (non pseudo-autosomal region).")
+
+            else:
+                raise GenipeError("phased sample files are different...")
 
     # Returning the samples
     return [i.split(" ")[0] for i in compare_with.splitlines()[2:]]
@@ -590,6 +630,9 @@ def merge_impute2_files(required_chrom, in_glob, o_prefix, probability_t,
         db_name (str): the name of the DB saving tasks' information
         options (argparse.Namespace): the pipeline options
 
+    Returns:
+        set: a set containing the chromosome to skip.
+
     A template contains the string ``{chrom}``, which will be replaced by the
     chromosome number (e.g. ``genipe/chr{chrom}/chr{chrom}.final`` will be
     replaced by ``genipe/chr1/chr1.final``).
@@ -603,10 +646,14 @@ def merge_impute2_files(required_chrom, in_glob, o_prefix, probability_t,
         "--info", str(info_t),
     ]
 
+    # The chromosome to skip (if required) because no IMPUTE2 files
+    chrom_to_skip = set()
+
     for chrom in required_chrom:
-        if chrom == "25_2":
+        if (chrom == "25_2") and ("25_1" in required_chrom):
             # We want to skip the second pseudo-autosomal region of chromosome
-            # 23, since we are going to merge it with the first one
+            # 23 if the first one is present, since we are going to merge it
+            # with the first one
             continue
 
         # The current output prefix
@@ -630,6 +677,15 @@ def merge_impute2_files(required_chrom, in_glob, o_prefix, probability_t,
             filenames += sorted(glob(in_glob.format(chrom="25_2")),
                                 key=file_sorter)
         remaining_command.extend(filenames)
+
+        # Are there any files?
+        if len(filenames) == 0:
+            skip_chrom = chrom
+            if (chrom == "25_1") or (chrom == "25_2"):
+                skip_chrom = 25
+            logging.warning("chr{}: no IMPUTE2 file left".format(skip_chrom))
+            chrom_to_skip.add(skip_chrom)
+            continue
 
         # The task id and task name
         task_id = "merge_impute2_chr{}".format(chrom)
@@ -671,17 +727,24 @@ def merge_impute2_files(required_chrom, in_glob, o_prefix, probability_t,
                 "chr{chrom}.final.phased.sample",
             ).format(chrom="25_2")
 
-            # Checking the file exits
-            if not os.path.isfile(other_sample_file):
-                raise GenipeError("{}: no such file".format(other_sample_file))
+            # The "25_2" sample file could not exists if 25_2 is not in the
+            # required chromosome
+            if "25_2" in required_chrom:
+                # Checking the file exits
+                if not os.path.isfile(other_sample_file):
+                    raise GenipeError(
+                        "{}: no such file".format(other_sample_file),
+                    )
 
-            # Comparing
-            with open(sample_file, "r") as f1, \
-                    open(other_sample_file, "r") as f2:
-                for line_f1, line_f2 in zip(f1, f2):
-                    if line_f1 != line_f2:
-                        raise GenipeError("the two pseudo-autosomal regions "
-                                          "have different sample files...")
+                # Comparing
+                with open(sample_file, "r") as f1, \
+                        open(other_sample_file, "r") as f2:
+                    for line_f1, line_f2 in zip(f1, f2):
+                        if line_f1 != line_f2:
+                            raise GenipeError(
+                                "the two pseudo-autosomal regions have "
+                                "different sample files...",
+                            )
 
         # Copying the file
         copyfile(sample_file, c_prefix + ".sample")
@@ -692,6 +755,8 @@ def merge_impute2_files(required_chrom, in_glob, o_prefix, probability_t,
                           hpc_options=options.task_options,
                           out_dir=options.out_dir, preamble=options.preamble)
     logging.info("Done merging reports")
+
+    return chrom_to_skip
 
 
 def compress_impute2_files(required_chrom, filename_template, db_name,
@@ -1098,6 +1163,7 @@ def final_exclusion(required_chrom, prefix, to_exclude, db_name, options):
     # The output files (for statistics)
     bims = []
 
+    nb_samples_no_gender = 0
     for chrom in required_chrom:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
@@ -1107,6 +1173,23 @@ def final_exclusion(required_chrom, prefix, to_exclude, db_name, options):
             "--exclude", to_exclude.format(chrom=chrom),
             "--out", c_prefix,
         ]
+
+        # If chromosome 23 and a "*.nosex" file exists, we need to exclude the
+        # samples (because of gender unknown)
+        if chrom == 23:
+            if os.path.isfile(prefix.format(chrom=chrom) + ".nosex"):
+                # Counting the number of samples without known gender
+                with open(prefix.format(chrom=chrom) + ".nosex", "r") as f:
+                    for line in f:
+                        nb_samples_no_gender += 1
+                logging.warning(
+                    "{:,d} samples with unknown gender, they will be excluded "
+                    "from the chr23 analysis".format(nb_samples_no_gender)
+                )
+
+                remaining_command += ["--remove",
+                                      prefix.format(chrom=chrom) + ".nosex"]
+
         commands_info.append({
             "task_id": "plink_final_exclude_chr{}".format(chrom),
             "name": "plink final exclude chr{}".format(chrom),
@@ -1130,7 +1213,10 @@ def final_exclusion(required_chrom, prefix, to_exclude, db_name, options):
             for line in i_file:
                 nb_markers += 1
 
-    return {"nb_phasing_markers": "{:,d}".format(nb_markers)}
+    return {
+        "nb_phasing_markers": "{:,d}".format(nb_markers),
+        "nb_samples_no_gender": "{:,d}".format(nb_samples_no_gender),
+    }
 
 
 def compute_marker_missing_rate(prefix, db_name, options):
@@ -1317,7 +1403,8 @@ def exclude_markers_before_phasing(required_chrom, prefix, db_name,
         options (argparse.Namespace): the pipeline options
 
     Returns:
-        dict: information about the data set
+        set: a set of chromosome 23 regions to skip (because there were no
+             markers left).
 
     If required, the function uses :py:func:`is_reversed` to check if a marker
     is on the reverse strand and needs flipping.
@@ -1353,6 +1440,7 @@ def exclude_markers_before_phasing(required_chrom, prefix, db_name,
 
     bim = None
     processed_chrom_23 = []
+    chr23_regions_to_skip = set()
     for chrom in required_chrom:
         # The current output prefix
         c_prefix = o_prefix.format(chrom=chrom)
@@ -1364,7 +1452,7 @@ def exclude_markers_before_phasing(required_chrom, prefix, db_name,
                 bim = read_bim(prefix + ".bim", (23, 25))
 
             # Getting the command(s) for chromosome 23
-            commands = extract_chromosome_23(
+            chr23_regions_to_skip, commands = extract_chromosome_23(
                 chrom=chrom,
                 prefix=c_prefix,
                 bim=bim,
@@ -1409,9 +1497,12 @@ def exclude_markers_before_phasing(required_chrom, prefix, db_name,
             "plink" if options.plink_bin is None else options.plink_bin,
             "--noweb",
             "--make-bed",
+            "--exclude", os.path.join(options.out_dir,
+                                      "markers_to_exclude.txt"),
         ]
         commands = reorder_chromosome_23(
             chrom=chrom,
+            to_skip=chr23_regions_to_skip,
             prefix=o_prefix.format(chrom=chrom),
             base_command=base_command,
         )
@@ -1427,12 +1518,15 @@ def exclude_markers_before_phasing(required_chrom, prefix, db_name,
                           out_dir=options.out_dir, preamble=options.preamble)
     logging.info("Done reordering markers")
 
+    return chr23_regions_to_skip
 
-def reorder_chromosome_23(chrom, prefix, base_command):
+
+def reorder_chromosome_23(chrom, to_skip, prefix, base_command):
     """Reorders chromosome 23 markers.
 
     Args:
         chrom (int): the chromosome to reorder
+        to_skip (set): the set of regions to skip (if necessary)
         prefix (str): the prefix of the output files
         base_command (list): the base command
 
@@ -1461,6 +1555,10 @@ def reorder_chromosome_23(chrom, prefix, base_command):
         )
 
         for suffix in ("_1", "_2"):
+            # Do we need to skip this region?
+            if "{}{}".format(chrom, suffix) in to_skip:
+                continue
+
             remaining_command = [
                 "--bfile", new_prefix.format(suffix=suffix) + "_not_ordered",
                 "--out", new_prefix.format(suffix=suffix),
@@ -1515,20 +1613,26 @@ def extract_chromosome_23(chrom, prefix, bim, chrom_length, base_command):
     lower_bound, upper_bound = chrom_length[chrom][:2]
 
     # Finding the markers to extract
+    region_names = []
     in_region = []
     if chrom == 23:
+        region_names.append(23)
         in_region.append((bim.pos >= lower_bound) & (bim.pos <= upper_bound))
 
     elif chrom == 25:
+        region_names.extend(["25_1", "25_2"])
         in_region.append(bim.pos <= lower_bound)
         in_region.append(bim.pos >= upper_bound)
 
     else:
         raise GenipeError("{}: not a valid chromosome 23 region".format(chrom))
 
+    # Region to skip
+    region_to_skip = set()
+
     # Creating the file(s) for marker extraction
     command_info = []
-    for i, subset in enumerate(in_region):
+    for i, (region_name, subset) in enumerate(zip(region_names, in_region)):
         # The list of markers
         markers = bim.loc[subset, :]
 
@@ -1547,6 +1651,13 @@ def extract_chromosome_23(chrom, prefix, bim, chrom_length, base_command):
         with open(extract_fn, "w") as o_file:
             for marker in markers.name:
                 print(marker, file=o_file)
+
+        # Are there any markers left?
+        if markers.shape[0] == 0:
+            # We need to skip this region in downstream analysis
+            # Note that the file *_extract will exist, but will be empty
+            region_to_skip.add(region_name)
+            continue
 
         # The command to launch
         command = base_command + [
@@ -1589,7 +1700,7 @@ def extract_chromosome_23(chrom, prefix, bim, chrom_length, base_command):
                         for ext in (".bed", ".bim", ".fam")],
         })
 
-    return command_info
+    return region_to_skip, command_info
 
 
 def read_bim(bim_fn, chromosomes=tuple()):
@@ -1774,9 +1885,10 @@ def get_cross_validation_results(required_chrom, glob_pattern):
 
     # For each chromosome
     for chrom in required_chrom:
-        if chrom == "25_2":
+        if (chrom == "25_2") and ("25_1" in required_chrom):
             # We want to skip the second pseudo-autosomal region of chromosome
-            # 23, since we want to merge it with the first in the final results
+            # 23 if the first one is in the required chromosomes, since we want
+            # to merge it with the first in the final results
             continue
 
         filenames = glob(glob_pattern.format(chrom=chrom))
@@ -1905,10 +2017,15 @@ def get_cross_validation_results(required_chrom, glob_pattern):
             if weight != 0:
                 weighted_concordance = concordance / weight
 
+            # Computing the percentage of called genotypes
+            pct_called = 0
+            if tot_chrom_nb_genotypes != 0:
+                pct_called = nb_called / tot_chrom_nb_genotypes * 100
+
             # Saving the data for the current chromosome
             table_2_data.append([
                 interval,
-                "{:.1f}".format(nb_called / tot_chrom_nb_genotypes * 100),
+                "{:.1f}".format(pct_called),
                 "{:.1f}".format(weighted_concordance),
             ])
 
@@ -2447,16 +2564,19 @@ def gather_execution_time(required_chrom, db_name):
             max(seconds),
         ])
 
-        # The last tasks involve only chromosome 25 (both pseudo-autosomal
+        # The last two tasks involve only chromosome 25 (both pseudo-autosomal
         # regions)
         if chrom == "25_2":
-            continue
+            if "25_1" in required_chrom:
+                continue
+            chrom = 25
         elif chrom == "25_1":
             chrom = 25
 
         # Getting the time for 'merge_impute2'
-        seconds = exec_time["merge_impute2_chr{}".format(chrom)]
-        merge_impute2_exec_time.append([chrom, seconds])
+        seconds = exec_time.get("merge_impute2_chr{}".format(chrom), None)
+        if seconds:
+            merge_impute2_exec_time.append([chrom, seconds])
 
         # Getting the time for 'bgzip' if required
         seconds = exec_time.get("bgzip_chr{}".format(chrom), None)
