@@ -1356,11 +1356,12 @@ class TestImputedStatsLinear(unittest.TestCase):
         observed = pd.read_csv(o_prefix + ".linear.dosage", sep="\t")
 
         # Checking the shape
-        self.assertEqual((3, 13), observed.shape)
+        self.assertEqual((3, 14), observed.shape)
 
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
-                          "coef", "se", "lower", "upper", "t", "p"],
+                          "coef", "se", "lower", "upper", "t", "p",
+                          "adj.r-squared"],
                          list(observed.columns))
 
         # Chromosomes
@@ -1425,6 +1426,12 @@ class TestImputedStatsLinear(unittest.TestCase):
         for expected_p, observed_p in zip(expected, observed.p):
             self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                    places=10)
+
+        # The adjusted R-squared
+        expected = [0.9872290819785703, 0.984835918173383, 0.9876017832216732]
+        for expected_r, observed_r in zip(expected,
+                                          observed["adj.r-squared"]):
+            self.assertAlmostEqual(expected_r, observed_r, places=10)
 
     @unittest.skipIf(platform.system() == "Darwin",
                      "multiprocessing not supported with Mac OS")
