@@ -1306,6 +1306,7 @@ class TestImputedStatsLinear(unittest.TestCase):
         expected_max_ci = 0.11350156320379831
         expected_t = 17.3175581839437314
         expected_p = 1.5527088106478929e-65
+        expected_r = 0.9881088609703202
 
         # The observed results
         observed = fit_linear(
@@ -1313,9 +1314,9 @@ class TestImputedStatsLinear(unittest.TestCase):
             formula=formula,
             result_col="snp1:C(gender)[T.2]",
         )
-        self.assertEqual(6, len(observed))
+        self.assertEqual(7, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
-            observed_t, observed_p = observed
+            observed_t, observed_p, observed_r = observed
 
         # Comparing the results
         self.assertAlmostEqual(expected_coef, observed_coef, places=10)
@@ -1325,6 +1326,7 @@ class TestImputedStatsLinear(unittest.TestCase):
         self.assertAlmostEqual(expected_t, observed_t, places=10)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=10)
+        self.assertAlmostEqual(expected_r, observed_r, places=10)
 
     def test_full_fit_linear(self):
         """Tests the full pipeline for linear regression."""
