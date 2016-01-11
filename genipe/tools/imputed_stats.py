@@ -755,6 +755,9 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
         header = ("chr", "pos", "snp", "major", "minor", "maf", "n", "coef",
                   "se", "lower", "upper",
                   "t" if options.analysis_type == "linear" else "z", "p")
+        if options.analysis_type == "linear":
+            header = header + ("adj.r-squared", )
+
         print(*header, sep="\t", file=o_file)
 
         # The sites to process (if multiprocessing)
@@ -1083,7 +1086,7 @@ def fit_linear(data, formula, result_col, **kwargs):
         list: the results from the linear regression
 
     """
-    return _get_result_from_linear_logistic_mixedlm(
+    return _get_result_from_linear(
         smf.ols(formula=formula, data=data).fit(),
         result_col=result_col,
     )
@@ -1101,7 +1104,7 @@ def fit_logistic(data, formula, result_col, **kwargs):
         list: the results from the logistic regression
 
     """
-    return _get_result_from_linear_logistic_mixedlm(
+    return _get_result_from_logistic_mixedlm(
         smf.glm(formula=formula, data=data,
                 family=sm.families.Binomial()).fit(),
         result_col=result_col,
@@ -1122,7 +1125,7 @@ def fit_mixedlm(data, formula, use_ml, groups, result_col, **kwargs):
         list: the results from the linear mixed effects model
 
     """
-    return _get_result_from_linear_logistic_mixedlm(
+    return _get_result_from_logistic_mixedlm(
         smf.mixedlm(formula=formula, data=data,
                     groups=groups).fit(reml=not use_ml),
         result_col=result_col,
@@ -1137,7 +1140,31 @@ _fit_map = {
 }
 
 
-def _get_result_from_linear_logistic_mixedlm(fit_result, result_col):
+def _get_result_from_linear(fit_result, result_col):
+    """Gets results from either a linear, a logistic or a mixedlm regression.
+
+    Args:
+        fit_result (RegressionResults): the results from the regression
+        result_col (str): the name of the result column
+
+    Returns:
+        list: the regression results
+
+    """
+    conf_int = fit_result.conf_int().loc[result_col, :].values
+    assert len(conf_int) == 2
+    return [
+        fit_result.params[result_col],
+        fit_result.bse[result_col],
+        conf_int[0],
+        conf_int[1],
+        fit_result.tvalues[result_col],
+        fit_result.pvalues[result_col],
+        fit_result.rsquared_adj,
+    ]
+
+
+def _get_result_from_logistic_mixedlm(fit_result, result_col):
     """Gets results from either a linear, a logistic or a mixedlm regression.
 
     Args:
