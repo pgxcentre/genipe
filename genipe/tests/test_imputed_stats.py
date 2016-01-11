@@ -18,7 +18,6 @@ import pandas as pd
 from pkg_resources import resource_filename
 
 from ..tools.imputed_stats import *
-from ..tools.imputed_stats import _get_result_from_linear_logistic_mixedlm
 
 if HAS_STATSMODELS:
     # patsy is installed only if statsmodels is
@@ -641,11 +640,6 @@ class TestImputedStats(unittest.TestCase):
         self.assertEqual(expected, observed)
 
     @unittest.skip("Test not implemented")
-    def test_get_result_from_linear_logistic(self):  # pragma: no cover
-        """Tests the '_get_result_from_linear_logistic' function."""
-        self.fail("Test not implemented")
-
-    @unittest.skip("Test not implemented")
     def test_check_args(self):  # pragma: no cover
         """Tests the 'check_args' function."""
         self.fail("Test not implemented")
@@ -1184,6 +1178,7 @@ class TestImputedStatsLinear(unittest.TestCase):
         expected_max_ci = 0.10522561602409949
         expected_t = 32.866914806414108
         expected_p = 2.7965174627917724e-217
+        expected_r = 0.9872290819785703
 
         # The observed results for the first marker
         observed = fit_linear(
@@ -1191,9 +1186,9 @@ class TestImputedStatsLinear(unittest.TestCase):
             formula=formula,
             result_col="snp1",
         )
-        self.assertEqual(6, len(observed))
+        self.assertEqual(7, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
-            observed_t, observed_p = observed
+            observed_t, observed_p, observed_r = observed
 
         # Comparing the results
         self.assertAlmostEqual(expected_coef, observed_coef, places=10)
@@ -1203,6 +1198,7 @@ class TestImputedStatsLinear(unittest.TestCase):
         self.assertAlmostEqual(expected_t, observed_t, places=10)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=10)
+        self.assertAlmostEqual(expected_r, observed_r, places=10)
 
         # The formula for the second marker
         formula = "y ~ snp2 + C1 + C2 + C3 + age + C(gender)"
@@ -1216,6 +1212,7 @@ class TestImputedStatsLinear(unittest.TestCase):
         expected_max_ci = 0.0019154378562692411
         expected_t = -1.1635573550209353
         expected_p = 0.24465167231462448
+        expected_r = 0.984835918173383
 
         # The observed results for the first marker
         observed = fit_linear(
@@ -1223,9 +1220,9 @@ class TestImputedStatsLinear(unittest.TestCase):
             formula=formula,
             result_col="snp2",
         )
-        self.assertEqual(6, len(observed))
+        self.assertEqual(7, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
-            observed_t, observed_p = observed
+            observed_t, observed_p, observed_r = observed
 
         # Comparing the results
         self.assertAlmostEqual(expected_coef, observed_coef, places=10)
@@ -1235,6 +1232,7 @@ class TestImputedStatsLinear(unittest.TestCase):
         self.assertAlmostEqual(expected_t, observed_t, places=10)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=10)
+        self.assertAlmostEqual(expected_r, observed_r, places=10)
 
         # The formula for the third (and last) marker
         formula = "y ~ snp3 + C1 + C2 + C3 + age + C(gender)"
@@ -1248,6 +1246,7 @@ class TestImputedStatsLinear(unittest.TestCase):
         expected_max_ci = -0.1109020846070511
         expected_t = -35.857178728608552
         expected_p = 2.4882495142044017e-254
+        expected_r = 0.9876017832216732
 
         # The observed results for the first marker
         observed = fit_linear(
@@ -1255,9 +1254,9 @@ class TestImputedStatsLinear(unittest.TestCase):
             formula=formula,
             result_col="snp3",
         )
-        self.assertEqual(6, len(observed))
+        self.assertEqual(7, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
-            observed_t, observed_p = observed
+            observed_t, observed_p, observed_r = observed
 
         # Comparing the results
         self.assertAlmostEqual(expected_coef, observed_coef, places=10)
@@ -1267,6 +1266,7 @@ class TestImputedStatsLinear(unittest.TestCase):
         self.assertAlmostEqual(expected_t, observed_t, places=10)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=10)
+        self.assertAlmostEqual(expected_r, observed_r, places=10)
 
         # Asking for an invalid column should raise a KeyError
         with self.assertRaises(KeyError) as cm:
