@@ -216,6 +216,7 @@ following information:
 * ``upper``: the upper value of the 95% confidence interval.
 * ``t``: the *t*-statistic.
 * ``p``: the *p*-value.
+* ``adj.r-squared``: the adjusted R-squared value for the analysis.
 
 .. note::
 
