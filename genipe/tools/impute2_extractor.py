@@ -171,11 +171,18 @@ def extract_markers(fn, to_extract, out_prefix, out_format, prob_t):
 
     # Creating a fam (if bed)
     samples = get_samples(get_file_prefix(fn) + ".sample")
+    sample_names = ["{}/{}".format(id_1, id_2) for id_1, id_2
+                    in zip(samples.ID_1, samples.ID_2)]
 
-    # Writing the header (if required)
+    # Writing the header (for dosage)
     if "dosage" in o_files:
-        print("chrom", "pos", "name", "minor", "major", "dosage", sep="\t",
-              file=o_files["dosage"])
+        print("chrom", "pos", "name", "minor", "major",
+              *sample_names, sep="\t", file=o_files["dosage"])
+
+    # Writing the header (for calls)
+    if "calls" in o_files:
+        print("chrom", "name", "cm", "pos",
+              *sample_names, sep="\t", file=o_files["calls"])
 
     # Extracted positions
     all_extracted = set()
