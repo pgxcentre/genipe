@@ -23,6 +23,13 @@ from ..formats import impute2
 from ..error import GenipeError
 from .. import __version__, autosomes
 
+# Check if pyplink is installed
+try:
+    from pyplink import PyPlink
+    HAS_PYPLINK = True
+except ImportError:
+    HAS_PYPLINK = False
+
 
 __author__ = "Louis-Philippe Lemieux Perreault"
 __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
@@ -152,10 +159,18 @@ def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
     """
     # The output files (probabilities)
     o_files = {
-        suffix: open(out_prefix + "." + suffix, "w") for suffix in out_format
+        suffix: open(out_prefix + "." + suffix, "w")
+        for suffix in out_format if suffix not in {"bed"}
     }
 
-    # Writing the header
+    # If there is the 'bed' format, we actually need pyplink
+    if "bed" in out_format:
+        o_files["bed"] = (
+            PyPlink(out_prefix, "w"),
+            open(out_prefix + ".bim", "w"),
+        )
+
+    # Writing the header (if required)
     if "dosage" in o_files:
         print("chrom", "pos", "name", "minor", "major", "dosage", sep="\t",
               file=o_files["dosage"])
@@ -212,8 +227,12 @@ def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
             )
 
     # Closing the files
-    for o_file in o_files.values():
-        o_file.close()
+    for o_format, o_file in o_files.items():
+        if o_format == "bed":
+            o_file[0].close()
+            o_file[1].close()
+        else:
+            o_file.close()
 
     # Extraction complete
     logging.info("Extraction of {:,d} markers "
@@ -299,7 +318,7 @@ def print_data(o_files, prob_t, *, line=None, row=None):
     chrom = None
     good_calls = None
     probabilities = None
-    if "dosage" in o_files or "calls" in o_files:
+    if ("dosage" in o_files) or ("calls" in o_files) or ("bed" in o_files):
         # Getting the informations
         marker_info, probabilities = impute2.matrix_from_line(row)
         chrom, name, pos, a1, a2 = marker_info
@@ -325,6 +344,14 @@ def print_data(o_files, prob_t, *, line=None, row=None):
         alleles = [a1, nan, a2]
         print(chrom, pos, name, alleles[minor], alleles[major], *dosage,
               sep="\t", file=o_files["dosage"])
+
+    # Bed?
+    if "bed" in o_files:
+        geno, minor, major = impute2.additive_from_probs(a1, a2, probabilities)
+        geno[~good_calls] = -1
+        o_files["bed"][0].write_genotypes(geno)
+        print(chrom, name, "0", pos, major, minor, sep="\t",
+              file=o_files["bed"][1])
 
     # Hard calls?
     if "calls" in o_files:
@@ -569,8 +596,12 @@ def check_args(args):
 
     # Checking the output format
     for out_format in args.out_format:
-        if out_format not in {"impute2", "dosage", "calls"}:
+        if out_format not in {"impute2", "dosage", "calls", "bed"}:
             raise GenipeError("{}: invalid output format".format(out_format))
+
+        if out_format == "bed":
+            if not HAS_PYPLINK:
+                raise GenipeError("missing optional module: pyplink")
 
     return True
 
