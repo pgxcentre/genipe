@@ -169,6 +169,9 @@ def extract_markers(fn, to_extract, out_prefix, out_format, prob_t):
             open(out_prefix + ".bim", "w"),
         )
 
+    # Creating a fam (if bed)
+    samples = get_samples(get_file_prefix(fn) + ".sample")
+
     # Writing the header (if required)
     if "dosage" in o_files:
         print("chrom", "pos", "name", "minor", "major", "dosage", sep="\t",
@@ -223,6 +226,12 @@ def extract_markers(fn, to_extract, out_prefix, out_format, prob_t):
             o_prefix=out_prefix,
         )
 
+    # Writing the FAM file if bed
+    if "bed" in o_files:
+        cols = ["ID_1", "ID_2", "father", "mother", "sex", "plink_pheno"]
+        samples[cols].to_csv(out_prefix + ".fam", sep=" ", index=False,
+                             header=False)
+
     # Closing the files
     for o_format, o_file in o_files.items():
         if o_format == "bed":
@@ -234,6 +243,25 @@ def extract_markers(fn, to_extract, out_prefix, out_format, prob_t):
     # Extraction complete
     logging.info("Extraction of {:,d} markers "
                  "completed".format(len(all_extracted)))
+
+
+def get_samples(fn):
+    """Reads the sample files, and extract the information.
+
+    Args:
+        fn (str): the name of the sample file
+
+    Returns:
+        pandas.DataFrame: the sample information
+
+    """
+    # Reading the file
+    sample = pd.read_csv(fn, sep=" ")
+
+    # Removing the first data row
+    sample = sample.iloc[1:, ].reset_index(drop=True)
+
+    return sample
 
 
 def extract_companion_files(i_prefix, o_prefix, to_extract):
@@ -347,7 +375,7 @@ def print_data(o_files, prob_t, *, line=None, row=None):
         geno, minor, major = impute2.additive_from_probs(a1, a2, probabilities)
         geno[~good_calls] = -1
         o_files["bed"][0].write_genotypes(geno)
-        print(chrom, name, "0", pos, major, minor, sep="\t",
+        print(chrom, name, "0", pos, minor, major, sep="\t",
               file=o_files["bed"][1])
 
     # Hard calls?
@@ -590,6 +618,13 @@ def check_args(args):
         if out_format == "bed":
             if not HAS_PYPLINK:
                 raise GenipeError("missing optional module: pyplink")
+
+    # We want to check if there is a sample file for bed, calls and dosage
+    if out_format in {"bed", "calls", "dosage"}:
+        if not f_prefix + ".sample":
+            raise GenipeError("{}: sample file missing".format(
+                f_prefix + ".sample"),
+            )
 
     return True
 
