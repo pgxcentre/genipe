@@ -21,7 +21,7 @@ from numpy import nan
 from ..formats import index
 from ..formats import impute2
 from ..error import GenipeError
-from .. import __version__, autosomes
+from .. import __version__, chromosomes
 
 # Check if pyplink is installed
 try:
@@ -85,11 +85,11 @@ def main(args=None):
         check_args(args)
 
         if args.index_only:
-            return index_files(args.impute2)
+            return index_file(args.impute2)
 
         # Gathering what needs to be extracted
         to_extract = gather_extraction(
-            i_filenames=args.impute2,
+            fn=args.impute2,
             maf=args.maf,
             rate=args.rate,
             info=args.info,
@@ -99,7 +99,7 @@ def main(args=None):
 
         # Extraction
         extract_markers(
-            i_filenames=args.impute2,
+            fn=args.impute2,
             to_extract=to_extract,
             out_prefix=args.out,
             out_format=args.out_format,
@@ -125,11 +125,11 @@ def main(args=None):
             logging_fh.close()
 
 
-def index_files(i_filenames):
-    """Indexes the impute2 files.
+def index_file(fn):
+    """Indexes the impute2 file.
 
     Args:
-        i_filenames (list): the list of input file names
+        fn (str): the name of the impute2 file
 
     This function uses the :py:func:`genipe.formats.index.get_index` to create
     the index file if it's missing.
@@ -141,17 +141,16 @@ def index_files(i_filenames):
 
     """
     # For each input file
-    for i_filename in i_filenames:
-        index.get_index(i_filename, cols=[0, 1, 2],
-                        names=["chrom", "name", "pos"], sep=" ")
+    index.get_index(fn, cols=[0, 1, 2], names=["chrom", "name", "pos"],
+                    sep=" ")
 
 
-def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
+def extract_markers(fn, to_extract, out_prefix, out_format, prob_t):
     """Extracts according to names.
 
     Args:
-        i_filenames (list): the list of input file names
-        to_extract (dict): the list of markers to extract for each input file
+        fn (str): the name of the input file
+        to_extract (set): the list of markers to extract for each input file
         out_prefix (str): the output prefix
         out_format (list): the output format(s)
         prob_t (float): the probability threshold
@@ -178,53 +177,51 @@ def extract_markers(i_filenames, to_extract, out_prefix, out_format, prob_t):
     # Extracted positions
     all_extracted = set()
 
-    # Reading all impute2 files
-    for i_filename in i_filenames:
-        names = to_extract[i_filename]
-        extracted = set()
+    # Reading the impute2 file
+    extracted = set()
 
-        # Finding the name of the file containing the index
-        file_index = index.get_index(i_filename, cols=[0, 1, 2],
-                                     names=["chrom", "name", "pos"], sep=" ")
+    # Finding the name of the file containing the index
+    file_index = index.get_index(fn, cols=[0, 1, 2],
+                                 names=["chrom", "name", "pos"], sep=" ")
 
-        # Keeping only required values from the index
-        file_index = file_index[file_index.name.isin(names)]
+    # Keeping only required values from the index
+    file_index = file_index[file_index.name.isin(to_extract)]
 
-        # Getting all the markers value
-        logging.info("Extracting {:,d} markers".format(len(file_index)))
-        with index.get_open_func(i_filename)(i_filename, "r") as i_file:
-            for seek_value in file_index.seek.values:
-                # Seeking
-                i_file.seek(int(seek_value))
+    # Getting all the markers value
+    logging.info("Extracting {:,d} markers".format(len(file_index)))
+    with index.get_open_func(fn)(fn, "r") as i_file:
+        for seek_value in file_index.seek.values:
+            # Seeking
+            i_file.seek(int(seek_value))
 
-                # Reading the line
-                line = i_file.readline()
-                row = line.rstrip("\n").split(" ")
+            # Reading the line
+            line = i_file.readline()
+            row = line.rstrip("\n").split(" ")
 
-                # The marker name
-                name = row[1]
+            # The marker name
+            name = row[1]
 
-                # Printing the data
-                print_data(o_files, prob_t, line=line, row=row)
+            # Printing the data
+            print_data(o_files, prob_t, line=line, row=row)
 
-                # Saving statistics
-                extracted.add(name)
+            # Saving statistics
+            extracted.add(name)
 
-        logging.info("Extracted {:,d} markers".format(len(extracted)))
-        if len(names - extracted) > 0:
-            logging.warning("Missing {:,d} "
-                            "markers".format(len(names - extracted)))
+    logging.info("Extracted {:,d} markers".format(len(extracted)))
+    if len(to_extract - extracted) > 0:
+        logging.warning("Missing {:,d} "
+                        "markers".format(len(to_extract - extracted)))
 
-        # Keeping track of what has been extracted
-        all_extracted |= extracted
+    # Keeping track of what has been extracted
+    all_extracted |= extracted
 
-        # Extracting the companion files (if impute2 and files are present)
-        if "impute2" in o_files:
-            extract_companion_files(
-                i_prefix=get_file_prefix(i_filename),
-                to_extract=names,
-                o_prefix=out_prefix,
-            )
+    # Extracting the companion files (if impute2 and files are present)
+    if "impute2" in o_files:
+        extract_companion_files(
+            i_prefix=get_file_prefix(fn),
+            to_extract=to_extract,
+            o_prefix=out_prefix,
+        )
 
     # Closing the files
     for o_format, o_file in o_files.items():
@@ -360,12 +357,11 @@ def print_data(o_files, prob_t, *, line=None, row=None):
         print(chrom, name, "0", pos, *calls, sep="\t", file=o_files["calls"])
 
 
-def gather_extraction(i_filenames, maf, rate, info, extract_filename,
-                      genomic_range):
+def gather_extraction(fn, maf, rate, info, extract_filename, genomic_range):
     """Gather positions that are required.
 
     Args:
-        i_filenames (list): the list of input files
+        fn (str): the impute2 filename
         maf (float): the minor allele frequency threshold (might be ``None``)
         rate (float): the call rate threshold (might be ``None``)
         info (float): the marker information value threshold (might be
@@ -375,7 +371,7 @@ def gather_extraction(i_filenames, maf, rate, info, extract_filename,
         genomic_range (str): the genomic range for extraction
 
     Returns:
-        dict: the list of markers to extract for each input file
+        set: the set of markers to extract
 
     If extraction by marker name is required, only those markers will be
     extracted. Otherwise, ``maf``, ``rate``, ``info`` or ``genomic_range`` can
@@ -383,97 +379,91 @@ def gather_extraction(i_filenames, maf, rate, info, extract_filename,
     allele frequency, call rate and genomic location.
 
     """
-    to_extract = {}
+    logging.info("Gathering information about {}".format(fn))
 
-    for i_filename in i_filenames:
-        logging.info("Gathering information about {}".format(i_filename))
+    # The prefix of all the input files
+    prefix = get_file_prefix(fn)
 
-        # The prefix of all the input files
-        prefix = get_file_prefix(i_filename)
+    # Reading the map file
+    logging.info("Reading MAP data")
+    map_data = pd.read_csv(prefix + ".map", sep="\t", usecols=[0, 1, 3],
+                           names=["chrom", "name", "pos"])
+    map_data = map_data.set_index("name", verify_integrity=True)
+    logging.info("MAP data contained {:,d} markers".format(len(map_data)))
 
-        # Reading the map file
-        logging.info("Reading MAP data")
-        map_data = pd.read_csv(prefix + ".map", sep="\t", usecols=[0, 1, 3],
-                               names=["chrom", "name", "pos"])
-        map_data = map_data.set_index("name", verify_integrity=True)
-        logging.info("MAP data contained {:,d} markers".format(len(map_data)))
+    # If extraction, we only require a list of marker names
+    if extract_filename is not None:
+        available_markers = map_data.index
+        marker_list = None
+        with open(extract_filename, "r") as i_file:
+            marker_list = set(i_file.read().splitlines())
 
-        # If extraction, we only require a list of marker names
-        if extract_filename is not None:
-            available_markers = map_data.index
-            marker_list = None
-            with open(extract_filename, "r") as i_file:
-                marker_list = set(i_file.read().splitlines())
+        return set(available_markers.intersection(marker_list))
 
-            to_extract[i_filename] = set(
-                available_markers.intersection(marker_list)
-            )
-            continue
+    # Do we require a genomic location?
+    if genomic_range is not None:
+        logging.info("Keeping markers in required genomic region")
+        map_data = map_data[(
+            (map_data.chrom == genomic_range.chrom) &
+            (map_data.pos >= genomic_range.start) &
+            (map_data.pos <= genomic_range.end)
+        )]
+        logging.info("Required genomic region contained {:,d} "
+                     "markers".format(len(map_data)))
 
-        # Do we require a genomic location?
-        if genomic_range is not None:
-            logging.info("Keeping markers in required genomic region")
-            map_data = map_data[(
-                (map_data.chrom == genomic_range.chrom) &
-                (map_data.pos >= genomic_range.start) &
-                (map_data.pos <= genomic_range.end)
-            )]
-            logging.info("Required genomic region contained {:,d} "
-                         "markers".format(len(map_data)))
+    # Do we require a certain MAF?
+    if maf is not None:
+        logging.info("Reading MAF data")
+        maf_data = pd.read_csv(prefix + ".maf", sep="\t")
+        maf_data = maf_data.set_index("name", verify_integrity=True)
 
-        # Do we require a certain MAF?
-        if maf is not None:
-            logging.info("Reading MAF data")
-            maf_data = pd.read_csv(prefix + ".maf", sep="\t")
-            maf_data = maf_data.set_index("name", verify_integrity=True)
+        # Merging
+        map_data = pd.merge(
+            map_data,
+            maf_data[maf_data.maf >= maf],
+            how="inner",
+            left_index=True,
+            right_index=True,
+        )
+        logging.info("{:,d} markers with maf >= {}".format(len(map_data), maf))
 
-            # Merging
-            map_data = pd.merge(
-                map_data,
-                maf_data[maf_data.maf >= maf],
-                how="inner",
-                left_index=True,
-                right_index=True,
-            )
-            logging.info("{:,d} markers with maf >= "
-                         "{}".format(len(map_data), maf))
+    # Do we required a certain completion rate?
+    if rate is not None:
+        logging.info("Reading completion rates")
+        rate_data = pd.read_csv(prefix + ".completion_rates", sep="\t",
+                                usecols=[0, 2])
+        rate_data = rate_data.set_index("name", verify_integrity=True)
+        map_data = pd.merge(
+            map_data,
+            rate_data[rate_data.completion_rate >= rate],
+            how="inner",
+            left_index=True,
+            right_index=True,
+        )
+        logging.info("{:,d} markers with completion rate >= "
+                     "{}".format(len(map_data), rate))
 
-        # Do we required a certain completion rate?
-        if rate is not None:
-            logging.info("Reading completion rates")
-            rate_data = pd.read_csv(prefix + ".completion_rates", sep="\t",
-                                    usecols=[0, 2])
-            rate_data = rate_data.set_index("name", verify_integrity=True)
-            map_data = pd.merge(
-                map_data,
-                rate_data[rate_data.completion_rate >= rate],
-                how="inner",
-                left_index=True,
-                right_index=True,
-            )
-            logging.info("{:,d} markers with completion rate >= "
-                         "{}".format(len(map_data), rate))
+    # Do we required a certain information value?
+    if info is not None:
+        logging.info("Reading information values")
+        info_data = pd.read_csv(prefix + ".impute2_info", sep="\t")
+        info_data = info_data.set_index("name", verify_integrity=True)
+        map_data = pd.merge(
+            map_data,
+            info_data[info_data["info"] >= info],
+            how="inner",
+            left_index=True,
+            right_index=True,
+        )
+        logging.info("{:,d} markers with information value >= "
+                     "{}".format(len(map_data), info))
 
-        # Do we required a certain information value?
-        if info is not None:
-            logging.info("Reading information values")
-            info_data = pd.read_csv(prefix + ".impute2_info", sep="\t")
-            info_data = info_data.set_index("name", verify_integrity=True)
-            map_data = pd.merge(
-                map_data,
-                info_data[info_data["info"] >= info],
-                how="inner",
-                left_index=True,
-                right_index=True,
-            )
-            logging.info("{:,d} markers with information value >= "
-                         "{}".format(len(map_data), info))
+    # Extracting the names
+    to_extract = set(map_data.index)
 
-        # Extracting the names
-        to_extract[i_filename] = set(map_data.index)
-
-        if len(to_extract[i_filename]) == 0:
-            logging.warning("No marker left for analysis")
+    if len(to_extract) == 0:
+        logging.warning("No marker left for analysis")
+        sys.exit(0)
 
     return to_extract
 
@@ -515,10 +505,9 @@ def check_args(args):
         (``--index`` option).
 
     """
-    # Checking that the impute2 files exists
-    for filename in args.impute2:
-        if not os.path.isfile(filename):
-            raise GenipeError("{}: no such file".format(filename))
+    # Checking that the impute2 file exists
+    if not os.path.isfile(args.impute2):
+        raise GenipeError("{}: no such file".format(filename))
 
     if args.index_only:
         return True
@@ -550,7 +539,7 @@ def check_args(args):
         start = int(genomic_match.group(2))
         end = int(genomic_match.group(3))
 
-        if chrom not in autosomes:
+        if chrom not in chromosomes:
             raise GenipeError("{}: invalid chromosome".format(chrom))
 
         if end < start:
@@ -586,13 +575,12 @@ def check_args(args):
         raise GenipeError("{}: invalid probability "
                           "threshold".format(args.prob))
 
-    # Checking the other files (for each impute2 file)
-    for filename in args.impute2:
-        f_prefix = get_file_prefix(filename)
-        for f_extension in extensions:
-            fn = f_prefix + "." + f_extension
-            if not os.path.isfile(fn):
-                raise GenipeError("{}: no such file".format(fn))
+    # Checking the companion files (for impute2)
+    f_prefix = get_file_prefix(args.impute2)
+    for f_extension in extensions:
+        fn = f_prefix + "." + f_extension
+        if not os.path.isfile(fn):
+            raise GenipeError("{}: no such file".format(fn))
 
     # Checking the output format
     for out_format in args.out_format:
@@ -642,7 +630,6 @@ def parse_args(parser, args=None):
         type=str,
         metavar="FILE",
         required=True,
-        nargs="+",
         help="The output from IMPUTE2.",
     )
 
