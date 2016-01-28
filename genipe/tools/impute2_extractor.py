@@ -104,6 +104,7 @@ def main(args=None):
             out_prefix=args.out,
             out_format=args.out_format,
             prob_t=args.prob,
+            is_long=args.long_format,
         )
 
     # Catching the Ctrl^C
@@ -145,7 +146,7 @@ def index_file(fn):
                     sep=" ")
 
 
-def extract_markers(fn, to_extract, out_prefix, out_format, prob_t):
+def extract_markers(fn, to_extract, out_prefix, out_format, prob_t, is_long):
     """Extracts according to names.
 
     Args:
@@ -154,6 +155,7 @@ def extract_markers(fn, to_extract, out_prefix, out_format, prob_t):
         out_prefix (str): the output prefix
         out_format (list): the output format(s)
         prob_t (float): the probability threshold
+        is_long (bool): True if format needs to be long
 
     """
     # The output files (probabilities)
@@ -176,13 +178,21 @@ def extract_markers(fn, to_extract, out_prefix, out_format, prob_t):
 
     # Writing the header (for dosage)
     if "dosage" in o_files:
-        print("chrom", "pos", "name", "minor", "major",
-              *sample_names, sep="\t", file=o_files["dosage"])
+        if is_long:
+            print("fid", "iid", "chrom", "pos", "name", "minor", "major",
+                  "dosage", sep="\t", file=o_files["dosage"])
+        else:
+            print("chrom", "pos", "name", "minor", "major",
+                  *sample_names, sep="\t", file=o_files["dosage"])
 
     # Writing the header (for calls)
     if "calls" in o_files:
-        print("chrom", "name", "cm", "pos",
-              *sample_names, sep="\t", file=o_files["calls"])
+        if is_long:
+            print("fid", "iid", "chrom", "name", "cm", "pos", "call",
+                  sep="\t", file=o_files["calls"])
+        else:
+            print("chrom", "name", "cm", "pos",
+                  *sample_names, sep="\t", file=o_files["calls"])
 
     # Extracted positions
     all_extracted = set()
@@ -212,7 +222,8 @@ def extract_markers(fn, to_extract, out_prefix, out_format, prob_t):
             name = row[1]
 
             # Printing the data
-            print_data(o_files, prob_t, line=line, row=row)
+            print_data(o_files, prob_t, samples.ID_1, samples.ID_2, line=line,
+                       row=row, is_long=is_long)
 
             # Saving statistics
             extracted.add(name)
@@ -328,12 +339,15 @@ def extract_companion_files(i_prefix, o_prefix, to_extract):
         shutil.copyfile(sample_fn, o_fn)
 
 
-def print_data(o_files, prob_t, *, line=None, row=None):
+def print_data(o_files, prob_t, fid, iid, is_long, *, line=None, row=None):
     """Prints an impute2 line.
 
     Args:
         o_files (dict): the output files
         prob_t (float): the probability threshold
+        fid (list): the list of family IDs
+        iid (list): the list of sample IDs
+        is_long (bool): True if the format is long (dosage, calls)
         line (str): the impute2 line
         row (list): the impute2 line, split by spaces
 
@@ -374,8 +388,15 @@ def print_data(o_files, prob_t, *, line=None, row=None):
         dosage[~good_calls] = nan
 
         alleles = [a1, nan, a2]
-        print(chrom, pos, name, alleles[minor], alleles[major], *dosage,
-              sep="\t", file=o_files["dosage"])
+
+        if is_long:
+            for sample_f, sample_i, sample_d in zip(fid, iid, dosage):
+                print(sample_f, sample_i, chrom, pos, name, alleles[minor],
+                      alleles[major], sample_d, sep="\t",
+                      file=o_files["dosage"])
+        else:
+            print(chrom, pos, name, alleles[minor], alleles[major], *dosage,
+                  sep="\t", file=o_files["dosage"])
 
     # Bed?
     if "bed" in o_files:
@@ -389,7 +410,14 @@ def print_data(o_files, prob_t, *, line=None, row=None):
     if "calls" in o_files:
         calls = impute2.hard_calls_from_probs(a1, a2, probabilities)
         calls[~good_calls] = "0 0"
-        print(chrom, name, "0", pos, *calls, sep="\t", file=o_files["calls"])
+
+        if is_long:
+            for sample_f, sample_i, sample_c in zip(fid, iid, calls):
+                print(sample_f, sample_i, chrom, name, "0", pos, sample_c,
+                      sep="\t", file=o_files["calls"])
+        else:
+            print(chrom, name, "0", pos, *calls, sep="\t",
+                  file=o_files["calls"])
 
 
 def gather_extraction(fn, maf, rate, info, extract_filename, genomic_range):
@@ -626,12 +654,11 @@ def check_args(args):
             if not HAS_PYPLINK:
                 raise GenipeError("missing optional module: pyplink")
 
-    # We want to check if there is a sample file for bed, calls and dosage
-    if out_format in {"bed", "calls", "dosage"}:
-        if not f_prefix + ".sample":
-            raise GenipeError("{}: sample file missing".format(
-                f_prefix + ".sample"),
-            )
+        if out_format in {"bed", "calls", "dosage"}:
+            if not f_prefix + ".sample":
+                raise GenipeError("{}: sample file missing".format(
+                    f_prefix + ".sample"),
+                )
 
     return True
 
@@ -704,6 +731,14 @@ def parse_args(parser, args=None):
              "probabilities (same as impute2 format, i.e. 3 values per "
              "sample), 'dosage' for dosage values (one value between 0 and 2 "
              "by sample), or 'calls' for hard calls. %(default)s",
+    )
+    group.add_argument(
+        "--long",
+        action="store_true",
+        dest="long_format",
+        help="Write the output file in the long format (one line per sample "
+             "per marker). This option is only compatible with the 'calls' "
+             "and 'dosage' format (option '--format').",
     )
     group.add_argument(
         "--prob",
