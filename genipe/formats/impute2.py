@@ -21,7 +21,7 @@ __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 __all__ = ["matrix_from_line", "get_good_probs", "maf_from_probs",
            "dosage_from_probs", "hard_calls_from_probs",
-           "maf_dosage_from_probs"]
+           "maf_dosage_from_probs", "additive_from_probs"]
 
 
 def matrix_from_line(impute2_line):
