@@ -1286,9 +1286,10 @@ def check_args(args):
                 args.pheno,
                 name,
             ))
-        if args.pheno_name in categorical_set:
-            raise GenipeError("{}: {}: should not be in categorical "
-                              "list".format(args.pheno, args.pheno_name))
+        if args.analysis_type != "cox":
+            if args.pheno_name in categorical_set:
+                raise GenipeError("{}: {}: should not be in categorical "
+                                  "list".format(args.pheno, args.pheno_name))
     args.categorical = categorical_set
 
     # Checking the co-variables
