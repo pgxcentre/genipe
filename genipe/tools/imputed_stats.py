@@ -9,6 +9,7 @@
 import re
 import os
 import sys
+import stat
 import datetime
 import logging
 import argparse
@@ -1193,6 +1194,19 @@ def _get_result_from_logistic_mixedlm(fit_result, result_col):
     ]
 
 
+def is_file_like(fn):
+    """Checks if the path is like a file (it might be a named pipe).
+
+    Args:
+        fn (str): the path to check
+
+    Returns:
+        bool: True if path is like a file, False otherwise.
+
+    """
+    return os.path.isfile(fn) or stat.S_ISFIFO(os.stat(fn).st_mode)
+
+
 def check_args(args):
     """Checks the arguments and options.
 
@@ -1221,14 +1235,14 @@ def check_args(args):
             raise GenipeError("R library missing: SKAT")
 
     # Checking the required input files
-    for filename in [args.impute2, args.sample, args.pheno]:
+    for filename in [args.impute2, args.sample]:
         if not os.path.isfile(filename):
             raise GenipeError("{}: no such file".format(filename))
 
     # Checking the optional input files
-    for filename in [args.extract_sites]:
+    for filename in [args.extract_sites, args.pheno]:
         if filename is not None:
-            if not os.path.isfile(filename):
+            if not is_file_like(filename):
                 raise GenipeError("{}: no such file".format(filename))
 
     # Checking the number of process
