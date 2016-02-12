@@ -104,9 +104,6 @@ def main(args=None):
         # Parsing the options
         args = parse_args(parser, args)
 
-        # Getting the output directory (dirname of the output prefix
-        out_dir = os.path.dirname(args.out)
-
         # Adding the logging capability
         log_file = args.out + ".log"
         logging_fh = logging.FileHandler(log_file, mode="w")
@@ -240,6 +237,15 @@ def read_phenotype(i_filename, opts, check_duplicated=True):
 
     # We need to exclude unknown gender only if gender was required
     if (opts.gender_column in required_columns) and (not remove_gender_column):
+        # Log the number of male/female/missing.
+        sex_counts = pheno.groupby(opts.gender_column).size()
+        logging.info("  - {:,d} males / {:,d} females ({:,d} unknown)".format(
+            sex_counts.get(1, 0),
+            sex_counts.get(2, 0),
+            sex_counts.loc[~((sex_counts.index == 1) |
+                             (sex_counts.index == 2))].sum()
+        ))
+
         pheno = pheno[(pheno[opts.gender_column] == 1) |
                       (pheno[opts.gender_column] == 2)]
 
@@ -824,7 +830,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
             nb_processed += len(sites_to_process)
             logging.info("Processed {:,d} lines".format(nb_processed))
 
-    except Exception as e:
+    except Exception:
         if pool is not None:
             pool.terminate()
         logging.error(traceback.format_exc())
@@ -1070,7 +1076,7 @@ def fit_cox(data, time_to_event, event, result_col, **kwargs):
 
     """
     cf = CoxPHFitter(alpha=0.95, tie_method="Efron", normalize=False)
-    res = cf.fit(data, duration_col=time_to_event, event_col=event)
+    cf.fit(data, duration_col=time_to_event, event_col=event)
     return cf.summary.loc[result_col, _COX_REQ_COLS].values
 
 
