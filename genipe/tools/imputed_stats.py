@@ -1235,12 +1235,12 @@ def check_args(args):
             raise GenipeError("R library missing: SKAT")
 
     # Checking the required input files
-    for filename in [args.impute2, args.sample]:
+    for filename in [args.impute2, args.sample, args.pheno]:
         if not os.path.isfile(filename):
             raise GenipeError("{}: no such file".format(filename))
 
     # Checking the optional input files
-    for filename in [args.extract_sites, args.pheno]:
+    for filename in [args.extract_sites]:
         if filename is not None:
             if not is_file_like(filename):
                 raise GenipeError("{}: no such file".format(filename))
