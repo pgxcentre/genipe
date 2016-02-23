@@ -112,6 +112,16 @@ class TestImpute2Extractor(unittest.TestCase):
                 "1:4214570_1\t3\t{}\n"
             ).format(1, 2/3, 2/3, 2/3, 2/3, 2/3, 0))
 
+        filename = os.path.join(self.output_dir.name, "genipe.sample")
+        with open(filename, "w") as o_file:
+            o_file.write(
+             "ID_1 ID_2 missing father mother sex plink_pheno\n"
+             "0 0 0 D D D B\n"
+             "f1 s1 0 0 0 0 -9\n"
+             "f2 s2 0 0 0 0 -9\n"
+             "f3 s3 0 0 0 0 -9\n"
+            )
+
         self.common_args = [
             "--impute2", os.path.join(self.output_dir.name, "genipe.impute2"),
             "--format", "impute2", "dosage", "calls",
@@ -156,7 +166,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the dosage file
         expected = (
-            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "chrom\tpos\tname\tminor\tmajor\tf1/s1\tf2/s2\tf3/s3\n"
             "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
             "1\t3214572\trs23457_2\tT\tTC\tnan\t1.0\t0.0\n"
             "1\t4214570\t1:4214570_1\tTC\tT\tnan\tnan\tnan\n"
@@ -168,6 +178,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the hard calls file
         expected = (
+            "chrom\tname\tcm\tpos\tf1/s1\tf2/s2\tf3/s3\n"
             "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
             "1\trs23457_2\t0\t3214572\t0 0\tT TC\tTC TC\n"
             "1\t1:4214570_1\t0\t4214570\t0 0\t0 0\t0 0\n"
@@ -249,7 +260,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the dosage file
         expected = (
-            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "chrom\tpos\tname\tminor\tmajor\tf1/s1\tf2/s2\tf3/s3\n"
             "1\t3214570\trs23457\tT\tTC\tnan\t1.0\t0.0\n"
             "1\t3214571\trs23457_1\tT\tTC\tnan\t1.0\t0.0\n"
             "1\t3214572\trs23457_2\tT\tTC\tnan\t1.0\t0.0\n"
@@ -262,6 +273,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the hard calls file
         expected = (
+            "chrom\tname\tcm\tpos\tf1/s1\tf2/s2\tf3/s3\n"
             "1\trs23457\t0\t3214570\t0 0\tT TC\tTC TC\n"
             "1\trs23457_1\t0\t3214571\t0 0\tT TC\tTC TC\n"
             "1\trs23457_2\t0\t3214572\t0 0\tT TC\tTC TC\n"
@@ -349,7 +361,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the dosage file
         expected = (
-            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "chrom\tpos\tname\tminor\tmajor\tf1/s1\tf2/s2\tf3/s3\n"
             "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
             "1\t3214570\trs23457\tT\tTC\tnan\t1.0\t0.0\n"
             "1\t3214571\trs23457_1\tT\tTC\tnan\t1.0\t0.0\n"
@@ -363,6 +375,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the hard calls file
         expected = (
+            "chrom\tname\tcm\tpos\tf1/s1\tf2/s2\tf3/s3\n"
             "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
             "1\trs23457\t0\t3214570\t0 0\tT TC\tTC TC\n"
             "1\trs23457_1\t0\t3214571\t0 0\tT TC\tTC TC\n"
@@ -457,7 +470,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the dosage file
         expected = (
-            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "chrom\tpos\tname\tminor\tmajor\tf1/s1\tf2/s2\tf3/s3\n"
             "1\t1231415\trs12345\tG\tA\t0.0\t0.002\t1.003\n"
             "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
             "1\t3214570\trs23457\tT\tTC\tnan\t1.0\t0.0\n"
@@ -472,6 +485,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the hard calls file
         expected = (
+            "chrom\tname\tcm\tpos\tf1/s1\tf2/s2\tf3/s3\n"
             "1\trs12345\t0\t1231415\tA A\tA A\tA G\n"
             "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
             "1\trs23457\t0\t3214570\t0 0\tT TC\tTC TC\n"
@@ -571,7 +585,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the dosage file
         expected = (
-            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "chrom\tpos\tname\tminor\tmajor\tf1/s1\tf2/s2\tf3/s3\n"
             "1\t1231415\trs12345\tG\tA\t0.0\t0.002\t1.003\n"
             "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
             "1\t3214571\trs23457_1\tT\tTC\tnan\t1.0\t0.0\n"
@@ -585,6 +599,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the hard calls file
         expected = (
+            "chrom\tname\tcm\tpos\tf1/s1\tf2/s2\tf3/s3\n"
             "1\trs12345\t0\t1231415\tA A\tA A\tA G\n"
             "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
             "1\trs23457_1\t0\t3214571\t0 0\tT TC\tTC TC\n"
@@ -675,7 +690,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the dosage file
         expected = (
-            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "chrom\tpos\tname\tminor\tmajor\tf1/s1\tf2/s2\tf3/s3\n"
             "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
         )
         observed = None
@@ -685,6 +700,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the hard calls file
         expected = (
+            "chrom\tname\tcm\tpos\tf1/s1\tf2/s2\tf3/s3\n"
             "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
         )
         observed = None
@@ -755,7 +771,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the dosage file
         expected = (
-            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "chrom\tpos\tname\tminor\tmajor\tf1/s1\tf2/s2\tf3/s3\n"
             "1\t1231415\trs12345\tG\tA\t0.0\t0.002\t1.003\n"
         )
         observed = None
@@ -765,6 +781,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the hard calls file
         expected = (
+            "chrom\tname\tcm\tpos\tf1/s1\tf2/s2\tf3/s3\n"
             "1\trs12345\t0\t1231415\tA A\tA A\tA G\n"
         )
         observed = None
@@ -839,7 +856,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the dosage file
         expected = (
-            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "chrom\tpos\tname\tminor\tmajor\tf1/s1\tf2/s2\tf3/s3\n"
             "1\t1231415\trs12345\tG\tA\t0.0\t0.002\t1.003\n"
             "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
             "1\t3214570\trs23457\tT\tTC\tnan\t1.0\t0.0\n"
@@ -853,6 +870,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the hard calls file
         expected = (
+            "chrom\tname\tcm\tpos\tf1/s1\tf2/s2\tf3/s3\n"
             "1\trs12345\t0\t1231415\tA A\tA A\tA G\n"
             "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
             "1\trs23457\t0\t3214570\t0 0\tT TC\tTC TC\n"
@@ -947,7 +965,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the dosage file
         expected = (
-            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "chrom\tpos\tname\tminor\tmajor\tf1/s1\tf2/s2\tf3/s3\n"
             "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
             "1\t3214570\trs23457\tT\tTC\tnan\t1.0\t0.0\n"
             "1\t3214571\trs23457_1\tT\tTC\tnan\t1.0\t0.0\n"
@@ -961,6 +979,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the hard calls file
         expected = (
+            "chrom\tname\tcm\tpos\tf1/s1\tf2/s2\tf3/s3\n"
             "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
             "1\trs23457\t0\t3214570\t0 0\tT TC\tTC TC\n"
             "1\trs23457_1\t0\t3214571\t0 0\tT TC\tTC TC\n"
@@ -1053,7 +1072,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the dosage file
         expected = (
-            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "chrom\tpos\tname\tminor\tmajor\tf1/s1\tf2/s2\tf3/s3\n"
             "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
             "1\t3214571\trs23457_1\tT\tTC\tnan\t1.0\t0.0\n"
             "1\t3214573\t1:3214573\tT\tTC\tnan\t1.0\t0.0\n"
@@ -1065,6 +1084,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the hard calls file
         expected = (
+            "chrom\tname\tcm\tpos\tf1/s1\tf2/s2\tf3/s3\n"
             "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
             "1\trs23457_1\t0\t3214571\t0 0\tT TC\tTC TC\n"
             "1\t1:3214573\t0\t3214573\t0 0\tT TC\tTC TC\n"
@@ -1146,7 +1166,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the dosage file
         expected = (
-            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "chrom\tpos\tname\tminor\tmajor\tf1/s1\tf2/s2\tf3/s3\n"
             "1\t1231415\trs12345\tG\tA\t0.0\t0.002\t1.003\n"
             "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
         )
@@ -1157,6 +1177,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the hard calls file
         expected = (
+            "chrom\tname\tcm\tpos\tf1/s1\tf2/s2\tf3/s3\n"
             "1\trs12345\t0\t1231415\tA A\tA A\tA G\n"
             "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
         )
@@ -1237,7 +1258,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the dosage file
         expected = (
-            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "chrom\tpos\tname\tminor\tmajor\tf1/s1\tf2/s2\tf3/s3\n"
             "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
             "1\t3214570\trs23457\tT\tTC\tnan\t1.0\t0.0\n"
             "1\t3214571\trs23457_1\tT\tTC\tnan\t1.0\t0.0\n"
@@ -1251,6 +1272,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the hard calls file
         expected = (
+            "chrom\tname\tcm\tpos\tf1/s1\tf2/s2\tf3/s3\n"
             "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
             "1\trs23457\t0\t3214570\t0 0\tT TC\tTC TC\n"
             "1\trs23457_1\t0\t3214571\t0 0\tT TC\tTC TC\n"
@@ -1342,7 +1364,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the dosage file
         expected = (
-            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "chrom\tpos\tname\tminor\tmajor\tf1/s1\tf2/s2\tf3/s3\n"
             "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
         )
         observed = None
@@ -1352,6 +1374,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the hard calls file
         expected = (
+            "chrom\tname\tcm\tpos\tf1/s1\tf2/s2\tf3/s3\n"
             "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
         )
         observed = None
@@ -1423,7 +1446,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the dosage file
         expected = (
-            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "chrom\tpos\tname\tminor\tmajor\tf1/s1\tf2/s2\tf3/s3\n"
             "1\t1231415\trs12345\tG\tA\t0.0\t0.002\t1.003\n"
         )
         observed = None
@@ -1433,6 +1456,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the hard calls file
         expected = (
+            "chrom\tname\tcm\tpos\tf1/s1\tf2/s2\tf3/s3\n"
             "1\trs12345\t0\t1231415\tA A\tA A\tA G\n"
         )
         observed = None
@@ -1505,7 +1529,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the dosage file
         expected = (
-            "chrom\tpos\tname\tminor\tmajor\tdosage\n"
+            "chrom\tpos\tname\tminor\tmajor\tf1/s1\tf2/s2\tf3/s3\n"
             "1\t3214569\trs23456\tC\tT\tnan\t0.099\t2.0\n"
         )
         observed = None
@@ -1515,6 +1539,7 @@ class TestImpute2Extractor(unittest.TestCase):
 
         # Checking the hard calls file
         expected = (
+            "chrom\tname\tcm\tpos\tf1/s1\tf2/s2\tf3/s3\n"
             "1\trs23456\t0\t3214569\t0 0\tT T\tC C\n"
         )
         observed = None

@@ -547,6 +547,39 @@ class TestFormats(unittest.TestCase):
         self.assertEqual(expected.shape, observed.shape)
         self.assertTrue((expected == observed).all())
 
+    def test_additive_from_probs(self):
+        """Tests the 'additive_from_probs' function."""
+        probs = np.array(
+            [[0.9, 0.1, 0.0],   # AA
+             [0.1, 0.9, 0.0],   # AB
+             [0.0, 0.1, 0.9],   # BB
+             [0.9, 0.1, 0.0],   # AA
+             [0.0, 0.1, 0.9],   # BB
+             [0.9, 0.1, 0.0],   # AA
+             [0.9, 0.1, 0.0],   # AA
+             [0.1, 0.9, 0.0],   # AB
+             [0.1, 0.9, 0.0],   # AB
+             [0.9, 0.1, 0.0]],  # AA
+            dtype=float,
+        )
+        r_probs = np.array([i[::-1] for i in probs], dtype=float)
+
+        # Getting the observed data for the normal probabilities
+        calls, minor, major = additive_from_probs("A", "B", probs)
+
+        # Comparing
+        self.assertEqual("B", minor)
+        self.assertEqual("A", major)
+        self.assertEqual([0, 1, 2, 0, 2, 0, 0, 1, 1, 0], list(calls))
+
+        # Getting the observed data for the reversed probabilities
+        calls, minor, major = additive_from_probs("A", "B", r_probs)
+
+        # Comparing
+        self.assertEqual("A", minor)
+        self.assertEqual("B", major)
+        self.assertEqual([0, 1, 2, 0, 2, 0, 0, 1, 1, 0], list(calls))
+
     def _my_compatibility_assertLogs(self, logger=None, level=None):
         """Compatibility 'assertLogs' function for Python 3.3."""
         if hasattr(self, "assertLogs"):

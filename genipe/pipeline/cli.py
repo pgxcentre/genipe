@@ -11,6 +11,7 @@ import os
 import re
 import sys
 import json
+import shlex
 import logging
 import argparse
 from glob import glob
@@ -96,7 +97,9 @@ def main():
                       logging.FileHandler(log_file, mode="w")]
         )
         logging.info("Logging everything into '{}'".format(log_file))
-        logging.info("Program arguments: '{}'".format(" ".join(sys.argv[1:])))
+        logging.info("Program arguments: {}".format(
+            " ".join(shlex.quote(part) for part in sys.argv[1:])
+        ))
 
         # Checking the options
         check_args(args)

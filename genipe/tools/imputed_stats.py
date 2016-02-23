@@ -10,6 +10,7 @@ import re
 import os
 import sys
 import stat
+import shlex
 import datetime
 import logging
 import argparse
@@ -115,7 +116,9 @@ def main(args=None):
             handlers=[logging.StreamHandler(), logging_fh]
         )
         logging.info("Logging everything into '{}'".format(log_file))
-        logging.info("Program arguments: '{}'".format(" ".join(sys.argv[1:])))
+        logging.info("Program arguments: {}".format(
+            " ".join(shlex.quote(part) for part in sys.argv[1:])
+        ))
 
         # Checking the options
         check_args(args)
