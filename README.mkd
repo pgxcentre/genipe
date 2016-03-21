@@ -30,8 +30,12 @@ pip install genipe
 conda install genipe -c http://statgen.org/wp-content/uploads/Softwares/genipe
 ```
 
-The installation process should install all required dependencies, which are
-described below.
+The installation process should install all required dependencies to run the
+main imputation pipeline. Optional dependencies can also be installed manually
+in order to perform statistical analysis and data management (see below).
+
+The complete installation procedure is available in the
+[documentation](http://pgxcentre.github.io/genipe/installation.html).
 
 
 ### Dependencies
@@ -49,18 +53,18 @@ The tool requires the binaries for
 [shapeit](https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html#download)
 and [impute2](https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#download).
 
-A tool is provided to perform statistical analysis using the imputation results
-(linear, logistic and Cox's regressions). This tool requires the following
-Python modules:
 
-* `scipy` version 0.15.1 or latest (required by `statsmodels`)
-* `lifelines` version 0.7.0.0 and latest
-* `statsmodels` version 0.6.1 and latest
+### Optional dependencies
 
-Other packages are optional:
+In order to perform data management and statistical analysis (linear, logistic
+and Cox's regressions), `genipe` requires the following Python modules:
 
-* `Matplotlib` version 1.4.2
+* `Matplotlib` version 1.4.2 or latest
+* `scipy` version 0.15.1 or latest
+* `statsmodels` version 0.6.1 or latest
+* `lifelines` version 0.7.0 or latest
 * `Biopython` version 1.65 or latest
+* `pyfaidx` version 0.3.7 or latest
 
 Finally, the tool requires a LaTeX installation to compile the automatically
 generated report in PDF format.
