@@ -111,40 +111,39 @@ and download the most recent reference data (which is over 12Gb). Once the
 reference is downloaded, extract it in the working directory
 (``$HOME/genipe_tutorial``).
 
+The following commands should download the reference files (1000 Genomes phase
+3) and extract them in the required directory. Note that the specified URL
+might change.
+
+.. code-block:: bash
+
+   cd $HOME/genipe_tutorial
+
+   wget https://mathgen.stats.ox.ac.uk/impute/1000GP_Phase3.tgz
+   tar -zxf 1000GP_Phase3.tgz
+   rm 1000GP_Phase3.tgz
+
 
 Human reference (optional)
 """""""""""""""""""""""""""
 
-The pipeline include a step to check for strand alignment with the reference
-panel (using *SHAPEIT*). The drawback of this method is that it is impossible
-to verify the strand of markers which are absent from the *IMPUTE2*'s
-reference. We have introduce a way to check the strand using the reference
-genome (in *fasta* format, indexed using *faidx*).
+The pipeline include an optional step to check for strand alignment with the
+reference panel (using *SHAPEIT*). The drawback of this method is that it is
+impossible to verify the strand of markers which are absent from the
+*IMPUTE2*'s reference. We have introduce a way to check the strand using the
+reference genome (in *fasta* format, indexed using *faidx*).
 
-It is possible to download the human reference (*fasta* format) from
-`UCSC's download page <http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/>`_
-(the file named ``chromFa.tar.gz``).
+We have created such reference using the
+`UCSC's human reference <http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/>`_.
 
 .. code-block:: bash
 
    mkdir -p $HOME/genipe_tutorial/hg19
    cd $HOME/genipe_tutorial/hg19
 
-   wget http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/chromFa.tar.gz
-   tar -zxf chromFa.tar.gz
-   for chrom in $(seq 1 22) X Y M; do cat chr${chrom}.fa; done > hg19.fasta
-   rm -f *.fa chromFa.tar.gz
-
-To index the *fasta* file, *samtools* is required at
-`htslib's download page <http://www.htslib.org/download/>`_. Once *samtools* is
-installed, perform the following command:
-
-.. code-block:: bash
-
-   samtools faidx hg19.fasta
-
-You should now have two files in the ``$HOME/genipe_tutorial/hg19`` directory:
-``hg19.fasta`` and ``hg19.fasta.fai``.
+   wget http://statgen.org/wp-content/uploads/Softwares/genipe/supp_files/hg19.tar.bz2
+   tar -jxf hg19.tar.bz2
+   rm hg19.tar.bz2
 
 
 DRMAA configuration (optional)
