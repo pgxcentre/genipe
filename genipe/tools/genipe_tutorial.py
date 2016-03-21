@@ -182,7 +182,7 @@ def get_impute2_ref(path):
             tar_path,
         )
     except:
-        logger.critical("genotypes' URL is not available")
+        logger.critical("IMPUTE2' reference URL is not available")
         sys.exit(1)
 
     # Extracting genotypes
