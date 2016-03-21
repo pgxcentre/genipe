@@ -1,20 +1,10 @@
-Survival Tutorial
-==================
 
-
-Quick navigation
------------------
-
-1. :ref:`survival-tut-input-files`
-2. :ref:`survival-tut-execute`
-3. :ref:`survival-tut-output-files`
-4. :ref:`survival-tut-usage`
-5. :ref:`survival-tut-execution-time`
-6. :ref:`survival-tut-comparison`
+.. contents:: Quick navigation
+   :depth: 2
 
 
 Survival analysis
------------------
+------------------
 
 A popular technique to perform a survival analysis (regression) is the Cox's
 model. It is possible to perform such an analysis using imputation data (dosage

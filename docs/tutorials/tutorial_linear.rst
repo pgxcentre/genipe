@@ -1,16 +1,6 @@
-Linear Tutorial
-================
 
-
-Quick navigation
------------------
-
-1. :ref:`lin-tut-input-files`
-2. :ref:`lin-tut-execute`
-3. :ref:`lin-tut-output-files`
-4. :ref:`lin-tut-usage`
-5. :ref:`lin-tut-execution-time`
-6. :ref:`lin-tut-comparison`
+.. contents:: Quick navigation
+   :depth: 2
 
 
 Linear regression

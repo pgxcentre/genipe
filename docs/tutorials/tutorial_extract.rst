@@ -1,14 +1,6 @@
-Site Extraction Tutorial
-=========================
 
-
-Quick navigation
------------------
-
-1. :ref:`extract-tut-input-files`
-2. :ref:`extract-tut-execute`
-3. :ref:`extract-tut-output-files`
-4. :ref:`extract-tut-usage`
+.. contents:: Quick navigation
+   :depth: 2
 
 
 Site extraction

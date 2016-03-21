@@ -1,16 +1,6 @@
-Linear Mixed Effects Model Tutorial
-====================================
 
-
-Quick navigation
------------------
-
-1. :ref:`mixedlm-tut-input-files`
-2. :ref:`mixedlm-tut-execute`
-3. :ref:`mixedlm-tut-output-files`
-4. :ref:`mixedlm-tut-usage`
-5. :ref:`mixedlm-tut-execution-time`
-6. :ref:`mixedlm-tut-comparison`
+.. contents:: Quick navigation
+   :depth: 2
 
 
 Linear mixed effects model
