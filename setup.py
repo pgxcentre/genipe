@@ -17,7 +17,7 @@ from setuptools import setup
 
 MAJOR = 1
 MINOR = 2
-MICRO = 2
+MICRO = "3b"
 VERSION = "{0}.{1}.{2}".format(MAJOR, MINOR, MICRO)
 
 
@@ -75,6 +75,7 @@ def setup_package():
                 "impute2-merger=genipe.tools.impute2_merger:main",
                 "impute2-extractor=genipe.tools.impute2_extractor:main",
                 "imputed-stats=genipe.tools.imputed_stats:main",
+                "genipe-tutorial=genipe.tools.genipe_tutorial:main",
             ],
         },
         install_requires=["numpy >= 1.9.2", "Jinja2 >= 2.7.3",
