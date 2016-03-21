@@ -1,17 +1,9 @@
+
+.. contents:: Quick navigation
+   :depth: 2
+
+
 .. _genipe-tut-page:
-
-Pipeline Tutorial
-==================
-
-
-Quick navigation
------------------
-
-1. :ref:`genipe-tut-softwares`
-2. :ref:`genipe-tut-input-files`
-3. :ref:`genipe-tut-execute`
-4. :ref:`genipe-tut-compile-report`
-5. :ref:`genipe-tut-output-files`
 
 Genome-wide imputation pipeline
 --------------------------------

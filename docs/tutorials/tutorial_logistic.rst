@@ -1,16 +1,6 @@
-Logistic Tutorial
-==================
 
-
-Quick navigation
------------------
-
-1. :ref:`logit-tut-input-files`
-2. :ref:`logit-tut-execute`
-3. :ref:`logit-tut-output-files`
-4. :ref:`logit-tut-usage`
-5. :ref:`logit-tut-execution-time`
-6. :ref:`logit-tut-comparison`
+.. contents:: Quick navigation
+   :depth: 2
 
 
 Logistic regression

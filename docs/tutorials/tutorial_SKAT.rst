@@ -1,18 +1,10 @@
-SKAT Tutorial
-==============
 
-Quick navigation
------------------
+.. contents:: Quick navigation
+   :depth: 2
 
-1. :ref:`skat-tut-1`
-2. :ref:`skat-tut-2`
-3. :ref:`skat-tut-3`
-4. :ref:`skat-tut-4`
-5. :ref:`skat-tut-5`
-6. :ref:`skat-tut-6`
 
-SKAT analysis tutorial
------------------------
+SKAT analysis
+--------------
 
 `SKAT <http://www.hsph.harvard.edu/skat/>`_ is a very popular test for the
 association of sets of rare and common variants. In :py:mod:`genipe`, we

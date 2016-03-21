@@ -25,7 +25,7 @@ genome-wide imputation of genotypes. It describes in detail the expected input
 and output files.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    tutorials/tutorial_genipe
 
@@ -40,7 +40,7 @@ Cox's proportional hazard model). It describes in detail the expected input and
 output files.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    tutorials/tutorial_cox
 
@@ -54,7 +54,7 @@ This tutorial walks through a full example of a typical SKAT analysis while
 describing the expected input and output files.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    tutorials/tutorial_SKAT
 
@@ -69,7 +69,7 @@ This tutorial walks through a full example of a linear regression analysis
 output files.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    tutorials/tutorial_linear
 
@@ -84,7 +84,7 @@ This tutorial walks through a full example of a logistic regression analysis
 detail the expected input and output file.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    tutorials/tutorial_logistic
 
@@ -98,7 +98,7 @@ This tutorial walks through a full example of a linear mixed effects analysis.
 It describes in detail the expected input and output files.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    tutorials/tutorial_mixedlm
 
@@ -113,7 +113,7 @@ from imputation files. It describes in detail the expected input and output
 file.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
 
    tutorials/tutorial_extract
 
