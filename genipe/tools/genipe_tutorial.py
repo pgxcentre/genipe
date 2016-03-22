@@ -39,6 +39,28 @@ logging.basicConfig(
 logger = logging.getLogger("genipe-tutorial")
 
 
+_SCRIPT = r"""#!/usr/bin/env bash
+# Changing directory
+cd {path}
+
+# Launching the imputation with genipe
+genipe-launcher \
+    --bfile {genotypes_prefix} \
+    --shapeit-bin {shapeit_bin} \
+    --impute2-bin {impute2_bin} \
+    --plink-bin {plink_bin} \
+    --reference {hg19_fasta} \
+    --hap-template {hap_template} \
+    --legend-template {legend_template} \
+    --map-template {map_template} \
+    --sample-file {sample_file} \
+    --filtering-rules 'ALL<0.01' 'ALL>0.99' \
+    --thread 4 \
+    --report-title "Tutorial" \
+    --report-number "Test Report"
+"""
+
+
 def main(args=None):
     """The main function.
 
@@ -152,6 +174,9 @@ def main(args=None):
         else:
             logger.info("Impute2 reference files already downloaded")
 
+        # Generating the bash script
+        generate_bash(args.path)
+
     # Catching the Ctrl^C
     except KeyboardInterrupt:
         logger.info("Cancelled by user")
@@ -165,6 +190,38 @@ def main(args=None):
     except Exception as e:
         logger.error(e)
         raise
+
+
+def generate_bash(path):
+    """Generates a bash script to launch the imputation pipeline.
+
+    Args:
+        path (str): the path to write the bash script
+
+    """
+    fn = os.path.join(path, "execute.sh")
+    with open(fn, "w") as f:
+        f.write(_SCRIPT.format(
+            path=path,
+            genotypes_prefix=os.path.join(path, "data",
+                                          "hapmap_CEU_r23a_hg19"),
+            shapeit_bin=os.path.join(path, "bin", "shapeit"),
+            impute2_bin=os.path.join(path, "bin", "impute2"),
+            plink_bin=os.path.join(path, "bin", "plink"),
+            hg19_fasta=os.path.join(path, "hg19", "hg19.fasta"),
+            hap_template=os.path.join(path, "1000GP_Phase3",
+                                      "1000GP_Phase3_chr{chrom}.hap.gz"),
+            legend_template=os.path.join(path, "1000GP_Phase3",
+                                         "1000GP_Phase3_chr{chrom}.legend.gz"),
+            map_template=os.path.join(path, "1000GP_Phase3",
+                                      "genetic_map_chr{chrom}_combined_b37"
+                                      ".txt"),
+            sample_file=os.path.join(path, "1000GP_Phase3",
+                                     "1000GP_Phase3.sample"),
+        ))
+
+    # Making the script executable
+    os.chmod(fn, stat.S_IRWXU)
 
 
 def check_files(*filenames):
