@@ -78,7 +78,10 @@ def main(args=None):
                 os.mkdir(os.path.join(args.path, dirname))
 
         # Downloading Plink (if required)
-        if not os.path.isfile(os.path.join(args.path, "bin", "plink")):
+        has_plink = check_files(
+            os.path.join(args.path, "bin", "plink"),
+        )
+        if not has_plink:
             logger.info("Downloading Plink")
             get_plink(
                 os_name=os_name,
@@ -89,7 +92,10 @@ def main(args=None):
             logger.info("Plink already downloaded")
 
         # Downloading impute2
-        if not os.path.isfile(os.path.join(args.path, "bin", "impute2")):
+        has_impute2 = check_files(
+            os.path.join(args.path, "bin", "impute2"),
+        )
+        if not has_impute2:
             logger.info("Downloading impute2")
             get_impute2(
                 os_name=os_name,
@@ -100,7 +106,10 @@ def main(args=None):
             logger.info("Impute2 already downloaded")
 
         # Downloading shapeit
-        if not os.path.isfile(os.path.join(args.path, "bin", "shapeit")):
+        has_shapeit = check_files(
+            os.path.join(args.path, "bin", "shapeit"),
+        )
+        if not has_shapeit:
             logger.info("Downloading shapeit")
             get_shapeit(
                 os_name=os_name,
@@ -111,34 +120,33 @@ def main(args=None):
             logger.info("Shapeit already downloaded")
 
         # Downloading the reference
-        has_fasta = os.path.isfile(os.path.join(args.path, "hg19",
-                                                "hg19.fasta"))
-        has_fai = os.path.isfile(os.path.join(args.path, "hg19",
-                                              "hg19.fasta.fai"))
-        if not has_fasta or not has_fai:
+        has_hg19 = check_files(
+            os.path.join(args.path, "hg19", "hg19.fasta"),
+            os.path.join(args.path, "hg19", "hg19.fasta.fai"),
+        )
+        if not has_hg19:
             logger.info("Downloading hg19 reference")
             get_hg19(path=os.path.join(args.path, "hg19"))
         else:
             logger.info("hg19 already downloaded")
 
         # Downloading the genotypes
-        prefix = "hapmap_CEU_r23a_hg19"
-        has_bed = os.path.isfile(os.path.join(args.path, "data",
-                                              prefix + ".bed"))
-        has_bim = os.path.isfile(os.path.join(args.path, "data",
-                                              prefix + ".bim"))
-        has_fam = os.path.isfile(os.path.join(args.path, "data",
-                                              prefix + ".fam"))
-        if not has_bed or not has_bim or not has_fam:
+        has_geno = check_files(
+            os.path.join(args.path, "data", "hapmap_CEU_r23a_hg19.bed"),
+            os.path.join(args.path, "data", "hapmap_CEU_r23a_hg19.bim"),
+            os.path.join(args.path, "data", "hapmap_CEU_r23a_hg19.fam"),
+        )
+        if not has_geno:
             logger.info("Downloading genotypes")
             get_genotypes(path=os.path.join(args.path, "data"))
         else:
             logger.info("Genotypes already downloaded")
 
         # Downloading IMPUTE2 reference files
-        # TODO: check the added file for completion check
-        fn = os.path.join(args.path, "1000GP_Phase3", "genipe_tut_done")
-        if not os.path.isfile(fn):
+        has_impute2_ref = check_files(
+            os.path.join(args.path, "1000GP_Phase3", "genipe_tut_done"),
+        )
+        if not has_impute2_ref:
             logger.info("Downloading IMPUTE2's reference files")
             get_impute2_ref(args.path)
         else:
@@ -157,6 +165,19 @@ def main(args=None):
     except Exception as e:
         logger.error(e)
         raise
+
+
+def check_files(*filenames):
+    """Checks that all files exists.
+
+    Args:
+        filenames (list): the list of file to check
+
+    Returns:
+        bool: True if all files exist, False otherwise
+
+    """
+    return all(os.path.isfile(fn) for fn in filenames)
 
 
 def get_os_info():
