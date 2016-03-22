@@ -285,6 +285,9 @@ def get_impute2_ref(path):
     logger.info("  - Extracting file")
     untar_file(path, tar_path)
 
+    # Deleting the archive
+    os.remove(tar_path)
+
     # Checking the directory exists
     if not os.path.isdir(os.path.join(path, "1000GP_Phase3")):
         raise ProgramError("Problem extracting the impute2 reference files")
