@@ -125,7 +125,9 @@ def main(args=None):
         logger.info("Genotypes already downloaded")
 
     # Downloading IMPUTE2 reference files
-    if not os.path.isdir(os.path.join(args.path, "1000GP_Phase3")):
+    # TODO: check the added file for completion check
+    fn = os.path.join(args.path, "1000GP_Phase3", "genipe_tut_done")
+    if not os.path.isfile(fn):
         logger.info("Downloading IMPUTE2's reference files")
         get_impute2_ref(args.path)
     else:
@@ -190,8 +192,19 @@ def get_impute2_ref(path):
     try:
         check_call(["tar", "-C", path, "-xf", tar_path])
     except:
-        logger.critical("Could not extract genotypes")
+        logger.critical("Could not extract impute2 reference files")
         sys.exit(1)
+
+    # Checking the directory exists
+    if not os.path.isdir(os.path.join(path, "1000GP_Phase3")):
+        logger.critical("Problem extracting the impute2 reference files")
+        sys.exit(1)
+
+    # Creating an empty file to say that the download and extraction was
+    # completed
+    done_fn = os.path.join(path, "1000GP_Phase3", "genipe_tut_done")
+    with open(done_fn, "w"):
+        pass
 
 
 def get_genotypes(path):
