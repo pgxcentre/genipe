@@ -36,3 +36,12 @@ genipe.tools.imputed_stats module
     :undoc-members:
     :show-inheritance:
 
+
+genipe.tools.genipe_tutorial
+-----------------------------
+
+.. automodule:: genipe.tools.genipe_tutorial
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
