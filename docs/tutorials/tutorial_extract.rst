@@ -4,7 +4,7 @@
 
 
 Site extraction
-----------------
+================
 
 Genome-wide imputation dataset might be huge. Often, it is required to extract
 a subset of imputed sites (*e.g.* specific markers, genomic location, or
@@ -26,7 +26,7 @@ following command will create the working directory for this tutorial.
 .. _extract-tut-input-files:
 
 Input files
-^^^^^^^^^^^^
+------------
 
 After running the :py:mod:`genipe` pipeline, all the required files for the
 extraction tools are automatically created in the ``final_impute2`` directories
@@ -44,7 +44,7 @@ files will be automatically fetched (if required).
 .. _extract-tut-execute:
 
 Executing the extraction
-^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------
 
 The first time the tool is used on a set of *impute2* files, indexation will
 automatically occur (to speed of the analysis for future extraction). There are
@@ -59,7 +59,7 @@ or using their properties (``--genomic``, ``--maf``, ``--rate`` and/or
 
 
 Extraction by ID
-"""""""""""""""""
+^^^^^^^^^^^^^^^^^
 
 To extract markers using their identification number, you need a file
 containing the list of marker to extract (one marker per line).
@@ -95,7 +95,7 @@ two markers from the *impute2* file.
 
 
 Extraction by characteristics
-""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 There are four ways to extract markers according to their characteristics. The
 first way is to specify the genomic location of the markers to extract (*i.e.*
@@ -134,7 +134,7 @@ To gather all markers with a MAF :math:`\geq` 0.05 and a call rate :math:`\geq`
 .. _extract-tut-output-files:
 
 Output files
-^^^^^^^^^^^^^
+-------------
 
 The output files will depend on the output format selected (the ``--format``
 option). You can specify either ``impute2``, ``dosage`` and/or ``calls``, for
@@ -143,7 +143,7 @@ format (*i.e.* one value between 0 and 2 per sample), and hard calls (*i.e.*
 genotypes).
 
 ``.impute2`` file
-""""""""""""""""""
+^^^^^^^^^^^^^^^^^^
 
 This file is generated when the ``impute2`` format is used. It has the same
 format as the original *impute2* file.
@@ -172,7 +172,7 @@ The following example shows two lines of the ``.impute2`` file.
 
 
 ``.dosage`` file
-"""""""""""""""""
+^^^^^^^^^^^^^^^^^
 
 This file contains the dosage computed from the *impute2* probabilities. The
 general structure of the file contains the following columns (which are
@@ -198,7 +198,7 @@ The following example shows two lines of the ``.dosage`` file.
 
 
 ``.calls`` file
-""""""""""""""""
+^^^^^^^^^^^^^^^^
 
 This file contains the hard calls computed from the *impute2* probabilities. It
 has the same format as a transposed pedfile (from *Plink*). The general
@@ -222,7 +222,7 @@ The following example shows two lines of the ``.calls`` file.
 .. _extract-tut-usage:
 
 Usage
-^^^^^^
+------
 
 The following command will display the documentation for the extraction
 analysis in the console:
