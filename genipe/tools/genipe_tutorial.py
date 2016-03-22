@@ -205,10 +205,7 @@ def get_impute2_ref(path):
 
     # Extracting genotypes
     logger.info("  - Extracting file")
-    try:
-        check_call(["tar", "-C", path, "-xf", tar_path])
-    except CalledProcessError:
-        raise ProgramError("Could not extract impute2 reference files")
+    untar_file(path, tar_path)
 
     # Checking the directory exists
     if not os.path.isdir(os.path.join(path, "1000GP_Phase3")):
@@ -242,10 +239,7 @@ def get_genotypes(path):
 
         # Extracting genotypes
         logger.info("  - Extracting file")
-        try:
-            check_call(["tar", "-C", tmpdir, "-xf", tar_path])
-        except CalledProcessError:
-            raise ProgramError("Could not extract genotypes")
+        untar_file(tmpdir, tar_path)
 
         # Finding the genotypes files
         os.remove(os.path.join(tmpdir, filename))
@@ -283,10 +277,7 @@ def get_hg19(path):
 
         # Extracting the reference
         logger.info("  - Extracting file")
-        try:
-            check_call(["tar", "-C", tmpdir, "-xf", tar_path])
-        except CalledProcessError:
-            raise ProgramError("Could not extract hg19")
+        untar_file(tmpdir, tar_path)
 
         # Finding the hg19 file
         hg19_files = glob(os.path.join(tmpdir, "hg19.fasta*"))
@@ -378,10 +369,7 @@ def get_impute2(os_name, arch, path):
 
         # Extracting impute2
         logger.info("  - Extracting file")
-        try:
-            check_call(["tar", "-C", tmpdir, "-xf", tar_path])
-        except CalledProcessError:
-            raise ProgramError("Could not extract impute2")
+        untar_file(tmpdir, tar_path)
 
         # Finding the impute2 file
         impute2_file = glob(os.path.join(tmpdir, "*", "impute2"))
@@ -427,10 +415,7 @@ def get_shapeit(os_name, arch, path):
 
         # Extracting shapeit
         logger.info("  - Extracting file")
-        try:
-            check_call(["tar", "-C", tmpdir, "-xf", tar_path])
-        except CalledProcessError:
-            raise ProgramError("Could not extract shapeit")
+        untar_file(tmpdir, tar_path)
 
         # Finding the shapeit file
         shapeit_file = glob(os.path.join(tmpdir, "*", "shapeit"))
@@ -457,7 +442,21 @@ def download_file(url, path):
     try:
         urlretrieve(url, path)
     except (HTTPError, URLError):
-        raise ProgramError("not available: " + url)
+        raise ProgramError("URL not available: " + url)
+
+
+def untar_file(path, fn):
+    """Extracts a tar archive.
+
+    Args:
+        path (str): the path to where the file will be extracted
+        fn (str): the name of the tar archive
+
+    """
+    try:
+        check_call(["tar", "-C", path, "-xf", fn])
+    except CalledProcessError:
+        raise ProgramError("Could not extract {}".format(fn))
 
 
 def parse_args(parser, args=None):
