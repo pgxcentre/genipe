@@ -18,9 +18,11 @@ import platform
 from glob import glob
 from urllib.request import urlretrieve
 from tempfile import TemporaryDirectory
-from subprocess import check_call
+from urllib.error import HTTPError, URLError
+from subprocess import check_call, CalledProcessError
 
 from .. import __version__
+from ..error import ProgramError
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -52,86 +54,109 @@ def main(args=None):
             "version {}.".format(__version__))
     parser = argparse.ArgumentParser(description=desc)
 
-    # Parsing the options
-    args = parse_args(parser, args)
+    try:
+        # Parsing the options
+        args = parse_args(parser, args)
 
-    # Let's start
-    logger.info("Preparing '{}' for genipe tutorial".format(args.path))
+        # Let's start
+        logger.info("Preparing '{}' for genipe tutorial".format(args.path))
+        is_ok = input("Proceed (y/n)? ").upper()
+        if is_ok != "Y":
+            raise KeyboardInterrupt
 
-    # Getting the system type and architecture
-    logger.info("Inferring operating system and architecture")
-    os_name, architecture = get_os_info()
-    logger.info("  - " + os_name)
-    logger.info("  - " + architecture + " bits")
+        # Getting the system type and architecture
+        logger.info("Inferring operating system and architecture")
+        os_name, architecture = get_os_info()
+        logger.info("  - " + os_name)
+        logger.info("  - " + architecture + " bits")
 
-    # Creating the directories (if required)
-    if not os.path.isdir(args.path):
-        os.mkdir(args.path)
-    for dirname in ("bin", "data", "hg19"):
-        if not os.path.isdir(os.path.join(args.path, dirname)):
-            os.mkdir(os.path.join(args.path, dirname))
+        # Creating the directories (if required)
+        if not os.path.isdir(args.path):
+            os.mkdir(args.path)
+        for dirname in ("bin", "data", "hg19"):
+            if not os.path.isdir(os.path.join(args.path, dirname)):
+                os.mkdir(os.path.join(args.path, dirname))
 
-    # Downloading Plink (if required)
-    if not os.path.isfile(os.path.join(args.path, "bin", "plink")):
-        logger.info("Downloading Plink")
-        get_plink(
-            os_name=os_name,
-            arch=architecture,
-            path=os.path.join(args.path, "bin"),
-        )
-    else:
-        logger.info("Plink already downloaded")
+        # Downloading Plink (if required)
+        if not os.path.isfile(os.path.join(args.path, "bin", "plink")):
+            logger.info("Downloading Plink")
+            get_plink(
+                os_name=os_name,
+                arch=architecture,
+                path=os.path.join(args.path, "bin"),
+            )
+        else:
+            logger.info("Plink already downloaded")
 
-    # Downloading impute2
-    if not os.path.isfile(os.path.join(args.path, "bin", "impute2")):
-        logger.info("Downloading impute2")
-        get_impute2(
-            os_name=os_name,
-            arch=architecture,
-            path=os.path.join(args.path, "bin"),
-        )
-    else:
-        logger.info("Impute2 already downloaded")
+        # Downloading impute2
+        if not os.path.isfile(os.path.join(args.path, "bin", "impute2")):
+            logger.info("Downloading impute2")
+            get_impute2(
+                os_name=os_name,
+                arch=architecture,
+                path=os.path.join(args.path, "bin"),
+            )
+        else:
+            logger.info("Impute2 already downloaded")
 
-    # Downloading shapeit
-    if not os.path.isfile(os.path.join(args.path, "bin", "shapeit")):
-        logger.info("Downloading shapeit")
-        get_shapeit(
-            os_name=os_name,
-            arch=architecture,
-            path=os.path.join(args.path, "bin"),
-        )
-    else:
-        logger.info("Shapeit already downloaded")
+        # Downloading shapeit
+        if not os.path.isfile(os.path.join(args.path, "bin", "shapeit")):
+            logger.info("Downloading shapeit")
+            get_shapeit(
+                os_name=os_name,
+                arch=architecture,
+                path=os.path.join(args.path, "bin"),
+            )
+        else:
+            logger.info("Shapeit already downloaded")
 
-    # Downloading the reference
-    has_fasta = os.path.isfile(os.path.join(args.path, "hg19", "hg19.fasta"))
-    has_fai = os.path.isfile(os.path.join(args.path, "hg19", "hg19.fasta.fai"))
-    if not has_fasta or not has_fai:
-        logger.info("Downloading hg19 reference")
-        get_hg19(path=os.path.join(args.path, "hg19"))
-    else:
-        logger.info("hg19 already downloaded")
+        # Downloading the reference
+        has_fasta = os.path.isfile(os.path.join(args.path, "hg19",
+                                                "hg19.fasta"))
+        has_fai = os.path.isfile(os.path.join(args.path, "hg19",
+                                              "hg19.fasta.fai"))
+        if not has_fasta or not has_fai:
+            logger.info("Downloading hg19 reference")
+            get_hg19(path=os.path.join(args.path, "hg19"))
+        else:
+            logger.info("hg19 already downloaded")
 
-    # Downloading the genotypes
-    prefix = "hapmap_CEU_r23a_hg19"
-    has_bed = os.path.isfile(os.path.join(args.path, "data", prefix + ".bed"))
-    has_bim = os.path.isfile(os.path.join(args.path, "data", prefix + ".bim"))
-    has_fam = os.path.isfile(os.path.join(args.path, "data", prefix + ".fam"))
-    if not has_bed or not has_bim or not has_fam:
-        logger.info("Downloading genotypes")
-        get_genotypes(path=os.path.join(args.path, "data"))
-    else:
-        logger.info("Genotypes already downloaded")
+        # Downloading the genotypes
+        prefix = "hapmap_CEU_r23a_hg19"
+        has_bed = os.path.isfile(os.path.join(args.path, "data",
+                                              prefix + ".bed"))
+        has_bim = os.path.isfile(os.path.join(args.path, "data",
+                                              prefix + ".bim"))
+        has_fam = os.path.isfile(os.path.join(args.path, "data",
+                                              prefix + ".fam"))
+        if not has_bed or not has_bim or not has_fam:
+            logger.info("Downloading genotypes")
+            get_genotypes(path=os.path.join(args.path, "data"))
+        else:
+            logger.info("Genotypes already downloaded")
 
-    # Downloading IMPUTE2 reference files
-    # TODO: check the added file for completion check
-    fn = os.path.join(args.path, "1000GP_Phase3", "genipe_tut_done")
-    if not os.path.isfile(fn):
-        logger.info("Downloading IMPUTE2's reference files")
-        get_impute2_ref(args.path)
-    else:
-        logger.info("Impute2 reference files already downloaded")
+        # Downloading IMPUTE2 reference files
+        # TODO: check the added file for completion check
+        fn = os.path.join(args.path, "1000GP_Phase3", "genipe_tut_done")
+        if not os.path.isfile(fn):
+            logger.info("Downloading IMPUTE2's reference files")
+            get_impute2_ref(args.path)
+        else:
+            logger.info("Impute2 reference files already downloaded")
+
+    # Catching the Ctrl^C
+    except KeyboardInterrupt:
+        logger.info("Cancelled by user")
+        sys.exit(0)
+
+    # Catching the ProgramError
+    except ProgramError as e:
+        logger.error(e)
+        parser.error(e.message)
+
+    except Exception as e:
+        logger.error(e)
+        raise
 
 
 def get_os_info():
@@ -150,14 +175,12 @@ def get_os_info():
     # Getting the OS name
     os_name = platform.system()
     if os_name == "Windows":
-        logger.critical("Windows OS it not compatible with tutorial")
-        sys.exit(1)
+        raise ProgramError("Windows OS it not compatible with tutorial")
 
     # Getting the system's architecture
     architecture = platform.architecture()[0][:2]
     if architecture != "64":
-        logger.critical("{}: unknown architecture".format(architecture))
-        sys.exit(1)
+        raise ProgramError("{}: unknown architecture".format(architecture))
 
     return os_name, architecture
 
@@ -178,27 +201,18 @@ def get_impute2_ref(path):
     # Downloading Impute2 in a temporary directory
     logger.info("  - " + filename)
     tar_path = os.path.join(path, filename)
-    try:
-        urlretrieve(
-            url.format(filename=filename),
-            tar_path,
-        )
-    except:
-        logger.critical("IMPUTE2' reference URL is not available")
-        sys.exit(1)
+    download_file(url.format(filename=filename), tar_path)
 
     # Extracting genotypes
     logger.info("  - Extracting file")
     try:
         check_call(["tar", "-C", path, "-xf", tar_path])
-    except:
-        logger.critical("Could not extract impute2 reference files")
-        sys.exit(1)
+    except CalledProcessError:
+        raise ProgramError("Could not extract impute2 reference files")
 
     # Checking the directory exists
     if not os.path.isdir(os.path.join(path, "1000GP_Phase3")):
-        logger.critical("Problem extracting the impute2 reference files")
-        sys.exit(1)
+        raise ProgramError("Problem extracting the impute2 reference files")
 
     # Creating an empty file to say that the download and extraction was
     # completed
@@ -224,33 +238,23 @@ def get_genotypes(path):
     logger.info("  - " + filename)
     with TemporaryDirectory() as tmpdir:
         tar_path = os.path.join(tmpdir, filename)
-        try:
-            urlretrieve(
-                url.format(filename=filename),
-                tar_path,
-            )
-        except:
-            logger.critical("genotypes' URL is not available")
-            sys.exit(1)
+        download_file(url.format(filename=filename), tar_path)
 
         # Extracting genotypes
         logger.info("  - Extracting file")
         try:
             check_call(["tar", "-C", tmpdir, "-xf", tar_path])
-        except:
-            logger.critical("Could not extract genotypes")
-            sys.exit(1)
+        except CalledProcessError:
+            raise ProgramError("Could not extract genotypes")
 
         # Finding the genotypes files
         os.remove(os.path.join(tmpdir, filename))
         genotypes_files = glob(os.path.join(tmpdir, "hapmap_CEU_r23a_hg19.*"))
         if len(genotypes_files) != 3:
-            logger.critical("Unable to locate genotypes")
-            sys.exit(1)
+            raise ProgramError("Unable to locate genotypes")
         for filename in genotypes_files:
             if not os.path.isfile(filename):
-                logger.critical("Unable to locate genotypes")
-                sys.exit(1)
+                raise ProgramError("Unable to locate genotypes")
 
         # Moving the files
         for filename in genotypes_files:
@@ -275,32 +279,22 @@ def get_hg19(path):
     logger.info("  - " + filename)
     with TemporaryDirectory() as tmpdir:
         tar_path = os.path.join(tmpdir, filename)
-        try:
-            urlretrieve(
-                url.format(filename=filename),
-                tar_path,
-            )
-        except:
-            logger.critical("hg19's URL is not available")
-            sys.exit(1)
+        download_file(url.format(filename=filename), tar_path)
 
         # Extracting the reference
         logger.info("  - Extracting file")
         try:
             check_call(["tar", "-C", tmpdir, "-xf", tar_path])
-        except:
-            logger.critical("Could not extract hg19")
-            sys.exit(1)
+        except CalledProcessError:
+            raise ProgramError("Could not extract hg19")
 
         # Finding the hg19 file
         hg19_files = glob(os.path.join(tmpdir, "hg19.fasta*"))
         if len(hg19_files) != 2:
-            logger.critical("Unable to locate hg19")
-            sys.exit(1)
+            raise ProgramError("Unable to locate hg19")
         for filename in hg19_files:
             if not os.path.isfile(filename):
-                logger.critical("Unable to locate hg19")
-                sys.exit(1)
+                raise ProgramError("Unable to locate hg19")
 
         # Moving the files
         for filename in hg19_files:
@@ -326,22 +320,14 @@ def get_plink(os_name, arch, path):
     elif os_name == "Linux":
         filename = "plink-1.07-x86_64.zip"
     if filename == "":
-        logger.critical("Problem choosing a file to download for "
-                        "{} {} bits".format(os_name, arch))
-        sys.exit(1)
+        raise ProgramError("Problem choosing a file to download for "
+                           "{} {} bits".format(os_name, arch))
 
     # Downloading Plink in a temporary directory
     logger.info("  - " + filename)
     with TemporaryDirectory() as tmpdir:
         zip_path = os.path.join(tmpdir, filename)
-        try:
-            urlretrieve(
-                url.format(filename=filename),
-                zip_path,
-            )
-        except:
-            logger.critical("Plink's URL is not available")
-            sys.exit(1)
+        download_file(url.format(filename=filename), zip_path)
 
         # Unzipping Plink
         logger.info("  - Extracting file")
@@ -351,8 +337,7 @@ def get_plink(os_name, arch, path):
         # Finding the plink file
         plink_file = glob(os.path.join(tmpdir, "*", "plink"))
         if len(plink_file) != 1 or not os.path.isfile(plink_file[0]):
-            logger.critical("Unable to locate Plink")
-            sys.exit(1)
+            raise ProgramError("Unable to locate Plink")
         plink_file = plink_file[0]
 
         # Moving the file
@@ -382,36 +367,26 @@ def get_impute2(os_name, arch, path):
     elif os_name == "Linux":
         filename = "impute_v2.3.2_x86_64_static.tgz"
     if filename == "":
-        logger.critical("Problem choosing a file to download for "
-                        "{} {} bits".format(os_name, arch))
-        sys.exit(1)
+        raise ProgramError("Problem choosing a file to download for "
+                           "{} {} bits".format(os_name, arch))
 
     # Downloading Impute2 in a temporary directory
     logger.info("  - " + filename)
     with TemporaryDirectory() as tmpdir:
         tar_path = os.path.join(tmpdir, filename)
-        try:
-            urlretrieve(
-                url.format(filename=filename),
-                tar_path,
-            )
-        except:
-            logger.critical("Impute2's URL is not available")
-            sys.exit(1)
+        download_file(url.format(filename=filename), tar_path)
 
         # Extracting impute2
         logger.info("  - Extracting file")
         try:
             check_call(["tar", "-C", tmpdir, "-xf", tar_path])
-        except:
-            logger.critical("Could not extract impute2")
-            sys.exit(1)
+        except CalledProcessError:
+            raise ProgramError("Could not extract impute2")
 
         # Finding the impute2 file
         impute2_file = glob(os.path.join(tmpdir, "*", "impute2"))
         if len(impute2_file) != 1 or not os.path.isfile(impute2_file[0]):
-            logger.critical("Unable to locate impute2")
-            sys.exit(1)
+            raise ProgramError("Unable to locate impute2")
         impute2_file = impute2_file[0]
 
         # Moving the file
@@ -441,36 +416,26 @@ def get_shapeit(os_name, arch, path):
     elif os_name == "Linux":
         filename = "shapeit.v2.r837.GLIBCv2.12.Linux.static.tgz"
     if filename == "":
-        logger.critical("Problem choosing a file to download for "
-                        "{} {} bits".format(os_name, arch))
-        sys.exit(1)
+        raise ProgramError("Problem choosing a file to download for "
+                           "{} {} bits".format(os_name, arch))
 
     # Downloading shapeit in a temporary directory
     logger.info("  - " + filename)
     with TemporaryDirectory() as tmpdir:
         tar_path = os.path.join(tmpdir, filename)
-        try:
-            urlretrieve(
-                url.format(filename=filename),
-                tar_path,
-            )
-        except:
-            logger.critical("shapeit's URL is not available")
-            sys.exit(1)
+        download_file(url.format(filename=filename), tar_path)
 
         # Extracting shapeit
         logger.info("  - Extracting file")
         try:
             check_call(["tar", "-C", tmpdir, "-xf", tar_path])
-        except:
-            logger.critical("Could not extract shapeit")
-            sys.exit(1)
+        except CalledProcessError:
+            raise ProgramError("Could not extract shapeit")
 
         # Finding the shapeit file
         shapeit_file = glob(os.path.join(tmpdir, "*", "shapeit"))
         if len(shapeit_file) != 1 or not os.path.isfile(shapeit_file[0]):
-            logger.critical("Unable to locate shapeit")
-            sys.exit(1)
+            raise ProgramError("Unable to locate shapeit")
         shapeit_file = shapeit_file[0]
 
         # Moving the file
@@ -479,6 +444,20 @@ def get_shapeit(os_name, arch, path):
 
     # Making the script executable
     os.chmod(shapeit_path, stat.S_IRWXU)
+
+
+def download_file(url, path):
+    """Downloads a file from a URL to a path.
+
+    Args:
+        url (str): the url to download
+        path (str): the path where to save the file
+
+    """
+    try:
+        urlretrieve(url, path)
+    except (HTTPError, URLError):
+        raise ProgramError("not available: " + url)
 
 
 def parse_args(parser, args=None):
