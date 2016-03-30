@@ -71,6 +71,7 @@ command:
    pip install biopython
    pip install pyfaidx
    pip install matplotlib
+   pip install drmaa
 
 
 .. _install-miniconda:
@@ -124,6 +125,7 @@ command:
    conda install -y statsmodels
    conda install -y biopython
    conda install -y matplotlib
+   conda install -y drmaa
    pip install --no-deps pyfaidx
    pip install --no-deps lifelines
 
