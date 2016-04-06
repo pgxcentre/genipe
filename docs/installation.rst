@@ -25,6 +25,7 @@ management):
 * ``lifelines`` version 0.7.0 or latest
 * ``biopython`` version 1.65 or latest
 * ``pyfaidx`` version 0.3.7 or latest
+* ``drmaa`` version 0.7.6 or latest
 
 .. note::
 
