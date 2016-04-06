@@ -31,6 +31,13 @@ IMPUTE2 and SHAPETIT, the genotypes of the study cohort to impute, the
 IMPUTE2's reference panels, and the indexed human reference (in *fasta*
 format).
 
+.. warning::
+
+   You should review
+   `IMPUTE2 licence <https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#download>`_ and
+   `SHAPEIT licence <https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html#download>`_
+   to make sure that you have the right to use these tools.
+
 To following command will execute the script (once the virtual Python
 environment is activated, see :ref:`genipe-pyvenv-activation` for more
 details).
