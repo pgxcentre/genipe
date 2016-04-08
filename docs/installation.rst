@@ -1,14 +1,7 @@
 Installation
 =============
 
-
-Quick navigation
------------------
-
-1. :ref:`install-requirements`
-2. :ref:`install-virt`
-3. :ref:`install-test`
-4. :ref:`install-update`
+.. contents:: Quick navigation
 
 
 .. _install-requirements:
@@ -32,6 +25,7 @@ management):
 * ``lifelines`` version 0.7.0 or latest
 * ``biopython`` version 1.65 or latest
 * ``pyfaidx`` version 0.3.7 or latest
+* ``drmaa`` version 0.7.6 or latest
 
 .. note::
 
@@ -43,8 +37,11 @@ management):
 Installing in a virtual environment
 ------------------------------------
 
-Using pyvenv
-^^^^^^^^^^^^^
+
+.. _install-pyvenv:
+
+Using python's pyvenv
+^^^^^^^^^^^^^^^^^^^^^^
 
 The following commands should successfully create a virtual environment and
 activate it, as long as Python 3 was previously installed on the machine.
@@ -75,7 +72,10 @@ command:
    pip install biopython
    pip install pyfaidx
    pip install matplotlib
+   pip install drmaa
 
+
+.. _install-miniconda:
 
 Using Miniconda
 ^^^^^^^^^^^^^^^^
@@ -126,6 +126,7 @@ command:
    conda install -y statsmodels
    conda install -y biopython
    conda install -y matplotlib
+   conda install -y drmaa
    pip install --no-deps pyfaidx
    pip install --no-deps lifelines
 
@@ -186,16 +187,16 @@ command (depending of the installation method). Don't forget to first activate
 the python virtual environment.
 
 
-Pyvenv
-^^^^^^^
+Using python's pyvenv
+^^^^^^^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
    pip install -U genipe
 
 
-Miniconda
-^^^^^^^^^^
+Using Miniconda
+^^^^^^^^^^^^^^^^
 
 .. code-block:: bash
 
