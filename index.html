@@ -79,9 +79,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -104,7 +101,7 @@ commonly used softwares <a class="reference external" href="http://pngu.mgh.harv
 <p>A quality metrics report is automatically generated at the end of the
 imputation process to easily assess the quality of the analysis. The report is
 compiled into a PDF. For information on how to compile the report, refer to the
-<a class="reference internal" href="tutorials/tutorial_genipe.html#genipe-tut-compile-report"><span>Compiling the report</span></a> section in the main <a class="reference internal" href="tutorials/tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>.</p>
+<a class="reference internal" href="tutorials/tutorial_genipe.html#genipe-tut-compile-report"><span class="std std-ref">Compiling the report</span></a> section in the main <a class="reference internal" href="tutorials/tutorial_genipe.html#genipe-tut-page"><span class="std std-ref">Genome-wide imputation pipeline</span></a>.</p>
 <p>Finally, it also provides a useful standalone tool to perform statistical
 analysis on imputed (dosage) data (such as linear, logistic or survival
 regressions, or <a class="reference external" href="http://www.hsph.harvard.edu/skat/">SKAT</a> analysis of rare
@@ -112,7 +109,6 @@ variants).</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="installation.html#quick-navigation">Quick navigation</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#requirements">Requirements</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#installing-in-a-virtual-environment">Installing in a virtual environment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="installation.html#testing-the-installation">Testing the installation</a></li>
@@ -140,7 +136,7 @@ variants).</p>
 </div>
 <div class="section" id="usage">
 <span id="genipe-usage"></span><h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> genipe-launcher --help
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> genipe-launcher --help
 <span class="go">usage: genipe-launcher [-h] [-v] [--debug] [--thread THREAD] --bfile PREFIX</span>
 <span class="go">                       [--reference FILE] [--output-dir DIR] [--bgzip]</span>
 <span class="go">                       [--use-drmaa] [--drmaa-config FILE] [--preamble FILE]</span>
@@ -155,7 +151,7 @@ variants).</p>
 <span class="go">                       [--report-background BACKGROUND]</span>
 
 <span class="go">Execute the genome-wide imputation pipeline. This script is part of the</span>
-<span class="go">&#39;genipe&#39; package, version 1.2.2.</span>
+<span class="go">&#39;genipe&#39; package, version 1.2.3.</span>
 
 <span class="go">optional arguments:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
@@ -266,7 +262,7 @@ up (and automatize) the imputation process for the whole genome.</p>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
     </div>
   </body>
 </html>

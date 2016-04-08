@@ -91,9 +91,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -125,8 +122,11 @@
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>impute2_line</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; a single line from IMPUTE2&#8217;s result (split by
 space)</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">a tuple containing the marker&#8217;s information (first five values
-of the line) and the matrix probability (numpy array, float)</td>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
+<dt>a tuple containing the marker&#8217;s information (first five values</dt>
+<dd>of the line) and the matrix probability (numpy array, float)</dd>
+</dl>
+</td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#tuple" title="(in Python v3.4)">tuple</a></td>
 </tr>
@@ -150,16 +150,20 @@ from the IMPUTE2&#8217;s result, split by space.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>prob_matrix</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)"><em>numpy.array</em></a>) &#8211; the probability matrix</li>
+<li><strong>prob_matrix</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.10)"><em>numpy.array</em></a>) &#8211; the probability matrix</li>
 <li><strong>min_prob</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) &#8211; the probability threshold</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a mask array containing the positions where the
-probabilities are equal or higher to the threshold</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>a mask array containing the positions where the</dt>
+<dd><p class="first last">probabilities are equal or higher to the threshold</p>
+</dd>
+</dl>
+</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.10)">numpy.array</a></p>
 </td>
 </tr>
 </tbody>
@@ -175,16 +179,20 @@ probabilities are equal or higher to the threshold</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>prob_matrix</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)"><em>numpy.array</em></a>) &#8211; the probability matrix</li>
+<li><strong>prob_matrix</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.10)"><em>numpy.array</em></a>) &#8211; the probability matrix</li>
 <li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the first allele</li>
 <li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the second allele</li>
-<li><strong>gender</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)"><em>numpy.array</em></a>) &#8211; the gender of the samples</li>
+<li><strong>gender</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.10)"><em>numpy.array</em></a>) &#8211; the gender of the samples</li>
 <li><strong>site_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name for this site</li>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">a tuple containing three values: the minor allele frequency, the
-minor and the major allele.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>a tuple containing three values: the minor allele frequency, the</dt>
+<dd><p class="first last">minor and the major allele.</p>
+</dd>
+</dl>
+</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#tuple" title="(in Python v3.4)">tuple</a></p>
@@ -206,8 +214,8 @@ an Exception raised if there are any heterozygous males.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>homo_probs</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)"><em>numpy.array</em></a>) &#8211; the probabilities for the homozygous genotype</li>
-<li><strong>hetero_probs</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)"><em>numpy.array</em></a>) &#8211; the probabilities for the heterozygous
+<li><strong>homo_probs</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.10)"><em>numpy.array</em></a>) &#8211; the probabilities for the homozygous genotype</li>
+<li><strong>hetero_probs</strong> (<a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.10)"><em>numpy.array</em></a>) &#8211; the probabilities for the heterozygous
 genotype</li>
 <li><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a>) &#8211; the scale value</li>
 </ul>
@@ -216,7 +224,7 @@ genotype</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the dosage computed from the probabilities</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.10)">numpy.array</a></p>
 </td>
 </tr>
 </tbody>
@@ -239,7 +247,7 @@ probs (numpy.array): the probability matrix</dd>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body">the hard calls computed from the probabilities</td>
 </tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.9)">numpy.array</a></td>
+<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.10)">numpy.array</a></td>
 </tr>
 </tbody>
 </table>
@@ -267,7 +275,7 @@ probs (numpy.array): the probability matrix</dd>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the index</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.16.2)">pandas.DataFrame</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.0)">pandas.DataFrame</a></p>
 </td>
 </tr>
 </tbody>
@@ -289,8 +297,12 @@ probs (numpy.array): the probability matrix</dd>
 </ul>
 </td>
 </tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">either a tuple containing two elements: a boolean telling if the
-format is bgzip, and the opening function.</p>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
+<dt>either a tuple containing two elements: a boolean telling if the</dt>
+<dd><p class="first last">format is bgzip, and the opening function.</p>
+</dd>
+</dl>
+</p>
 </td>
 </tr>
 <tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#tuple" title="(in Python v3.4)">tuple</a></p>
@@ -332,7 +344,7 @@ format is bgzip, and the opening function.</p>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
     </div>
   </body>
 </html>

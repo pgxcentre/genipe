@@ -58,10 +58,9 @@
   <h3><a href="index.html">Table Of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">Installation</a><ul>
-<li><a class="reference internal" href="#quick-navigation">Quick navigation</a></li>
 <li><a class="reference internal" href="#requirements">Requirements</a></li>
 <li><a class="reference internal" href="#installing-in-a-virtual-environment">Installing in a virtual environment</a><ul>
-<li><a class="reference internal" href="#using-pyvenv">Using pyvenv</a></li>
+<li><a class="reference internal" href="#using-python-s-pyvenv">Using python&#8217;s pyvenv</a></li>
 <li><a class="reference internal" href="#using-miniconda">Using Miniconda</a></li>
 <li><a class="reference internal" href="#virtual-environment-activation">Virtual environment activation</a><ul>
 <li><a class="reference internal" href="#pyvenv">Pyvenv</a></li>
@@ -72,8 +71,8 @@
 </li>
 <li><a class="reference internal" href="#testing-the-installation">Testing the installation</a></li>
 <li><a class="reference internal" href="#updating-the-package">Updating the package</a><ul>
-<li><a class="reference internal" href="#id1">Pyvenv</a></li>
-<li><a class="reference internal" href="#id2">Miniconda</a></li>
+<li><a class="reference internal" href="#id1">Using python&#8217;s pyvenv</a></li>
+<li><a class="reference internal" href="#id2">Using Miniconda</a></li>
 </ul>
 </li>
 </ul>
@@ -101,9 +100,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -115,18 +111,34 @@
           <div class="body" role="main">
             
   <div class="section" id="installation">
-<h1>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="quick-navigation">
-<h2>Quick navigation<a class="headerlink" href="#quick-navigation" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic simple">
-<li><a class="reference internal" href="#install-requirements"><span>Requirements</span></a></li>
-<li><a class="reference internal" href="#install-virt"><span>Installing in a virtual environment</span></a></li>
-<li><a class="reference internal" href="#install-test"><span>Testing the installation</span></a></li>
-<li><a class="reference internal" href="#install-update"><span>Updating the package</span></a></li>
-</ol>
+<h1><a class="toc-backref" href="#id3">Installation</a><a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h1>
+<div class="contents topic" id="quick-navigation">
+<p class="topic-title first">Quick navigation</p>
+<ul class="simple">
+<li><a class="reference internal" href="#installation" id="id3">Installation</a><ul>
+<li><a class="reference internal" href="#requirements" id="id4">Requirements</a></li>
+<li><a class="reference internal" href="#installing-in-a-virtual-environment" id="id5">Installing in a virtual environment</a><ul>
+<li><a class="reference internal" href="#using-python-s-pyvenv" id="id6">Using python&#8217;s pyvenv</a></li>
+<li><a class="reference internal" href="#using-miniconda" id="id7">Using Miniconda</a></li>
+<li><a class="reference internal" href="#virtual-environment-activation" id="id8">Virtual environment activation</a><ul>
+<li><a class="reference internal" href="#pyvenv" id="id9">Pyvenv</a></li>
+<li><a class="reference internal" href="#miniconda" id="id10">Miniconda</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#testing-the-installation" id="id11">Testing the installation</a></li>
+<li><a class="reference internal" href="#updating-the-package" id="id12">Updating the package</a><ul>
+<li><a class="reference internal" href="#id1" id="id13">Using python&#8217;s pyvenv</a></li>
+<li><a class="reference internal" href="#id2" id="id14">Using Miniconda</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
 </div>
 <div class="section" id="requirements">
-<span id="install-requirements"></span><h2>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
+<span id="install-requirements"></span><h2><a class="toc-backref" href="#id4">Requirements</a><a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h2>
 <p>The tools require a standard Python 3 installation with the following modules:</p>
 <ul class="simple">
 <li><code class="docutils literal"><span class="pre">numpy</span></code> version 1.8.2 or latest</li>
@@ -143,6 +155,7 @@ management):</p>
 <li><code class="docutils literal"><span class="pre">lifelines</span></code> version 0.7.0 or latest</li>
 <li><code class="docutils literal"><span class="pre">biopython</span></code> version 1.65 or latest</li>
 <li><code class="docutils literal"><span class="pre">pyfaidx</span></code> version 0.3.7 or latest</li>
+<li><code class="docutils literal"><span class="pre">drmaa</span></code> version 0.7.6 or latest</li>
 </ul>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
@@ -150,53 +163,54 @@ management):</p>
 </div>
 </div>
 <div class="section" id="installing-in-a-virtual-environment">
-<span id="install-virt"></span><h2>Installing in a virtual environment<a class="headerlink" href="#installing-in-a-virtual-environment" title="Permalink to this headline">¶</a></h2>
-<div class="section" id="using-pyvenv">
-<h3>Using pyvenv<a class="headerlink" href="#using-pyvenv" title="Permalink to this headline">¶</a></h3>
+<span id="install-virt"></span><h2><a class="toc-backref" href="#id5">Installing in a virtual environment</a><a class="headerlink" href="#installing-in-a-virtual-environment" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="using-python-s-pyvenv">
+<span id="install-pyvenv"></span><h3><a class="toc-backref" href="#id6">Using python&#8217;s pyvenv</a><a class="headerlink" href="#using-python-s-pyvenv" title="Permalink to this headline">¶</a></h3>
 <p>The following commands should successfully create a virtual environment and
 activate it, as long as Python 3 was previously installed on the machine.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="c"># Creating the environment</span>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># Creating the environment</span>
 pyvenv <span class="nv">$HOME</span>/genipe_pyvenv
 
-<span class="c"># Activating the environment</span>
+<span class="c1"># Activating the environment</span>
 <span class="nb">source</span> <span class="nv">$HOME</span>/genipe_pyvenv/bin/activate
 </pre></div>
 </div>
 <p>Then, install the <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> package (and all its dependencies) using the
 following command:</p>
-<div class="highlight-bash"><div class="highlight"><pre>pip install genipe
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install genipe
 </pre></div>
 </div>
 <p>If required, the optional dependencies can be installed using the following
 command:</p>
-<div class="highlight-bash"><div class="highlight"><pre>pip install scipy
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install scipy
 pip install statsmodels
 pip install lifelines
 pip install biopython
 pip install pyfaidx
 pip install matplotlib
+pip install drmaa
 </pre></div>
 </div>
 </div>
 <div class="section" id="using-miniconda">
-<h3>Using Miniconda<a class="headerlink" href="#using-miniconda" title="Permalink to this headline">¶</a></h3>
+<span id="install-miniconda"></span><h3><a class="toc-backref" href="#id7">Using Miniconda</a><a class="headerlink" href="#using-miniconda" title="Permalink to this headline">¶</a></h3>
 <p>The following commands should successfully download and install Miniconda,
 create and activate a new python virtual environment. This installation method
 doesn&#8217;t required a previous Python 3 installation.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="c"># Installing Miniconda</span>
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># Installing Miniconda</span>
 wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh
 bash miniconda.sh -b -p <span class="nv">$HOME</span>/miniconda
 
-<span class="c"># Creating the environment</span>
+<span class="c1"># Creating the environment</span>
 <span class="nv">$HOME</span>/miniconda/bin/conda create -q -n genipe_pyvenv <span class="nv">python</span><span class="o">=</span>3.4
 
-<span class="c"># Activating the environment</span>
+<span class="c1"># Activating the environment</span>
 <span class="nb">source</span> <span class="nv">$HOME</span>/miniconda/bin/activate genipe_pyvenv
 </pre></div>
 </div>
 <p>Then, install the <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> package (and all its dependencies) using the
 following command:</p>
-<div class="highlight-bash"><div class="highlight"><pre>conda install genipe -c http://statgen.org/wp-content/uploads/Softwares/genipe
+<div class="highlight-bash"><div class="highlight"><pre><span></span>conda install genipe -c http://statgen.org/wp-content/uploads/Softwares/genipe
 </pre></div>
 </div>
 <div class="admonition note">
@@ -204,7 +218,7 @@ following command:</p>
 <p>It is possible to add the channel to conda&#8217;s configuration (so that you
 won&#8217;t need to use the <code class="docutils literal"><span class="pre">-c</span></code> option for installing or updatign). To do so,
 perform the following command:</p>
-<div class="highlight-bash"><div class="highlight"><pre>conda config --add channels http://statgen.org/wp-content/uploads/Softwares/genipe
+<div class="highlight-bash"><div class="highlight"><pre><span></span>conda config --add channels http://statgen.org/wp-content/uploads/Softwares/genipe
 </pre></div>
 </div>
 <p class="last">Once this command is executed, you can always ommit
@@ -213,61 +227,62 @@ updating).</p>
 </div>
 <p>If required, the optional dependencies can be installed using the following
 command:</p>
-<div class="highlight-bash"><div class="highlight"><pre>conda install -y scipy
+<div class="highlight-bash"><div class="highlight"><pre><span></span>conda install -y scipy
 conda install -y statsmodels
 conda install -y biopython
 conda install -y matplotlib
+conda install -y drmaa
 pip install --no-deps pyfaidx
 pip install --no-deps lifelines
 </pre></div>
 </div>
 </div>
 <div class="section" id="virtual-environment-activation">
-<span id="genipe-pyvenv-activation"></span><h3>Virtual environment activation<a class="headerlink" href="#virtual-environment-activation" title="Permalink to this headline">¶</a></h3>
+<span id="genipe-pyvenv-activation"></span><h3><a class="toc-backref" href="#id8">Virtual environment activation</a><a class="headerlink" href="#virtual-environment-activation" title="Permalink to this headline">¶</a></h3>
 <p>Before using the <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> module for any analysis, the Python virtual
 environment needs to be activated. Depending of your installation type (<em>i.e</em>
 <em>pyvenv</em> or <em>miniconda</em>), the activation process will differ.</p>
 <div class="section" id="pyvenv">
-<h4>Pyvenv<a class="headerlink" href="#pyvenv" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id9">Pyvenv</a><a class="headerlink" href="#pyvenv" title="Permalink to this headline">¶</a></h4>
 <p>If the module was installed into a <em>pyvenv</em> environment, perform the following
 command to activate it.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">source</span> <span class="nv">$HOME</span>/genipe_pyvenv/bin/activate
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">source</span> <span class="nv">$HOME</span>/genipe_pyvenv/bin/activate
 </pre></div>
 </div>
 </div>
 <div class="section" id="miniconda">
-<h4>Miniconda<a class="headerlink" href="#miniconda" title="Permalink to this headline">¶</a></h4>
+<h4><a class="toc-backref" href="#id10">Miniconda</a><a class="headerlink" href="#miniconda" title="Permalink to this headline">¶</a></h4>
 <p>If the module was installed into a <em>Miniconda</em> environment, perform the
 following command to activate it.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">source</span> <span class="nv">$HOME</span>/miniconda/bin/activate genipe_pyvenv
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">source</span> <span class="nv">$HOME</span>/miniconda/bin/activate genipe_pyvenv
 </pre></div>
 </div>
 </div>
 </div>
 </div>
 <div class="section" id="testing-the-installation">
-<span id="install-test"></span><h2>Testing the installation<a class="headerlink" href="#testing-the-installation" title="Permalink to this headline">¶</a></h2>
+<span id="install-test"></span><h2><a class="toc-backref" href="#id11">Testing the installation</a><a class="headerlink" href="#testing-the-installation" title="Permalink to this headline">¶</a></h2>
 <p>To test the installation, make sure that the virtual environment is activated.
 Then, launch Python and use the following python commands:</p>
-<div class="highlight-python"><div class="highlight"><pre><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">genipe</span>
+<div class="highlight-python"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">genipe</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">genipe</span><span class="o">.</span><span class="n">test</span><span class="p">()</span>
 </pre></div>
 </div>
 </div>
 <div class="section" id="updating-the-package">
-<span id="install-update"></span><h2>Updating the package<a class="headerlink" href="#updating-the-package" title="Permalink to this headline">¶</a></h2>
+<span id="install-update"></span><h2><a class="toc-backref" href="#id12">Updating the package</a><a class="headerlink" href="#updating-the-package" title="Permalink to this headline">¶</a></h2>
 <p>If there is a new <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> release, perform one of the following
 command (depending of the installation method). Don&#8217;t forget to first activate
 the python virtual environment.</p>
 <div class="section" id="id1">
-<h3>Pyvenv<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-bash"><div class="highlight"><pre>pip install -U genipe
+<h3><a class="toc-backref" href="#id13">Using python&#8217;s pyvenv</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>pip install -U genipe
 </pre></div>
 </div>
 </div>
 <div class="section" id="id2">
-<h3>Miniconda<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
-<div class="highlight-bash"><div class="highlight"><pre>conda update genipe -c http://statgen.org/wp-content/uploads/Softwares/genipe
+<h3><a class="toc-backref" href="#id14">Using Miniconda</a><a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>conda update genipe -c http://statgen.org/wp-content/uploads/Softwares/genipe
 </pre></div>
 </div>
 <div class="admonition note">
@@ -275,7 +290,7 @@ the python virtual environment.</p>
 <p>If you have configured <code class="docutils literal"><span class="pre">conda</span></code> to use the <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> channel (see
 the note above), the following command can be executed to update the
 package:</p>
-<div class="last highlight-bash"><div class="highlight"><pre>conda update genipe
+<div class="last highlight-bash"><div class="highlight"><pre><span></span>conda update genipe
 </pre></div>
 </div>
 </div>
@@ -309,7 +324,7 @@ package:</p>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
     </div>
   </body>
 </html>

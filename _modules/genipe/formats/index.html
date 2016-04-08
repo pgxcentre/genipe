@@ -58,9 +58,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -72,12 +69,13 @@
           <div class="body" role="main">
             
   <h1>Source code for genipe.formats.index</h1><div class="highlight"><pre>
-<span class="c"># This file is part of genipe, but came from gepyto.</span>
-<span class="c">#</span>
-<span class="c"># This work is licensed under the Creative Commons Attribution-NonCommercial</span>
-<span class="c"># 4.0 International License. To view a copy of this license, visit</span>
-<span class="c"># http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative</span>
-<span class="c"># Commons, PO Box 1866, Mountain View, CA 94042, USA.</span>
+<span></span>
+<span class="c1"># This file is part of genipe, but came from gepyto.</span>
+<span class="c1">#</span>
+<span class="c1"># This work is licensed under the Creative Commons Attribution-NonCommercial</span>
+<span class="c1"># 4.0 International License. To view a copy of this license, visit</span>
+<span class="c1"># http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative</span>
+<span class="c1"># Commons, PO Box 1866, Mountain View, CA 94042, USA.</span>
 
 
 <span class="kn">import</span> <span class="nn">io</span>
@@ -91,15 +89,15 @@
 <span class="kn">from</span> <span class="nn">..error</span> <span class="kn">import</span> <span class="n">ProgramError</span>
 
 
-<span class="n">__author__</span> <span class="o">=</span> <span class="s">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
-<span class="n">__copyright__</span> <span class="o">=</span> <span class="s">&quot;Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre&quot;</span>
-<span class="n">__license__</span> <span class="o">=</span> <span class="s">&quot;Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)&quot;</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;get_index&quot;</span><span class="p">,</span> <span class="s">&quot;get_open_func&quot;</span><span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;get_index&quot;</span><span class="p">,</span> <span class="s2">&quot;get_open_func&quot;</span><span class="p">]</span>
 
 
-<span class="n">_CHECK_STRING</span> <span class="o">=</span> <span class="n">b</span><span class="s">&quot;GENIPE INDEX FILE&quot;</span>
+<span class="n">_CHECK_STRING</span> <span class="o">=</span> <span class="n">b</span><span class="s2">&quot;GENIPE INDEX FILE&quot;</span>
 
 <span class="k">try</span><span class="p">:</span>
     <span class="kn">from</span> <span class="nn">Bio.bgzf</span> <span class="kn">import</span> <span class="n">BgzfReader</span>
@@ -120,7 +118,7 @@
         <span class="k">yield</span> <span class="n">f</span><span class="o">.</span><span class="n">tell</span><span class="p">()</span>
 
 
-<span class="k">def</span> <span class="nf">generate_index</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">&quot; &quot;</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">generate_index</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Build a index for the given file.</span>
 
 <span class="sd">    Args:</span>
@@ -133,33 +131,33 @@
 <span class="sd">        pandas.DataFrame: the index</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Generating index for &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Generating index for &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
 
-    <span class="c"># Some assertions</span>
-    <span class="k">assert</span> <span class="n">cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&quot;&#39;cols&#39; was not set&quot;</span>
-    <span class="k">assert</span> <span class="n">names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">,</span> <span class="s">&quot;&#39;names&#39; was not set&quot;</span>
+    <span class="c1"># Some assertions</span>
+    <span class="k">assert</span> <span class="n">cols</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;&#39;cols&#39; was not set&quot;</span>
+    <span class="k">assert</span> <span class="n">names</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;&#39;names&#39; was not set&quot;</span>
     <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">cols</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span><span class="p">)</span>
 
-    <span class="c"># Getting the open function</span>
+    <span class="c1"># Getting the open function</span>
     <span class="n">bgzip</span><span class="p">,</span> <span class="n">open_func</span> <span class="o">=</span> <span class="n">get_open_func</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">return_fmt</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-    <span class="c"># Reading the required columns</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s">&quot;c&quot;</span><span class="p">,</span> <span class="n">usecols</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
-                       <span class="n">compression</span><span class="o">=</span><span class="s">&quot;gzip&quot;</span> <span class="k">if</span> <span class="n">bgzip</span> <span class="k">else</span> <span class="bp">None</span><span class="p">)</span>
+    <span class="c1"># Reading the required columns</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="n">sep</span><span class="p">,</span> <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;c&quot;</span><span class="p">,</span> <span class="n">usecols</span><span class="o">=</span><span class="n">cols</span><span class="p">,</span> <span class="n">names</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
+                       <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;gzip&quot;</span> <span class="k">if</span> <span class="n">bgzip</span> <span class="k">else</span> <span class="bp">None</span><span class="p">)</span>
 
-    <span class="c"># Getting the seek information</span>
-    <span class="n">f</span> <span class="o">=</span> <span class="n">open_func</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span>
-    <span class="n">data</span><span class="p">[</span><span class="s">&quot;seek&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">_seek_generator</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+    <span class="c1"># Getting the seek information</span>
+    <span class="n">f</span> <span class="o">=</span> <span class="n">open_func</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span>
+    <span class="n">data</span><span class="p">[</span><span class="s2">&quot;seek&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">fromiter</span><span class="p">(</span><span class="n">_seek_generator</span><span class="p">(</span><span class="n">f</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
     <span class="n">f</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-    <span class="c"># Saving the index to file</span>
+    <span class="c1"># Saving the index to file</span>
     <span class="n">write_index</span><span class="p">(</span><span class="n">get_index_fn</span><span class="p">(</span><span class="n">fn</span><span class="p">),</span> <span class="n">data</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">data</span>
 
 
-<span class="k">def</span> <span class="nf">get_open_func</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">return_fmt</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
-<div class="viewcode-block" id="get_open_func"><a class="viewcode-back" href="../../../module_content/genipe.formats.html#genipe.formats.index.get_open_func">[docs]</a>    <span class="sd">&quot;&quot;&quot;Get the opening function.</span>
+<div class="viewcode-block" id="get_open_func"><a class="viewcode-back" href="../../../module_content/genipe.formats.html#genipe.formats.index.get_open_func">[docs]</a><span class="k">def</span> <span class="nf">get_open_func</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">return_fmt</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Get the opening function.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        fn (str): the name of the file</span>
@@ -170,37 +168,37 @@
 <span class="sd">               format is bgzip, and the opening function.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c"># The file might be compressed using bgzip</span>
+    <span class="c1"># The file might be compressed using bgzip</span>
     <span class="n">bgzip</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
-        <span class="n">bgzip</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="n">b</span><span class="s">&quot;</span><span class="se">\x1f\x8b\x08</span><span class="s">&quot;</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+        <span class="n">bgzip</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="o">==</span> <span class="n">b</span><span class="s2">&quot;</span><span class="se">\x1f\x8b\x08</span><span class="s2">&quot;</span>
 
     <span class="k">if</span> <span class="n">bgzip</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">HAS_BIOPYTHON</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;needs BioPython to index a bgzip file&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;needs BioPython to index a bgzip file&quot;</span><span class="p">)</span>
 
     <span class="n">open_func</span> <span class="o">=</span> <span class="nb">open</span>
     <span class="k">if</span> <span class="n">bgzip</span><span class="p">:</span>
         <span class="n">open_func</span> <span class="o">=</span> <span class="n">BgzfReader</span>
 
-    <span class="c"># Trying to read</span>
+    <span class="c1"># Trying to read</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">with</span> <span class="n">open_func</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+        <span class="k">with</span> <span class="n">open_func</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">bgzip</span><span class="p">:</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">i_file</span><span class="o">.</span><span class="n">seekable</span><span class="p">():</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span>
             <span class="k">pass</span>
 
     <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: use bgzip for compression...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: use bgzip for compression...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">return_fmt</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">bgzip</span><span class="p">,</span> <span class="n">open_func</span>
 
-    <span class="k">return</span> <span class="n">open_func</span>
+    <span class="k">return</span> <span class="n">open_func</span></div>
 
 
-<span class="k">def</span> <span class="nf">get_index</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">sep</span><span class="p">):</span></div>
-<div class="viewcode-block" id="get_index"><a class="viewcode-back" href="../../../module_content/genipe.formats.html#genipe.formats.index.get_index">[docs]</a>    <span class="sd">&quot;&quot;&quot;Restores the index for a given file.</span>
+<div class="viewcode-block" id="get_index"><a class="viewcode-back" href="../../../module_content/genipe.formats.html#genipe.formats.index.get_index">[docs]</a><span class="k">def</span> <span class="nf">get_index</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">sep</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Restores the index for a given file.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        fn (str): the name of the file</span>
@@ -215,24 +213,24 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">has_index</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-        <span class="c"># The index doesn&#39;t exists, generate it</span>
+        <span class="c1"># The index doesn&#39;t exists, generate it</span>
         <span class="k">return</span> <span class="n">generate_index</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">cols</span><span class="p">,</span> <span class="n">names</span><span class="p">,</span> <span class="n">sep</span><span class="p">)</span>
 
-    <span class="c"># Retrieving the index</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Retrieving the index for &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+    <span class="c1"># Retrieving the index</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Retrieving the index for &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
     <span class="n">file_index</span> <span class="o">=</span> <span class="n">read_index</span><span class="p">(</span><span class="n">get_index_fn</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
 
-    <span class="c"># Checking the names are there</span>
-    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">file_index</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s">&#39;seek&#39;</span><span class="p">}))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: missing index columns: reindex&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+    <span class="c1"># Checking the names are there</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">names</span><span class="p">)</span> <span class="o">-</span> <span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">file_index</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">-</span> <span class="p">{</span><span class="s1">&#39;seek&#39;</span><span class="p">}))</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: missing index columns: reindex&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
 
-    <span class="k">if</span> <span class="s">&quot;seek&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">file_index</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: invalid index: reindex&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+    <span class="k">if</span> <span class="s2">&quot;seek&quot;</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">file_index</span><span class="o">.</span><span class="n">columns</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: invalid index: reindex&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
 
-    <span class="k">return</span> <span class="n">file_index</span>
+    <span class="k">return</span> <span class="n">file_index</span></div>
 
 
-<span class="k">def</span> <span class="nf">write_index</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span></div>
+<span class="k">def</span> <span class="nf">write_index</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">index</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Writes the index to file.</span>
 
 <span class="sd">    Args:</span>
@@ -240,11 +238,11 @@
 <span class="sd">        index (pandas.DataFrame): the index</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;wb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
         <span class="n">o_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_CHECK_STRING</span><span class="p">)</span>
         <span class="n">o_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">zlib</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="nb">bytes</span><span class="p">(</span>
-            <span class="n">index</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">),</span>
-            <span class="n">encoding</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">,</span>
+            <span class="n">index</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="bp">None</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span>
+            <span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">,</span>
         <span class="p">)))</span>
 
 
@@ -262,12 +260,12 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">index</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;rb&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">_CHECK_STRING</span><span class="p">))</span> <span class="o">!=</span> <span class="n">_CHECK_STRING</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;{}: not a valid index file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: not a valid index file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
 
         <span class="n">index</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">io</span><span class="o">.</span><span class="n">StringIO</span><span class="p">(</span>
-            <span class="n">zlib</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s">&quot;utf-8&quot;</span><span class="p">),</span>
+            <span class="n">zlib</span><span class="o">.</span><span class="n">decompress</span><span class="p">(</span><span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">())</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="n">encoding</span><span class="o">=</span><span class="s2">&quot;utf-8&quot;</span><span class="p">),</span>
         <span class="p">))</span>
 
     <span class="k">return</span> <span class="n">index</span>
@@ -283,7 +281,7 @@
 <span class="sd">        str: the name of the file containing the index</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s">&quot;{}.idx&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">abspath</span><span class="p">(</span><span class="s2">&quot;{}.idx&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
 
 
 <span class="k">def</span> <span class="nf">has_index</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
@@ -320,7 +318,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
     </div>
   </body>
 </html>

@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Site Extraction Tutorial &mdash; genipe 1.2.2 documentation</title>
+    <title>Site extraction &mdash; genipe 1.2.2 documentation</title>
     
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -29,7 +29,7 @@
     <link rel="top" title="genipe 1.2.2 documentation" href="../index.html" />
     <link rel="up" title="Short Tutorials" href="../tutorials.html" />
     <link rel="next" title="Input Files" href="../input_files.html" />
-    <link rel="prev" title="Linear Mixed Effects Model Tutorial" href="tutorial_mixedlm.html" />
+    <link rel="prev" title="Linear mixed effects model" href="tutorial_mixedlm.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -49,7 +49,7 @@
           <a href="../input_files.html" title="Input Files"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="tutorial_mixedlm.html" title="Linear Mixed Effects Model Tutorial"
+          <a href="tutorial_mixedlm.html" title="Linear mixed effects model"
              accesskey="P">previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &raquo;</li> 
@@ -59,9 +59,7 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Site Extraction Tutorial</a><ul>
-<li><a class="reference internal" href="#quick-navigation">Quick navigation</a></li>
-<li><a class="reference internal" href="#site-extraction">Site extraction</a><ul>
+<li><a class="reference internal" href="#">Site extraction</a><ul>
 <li><a class="reference internal" href="#input-files">Input files</a></li>
 <li><a class="reference internal" href="#executing-the-extraction">Executing the extraction</a><ul>
 <li><a class="reference internal" href="#extraction-by-id">Extraction by ID</a></li>
@@ -78,12 +76,10 @@
 </ul>
 </li>
 </ul>
-</li>
-</ul>
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="tutorial_mixedlm.html"
-                        title="previous chapter">Linear Mixed Effects Model Tutorial</a></p>
+                        title="previous chapter">Linear mixed effects model</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="../input_files.html"
                         title="next chapter">Input Files</a></p>
@@ -102,9 +98,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -115,19 +108,20 @@
         <div class="bodywrapper">
           <div class="body" role="main">
             
-  <div class="section" id="site-extraction-tutorial">
-<h1>Site Extraction Tutorial<a class="headerlink" href="#site-extraction-tutorial" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="quick-navigation">
-<h2>Quick navigation<a class="headerlink" href="#quick-navigation" title="Permalink to this headline">¶</a></h2>
-<ol class="arabic simple">
-<li><a class="reference internal" href="#extract-tut-input-files"><span>Input files</span></a></li>
-<li><a class="reference internal" href="#extract-tut-execute"><span>Executing the extraction</span></a></li>
-<li><a class="reference internal" href="#extract-tut-output-files"><span>Output files</span></a></li>
-<li><a class="reference internal" href="#extract-tut-usage"><span>Usage</span></a></li>
-</ol>
+  <div class="contents topic" id="quick-navigation">
+<p class="topic-title first">Quick navigation</p>
+<ul class="simple">
+<li><a class="reference internal" href="#site-extraction" id="id1">Site extraction</a><ul>
+<li><a class="reference internal" href="#input-files" id="id2">Input files</a></li>
+<li><a class="reference internal" href="#executing-the-extraction" id="id3">Executing the extraction</a></li>
+<li><a class="reference internal" href="#output-files" id="id4">Output files</a></li>
+<li><a class="reference internal" href="#usage" id="id5">Usage</a></li>
+</ul>
+</li>
+</ul>
 </div>
 <div class="section" id="site-extraction">
-<h2>Site extraction<a class="headerlink" href="#site-extraction" title="Permalink to this headline">¶</a></h2>
+<h1><a class="toc-backref" href="#id1">Site extraction</a><a class="headerlink" href="#site-extraction" title="Permalink to this headline">¶</a></h1>
 <p>Genome-wide imputation dataset might be huge. Often, it is required to extract
 a subset of imputed sites (<em>e.g.</em> specific markers, genomic location, or
 markers with a specific minor allele frequency, information value or completion
@@ -136,17 +130,17 @@ analysis (<em>e.g.</em> hard calls or dosage values). We provide an easy tool to
 perform site extraction of multiple <em>impute2</em> files using either marker
 identification number, or genomic location and/or minor allele frequency and/or
 call rate and/or information value.</p>
-<p>We suppose that you have followed the main <a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>. The
+<p>We suppose that you have followed the main <a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span class="std std-ref">Genome-wide imputation pipeline</span></a>. The
 following command will create the working directory for this tutorial.</p>
-<div class="highlight-bash"><div class="highlight"><pre>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial/extraction
+<div class="highlight-bash"><div class="highlight"><pre><span></span>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial/extraction
 </pre></div>
 </div>
 <div class="section" id="input-files">
-<span id="extract-tut-input-files"></span><h3>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h3>
+<span id="extract-tut-input-files"></span><h2><a class="toc-backref" href="#id2">Input files</a><a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h2>
 <p>After running the <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> pipeline, all the required files for the
 extraction tools are automatically created in the <code class="docutils literal"><span class="pre">final_impute2</span></code> directories
-(see the <a class="reference internal" href="tutorial_genipe.html#genipe-tut-output-files-final-impute2"><span>genipe/chrN/final_impute2 directories</span></a> section in the main
-<a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span>Pipeline Tutorial</span></a>).</p>
+(see the <a class="reference internal" href="tutorial_genipe.html#genipe-tut-output-files-final-impute2"><span class="std std-ref">genipe/chrN/final_impute2 directories</span></a> section in the main
+<a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span class="std std-ref">Genome-wide imputation pipeline</span></a>).</p>
 <p>The files that are required in these directories depends of what kind of
 extraction is required (by name, or by genomic location and/or by minor allele
 frequency and/or by calling rate and/or by information value).</p>
@@ -154,7 +148,7 @@ frequency and/or by calling rate and/or by information value).</p>
 files will be automatically fetched (if required).</p>
 </div>
 <div class="section" id="executing-the-extraction">
-<span id="extract-tut-execute"></span><h3>Executing the extraction<a class="headerlink" href="#executing-the-extraction" title="Permalink to this headline">¶</a></h3>
+<span id="extract-tut-execute"></span><h2><a class="toc-backref" href="#id3">Executing the extraction</a><a class="headerlink" href="#executing-the-extraction" title="Permalink to this headline">¶</a></h2>
 <p>The first time the tool is used on a set of <em>impute2</em> files, indexation will
 automatically occur (to speed of the analysis for future extraction). There are
 two ways to extract markers: using their identification number (<code class="docutils literal"><span class="pre">--extract</span></code>),
@@ -166,23 +160,23 @@ or using their properties (<code class="docutils literal"><span class="pre">--ge
 specifying multiple input files).</p>
 </div>
 <div class="section" id="extraction-by-id">
-<h4>Extraction by ID<a class="headerlink" href="#extraction-by-id" title="Permalink to this headline">¶</a></h4>
+<h3>Extraction by ID<a class="headerlink" href="#extraction-by-id" title="Permalink to this headline">¶</a></h3>
 <p>To extract markers using their identification number, you need a file
 containing the list of marker to extract (one marker per line).</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/extraction
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/extraction
 
 <span class="nb">echo</span> <span class="s2">&quot;rs76139713:51137523:C:T&quot;</span> &gt; marker_list.txt
 <span class="nb">echo</span> <span class="s2">&quot;rs372879164:17037188:A:G&quot;</span> &gt;&gt; marker_list.txt
 </pre></div>
 </div>
 <p>This <code class="docutils literal"><span class="pre">marker_list.txt</span></code> file will contain the following:</p>
-<div class="highlight-text"><div class="highlight"><pre>rs76139713:51137523:C:T
+<div class="highlight-text"><div class="highlight"><pre><span></span>rs76139713:51137523:C:T
 rs372879164:17037188:A:G
 </pre></div>
 </div>
 <p>Then, the following command (using the <code class="docutils literal"><span class="pre">--extract</span></code> option) will extract those
 two markers from the <em>impute2</em> file.</p>
-<div class="highlight-bash"><div class="highlight"><pre>impute2-extractor <span class="se">\</span>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>impute2-extractor <span class="se">\</span>
     --impute2 ../genipe/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
     --extract marker_list.txt
 </pre></div>
@@ -195,7 +189,7 @@ file.</p>
 </div>
 </div>
 <div class="section" id="extraction-by-characteristics">
-<h4>Extraction by characteristics<a class="headerlink" href="#extraction-by-characteristics" title="Permalink to this headline">¶</a></h4>
+<h3>Extraction by characteristics<a class="headerlink" href="#extraction-by-characteristics" title="Permalink to this headline">¶</a></h3>
 <p>There are four ways to extract markers according to their characteristics. The
 first way is to specify the genomic location of the markers to extract (<em>i.e.</em>
 the <code class="docutils literal"><span class="pre">--genomic</span></code> option). The second way is to specify a minor allele
@@ -206,7 +200,7 @@ Those four ways can be used at the same time (<em>e.g.</em> to get markers in a
 specific genomic range and a specific call rate).</p>
 <p>For example, to extract markers with a MAF <span class="math">\(\geq\)</span> 0.05 located in the
 <em>CYP2D6</em> gene, perform the following command:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/extraction
+<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/extraction
 
 impute2-extractor <span class="se">\</span>
     --impute2 ../genipe/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
@@ -217,7 +211,7 @@ impute2-extractor <span class="se">\</span>
 </div>
 <p>To gather all markers with a MAF <span class="math">\(\geq\)</span> 0.05 and a call rate <span class="math">\(\geq\)</span>
 0.99, perform the following command:</p>
-<div class="highlight-bash"><div class="highlight"><pre>impute2-extractor <span class="se">\</span>
+<div class="highlight-bash"><div class="highlight"><pre><span></span>impute2-extractor <span class="se">\</span>
     --impute2 ../genipe/chr22/final_impute2/chr22.imputed.impute2.gz <span class="se">\</span>
     --maf 0.05 <span class="se">\</span>
     --rate 0.99 <span class="se">\</span>
@@ -227,14 +221,14 @@ impute2-extractor <span class="se">\</span>
 </div>
 </div>
 <div class="section" id="output-files">
-<span id="extract-tut-output-files"></span><h3>Output files<a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h3>
+<span id="extract-tut-output-files"></span><h2><a class="toc-backref" href="#id4">Output files</a><a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
 <p>The output files will depend on the output format selected (the <code class="docutils literal"><span class="pre">--format</span></code>
 option). You can specify either <code class="docutils literal"><span class="pre">impute2</span></code>, <code class="docutils literal"><span class="pre">dosage</span></code> and/or <code class="docutils literal"><span class="pre">calls</span></code>, for
 the <em>impute2</em> format (<em>i.e.</em> three probabilities per sample), the <em>dosage</em>
 format (<em>i.e.</em> one value between 0 and 2 per sample), and hard calls (<em>i.e.</em>
 genotypes).</p>
 <div class="section" id="impute2-file">
-<h4><code class="docutils literal"><span class="pre">.impute2</span></code> file<a class="headerlink" href="#impute2-file" title="Permalink to this headline">¶</a></h4>
+<h3><code class="docutils literal"><span class="pre">.impute2</span></code> file<a class="headerlink" href="#impute2-file" title="Permalink to this headline">¶</a></h3>
 <p>This file is generated when the <code class="docutils literal"><span class="pre">impute2</span></code> format is used. It has the same
 format as the original <em>impute2</em> file.</p>
 <p>The general structure of the file contains the following columns (which are
@@ -246,7 +240,7 @@ second value correspond to the probability of being heterozygous. Finally, the
 third value correspond to the probability of being homozygous of the second
 allele.</p>
 <p>The following example shows two lines of the <code class="docutils literal"><span class="pre">.impute2</span></code> file.</p>
-<div class="highlight-text"><div class="highlight"><pre>22 rs7289830 16058758 C A 0 0 1 0 0 1 0 1 0 ...
+<div class="highlight-text"><div class="highlight"><pre><span></span>22 rs7289830 16058758 C A 0 0 1 0 0 1 0 1 0 ...
 22 rs6423472 16087621 A G 0 1 0 1 0 0 0 1 0 ...
 </pre></div>
 </div>
@@ -258,7 +252,7 @@ same directory (using the same output prefix).</p>
 </div>
 </div>
 <div class="section" id="dosage-file">
-<h4><code class="docutils literal"><span class="pre">.dosage</span></code> file<a class="headerlink" href="#dosage-file" title="Permalink to this headline">¶</a></h4>
+<h3><code class="docutils literal"><span class="pre">.dosage</span></code> file<a class="headerlink" href="#dosage-file" title="Permalink to this headline">¶</a></h3>
 <p>This file contains the dosage computed from the <em>impute2</em> probabilities. The
 general structure of the file contains the following columns (which are
 tabulation separated): the chromosome, the position on the chromosome, its
@@ -268,7 +262,7 @@ chance of been homozygous of the major allele, values close to 1 represent a
 higher chance of been heterozygous, and values close to 2 represent a higher
 chance of been homozygous of the minor allele.</p>
 <p>The following example shows two lines of the <code class="docutils literal"><span class="pre">.dosage</span></code> file.</p>
-<div class="highlight-text"><div class="highlight"><pre>22   16058758        rs7289830       C       A       0.0     0.0     1.0     ...
+<div class="highlight-text"><div class="highlight"><pre><span></span>22   16058758        rs7289830       C       A       0.0     0.0     1.0     ...
 22   16087621        rs6423472       A       G       1.0     2.0     1.0     ...
 </pre></div>
 </div>
@@ -280,14 +274,14 @@ threshold (specified by the <code class="docutils literal"><span class="pre">--p
 </div>
 </div>
 <div class="section" id="calls-file">
-<h4><code class="docutils literal"><span class="pre">.calls</span></code> file<a class="headerlink" href="#calls-file" title="Permalink to this headline">¶</a></h4>
+<h3><code class="docutils literal"><span class="pre">.calls</span></code> file<a class="headerlink" href="#calls-file" title="Permalink to this headline">¶</a></h3>
 <p>This file contains the hard calls computed from the <em>impute2</em> probabilities. It
 has the same format as a transposed pedfile (from <em>Plink</em>). The general
 structure of the file contains the following columns (which are tabulation
 separated): the chromosome, the marker name, the genetic position, the genomic
 location, and the hard calls.</p>
 <p>The following example shows two lines of the <code class="docutils literal"><span class="pre">.calls</span></code> file.</p>
-<div class="highlight-text"><div class="highlight"><pre>22   rs7289830       0       16058758        A A     A A     C A     ...
+<div class="highlight-text"><div class="highlight"><pre><span></span>22   rs7289830       0       16058758        A A     A A     C A     ...
 22   rs6423472       0       16087621        A G     A A     A G     ...
 </pre></div>
 </div>
@@ -299,18 +293,18 @@ location, and the hard calls.</p>
 </div>
 </div>
 <div class="section" id="usage">
-<span id="extract-tut-usage"></span><h3>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h3>
+<span id="extract-tut-usage"></span><h2><a class="toc-backref" href="#id5">Usage</a><a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The following command will display the documentation for the extraction
 analysis in the console:</p>
-<div class="highlight-console"><div class="highlight"><pre><span class="gp">$</span> impute2-extractor --help
+<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> impute2-extractor --help
 <span class="go">usage: impute2-extractor [-h] [-v] [--debug] --impute2 FILE [FILE ...]</span>
-<span class="go">                         [--out PREFIX] [--format FORMAT [FORMAT ...]]</span>
-<span class="go">                         [--prob FLOAT] [--extract FILE]</span>
-<span class="go">                         [--genomic CHR:START-END] [--maf FLOAT]</span>
-<span class="go">                         [--rate FLOAT] [--info FLOAT]</span>
+<span class="go">                         [--index] [--out PREFIX]</span>
+<span class="go">                         [--format FORMAT [FORMAT ...]] [--prob FLOAT]</span>
+<span class="go">                         [--extract FILE] [--genomic CHR:START-END]</span>
+<span class="go">                         [--maf FLOAT] [--rate FLOAT] [--info FLOAT]</span>
 
 <span class="go">Extract imputed markers located in a specific genomic region. This script is</span>
-<span class="go">part of the &#39;genipe&#39; package, version 1.2.2).</span>
+<span class="go">part of the &#39;genipe&#39; package, version 1.2.3).</span>
 
 <span class="go">optional arguments:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
@@ -320,6 +314,9 @@ analysis in the console:</p>
 <span class="go">Input Files:</span>
 <span class="go">  --impute2 FILE [FILE ...]</span>
 <span class="go">                        The output from IMPUTE2.</span>
+
+<span class="go">Indexation Options:</span>
+<span class="go">  --index               Only perform the indexation.</span>
 
 <span class="go">Output Options:</span>
 <span class="go">  --out PREFIX          The prefix of the output files. [impute2_extractor]</span>
@@ -356,7 +353,6 @@ index) will be performed.</p>
 </div>
 </div>
 </div>
-</div>
 
 
           </div>
@@ -377,7 +373,7 @@ index) will be performed.</p>
           <a href="../input_files.html" title="Input Files"
              >next</a> |</li>
         <li class="right" >
-          <a href="tutorial_mixedlm.html" title="Linear Mixed Effects Model Tutorial"
+          <a href="tutorial_mixedlm.html" title="Linear mixed effects model"
              >previous</a> |</li>
         <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &raquo;</li> 
@@ -385,7 +381,7 @@ index) will be performed.</p>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
     </div>
   </body>
 </html>

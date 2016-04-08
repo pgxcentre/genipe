@@ -58,9 +58,6 @@
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
-    <p class="searchtip" style="font-size: 90%">
-    Enter search terms or a module, class or function name.
-    </p>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -72,12 +69,13 @@
           <div class="body" role="main">
             
   <h1>Source code for genipe.task.launcher</h1><div class="highlight"><pre>
-<span class="c"># This file is part of genipe.</span>
-<span class="c">#</span>
-<span class="c"># This work is licensed under the Creative Commons Attribution-NonCommercial</span>
-<span class="c"># 4.0 International License. To view a copy of this license, visit</span>
-<span class="c"># http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative</span>
-<span class="c"># Commons, PO Box 1866, Mountain View, CA 94042, USA.</span>
+<span></span>
+<span class="c1"># This file is part of genipe.</span>
+<span class="c1">#</span>
+<span class="c1"># This work is licensed under the Creative Commons Attribution-NonCommercial</span>
+<span class="c1"># 4.0 International License. To view a copy of this license, visit</span>
+<span class="c1"># http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative</span>
+<span class="c1"># Commons, PO Box 1866, Mountain View, CA 94042, USA.</span>
 
 
 <span class="kn">import</span> <span class="nn">os</span>
@@ -96,16 +94,16 @@
 <span class="kn">from</span> <span class="nn">..error</span> <span class="kn">import</span> <span class="n">ProgramError</span>
 
 
-<span class="n">__author__</span> <span class="o">=</span> <span class="s">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
-<span class="n">__copyright__</span> <span class="o">=</span> <span class="s">&quot;Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre&quot;</span>
-<span class="n">__license__</span> <span class="o">=</span> <span class="s">&quot;Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)&quot;</span>
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)&quot;</span>
 
 
-<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s">&quot;launch_tasks&quot;</span><span class="p">,</span> <span class="p">]</span>
+<span class="n">__all__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;launch_tasks&quot;</span><span class="p">,</span> <span class="p">]</span>
 
 
-<span class="k">def</span> <span class="nf">launch_tasks</span><span class="p">(</span><span class="n">to_process</span><span class="p">,</span> <span class="n">nb_threads</span><span class="p">,</span> <span class="n">check_rc</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">hpc</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-<div class="viewcode-block" id="launch_tasks"><a class="viewcode-back" href="../../../module_content/genipe.task.html#genipe.task.launcher.launch_tasks">[docs]</a>                 <span class="n">hpc_options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="s">&quot;&quot;</span><span class="p">):</span>
+<div class="viewcode-block" id="launch_tasks"><a class="viewcode-back" href="../../../module_content/genipe.task.html#genipe.task.launcher.launch_tasks">[docs]</a><span class="k">def</span> <span class="nf">launch_tasks</span><span class="p">(</span><span class="n">to_process</span><span class="p">,</span> <span class="n">nb_threads</span><span class="p">,</span> <span class="n">check_rc</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">hpc</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                 <span class="n">hpc_options</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">out_dir</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">preamble</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Executes commands.</span>
 
 <span class="sd">    Args:</span>
@@ -118,74 +116,74 @@
 <span class="sd">        preamble (str): the script preamble (for DRMAA)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c"># Do we need a DRMAA session?</span>
+    <span class="c1"># Do we need a DRMAA session?</span>
     <span class="n">drmaa_session</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="k">if</span> <span class="n">hpc</span><span class="p">:</span>
         <span class="kn">import</span> <span class="nn">drmaa</span>
         <span class="n">drmaa_session</span> <span class="o">=</span> <span class="n">drmaa</span><span class="o">.</span><span class="n">Session</span><span class="p">()</span>
         <span class="n">drmaa_session</span><span class="o">.</span><span class="n">initialize</span><span class="p">()</span>
 
-    <span class="c"># Do we need to check the return code?</span>
+    <span class="c1"># Do we need to check the return code?</span>
     <span class="n">to_run</span> <span class="o">=</span> <span class="p">[]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">to_process</span><span class="p">)):</span>
-        <span class="k">assert</span> <span class="s">&quot;name&quot;</span> <span class="ow">in</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="k">assert</span> <span class="s">&quot;task_id&quot;</span> <span class="ow">in</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="k">assert</span> <span class="s">&quot;task_db&quot;</span> <span class="ow">in</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-        <span class="k">assert</span> <span class="s">&quot;o_files&quot;</span> <span class="ow">in</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="s2">&quot;name&quot;</span> <span class="ow">in</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="s2">&quot;task_id&quot;</span> <span class="ow">in</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="s2">&quot;task_db&quot;</span> <span class="ow">in</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+        <span class="k">assert</span> <span class="s2">&quot;o_files&quot;</span> <span class="ow">in</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
 
-        <span class="n">task_name</span> <span class="o">=</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&quot;name&quot;</span><span class="p">]</span>
-        <span class="n">task_id</span> <span class="o">=</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&quot;task_id&quot;</span><span class="p">]</span>
-        <span class="n">db_name</span> <span class="o">=</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&quot;task_db&quot;</span><span class="p">]</span>
-        <span class="n">o_files</span> <span class="o">=</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&quot;o_files&quot;</span><span class="p">]</span>
+        <span class="n">task_name</span> <span class="o">=</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+        <span class="n">task_id</span> <span class="o">=</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;task_id&quot;</span><span class="p">]</span>
+        <span class="n">db_name</span> <span class="o">=</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;task_db&quot;</span><span class="p">]</span>
+        <span class="n">o_files</span> <span class="o">=</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;o_files&quot;</span><span class="p">]</span>
 
-        <span class="c"># Checking if we need to run this task</span>
+        <span class="c1"># Checking if we need to run this task</span>
         <span class="k">if</span> <span class="n">check_task_completion</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">):</span>
             <span class="k">if</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">o_files</span><span class="p">,</span> <span class="n">task_id</span><span class="p">):</span>
                 <span class="n">run_time</span> <span class="o">=</span> <span class="n">get_task_runtime</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Task &#39;{}&#39;: already performed in {:,d} &quot;</span>
-                             <span class="s">&quot;seconds&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_name</span><span class="p">,</span> <span class="n">run_time</span><span class="p">))</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Task &#39;{}&#39;: already performed in {:,d} &quot;</span>
+                             <span class="s2">&quot;seconds&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_name</span><span class="p">,</span> <span class="n">run_time</span><span class="p">))</span>
                 <span class="k">continue</span>
 
             <span class="k">else</span><span class="p">:</span>
-                <span class="c"># The DB said the task was completed, but there is a missing</span>
-                <span class="c"># output files. Setting this task completion to &#39;0&#39;</span>
+                <span class="c1"># The DB said the task was completed, but there is a missing</span>
+                <span class="c1"># output files. Setting this task completion to &#39;0&#39;</span>
                 <span class="n">mark_task_incomplete</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
 
-        <span class="c"># The name of the task</span>
-        <span class="n">task_id</span> <span class="o">=</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&quot;task_id&quot;</span><span class="p">]</span>
+        <span class="c1"># The name of the task</span>
+        <span class="n">task_id</span> <span class="o">=</span> <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;task_id&quot;</span><span class="p">]</span>
 
-        <span class="c"># Some options to add</span>
-        <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&quot;check_retcode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">check_rc</span>
-        <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&quot;out_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">out_dir</span>
+        <span class="c1"># Some options to add</span>
+        <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;check_retcode&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">check_rc</span>
+        <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;out_dir&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">out_dir</span>
 
-        <span class="c"># Setting the task options</span>
+        <span class="c1"># Setting the task options</span>
         <span class="k">if</span> <span class="n">hpc</span><span class="p">:</span>
             <span class="k">assert</span> <span class="n">hpc_options</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>
             <span class="n">walltime</span> <span class="o">=</span> <span class="bp">None</span>
             <span class="n">nodes</span> <span class="o">=</span> <span class="bp">None</span>
             <span class="k">if</span> <span class="n">task_id</span> <span class="ow">in</span> <span class="n">hpc_options</span><span class="p">:</span>
-                <span class="k">if</span> <span class="s">&quot;walltime&quot;</span> <span class="ow">in</span> <span class="n">hpc_options</span><span class="p">[</span><span class="n">task_id</span><span class="p">]:</span>
-                    <span class="n">walltime</span> <span class="o">=</span> <span class="n">hpc_options</span><span class="p">[</span><span class="n">task_id</span><span class="p">][</span><span class="s">&quot;walltime&quot;</span><span class="p">]</span>
-                <span class="k">if</span> <span class="s">&quot;nodes&quot;</span> <span class="ow">in</span> <span class="n">hpc_options</span><span class="p">[</span><span class="n">task_id</span><span class="p">]:</span>
-                    <span class="n">nodes</span> <span class="o">=</span> <span class="n">hpc_options</span><span class="p">[</span><span class="n">task_id</span><span class="p">][</span><span class="s">&quot;nodes&quot;</span><span class="p">]</span>
-            <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&quot;walltime&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">walltime</span>
-            <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&quot;nodes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nodes</span>
-            <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&quot;preamble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">preamble</span>
-            <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s">&quot;drmaa_session&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">drmaa_session</span>
+                <span class="k">if</span> <span class="s2">&quot;walltime&quot;</span> <span class="ow">in</span> <span class="n">hpc_options</span><span class="p">[</span><span class="n">task_id</span><span class="p">]:</span>
+                    <span class="n">walltime</span> <span class="o">=</span> <span class="n">hpc_options</span><span class="p">[</span><span class="n">task_id</span><span class="p">][</span><span class="s2">&quot;walltime&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="s2">&quot;nodes&quot;</span> <span class="ow">in</span> <span class="n">hpc_options</span><span class="p">[</span><span class="n">task_id</span><span class="p">]:</span>
+                    <span class="n">nodes</span> <span class="o">=</span> <span class="n">hpc_options</span><span class="p">[</span><span class="n">task_id</span><span class="p">][</span><span class="s2">&quot;nodes&quot;</span><span class="p">]</span>
+            <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;walltime&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">walltime</span>
+            <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;nodes&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">nodes</span>
+            <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;preamble&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">preamble</span>
+            <span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="s2">&quot;drmaa_session&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">drmaa_session</span>
 
-        <span class="c"># Adding to list to run</span>
+        <span class="c1"># Adding to list to run</span>
         <span class="n">to_run</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">to_process</span><span class="p">[</span><span class="n">i</span><span class="p">])</span>
 
-    <span class="c"># The execution function and the execution type</span>
+    <span class="c1"># The execution function and the execution type</span>
     <span class="n">execute_func</span> <span class="o">=</span> <span class="n">_execute_command</span>
     <span class="n">GenipePool</span> <span class="o">=</span> <span class="n">Pool</span>
     <span class="k">if</span> <span class="n">hpc</span><span class="p">:</span>
         <span class="n">execute_func</span> <span class="o">=</span> <span class="n">_execute_command_drmaa</span>
         <span class="n">GenipePool</span> <span class="o">=</span> <span class="n">ThreadPool</span>
 
-    <span class="c"># Launching the command</span>
+    <span class="c1"># Launching the command</span>
     <span class="k">if</span> <span class="n">nb_threads</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="c"># Running all the processes</span>
+        <span class="c1"># Running all the processes</span>
         <span class="n">pool</span> <span class="o">=</span> <span class="n">GenipePool</span><span class="p">(</span><span class="n">processes</span><span class="o">=</span><span class="n">nb_threads</span><span class="p">)</span>
         <span class="n">results</span> <span class="o">=</span> <span class="bp">None</span>
 
@@ -198,47 +196,47 @@
             <span class="k">raise</span>
 
         <span class="k">finally</span><span class="p">:</span>
-            <span class="c"># Closing the pool</span>
+            <span class="c1"># Closing the pool</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
             <span class="k">if</span> <span class="n">drmaa_session</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
                 <span class="n">drmaa_session</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
 
-        <span class="c"># Checking the results</span>
+        <span class="c1"># Checking the results</span>
         <span class="n">problems</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">results</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
                 <span class="n">problems</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s">&quot;Task &#39;{}&#39;: did not finish...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="s2">&quot;Task &#39;{}&#39;: did not finish...&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Task &#39;{}&#39;: {} in {:,d} &quot;</span>
-                             <span class="s">&quot;seconds&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Task &#39;{}&#39;: {} in {:,d} &quot;</span>
+                             <span class="s2">&quot;seconds&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="mi">3</span><span class="p">]))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">problems</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s">&quot;the following task did not work: &quot;</span> <span class="o">+</span>
+            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;the following task did not work: &quot;</span> <span class="o">+</span>
                                <span class="nb">repr</span><span class="p">(</span><span class="n">problems</span><span class="p">))</span>
 
     <span class="k">else</span><span class="p">:</span>
         <span class="k">try</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">data</span> <span class="ow">in</span> <span class="n">to_run</span><span class="p">:</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Executing {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]))</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Executing {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]))</span>
                 <span class="n">result</span> <span class="o">=</span> <span class="n">execute_func</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">result</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s">&quot;Task &#39;{}&#39;: {} in {:,d} &quot;</span> <span class="s">&quot;seconds&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Task &#39;{}&#39;: {} in {:,d} &quot;</span> <span class="s2">&quot;seconds&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                         <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
                         <span class="n">result</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span>
                         <span class="n">result</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
                     <span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span>
-                        <span class="s">&quot;problem executing {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">])</span>
+                        <span class="s2">&quot;problem executing {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">])</span>
                     <span class="p">)</span>
 
         <span class="k">finally</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">drmaa_session</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-                <span class="n">drmaa_session</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span>
+                <span class="n">drmaa_session</span><span class="o">.</span><span class="n">exit</span><span class="p">()</span></div>
 
 
-<span class="k">def</span> <span class="nf">_check_output_files</span><span class="p">(</span><span class="n">o_files</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span></div>
+<span class="k">def</span> <span class="nf">_check_output_files</span><span class="p">(</span><span class="n">o_files</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Check that the files exist.</span>
 
 <span class="sd">    Args:</span>
@@ -258,9 +256,9 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;.impute2&quot;</span><span class="p">):</span>
-            <span class="c"># IMPUTE2 files might be gzipped</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">or</span> <span class="n">isfile</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s">&quot;.gz&quot;</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">filename</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.impute2&quot;</span><span class="p">):</span>
+            <span class="c1"># IMPUTE2 files might be gzipped</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span> <span class="ow">or</span> <span class="n">isfile</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;.gz&quot;</span><span class="p">)):</span>
                 <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_impute2_file</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">task</span><span class="p">):</span>
                     <span class="k">return</span> <span class="bp">False</span>
 
@@ -288,55 +286,55 @@
 <span class="sd">    3. there are no SNPs for output.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c"># The name of the summary file</span>
-    <span class="n">summary_fn</span> <span class="o">=</span> <span class="n">fn</span> <span class="o">+</span> <span class="s">&quot;_summary&quot;</span>
+    <span class="c1"># The name of the summary file</span>
+    <span class="n">summary_fn</span> <span class="o">=</span> <span class="n">fn</span> <span class="o">+</span> <span class="s2">&quot;_summary&quot;</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">summary_fn</span><span class="p">):</span>
-        <span class="c"># The summary file doesn&#39;t exists...</span>
+        <span class="c1"># The summary file doesn&#39;t exists...</span>
         <span class="k">return</span> <span class="bp">False</span>
 
-    <span class="c"># Reading the file content</span>
+    <span class="c1"># Reading the file content</span>
     <span class="n">summary</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">summary_fn</span><span class="p">,</span> <span class="s">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">summary_fn</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
         <span class="n">summary</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
-    <span class="c"># Checking if there are no SNPs in the imputation interval?</span>
+    <span class="c1"># Checking if there are no SNPs in the imputation interval?</span>
     <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
-        <span class="s">r&quot;\sThere are no SNPs in the imputation interval, so there is &quot;</span>
-        <span class="s">&quot;nothing for IMPUTE2 to analyze; the program will quit now.&quot;</span><span class="p">,</span>
+        <span class="s2">r&quot;\sThere are no SNPs in the imputation interval, so there is &quot;</span>
+        <span class="s2">&quot;nothing for IMPUTE2 to analyze; the program will quit now.&quot;</span><span class="p">,</span>
         <span class="n">summary</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">task</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;{}: there are no SNPs in the imputation &quot;</span>
-                            <span class="s">&quot;interval&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;{}: there are no SNPs in the imputation &quot;</span>
+                            <span class="s2">&quot;interval&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">True</span>
 
-    <span class="c"># Checking if there are not type 2 SNPs</span>
+    <span class="c1"># Checking if there are not type 2 SNPs</span>
     <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
-        <span class="s">r&quot;\sERROR: There are no type 2 SNPs after applying the command-line &quot;</span>
-        <span class="s">&quot;settings for this run, which makes it impossible to perform &quot;</span>
-        <span class="s">&quot;imputation.&quot;</span><span class="p">,</span>
+        <span class="s2">r&quot;\sERROR: There are no type 2 SNPs after applying the command-line &quot;</span>
+        <span class="s2">&quot;settings for this run, which makes it impossible to perform &quot;</span>
+        <span class="s2">&quot;imputation.&quot;</span><span class="p">,</span>
         <span class="n">summary</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">task</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;{}: there are no type 2 SNPs for this &quot;</span>
-                            <span class="s">&quot;run&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;{}: there are no type 2 SNPs for this &quot;</span>
+                            <span class="s2">&quot;run&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">True</span>
 
-    <span class="c"># Checking if there are no output SNPs</span>
+    <span class="c1"># Checking if there are no output SNPs</span>
     <span class="n">match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span>
-        <span class="s">r&quot;\sYour current command-line settings imply that there will not be &quot;</span>
-        <span class="s">&quot;any SNPs in the output file, so IMPUTE2 will not perform any &quot;</span>
-        <span class="s">&quot;analysis or print output files.&quot;</span><span class="p">,</span>
+        <span class="s2">r&quot;\sYour current command-line settings imply that there will not be &quot;</span>
+        <span class="s2">&quot;any SNPs in the output file, so IMPUTE2 will not perform any &quot;</span>
+        <span class="s2">&quot;analysis or print output files.&quot;</span><span class="p">,</span>
         <span class="n">summary</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="k">if</span> <span class="n">match</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">task</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;{}: no SNPs in the output file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;{}: no SNPs in the output file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task</span><span class="p">))</span>
         <span class="k">return</span> <span class="bp">True</span>
 
-    <span class="c"># If attained, there is a problem</span>
+    <span class="c1"># If attained, there is a problem</span>
     <span class="k">return</span> <span class="bp">False</span>
 
 
@@ -352,72 +350,72 @@
 <span class="sd">               execution time in seconds (int)</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c"># Some assertions</span>
-    <span class="k">assert</span> <span class="s">&quot;task_id&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
-    <span class="k">assert</span> <span class="s">&quot;name&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
-    <span class="k">assert</span> <span class="s">&quot;command&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
-    <span class="k">assert</span> <span class="s">&quot;check_retcode&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
-    <span class="k">assert</span> <span class="s">&quot;task_db&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
-    <span class="k">assert</span> <span class="s">&quot;o_files&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="c1"># Some assertions</span>
+    <span class="k">assert</span> <span class="s2">&quot;task_id&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s2">&quot;name&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s2">&quot;command&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s2">&quot;check_retcode&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s2">&quot;task_db&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s2">&quot;o_files&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
 
-    <span class="c"># Getting the command&#39;s information</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span>
-    <span class="n">command</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;command&quot;</span><span class="p">]</span>
-    <span class="n">check_rc</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;check_retcode&quot;</span><span class="p">]</span>
-    <span class="n">task_id</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;task_id&quot;</span><span class="p">]</span>
-    <span class="n">db_name</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;task_db&quot;</span><span class="p">]</span>
+    <span class="c1"># Getting the command&#39;s information</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;command&quot;</span><span class="p">]</span>
+    <span class="n">check_rc</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;check_retcode&quot;</span><span class="p">]</span>
+    <span class="n">task_id</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;task_id&quot;</span><span class="p">]</span>
+    <span class="n">db_name</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;task_db&quot;</span><span class="p">]</span>
 
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Checking status for &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
-    <span class="c"># Checking if the command was completed</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Checking status for &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+    <span class="c1"># Checking if the command was completed</span>
     <span class="k">if</span> <span class="n">check_task_completion</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="s">&quot;o_files&quot;</span><span class="p">],</span> <span class="n">task_id</span><span class="p">):</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; completed&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;o_files&quot;</span><span class="p">],</span> <span class="n">task_id</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; completed&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
             <span class="n">runtime</span> <span class="o">=</span> <span class="n">get_task_runtime</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;already performed&quot;</span><span class="p">,</span> <span class="n">runtime</span>
+            <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;already performed&quot;</span><span class="p">,</span> <span class="n">runtime</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; problem with output files&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; problem with output files&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
             <span class="n">mark_task_incomplete</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; to run&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; to run&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
 
-    <span class="c"># Creating a new entry in the database</span>
+    <span class="c1"># Creating a new entry in the database</span>
     <span class="n">create_task_entry</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
 
-    <span class="c"># Launching the command</span>
+    <span class="c1"># Launching the command</span>
     <span class="n">proc</span> <span class="o">=</span> <span class="n">Popen</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">stdout</span><span class="o">=</span><span class="n">PIPE</span><span class="p">,</span> <span class="n">stderr</span><span class="o">=</span><span class="n">PIPE</span><span class="p">)</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; finished&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; finished&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
 
-    <span class="c"># Waiting for the process to terminate</span>
+    <span class="c1"># Waiting for the process to terminate</span>
     <span class="n">outs</span><span class="p">,</span> <span class="n">errs</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">communicate</span><span class="p">()</span>
     <span class="n">rc</span> <span class="o">=</span> <span class="n">proc</span><span class="o">.</span><span class="n">returncode</span>
     <span class="k">if</span> <span class="n">check_rc</span> <span class="ow">and</span> <span class="n">rc</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">task_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">):</span>
-            <span class="c"># There was a problem...</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
-            <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">task_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;impute2&quot;</span><span class="p">):</span>
+            <span class="c1"># There was a problem...</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="c"># Task is IMPUTE2, and it might be normal according to message in</span>
-            <span class="c"># the summary file</span>
+            <span class="c1"># Task is IMPUTE2, and it might be normal according to message in</span>
+            <span class="c1"># the summary file</span>
             <span class="n">impute2_fn</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;o_files&quot;</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;.impute2&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;o_files&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.impute2&quot;</span><span class="p">):</span>
                     <span class="n">impute2_fn</span> <span class="o">=</span> <span class="n">fn</span>
                     <span class="k">break</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_impute2_file</span><span class="p">(</span><span class="n">impute2_fn</span><span class="p">):</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
-                <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+                <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
 
-    <span class="c"># Checking all the required files were generated</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="s">&quot;o_files&quot;</span><span class="p">],</span> <span class="n">task_id</span><span class="p">):</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
+    <span class="c1"># Checking all the required files were generated</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;o_files&quot;</span><span class="p">],</span> <span class="n">task_id</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
 
-    <span class="c"># The task was performed correctly, so we update to completed</span>
+    <span class="c1"># The task was performed correctly, so we update to completed</span>
     <span class="n">mark_task_completed</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
 
-    <span class="c"># Everything when well</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; everything was fine&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
-    <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;performed&quot;</span><span class="p">,</span> <span class="n">get_task_runtime</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
+    <span class="c1"># Everything when well</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; everything was fine&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+    <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;performed&quot;</span><span class="p">,</span> <span class="n">get_task_runtime</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
 
 
 <span class="k">def</span> <span class="nf">_execute_command_drmaa</span><span class="p">(</span><span class="n">command_info</span><span class="p">):</span>
@@ -437,148 +435,148 @@
 <span class="sd">        actual command.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c"># Some import</span>
+    <span class="c1"># Some import</span>
     <span class="kn">from</span> <span class="nn">drmaa</span> <span class="kn">import</span> <span class="n">Session</span><span class="p">,</span> <span class="n">JobControlAction</span>
 
-    <span class="c"># Some assertions</span>
-    <span class="k">assert</span> <span class="s">&quot;out_dir&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
-    <span class="k">assert</span> <span class="s">&quot;command&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
-    <span class="k">assert</span> <span class="s">&quot;walltime&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
-    <span class="k">assert</span> <span class="s">&quot;nodes&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
-    <span class="k">assert</span> <span class="s">&quot;task_id&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
-    <span class="k">assert</span> <span class="s">&quot;task_db&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
-    <span class="k">assert</span> <span class="s">&quot;name&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
-    <span class="k">assert</span> <span class="s">&quot;check_retcode&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
-    <span class="k">assert</span> <span class="s">&quot;o_files&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
-    <span class="k">assert</span> <span class="s">&quot;preamble&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
-    <span class="k">assert</span> <span class="s">&quot;drmaa_session&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="c1"># Some assertions</span>
+    <span class="k">assert</span> <span class="s2">&quot;out_dir&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s2">&quot;command&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s2">&quot;walltime&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s2">&quot;nodes&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s2">&quot;task_id&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s2">&quot;task_db&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s2">&quot;name&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s2">&quot;check_retcode&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s2">&quot;o_files&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s2">&quot;preamble&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
+    <span class="k">assert</span> <span class="s2">&quot;drmaa_session&quot;</span> <span class="ow">in</span> <span class="n">command_info</span>
 
-    <span class="c"># Getting the command&#39;s information</span>
-    <span class="n">name</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;name&quot;</span><span class="p">]</span>
-    <span class="n">command</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;command&quot;</span><span class="p">]</span>
-    <span class="n">task_id</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;task_id&quot;</span><span class="p">]</span>
-    <span class="n">db_name</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;task_db&quot;</span><span class="p">]</span>
-    <span class="n">out_dir</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;out_dir&quot;</span><span class="p">]</span>
-    <span class="n">check_rc</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;check_retcode&quot;</span><span class="p">]</span>
-    <span class="n">preamble</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;preamble&quot;</span><span class="p">]</span>
-    <span class="n">drmaa_session</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;drmaa_session&quot;</span><span class="p">]</span>
+    <span class="c1"># Getting the command&#39;s information</span>
+    <span class="n">name</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span>
+    <span class="n">command</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;command&quot;</span><span class="p">]</span>
+    <span class="n">task_id</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;task_id&quot;</span><span class="p">]</span>
+    <span class="n">db_name</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;task_db&quot;</span><span class="p">]</span>
+    <span class="n">out_dir</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;out_dir&quot;</span><span class="p">]</span>
+    <span class="n">check_rc</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;check_retcode&quot;</span><span class="p">]</span>
+    <span class="n">preamble</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;preamble&quot;</span><span class="p">]</span>
+    <span class="n">drmaa_session</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;drmaa_session&quot;</span><span class="p">]</span>
 
-    <span class="c"># Checking if the command was completed</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;Checking status for &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+    <span class="c1"># Checking if the command was completed</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;Checking status for &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
     <span class="k">if</span> <span class="n">check_task_completion</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">):</span>
-        <span class="k">if</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="s">&quot;o_files&quot;</span><span class="p">],</span> <span class="n">task_id</span><span class="p">):</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; completed&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;o_files&quot;</span><span class="p">],</span> <span class="n">task_id</span><span class="p">):</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; completed&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
             <span class="n">runtime</span> <span class="o">=</span> <span class="n">get_task_runtime</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
-            <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;already performed&quot;</span><span class="p">,</span> <span class="n">runtime</span>
+            <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;already performed&quot;</span><span class="p">,</span> <span class="n">runtime</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; problem with output files&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; problem with output files&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
             <span class="n">mark_task_incomplete</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; to run because not completed&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; to run&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; to run because not completed&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; to run&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
 
-    <span class="c"># Creating the script</span>
-    <span class="n">tmp_file</span> <span class="o">=</span> <span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s">&quot;w&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s">&quot;_execute.sh&quot;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+    <span class="c1"># Creating the script</span>
+    <span class="n">tmp_file</span> <span class="o">=</span> <span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;_execute.sh&quot;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
                                   <span class="nb">dir</span><span class="o">=</span><span class="n">out_dir</span><span class="p">)</span>
 
-    <span class="c"># Writing the shebang</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;#!/usr/bin/env bash&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">tmp_file</span><span class="p">)</span>
+    <span class="c1"># Writing the shebang</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;#!/usr/bin/env bash&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">tmp_file</span><span class="p">)</span>
 
-    <span class="c"># Writing the preamble</span>
+    <span class="c1"># Writing the preamble</span>
     <span class="k">print</span><span class="p">(</span><span class="n">preamble</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">tmp_file</span><span class="p">)</span>
 
-    <span class="c"># Writing the command</span>
-    <span class="k">print</span><span class="p">(</span><span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="s">&quot; &quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">tmp_file</span><span class="p">)</span>
+    <span class="c1"># Writing the command</span>
+    <span class="k">print</span><span class="p">(</span><span class="n">command</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">tmp_file</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">chunk</span> <span class="ow">in</span> <span class="n">command</span><span class="p">[</span><span class="mi">1</span><span class="p">:]:</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">chunk</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s">&quot; &quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">tmp_file</span><span class="p">)</span>
-    <span class="k">print</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">tmp_file</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">chunk</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">tmp_file</span><span class="p">)</span>
+    <span class="k">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">tmp_file</span><span class="p">)</span>
 
-    <span class="c"># Closing the temporary file</span>
+    <span class="c1"># Closing the temporary file</span>
     <span class="n">tmp_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
-    <span class="c"># Making the script executable</span>
+    <span class="c1"># Making the script executable</span>
     <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">tmp_file</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="mi">0</span><span class="n">o755</span><span class="p">)</span>
 
-    <span class="c"># Creating the job template</span>
+    <span class="c1"># Creating the job template</span>
     <span class="n">job</span> <span class="o">=</span> <span class="n">drmaa_session</span><span class="o">.</span><span class="n">createJobTemplate</span><span class="p">()</span>
     <span class="n">job</span><span class="o">.</span><span class="n">remoteCommand</span> <span class="o">=</span> <span class="n">tmp_file</span><span class="o">.</span><span class="n">name</span>
-    <span class="n">job</span><span class="o">.</span><span class="n">jobName</span> <span class="o">=</span> <span class="s">&quot;_{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">)</span>
+    <span class="n">job</span><span class="o">.</span><span class="n">jobName</span> <span class="o">=</span> <span class="s2">&quot;_{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">)</span>
     <span class="n">job</span><span class="o">.</span><span class="n">workingDirectory</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;walltime&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">job</span><span class="o">.</span><span class="n">hardWallclockTimeLimit</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;walltime&quot;</span><span class="p">]</span>
-    <span class="k">if</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;nodes&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">job</span><span class="o">.</span><span class="n">nativeSpecification</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;nodes&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;walltime&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">job</span><span class="o">.</span><span class="n">hardWallclockTimeLimit</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;walltime&quot;</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;nodes&quot;</span><span class="p">]</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">job</span><span class="o">.</span><span class="n">nativeSpecification</span> <span class="o">=</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;nodes&quot;</span><span class="p">]</span>
 
-    <span class="c"># Creating a new entry in the database</span>
+    <span class="c1"># Creating a new entry in the database</span>
     <span class="n">create_task_entry</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
 
-    <span class="c"># Running the job</span>
+    <span class="c1"># Running the job</span>
     <span class="n">job_id</span> <span class="o">=</span> <span class="n">drmaa_session</span><span class="o">.</span><span class="n">runJob</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
 
-    <span class="c"># Waiting for the job</span>
+    <span class="c1"># Waiting for the job</span>
     <span class="n">ret_val</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="n">ret_val</span> <span class="o">=</span> <span class="n">drmaa_session</span><span class="o">.</span><span class="n">wait</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">Session</span><span class="o">.</span><span class="n">TIMEOUT_WAIT_FOREVER</span><span class="p">)</span>
 
     <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
         <span class="n">drmaa_session</span><span class="o">.</span><span class="n">control</span><span class="p">(</span><span class="n">job_id</span><span class="p">,</span> <span class="n">JobControlAction</span><span class="o">.</span><span class="n">TERMINATE</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s">&quot;{}: terminated&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;{}: terminated&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
         <span class="k">raise</span>
 
     <span class="k">finally</span><span class="p">:</span>
         <span class="n">drmaa_session</span><span class="o">.</span><span class="n">deleteJobTemplate</span><span class="p">(</span><span class="n">job</span><span class="p">)</span>
 
-    <span class="c"># The job is done</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; finished&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+    <span class="c1"># The job is done</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; finished&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
 
-    <span class="c"># Removing the temporary file</span>
+    <span class="c1"># Removing the temporary file</span>
     <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tmp_file</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
 
-    <span class="c"># Checking the task&#39;s return values</span>
+    <span class="c1"># Checking the task&#39;s return values</span>
     <span class="k">if</span> <span class="n">ret_val</span><span class="o">.</span><span class="n">hasCoreDump</span> <span class="ow">or</span> <span class="n">ret_val</span><span class="o">.</span><span class="n">wasAborted</span> <span class="ow">or</span> <span class="n">ret_val</span><span class="o">.</span><span class="n">hasSignal</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; problems ({}, {}, {})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; problems ({}, {}, {})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">task_id</span><span class="p">,</span>
             <span class="n">ret_val</span><span class="o">.</span><span class="n">hasCoreDump</span><span class="p">,</span>
             <span class="n">ret_val</span><span class="o">.</span><span class="n">wasAborted</span><span class="p">,</span>
             <span class="n">ret_val</span><span class="o">.</span><span class="n">hasSignal</span><span class="p">,</span>
         <span class="p">))</span>
-        <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
 
     <span class="k">if</span> <span class="n">check_rc</span> <span class="ow">and</span> <span class="n">ret_val</span><span class="o">.</span><span class="n">exitStatus</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">task_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s">&quot;impute2&quot;</span><span class="p">):</span>
-            <span class="c"># There was a problem...</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
-            <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">task_id</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s2">&quot;impute2&quot;</span><span class="p">):</span>
+            <span class="c1"># There was a problem...</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+            <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
 
         <span class="k">else</span><span class="p">:</span>
-            <span class="c"># Task is IMPUTE2, and it might be normal according to message in</span>
-            <span class="c"># the summary file</span>
+            <span class="c1"># Task is IMPUTE2, and it might be normal according to message in</span>
+            <span class="c1"># the summary file</span>
             <span class="n">impute2_fn</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">command_info</span><span class="p">[</span><span class="s">&quot;o_files&quot;</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s">&quot;.impute2&quot;</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;o_files&quot;</span><span class="p">]:</span>
+                <span class="k">if</span> <span class="n">fn</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.impute2&quot;</span><span class="p">):</span>
                     <span class="n">impute2_fn</span> <span class="o">=</span> <span class="n">fn</span>
                     <span class="k">break</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_impute2_file</span><span class="p">(</span><span class="n">impute2_fn</span><span class="p">):</span>
-                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
-                <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
+                <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+                <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
 
-    <span class="c"># Checking all the required files were generated</span>
-    <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="s">&quot;o_files&quot;</span><span class="p">],</span> <span class="n">task_id</span><span class="p">):</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
-        <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
+    <span class="c1"># Checking all the required files were generated</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_output_files</span><span class="p">(</span><span class="n">command_info</span><span class="p">[</span><span class="s2">&quot;o_files&quot;</span><span class="p">],</span> <span class="n">task_id</span><span class="p">):</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; exit status problem&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+        <span class="k">return</span> <span class="bp">False</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;problem&quot;</span><span class="p">,</span> <span class="bp">None</span>
 
-    <span class="c"># Getting the time</span>
-    <span class="n">launch_time</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ret_val</span><span class="o">.</span><span class="n">resourceUsage</span><span class="p">[</span><span class="s">&quot;submission_time&quot;</span><span class="p">])</span>
-    <span class="n">start_time</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ret_val</span><span class="o">.</span><span class="n">resourceUsage</span><span class="p">[</span><span class="s">&quot;start_time&quot;</span><span class="p">])</span>
-    <span class="n">end_time</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ret_val</span><span class="o">.</span><span class="n">resourceUsage</span><span class="p">[</span><span class="s">&quot;end_time&quot;</span><span class="p">])</span>
+    <span class="c1"># Getting the time</span>
+    <span class="n">launch_time</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ret_val</span><span class="o">.</span><span class="n">resourceUsage</span><span class="p">[</span><span class="s2">&quot;submission_time&quot;</span><span class="p">])</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ret_val</span><span class="o">.</span><span class="n">resourceUsage</span><span class="p">[</span><span class="s2">&quot;start_time&quot;</span><span class="p">])</span>
+    <span class="n">end_time</span> <span class="o">=</span> <span class="nb">float</span><span class="p">(</span><span class="n">ret_val</span><span class="o">.</span><span class="n">resourceUsage</span><span class="p">[</span><span class="s2">&quot;end_time&quot;</span><span class="p">])</span>
 
-    <span class="c"># The task was performed correctly, so we update to completed</span>
+    <span class="c1"># The task was performed correctly, so we update to completed</span>
     <span class="n">mark_drmaa_task_completed</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">launch_time</span><span class="p">,</span> <span class="n">start_time</span><span class="p">,</span> <span class="n">end_time</span><span class="p">,</span>
                               <span class="n">db_name</span><span class="p">)</span>
 
-    <span class="c"># Everything when well</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s">&quot;&#39;{}&#39; everything was fine&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
-    <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s">&quot;performed&quot;</span><span class="p">,</span> <span class="n">get_task_runtime</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
+    <span class="c1"># Everything when well</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="s2">&quot;&#39;{}&#39; everything was fine&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">task_id</span><span class="p">))</span>
+    <span class="k">return</span> <span class="bp">True</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;performed&quot;</span><span class="p">,</span> <span class="n">get_task_runtime</span><span class="p">(</span><span class="n">task_id</span><span class="p">,</span> <span class="n">db_name</span><span class="p">)</span>
 </pre></div>
 
           </div>
@@ -602,7 +600,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.3.1.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
     </div>
   </body>
 </html>

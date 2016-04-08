@@ -1,0 +1,681 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>genipe.tools.genipe_tutorial &mdash; genipe 1.2.2 documentation</title>
+    
+    <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../../../',
+        VERSION:     '1.2.2',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../../../_static/jquery.js"></script>
+    <script type="text/javascript" src="../../../_static/underscore.js"></script>
+    <script type="text/javascript" src="../../../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
+    <link rel="top" title="genipe 1.2.2 documentation" href="../../../index.html" />
+    <link rel="up" title="genipe" href="../../genipe.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../../../search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <h1>Source code for genipe.tools.genipe_tutorial</h1><div class="highlight"><pre>
+<span></span>
+<span class="c1"># This file is part of genipe.</span>
+<span class="c1">#</span>
+<span class="c1"># This work is licensed under the Creative Commons Attribution-NonCommercial</span>
+<span class="c1"># 4.0 International License. To view a copy of this license, visit</span>
+<span class="c1"># http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative</span>
+<span class="c1"># Commons, PO Box 1866, Mountain View, CA 94042, USA.</span>
+
+
+<span class="kn">import</span> <span class="nn">os</span>
+<span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">stat</span>
+<span class="kn">import</span> <span class="nn">shutil</span>
+<span class="kn">import</span> <span class="nn">logging</span>
+<span class="kn">import</span> <span class="nn">zipfile</span>
+<span class="kn">import</span> <span class="nn">argparse</span>
+<span class="kn">import</span> <span class="nn">platform</span>
+<span class="kn">from</span> <span class="nn">glob</span> <span class="kn">import</span> <span class="n">glob</span>
+<span class="kn">from</span> <span class="nn">urllib.request</span> <span class="kn">import</span> <span class="n">urlretrieve</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">TemporaryDirectory</span>
+<span class="kn">from</span> <span class="nn">urllib.error</span> <span class="kn">import</span> <span class="n">HTTPError</span><span class="p">,</span> <span class="n">URLError</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">check_call</span><span class="p">,</span> <span class="n">CalledProcessError</span>
+
+<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">__version__</span>
+<span class="kn">from</span> <span class="nn">..error</span> <span class="kn">import</span> <span class="n">ProgramError</span>
+
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
+<span class="n">__copyright__</span> <span class="o">=</span> <span class="s2">&quot;Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre&quot;</span>
+<span class="n">__license__</span> <span class="o">=</span> <span class="s2">&quot;Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)&quot;</span>
+
+
+<span class="c1"># Logging</span>
+<span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
+    <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
+    <span class="n">format</span><span class="o">=</span><span class="s2">&quot;[</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(name)s</span><span class="s2"> </span><span class="si">%(levelname)s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="s2">&quot;genipe-tutorial&quot;</span><span class="p">)</span>
+
+
+<span class="n">_SCRIPT</span> <span class="o">=</span> <span class="s2">r&quot;&quot;&quot;#!/usr/bin/env bash</span>
+<span class="s2"># Changing directory</span>
+<span class="s2">cd {path}</span>
+
+<span class="s2"># Launching the imputation with genipe</span>
+<span class="s2">genipe-launcher \</span>
+<span class="s2">    --bfile {genotypes_prefix} \</span>
+<span class="s2">    --shapeit-bin {shapeit_bin} \</span>
+<span class="s2">    --impute2-bin {impute2_bin} \</span>
+<span class="s2">    --plink-bin {plink_bin} \</span>
+<span class="s2">    --reference {hg19_fasta} \</span>
+<span class="s2">    --hap-template {hap_template} \</span>
+<span class="s2">    --legend-template {legend_template} \</span>
+<span class="s2">    --map-template {map_template} \</span>
+<span class="s2">    --sample-file {sample_file} \</span>
+<span class="s2">    --filtering-rules &#39;ALL&lt;0.01&#39; &#39;ALL&gt;0.99&#39; \</span>
+<span class="s2">    --thread 4 \</span>
+<span class="s2">    --report-title &quot;Tutorial&quot; \</span>
+<span class="s2">    --report-number &quot;Test Report&quot;</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;The main function.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        args (argparse.Namespace): the arguments to be parsed (if</span>
+<span class="sd">                                   :py:func:`main` is called by another</span>
+<span class="sd">                                   modulel)</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Creating the option parser</span>
+    <span class="n">desc</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Prepares the input files for the main pipeline tutorial. This &quot;</span>
+            <span class="s2">&quot;script is part of the &#39;genipe&#39; package, &quot;</span>
+            <span class="s2">&quot;version {}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">))</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">desc</span><span class="p">)</span>
+
+    <span class="k">try</span><span class="p">:</span>
+        <span class="c1"># Parsing the options</span>
+        <span class="n">args</span> <span class="o">=</span> <span class="n">parse_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
+
+        <span class="c1"># Let&#39;s start</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Preparing &#39;{}&#39; for genipe tutorial&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">))</span>
+        <span class="n">is_ok</span> <span class="o">=</span> <span class="nb">input</span><span class="p">(</span><span class="s2">&quot;Proceed (y/n)? &quot;</span><span class="p">)</span><span class="o">.</span><span class="n">upper</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">is_ok</span> <span class="o">!=</span> <span class="s2">&quot;Y&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">KeyboardInterrupt</span>
+
+        <span class="c1"># Getting the system type and architecture</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Inferring operating system and architecture&quot;</span><span class="p">)</span>
+        <span class="n">os_name</span><span class="p">,</span> <span class="n">architecture</span> <span class="o">=</span> <span class="n">get_os_info</span><span class="p">()</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">os_name</span><span class="p">)</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">architecture</span> <span class="o">+</span> <span class="s2">&quot; bits&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Creating the directories (if required)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">):</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">dirname</span> <span class="ow">in</span> <span class="p">(</span><span class="s2">&quot;bin&quot;</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;hg19&quot;</span><span class="p">):</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">dirname</span><span class="p">)):</span>
+                <span class="n">os</span><span class="o">.</span><span class="n">mkdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="n">dirname</span><span class="p">))</span>
+
+        <span class="c1"># Downloading Plink (if required)</span>
+        <span class="n">has_plink</span> <span class="o">=</span> <span class="n">check_files</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">,</span> <span class="s2">&quot;plink&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">has_plink</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading Plink&quot;</span><span class="p">)</span>
+            <span class="n">get_plink</span><span class="p">(</span>
+                <span class="n">os_name</span><span class="o">=</span><span class="n">os_name</span><span class="p">,</span>
+                <span class="n">arch</span><span class="o">=</span><span class="n">architecture</span><span class="p">,</span>
+                <span class="n">path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Plink already downloaded&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Downloading impute2</span>
+        <span class="n">has_impute2</span> <span class="o">=</span> <span class="n">check_files</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">,</span> <span class="s2">&quot;impute2&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">has_impute2</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading impute2&quot;</span><span class="p">)</span>
+            <span class="n">get_impute2</span><span class="p">(</span>
+                <span class="n">os_name</span><span class="o">=</span><span class="n">os_name</span><span class="p">,</span>
+                <span class="n">arch</span><span class="o">=</span><span class="n">architecture</span><span class="p">,</span>
+                <span class="n">path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Impute2 already downloaded&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Downloading shapeit</span>
+        <span class="n">has_shapeit</span> <span class="o">=</span> <span class="n">check_files</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">,</span> <span class="s2">&quot;shapeit&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">has_shapeit</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading shapeit&quot;</span><span class="p">)</span>
+            <span class="n">get_shapeit</span><span class="p">(</span>
+                <span class="n">os_name</span><span class="o">=</span><span class="n">os_name</span><span class="p">,</span>
+                <span class="n">arch</span><span class="o">=</span><span class="n">architecture</span><span class="p">,</span>
+                <span class="n">path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Shapeit already downloaded&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Downloading the reference</span>
+        <span class="n">has_hg19</span> <span class="o">=</span> <span class="n">check_files</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;hg19&quot;</span><span class="p">,</span> <span class="s2">&quot;hg19.fasta&quot;</span><span class="p">),</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;hg19&quot;</span><span class="p">,</span> <span class="s2">&quot;hg19.fasta.fai&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">has_hg19</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading hg19 reference&quot;</span><span class="p">)</span>
+            <span class="n">get_hg19</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;hg19&quot;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;hg19 already downloaded&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Downloading the genotypes</span>
+        <span class="n">has_geno</span> <span class="o">=</span> <span class="n">check_files</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;hapmap_CEU_r23a_hg19.bed&quot;</span><span class="p">),</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;hapmap_CEU_r23a_hg19.bim&quot;</span><span class="p">),</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span> <span class="s2">&quot;hapmap_CEU_r23a_hg19.fam&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">has_geno</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading genotypes&quot;</span><span class="p">)</span>
+            <span class="n">get_genotypes</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">))</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Genotypes already downloaded&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Downloading IMPUTE2 reference files</span>
+        <span class="n">has_impute2_ref</span> <span class="o">=</span> <span class="n">check_files</span><span class="p">(</span>
+            <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;1000GP_Phase3&quot;</span><span class="p">,</span> <span class="s2">&quot;genipe_tut_done&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">has_impute2_ref</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading IMPUTE2&#39;s reference files&quot;</span><span class="p">)</span>
+            <span class="n">get_impute2_ref</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Impute2 reference files already downloaded&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Generating the bash script</span>
+        <span class="n">generate_bash</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">)</span>
+
+    <span class="c1"># Catching the Ctrl^C</span>
+    <span class="k">except</span> <span class="ne">KeyboardInterrupt</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cancelled by user&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+    <span class="c1"># Catching the ProgramError</span>
+    <span class="k">except</span> <span class="n">ProgramError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
+
+    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
+        <span class="k">raise</span></div>
+
+
+<div class="viewcode-block" id="generate_bash"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.generate_bash">[docs]</a><span class="k">def</span> <span class="nf">generate_bash</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Generates a bash script to launch the imputation pipeline.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): the path to write the bash script</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;execute.sh&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">f</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">_SCRIPT</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">path</span><span class="o">=</span><span class="n">path</span><span class="p">,</span>
+            <span class="n">genotypes_prefix</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;data&quot;</span><span class="p">,</span>
+                                          <span class="s2">&quot;hapmap_CEU_r23a_hg19&quot;</span><span class="p">),</span>
+            <span class="n">shapeit_bin</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">,</span> <span class="s2">&quot;shapeit&quot;</span><span class="p">),</span>
+            <span class="n">impute2_bin</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">,</span> <span class="s2">&quot;impute2&quot;</span><span class="p">),</span>
+            <span class="n">plink_bin</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">,</span> <span class="s2">&quot;plink&quot;</span><span class="p">),</span>
+            <span class="n">hg19_fasta</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;hg19&quot;</span><span class="p">,</span> <span class="s2">&quot;hg19.fasta&quot;</span><span class="p">),</span>
+            <span class="n">hap_template</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;1000GP_Phase3&quot;</span><span class="p">,</span>
+                                      <span class="s2">&quot;1000GP_Phase3_chr{chrom}.hap.gz&quot;</span><span class="p">),</span>
+            <span class="n">legend_template</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;1000GP_Phase3&quot;</span><span class="p">,</span>
+                                         <span class="s2">&quot;1000GP_Phase3_chr{chrom}.legend.gz&quot;</span><span class="p">),</span>
+            <span class="n">map_template</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;1000GP_Phase3&quot;</span><span class="p">,</span>
+                                      <span class="s2">&quot;genetic_map_chr{chrom}_combined_b37&quot;</span>
+                                      <span class="s2">&quot;.txt&quot;</span><span class="p">),</span>
+            <span class="n">sample_file</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;1000GP_Phase3&quot;</span><span class="p">,</span>
+                                     <span class="s2">&quot;1000GP_Phase3.sample&quot;</span><span class="p">),</span>
+        <span class="p">))</span>
+
+    <span class="c1"># Making the script executable</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRWXU</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="check_files"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.check_files">[docs]</a><span class="k">def</span> <span class="nf">check_files</span><span class="p">(</span><span class="o">*</span><span class="n">filenames</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Checks that all files exists.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        filenames (list): the list of file to check</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        bool: True if all files exist, False otherwise</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="k">for</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">filenames</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_os_info"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.get_os_info">[docs]</a><span class="k">def</span> <span class="nf">get_os_info</span><span class="p">():</span>
+    <span class="sd">&quot;&quot;&quot;Getting the OS information.</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        tuple: first element is the name of the os, and the second is the</span>
+<span class="sd">               system&#39;s architecture</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        The tutorial does not work on the Windows operating system. The script</span>
+<span class="sd">        will quit unless the operating system is Linux or Darwin (MacOSX).</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Getting the OS name</span>
+    <span class="n">os_name</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
+    <span class="k">if</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Windows OS it not compatible with tutorial&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Getting the system&#39;s architecture</span>
+    <span class="n">architecture</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">architecture</span><span class="p">()[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span>
+    <span class="k">if</span> <span class="n">architecture</span> <span class="o">!=</span> <span class="s2">&quot;64&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: unknown architecture&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">architecture</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">os_name</span><span class="p">,</span> <span class="n">architecture</span></div>
+
+
+<div class="viewcode-block" id="get_impute2_ref"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.get_impute2_ref">[docs]</a><span class="k">def</span> <span class="nf">get_impute2_ref</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets the impute2&#39;s reference files.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): the path where to put the reference files</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># The url for each platform</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://mathgen.stats.ox.ac.uk/impute/{filename}&quot;</span>
+
+    <span class="c1"># Getting the name of the file to download</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;1000GP_Phase3.tgz&quot;</span>
+
+    <span class="c1"># Downloading Impute2 in a temporary directory</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="n">tar_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="n">download_file</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">),</span> <span class="n">tar_path</span><span class="p">)</span>
+
+    <span class="c1"># Extracting genotypes</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - Extracting file&quot;</span><span class="p">)</span>
+    <span class="n">untar_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">tar_path</span><span class="p">)</span>
+
+    <span class="c1"># Deleting the archive</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">tar_path</span><span class="p">)</span>
+
+    <span class="c1"># Checking the directory exists</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;1000GP_Phase3&quot;</span><span class="p">)):</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Problem extracting the impute2 reference files&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Creating an empty file to say that the download and extraction was</span>
+    <span class="c1"># completed</span>
+    <span class="n">done_fn</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;1000GP_Phase3&quot;</span><span class="p">,</span> <span class="s2">&quot;genipe_tut_done&quot;</span><span class="p">)</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">done_fn</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">):</span>
+        <span class="k">pass</span></div>
+
+
+<div class="viewcode-block" id="get_genotypes"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.get_genotypes">[docs]</a><span class="k">def</span> <span class="nf">get_genotypes</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets the genotypes files.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): the path where to put the genotypes</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># The url for each platform</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://pgxcentre.github.io/genipe/_static/tutorial/{filename}&quot;</span>
+
+    <span class="c1"># Getting the name of the file to download</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;hapmap_CEU_r23a_hg19.tar.bz2&quot;</span>
+
+    <span class="c1"># Downloading genotypes in a temporary directory</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
+        <span class="n">tar_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">download_file</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">),</span> <span class="n">tar_path</span><span class="p">)</span>
+
+        <span class="c1"># Extracting genotypes</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - Extracting file&quot;</span><span class="p">)</span>
+        <span class="n">untar_file</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">tar_path</span><span class="p">)</span>
+
+        <span class="c1"># Finding the genotypes files</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
+        <span class="n">genotypes_files</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;hapmap_CEU_r23a_hg19.*&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">genotypes_files</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Unable to locate genotypes&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">genotypes_files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Unable to locate genotypes&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Moving the files</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">genotypes_files</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_hg19"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.get_hg19">[docs]</a><span class="k">def</span> <span class="nf">get_hg19</span><span class="p">(</span><span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets the hg19 reference file.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): the path where to put the reference</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># The url for each platform</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;http://statgen.org/wp-content/uploads/Softwares/genipe/supp_files/&quot;</span>
+           <span class="s2">&quot;{filename}&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Getting the name of the file to download</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;hg19.tar.bz2&quot;</span>
+
+    <span class="c1"># Downloading hg19 in a temporary directory</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
+        <span class="n">tar_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">download_file</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">),</span> <span class="n">tar_path</span><span class="p">)</span>
+
+        <span class="c1"># Extracting the reference</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - Extracting file&quot;</span><span class="p">)</span>
+        <span class="n">untar_file</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">tar_path</span><span class="p">)</span>
+
+        <span class="c1"># Finding the hg19 file</span>
+        <span class="n">hg19_files</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;hg19.fasta*&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hg19_files</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Unable to locate hg19&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">hg19_files</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Unable to locate hg19&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Moving the files</span>
+        <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">hg19_files</span><span class="p">:</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_plink"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.get_plink">[docs]</a><span class="k">def</span> <span class="nf">get_plink</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets Plink depending of the system, and puts it in &#39;path&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        os_name (str): the name of the OS</span>
+<span class="sd">        arch (str): the architecture of the system</span>
+<span class="sd">        path (str): the path where to put Plink</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># The url for each platform</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://pngu.mgh.harvard.edu/~purcell/plink/dist/{filename}&quot;</span>
+
+    <span class="c1"># Getting the name of the file to download</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;plink-1.07-mac-intel.zip&quot;</span>
+    <span class="k">elif</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Linux&quot;</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;plink-1.07-x86_64.zip&quot;</span>
+    <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Problem choosing a file to download for &quot;</span>
+                           <span class="s2">&quot;{} {} bits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
+
+    <span class="c1"># Downloading Plink in a temporary directory</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
+        <span class="n">zip_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">download_file</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">),</span> <span class="n">zip_path</span><span class="p">)</span>
+
+        <span class="c1"># Unzipping Plink</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - Extracting file&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">zip_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">z</span><span class="p">:</span>
+            <span class="n">z</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span>
+
+        <span class="c1"># Finding the plink file</span>
+        <span class="n">plink_file</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;plink&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plink_file</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">plink_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Unable to locate Plink&quot;</span><span class="p">)</span>
+        <span class="n">plink_file</span> <span class="o">=</span> <span class="n">plink_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Moving the file</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">plink_file</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="n">plink_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;plink&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Making the script executable</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">plink_path</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRWXU</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_impute2"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.get_impute2">[docs]</a><span class="k">def</span> <span class="nf">get_impute2</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets impute2 depending of the system, and puts it in &#39;path&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        os_name (str): the name of the OS</span>
+<span class="sd">        arch (str): the architecture of the system</span>
+<span class="sd">        path (str): the path where to put impute2</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># The url for each platform</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://mathgen.stats.ox.ac.uk/impute/{filename}&quot;</span>
+
+    <span class="c1"># Getting the name of the file to download</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;impute_v2.3.2_MacOSX_Intel.tgz&quot;</span>
+    <span class="k">elif</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Linux&quot;</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;impute_v2.3.2_x86_64_static.tgz&quot;</span>
+    <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Problem choosing a file to download for &quot;</span>
+                           <span class="s2">&quot;{} {} bits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
+
+    <span class="c1"># Downloading Impute2 in a temporary directory</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
+        <span class="n">tar_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">download_file</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">),</span> <span class="n">tar_path</span><span class="p">)</span>
+
+        <span class="c1"># Extracting impute2</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - Extracting file&quot;</span><span class="p">)</span>
+        <span class="n">untar_file</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">tar_path</span><span class="p">)</span>
+
+        <span class="c1"># Finding the impute2 file</span>
+        <span class="n">impute2_file</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;impute2&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">impute2_file</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">impute2_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Unable to locate impute2&quot;</span><span class="p">)</span>
+        <span class="n">impute2_file</span> <span class="o">=</span> <span class="n">impute2_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Moving the file</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">impute2_file</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="n">impute2_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;impute2&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Making the script executable</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">impute2_path</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRWXU</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="get_shapeit"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.get_shapeit">[docs]</a><span class="k">def</span> <span class="nf">get_shapeit</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Gets shapeit depending of the system, and puts it in &#39;path&#39;.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        os_name (str): the name of the OS</span>
+<span class="sd">        arch (str): the architecture of the system</span>
+<span class="sd">        path (str): the path where to put shapeit</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># The url for each platform</span>
+    <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/{filename}&quot;</span>
+
+    <span class="c1"># Getting the name of the file to download</span>
+    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+    <span class="k">if</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;shapeit.v2.r837.MacOSX.tgz&quot;</span>
+    <span class="k">elif</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Linux&quot;</span><span class="p">:</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;shapeit.v2.r837.GLIBCv2.12.Linux.static.tgz&quot;</span>
+    <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Problem choosing a file to download for &quot;</span>
+                           <span class="s2">&quot;{} {} bits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
+
+    <span class="c1"># Downloading shapeit in a temporary directory</span>
+    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+    <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
+        <span class="n">tar_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="n">download_file</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">),</span> <span class="n">tar_path</span><span class="p">)</span>
+
+        <span class="c1"># Extracting shapeit</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - Extracting file&quot;</span><span class="p">)</span>
+        <span class="n">untar_file</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">tar_path</span><span class="p">)</span>
+
+        <span class="c1"># Finding the shapeit file</span>
+        <span class="n">shapeit_file</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;shapeit&quot;</span><span class="p">))</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shapeit_file</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">shapeit_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Unable to locate shapeit&quot;</span><span class="p">)</span>
+        <span class="n">shapeit_file</span> <span class="o">=</span> <span class="n">shapeit_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="c1"># Moving the file</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">shapeit_file</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+        <span class="n">shapeit_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;shapeit&quot;</span><span class="p">)</span>
+
+    <span class="c1"># Making the script executable</span>
+    <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">shapeit_path</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRWXU</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="download_file"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.download_file">[docs]</a><span class="k">def</span> <span class="nf">download_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Downloads a file from a URL to a path.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        url (str): the url to download</span>
+<span class="sd">        path (str): the path where to save the file</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+    <span class="k">except</span> <span class="p">(</span><span class="n">HTTPError</span><span class="p">,</span> <span class="n">URLError</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;URL not available: &quot;</span> <span class="o">+</span> <span class="n">url</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="untar_file"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.untar_file">[docs]</a><span class="k">def</span> <span class="nf">untar_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Extracts a tar archive.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        path (str): the path to where the file will be extracted</span>
+<span class="sd">        fn (str): the name of the tar archive</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="k">try</span><span class="p">:</span>
+        <span class="n">check_call</span><span class="p">([</span><span class="s2">&quot;tar&quot;</span><span class="p">,</span> <span class="s2">&quot;-C&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="s2">&quot;-xf&quot;</span><span class="p">,</span> <span class="n">fn</span><span class="p">])</span>
+    <span class="k">except</span> <span class="n">CalledProcessError</span><span class="p">:</span>
+        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Could not extract {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span></div>
+
+
+<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.parse_args">[docs]</a><span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Parses the command line options and arguments.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        parser (argparse.ArgumentParser): the argument parser</span>
+<span class="sd">        args (list): the list of arguments (if not taken from ``sys.argv``)</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        argparse.Namespace: the list of options and arguments</span>
+
+<span class="sd">    Note</span>
+<span class="sd">    ----</span>
+<span class="sd">        The only check that is done here is by the parser itself. Values are</span>
+<span class="sd">        verified later by the :py:func:`check_args` function.</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># The options</span>
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--version&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;version&quot;</span><span class="p">,</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(prog)s</span><span class="s2"> (part of genipe version {})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
+    <span class="p">)</span>
+
+    <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--tutorial-path&quot;</span><span class="p">,</span>
+        <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
+        <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;PATH&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;path&quot;</span><span class="p">,</span>
+        <span class="n">default</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">[</span><span class="s2">&quot;HOME&quot;</span><span class="p">],</span> <span class="s2">&quot;genipe_tutorial&quot;</span><span class="p">),</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The path where the tutorial will be run. [</span><span class="si">%(default)s</span><span class="s2">]&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+
+    <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span></div>
+
+
+<span class="c1"># Calling the main, if necessary</span>
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">main</span><span class="p">()</span>
+</pre></div>
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../../../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../../../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.2 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
+    </div>
+  </body>
+</html>
