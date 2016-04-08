@@ -226,7 +226,7 @@ regression analysis in the console:
                                  --pheno-name NAME
 
    Performs a logistic regression on imputed data using a GLM with a binomial
-   distribution. This script is part of the 'genipe' package, version 1.2.2).
+   distribution. This script is part of the 'genipe' package, version 1.2.3).
 
    optional arguments:
      -h, --help            show this help message and exit

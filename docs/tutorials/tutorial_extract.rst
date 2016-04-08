@@ -231,13 +231,13 @@ analysis in the console:
 
    $ impute2-extractor --help
    usage: impute2-extractor [-h] [-v] [--debug] --impute2 FILE [FILE ...]
-                            [--out PREFIX] [--format FORMAT [FORMAT ...]]
-                            [--prob FLOAT] [--extract FILE]
-                            [--genomic CHR:START-END] [--maf FLOAT]
-                            [--rate FLOAT] [--info FLOAT]
+                            [--index] [--out PREFIX]
+                            [--format FORMAT [FORMAT ...]] [--prob FLOAT]
+                            [--extract FILE] [--genomic CHR:START-END]
+                            [--maf FLOAT] [--rate FLOAT] [--info FLOAT]
 
    Extract imputed markers located in a specific genomic region. This script is
-   part of the 'genipe' package, version 1.2.2).
+   part of the 'genipe' package, version 1.2.3).
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -247,6 +247,9 @@ analysis in the console:
    Input Files:
      --impute2 FILE [FILE ...]
                            The output from IMPUTE2.
+
+   Indexation Options:
+     --index               Only perform the indexation.
 
    Output Options:
      --out PREFIX          The prefix of the output files. [impute2_extractor]
@@ -274,6 +277,7 @@ analysis in the console:
      --info FLOAT          Extract markers with an information equal or higher to
                            the specified threshold. Can be use in combination
                            with '--maf', '--rate' and '--genomic'.
+
 
 .. note::
 
