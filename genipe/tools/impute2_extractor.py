@@ -733,7 +733,8 @@ def parse_args(parser, args=None):
         help="The output format. Can specify either 'impute2' for "
              "probabilities (same as impute2 format, i.e. 3 values per "
              "sample), 'dosage' for dosage values (one value between 0 and 2 "
-             "by sample), or 'calls' for hard calls. %(default)s",
+             "by sample), 'calls' for hard calls, or 'bed' for Plink binary "
+             "format (with hard calls). %(default)s",
     )
     group.add_argument(
         "--long",
