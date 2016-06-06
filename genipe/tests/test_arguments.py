@@ -10,6 +10,7 @@
 import os
 import unittest
 from shutil import which
+from unittest.mock import patch
 from tempfile import TemporaryDirectory
 
 from .. import autosomes
@@ -18,16 +19,13 @@ from ..error import GenipeError
 from ..pipeline import arguments
 from ..pipeline.arguments import check_args
 
-if HAS_PYFAIDX:
-    import pyfaidx
-
 
 __author__ = "Louis-Philippe Lemieux Perreault"
 __copyright__ = "Copyright 2014, Beaulieu-Saucier Pharmacogenomics Centre"
 __license__ = "Attribution-NonCommercial 4.0 International (CC BY-NC 4.0)"
 
 
-__all__ = ["TestMainPipeline"]
+__all__ = ["TestArguments"]
 
 
 class TestArguments(unittest.TestCase):
@@ -49,7 +47,7 @@ class TestArguments(unittest.TestCase):
         # bfile
         bfile = os.path.join(self.output_dir.name, "input_file")
         for extension in [".bed", ".bim", ".fam"]:
-            with open(bfile + extension, "w") as o_file:
+            with open(bfile + extension, "w"):
                 pass
         self.args.bfile = bfile
 
@@ -65,7 +63,7 @@ class TestArguments(unittest.TestCase):
         map_template = os.path.join(self.output_dir.name, "chr{chrom}.map")
         for filename in [hap_template, leg_template, map_template]:
             for chrom in self.args.required_chrom + ("23_PAR1", "23_PAR2"):
-                with open(filename.format(chrom=chrom), "w") as o_file:
+                with open(filename.format(chrom=chrom), "w"):
                     pass
         self.args.hap_template = hap_template
         self.args.legend_template = leg_template
@@ -88,25 +86,25 @@ class TestArguments(unittest.TestCase):
 
         # sample_file
         sample_file = os.path.join(self.output_dir.name, "sample.txt")
-        with open(sample_file, "w") as o_file:
+        with open(sample_file, "w"):
             pass
         self.args.sample_file = sample_file
 
         # shapeit_bin
         shapeit_bin = os.path.join(self.output_dir.name, "shapeit")
-        with open(shapeit_bin, "w") as o_file:
+        with open(shapeit_bin, "w"):
             pass
         self.args.shapeit_bin = shapeit_bin
 
         # impute2_bin
         impute2_bin = os.path.join(self.output_dir.name, "impute2")
-        with open(impute2_bin, "w") as o_file:
+        with open(impute2_bin, "w"):
             pass
         self.args.impute2_bin = impute2_bin
 
         # plink_bin
         plink_bin = os.path.join(self.output_dir.name, "plink")
-        with open(plink_bin, "w") as o_file:
+        with open(plink_bin, "w"):
             pass
         self.args.plink_bin = plink_bin
 
@@ -115,23 +113,23 @@ class TestArguments(unittest.TestCase):
 
         # preamble
         preamble = os.path.join(self.output_dir.name, "preamble.txt")
-        with open(preamble, "w") as o_file:
+        with open(preamble, "w"):
             pass
         self.args.preamble = preamble
 
-        # use_drmaa
+        # We don't use drmaa for now
         self.args.use_drmaa = False
 
         # drmaa_config
         drmaa_config = os.path.join(self.output_dir.name, "drmaa_config.txt")
-        with open(drmaa_config, "w") as o_file:
+        with open(drmaa_config, "w"):
             pass
         self.args.drmaa_config = drmaa_config
 
         # reference
         reference = os.path.join(self.output_dir.name, "h_ref.fasta")
         for filename in [reference, reference + ".fai"]:
-            with open(filename, "w") as o_file:
+            with open(filename, "w"):
                 pass
         self.args.reference = reference
 
@@ -206,7 +204,7 @@ class TestArguments(unittest.TestCase):
                              str(cm.exception))
 
             # Creating back the file
-            with open(self.args.bfile + ext, "w") as o_file:
+            with open(self.args.bfile + ext, "w"):
                 pass
             self.assertTrue(os.path.isfile(self.args.bfile + ext))
 
@@ -229,7 +227,7 @@ class TestArguments(unittest.TestCase):
                              str(cm.exception))
 
             # Creating back the file
-            with open(filename, "w") as o_file:
+            with open(filename, "w"):
                 pass
             self.assertTrue(os.path.isfile(filename))
 
@@ -354,7 +352,7 @@ class TestArguments(unittest.TestCase):
                              str(cm.exception))
 
             # Creating back the file
-            with open(filename, "w") as o_file:
+            with open(filename, "w"):
                 pass
             self.assertTrue(os.path.isfile(filename))
 
@@ -479,7 +477,7 @@ class TestArguments(unittest.TestCase):
                              str(cm.exception))
 
             # Creating back the file
-            with open(filename, "w") as o_file:
+            with open(filename, "w"):
                 pass
             self.assertTrue(os.path.isfile(filename))
 
@@ -746,7 +744,7 @@ class TestArguments(unittest.TestCase):
 
     def test_missing_drmaa_module(self):
         """Tests with a missing DRMAA module."""
-        # Setting DRMAA to true
+        # Setting DRMAA to true, but no DRMAA
         self.args.use_drmaa = True
         arguments.HAS_DRMAA = False
 
@@ -759,9 +757,26 @@ class TestArguments(unittest.TestCase):
             str(cm.exception),
         )
 
+    @patch.dict("os.environ", clear=True)
+    def test_missing_drmaa_library_path(self):
+        """Tests with a missing DRMAA_LIBRARY_PATH environment variable."""
+        # Setting DRMAA to true with DRMAA
+        self.args.use_drmaa = True
+        arguments.HAS_DRMAA = True
+
+        # Checking the exception is raised
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual(
+            "The DRMAA_LIBRARY_PATH environment variable is not set (required "
+            "by the drmaa module)",
+            str(cm.exception),
+        )
+
+    @patch.dict("os.environ", {"DRMAA_LIBRARY_PATH": "dummy_vaclue"})
     def test_missing_drmaa_config(self):
         """Tests with a missing DRMAA config file."""
-        # Setting DRMAA to true
+        # Setting DRMAA to true with DRMAA
         self.args.use_drmaa = True
         arguments.HAS_DRMAA = True
 
@@ -775,9 +790,10 @@ class TestArguments(unittest.TestCase):
         self.assertEqual("{}: no such file".format(self.args.drmaa_config),
                          str(cm.exception))
 
+    @patch.dict("os.environ", {"DRMAA_LIBRARY_PATH": "dummy_vaclue"})
     def test_missing_drmaa_config_none(self):
         """Tests with a missing DRMAA config file, but with a None setting."""
-        # Setting DRMAA to true
+        # Setting DRMAA to true with DRMAA
         self.args.use_drmaa = True
         arguments.HAS_DRMAA = True
 
@@ -797,8 +813,7 @@ class TestArguments(unittest.TestCase):
 
     def test_missing_drmaa_config_none_false(self):
         """Tests with a missing drmaa config file, but None and False."""
-        # Setting DRMAA to True
-        self.args.use_drmaa = True
+        # With DRMAA
         arguments.HAS_DRMAA = True
 
         # Changing the configuration
