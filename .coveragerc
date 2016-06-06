@@ -1,6 +1,6 @@
 [run]
 branch = True
-include = genipe*
+source = genipe
 
 [report]
 exclude_lines = 
