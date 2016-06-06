@@ -7,7 +7,9 @@
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
 
+import os
 import random
+import logging
 import platform
 import unittest
 from tempfile import TemporaryDirectory
@@ -17,9 +19,9 @@ import numpy as np
 import pandas as pd
 from pkg_resources import resource_filename
 
-from ..tools.imputed_stats import *
+from ..tools import imputed_stats
 
-if HAS_STATSMODELS:
+if imputed_stats.HAS_STATSMODELS:
     # patsy is installed only if statsmodels is
     import patsy
 
@@ -239,7 +241,9 @@ class TestImputedStats(unittest.TestCase):
         expected_remove_g = False
 
         # The observed values
-        observed_p, observed_remove_g = read_phenotype(filename, args)
+        observed_p, observed_remove_g = imputed_stats.read_phenotype(
+            filename, args,
+        )
         self.assertTrue(isinstance(observed_p, pd.DataFrame))
         self.assertEqual(expected_shape, observed_p.shape)
         self.assertEqual(expected_columns, set(observed_p.columns))
@@ -261,7 +265,9 @@ class TestImputedStats(unittest.TestCase):
         expected_shape = (2, 6)
 
         # The observed values
-        observed_p, observed_remove_g = read_phenotype(filename, args)
+        observed_p, observed_remove_g = imputed_stats.read_phenotype(
+            filename, args,
+        )
         self.assertTrue(isinstance(observed_p, pd.DataFrame))
         self.assertEqual(expected_shape, observed_p.shape)
         self.assertEqual(expected_columns, set(observed_p.columns))
@@ -293,7 +299,9 @@ class TestImputedStats(unittest.TestCase):
         expected_pheno = np.array([0.01, 0.15, 0], dtype=float)
 
         # The observed values
-        observed_p, observed_remove_g = read_phenotype(filename, args)
+        observed_p, observed_remove_g = imputed_stats.read_phenotype(
+            filename, args,
+        )
         self.assertTrue(isinstance(observed_p, pd.DataFrame))
         self.assertEqual(expected_shape, observed_p.shape)
         self.assertEqual(expected_columns, set(observed_p.columns))
@@ -314,7 +322,9 @@ class TestImputedStats(unittest.TestCase):
         expected_pheno = np.array([0, 1, 0], dtype=int)
 
         # The observed values
-        observed_p, observed_remove_g = read_phenotype(filename, args)
+        observed_p, observed_remove_g = imputed_stats.read_phenotype(
+            filename, args,
+        )
         self.assertTrue(isinstance(observed_p, pd.DataFrame))
         self.assertEqual(expected_shape, observed_p.shape)
         self.assertEqual(expected_columns, set(observed_p.columns))
@@ -337,7 +347,9 @@ class TestImputedStats(unittest.TestCase):
         expected_inter = np.array([0.00001, 0.00332, 0.000001], dtype=float)
 
         # The observed values
-        observed_p, observed_remove_g = read_phenotype(filename, args)
+        observed_p, observed_remove_g = imputed_stats.read_phenotype(
+            filename, args,
+        )
         self.assertTrue(isinstance(observed_p, pd.DataFrame))
         self.assertEqual(expected_shape, observed_p.shape)
         self.assertEqual(expected_columns, set(observed_p.columns))
@@ -360,7 +372,9 @@ class TestImputedStats(unittest.TestCase):
         expected_remove_g = True
 
         # The observed values
-        observed_p, observed_remove_g = read_phenotype(filename, args)
+        observed_p, observed_remove_g = imputed_stats.read_phenotype(
+            filename, args,
+        )
         self.assertTrue(isinstance(observed_p, pd.DataFrame))
         self.assertEqual(expected_shape, observed_p.shape)
         self.assertEqual(expected_columns, set(observed_p.columns))
@@ -394,7 +408,9 @@ class TestImputedStats(unittest.TestCase):
                                   dtype=float)
 
         # The observed values
-        observed_p, observed_remove_g = read_phenotype(filename, args)
+        observed_p, observed_remove_g = imputed_stats.read_phenotype(
+            filename, args,
+        )
         self.assertTrue(isinstance(observed_p, pd.DataFrame))
         self.assertEqual(expected_shape, observed_p.shape)
         self.assertEqual(expected_columns, set(observed_p.columns))
@@ -418,7 +434,9 @@ class TestImputedStats(unittest.TestCase):
         expected_remove_g = False
 
         # The observed values
-        observed_p, observed_remove_g = read_phenotype(filename, args)
+        observed_p, observed_remove_g = imputed_stats.read_phenotype(
+            filename, args,
+        )
         self.assertTrue(isinstance(observed_p, pd.DataFrame))
         self.assertEqual(expected_shape, observed_p.shape)
         self.assertEqual(expected_columns, set(observed_p.columns))
@@ -445,7 +463,9 @@ class TestImputedStats(unittest.TestCase):
         expected_columns.remove("Gender")
 
         # The observed values
-        observed_p, observed_remove_g = read_phenotype(filename, args)
+        observed_p, observed_remove_g = imputed_stats.read_phenotype(
+            filename, args,
+        )
         self.assertTrue(isinstance(observed_p, pd.DataFrame))
         self.assertEqual(expected_shape, observed_p.shape)
         self.assertEqual(expected_columns, set(observed_p.columns))
@@ -468,7 +488,9 @@ class TestImputedStats(unittest.TestCase):
         expected_remove_g = True
 
         # The observed values
-        observed_p, observed_remove_g = read_phenotype(filename, args)
+        observed_p, observed_remove_g = imputed_stats.read_phenotype(
+            filename, args,
+        )
         self.assertTrue(isinstance(observed_p, pd.DataFrame))
         self.assertEqual(expected_shape, observed_p.shape)
         self.assertEqual(expected_columns, set(observed_p.columns))
@@ -502,7 +524,7 @@ class TestImputedStats(unittest.TestCase):
         expected_fam = ["fam_1", "fam_1", "fam_2"]
 
         # The observed values
-        observed = read_samples(sample_filename)
+        observed = imputed_stats.read_samples(sample_filename)
 
         # Checking
         self.assertTrue(isinstance(observed, pd.DataFrame))
@@ -524,7 +546,7 @@ class TestImputedStats(unittest.TestCase):
 
         # Checking
         with self.assertRaises(ValueError) as cm:
-            read_samples(sample_filename)
+            imputed_stats.read_samples(sample_filename)
         self.assertEqual("Index has duplicate keys: ['sample_2']",
                          str(cm.exception))
 
@@ -539,7 +561,7 @@ class TestImputedStats(unittest.TestCase):
         expected = {"marker_{}".format(i) for i in range(100)}
 
         # The observed values
-        observed = read_sites_to_extract(filename)
+        observed = imputed_stats.read_sites_to_extract(filename)
 
         # Checking
         self.assertEqual(expected, observed)
@@ -574,7 +596,7 @@ class TestImputedStats(unittest.TestCase):
         expected = ["sample_2", "sample_5", "sample_7", "sample_9"]
 
         # The observed results
-        observed = samples_with_hetero_calls(data, "D2")
+        observed = imputed_stats.samples_with_hetero_calls(data, "D2")
 
         # Checking
         self.assertTrue(isinstance(observed, pd.Index))
@@ -584,53 +606,63 @@ class TestImputedStats(unittest.TestCase):
         """Tests the 'get_formula' function."""
         # Testing with only one phenotype (no covars, no interaction)
         expected = "pheno ~ _GenoD"
-        observed = get_formula("pheno", [], None, "None", set())
+        observed = imputed_stats.get_formula("pheno", [], None, "None", set())
         self.assertEqual(expected, observed)
 
         # Testing with one covar, no interaction
         expected = "pheno ~ _GenoD + C1"
-        observed = get_formula("pheno", ["C1"], None, "None", set())
+        observed = imputed_stats.get_formula(
+            "pheno", ["C1"], None, "None", set(),
+        )
         self.assertEqual(expected, observed)
 
         # Testing with more than one covar, no interaction
         expected = "pheno ~ _GenoD + C1 + C2 + C3"
-        observed = get_formula("pheno", ["C1", "C2", "C3"], None, "None",
-                               set())
+        observed = imputed_stats.get_formula(
+            "pheno", ["C1", "C2", "C3"], None, "None", set(),
+        )
         self.assertEqual(expected, observed)
 
         # Testing with more than one covar (with gender), no interaction
         expected = "pheno ~ _GenoD + C1 + C2 + C3 + C(Gender)"
-        observed = get_formula("pheno", ["C1", "C2", "C3", "Gender"], None,
-                               "Gender", set())
+        observed = imputed_stats.get_formula(
+            "pheno", ["C1", "C2", "C3", "Gender"], None, "Gender", set(),
+        )
         self.assertEqual(expected, observed)
 
         # Testing with without covar, but with interaction
         expected = "pheno ~ _GenoD + _GenoD*inter"
-        observed = get_formula("pheno", [], "inter", "None", set())
+        observed = imputed_stats.get_formula(
+            "pheno", [], "inter", "None", set(),
+        )
         self.assertEqual(expected, observed)
 
         # Testing with one covar and interaction
         expected = "pheno ~ _GenoD + inter + _GenoD*inter"
-        observed = get_formula("pheno", ["inter"], "inter", "None", set())
+        observed = imputed_stats.get_formula(
+            "pheno", ["inter"], "inter", "None", set(),
+        )
         self.assertEqual(expected, observed)
 
         # Testing with more than one covar and interaction
         expected = "pheno ~ _GenoD + C1 + C2 + C3 + inter + _GenoD*inter"
-        observed = get_formula("pheno", ["C1", "C2", "C3", "inter"], "inter",
-                               "None", set())
+        observed = imputed_stats.get_formula(
+            "pheno", ["C1", "C2", "C3", "inter"], "inter", "None", set(),
+        )
         self.assertEqual(expected, observed)
 
         # Testing with more than one covar and interaction and Gender
         expected = ("pheno ~ _GenoD + C1 + C2 + C3 + C(Gender) + "
                     "_GenoD*C(Gender)")
-        observed = get_formula("pheno", ["C1", "C2", "C3", "Gender"], "Gender",
-                               "Gender", set())
+        observed = imputed_stats.get_formula(
+            "pheno", ["C1", "C2", "C3", "Gender"], "Gender", "Gender", set(),
+        )
         self.assertEqual(expected, observed)
 
         # Testing with categorical values
         expected = ("pheno ~ _GenoD + C1 + C2 + C3 + C(Treatment) + "
                     "C(Population) + C(Gender) + _GenoD*C(Treatment)")
-        observed = get_formula(
+        observed = imputed_stats.get_formula(
             "pheno",
             ["C1", "C2", "C3", "Treatment", "Population", "Gender"],
             "Treatment",
@@ -645,7 +677,7 @@ class TestImputedStats(unittest.TestCase):
         self.fail("Test not implemented")
 
 
-@unittest.skipIf(not HAS_LIFELINES,
+@unittest.skipIf(not imputed_stats.HAS_LIFELINES,
                  "optional requirement (lifelines) not satisfied")
 class TestImputedStatsCox(unittest.TestCase):
 
@@ -683,7 +715,7 @@ class TestImputedStatsCox(unittest.TestCase):
         expected_p = 5.41131727236088009e-53
 
         # The observed results for the first marker
-        observed = fit_cox(
+        observed = imputed_stats.fit_cox(
             data=data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
             event="y_d",
@@ -715,7 +747,7 @@ class TestImputedStatsCox(unittest.TestCase):
         expected_p = 0.21431043709814412423
 
         # The observed results for the first marker
-        observed = fit_cox(
+        observed = imputed_stats.fit_cox(
             data=data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
             event="y_d",
@@ -747,7 +779,7 @@ class TestImputedStatsCox(unittest.TestCase):
         expected_p = 8.46654634146707403e-70
 
         # The observed results for the first marker
-        observed = fit_cox(
+        observed = imputed_stats.fit_cox(
             data=data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
             event="y_d",
@@ -791,7 +823,7 @@ class TestImputedStatsCox(unittest.TestCase):
         expected_p = 6.62249088800859198e-06
 
         # The observed results
-        observed = fit_cox(
+        observed = imputed_stats.fit_cox(
             data=data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
             event="y_d",
@@ -829,7 +861,7 @@ class TestImputedStatsCox(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=options)
+            imputed_stats.main(args=options)
         finally:
             clean_logging_handlers()
 
@@ -938,7 +970,7 @@ class TestImputedStatsCox(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=options)
+            imputed_stats.main(args=options)
         finally:
             clean_logging_handlers()
 
@@ -1045,7 +1077,7 @@ class TestImputedStatsCox(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=options)
+            imputed_stats.main(args=options)
         finally:
             clean_logging_handlers()
 
@@ -1141,7 +1173,7 @@ class TestImputedStatsCox(unittest.TestCase):
                                    places=place)
 
 
-@unittest.skipIf(not HAS_STATSMODELS,
+@unittest.skipIf(not imputed_stats.HAS_STATSMODELS,
                  "optional requirement (statsmodels) not satisfied")
 class TestImputedStatsLinear(unittest.TestCase):
 
@@ -1181,7 +1213,7 @@ class TestImputedStatsLinear(unittest.TestCase):
         expected_r = 0.9872290819785703
 
         # The observed results for the first marker
-        observed = fit_linear(
+        observed = imputed_stats.fit_linear(
             data=data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp1",
@@ -1215,7 +1247,7 @@ class TestImputedStatsLinear(unittest.TestCase):
         expected_r = 0.984835918173383
 
         # The observed results for the first marker
-        observed = fit_linear(
+        observed = imputed_stats.fit_linear(
             data=data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp2",
@@ -1249,7 +1281,7 @@ class TestImputedStatsLinear(unittest.TestCase):
         expected_r = 0.9876017832216732
 
         # The observed results for the first marker
-        observed = fit_linear(
+        observed = imputed_stats.fit_linear(
             data=data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp3",
@@ -1269,15 +1301,15 @@ class TestImputedStatsLinear(unittest.TestCase):
         self.assertAlmostEqual(expected_r, observed_r, places=10)
 
         # Asking for an invalid column should raise a KeyError
-        with self.assertRaises(KeyError) as cm:
-            fit_linear(
+        with self.assertRaises(KeyError):
+            imputed_stats.fit_linear(
                 data=data[columns_to_keep].dropna(axis=0),
                 formula=formula,
                 result_col="unknown",
             )
 
-        with self.assertRaises(patsy.PatsyError) as cm:
-            fit_linear(
+        with self.assertRaises(patsy.PatsyError):
+            imputed_stats.fit_linear(
                 data=data[columns_to_keep].dropna(axis=0),
                 formula=formula + " + unknown",
                 result_col="snp4",
@@ -1309,7 +1341,7 @@ class TestImputedStatsLinear(unittest.TestCase):
         expected_r = 0.9881088609703202
 
         # The observed results
-        observed = fit_linear(
+        observed = imputed_stats.fit_linear(
             data=data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp1:C(gender)[T.2]",
@@ -1345,7 +1377,7 @@ class TestImputedStatsLinear(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=options)
+            imputed_stats.main(args=options)
         finally:
             clean_logging_handlers()
 
@@ -1453,7 +1485,7 @@ class TestImputedStatsLinear(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=options)
+            imputed_stats.main(args=options)
         finally:
             clean_logging_handlers()
 
@@ -1559,7 +1591,7 @@ class TestImputedStatsLinear(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=options)
+            imputed_stats.main(args=options)
         finally:
             clean_logging_handlers()
 
@@ -1648,7 +1680,7 @@ class TestImputedStatsLinear(unittest.TestCase):
             self.assertAlmostEqual(expected_r, observed_r, places=10)
 
 
-@unittest.skipIf(not HAS_STATSMODELS,
+@unittest.skipIf(not imputed_stats.HAS_STATSMODELS,
                  "optional requirement (statsmodels) not satisfied")
 class TestImputedStatsLogistic(unittest.TestCase):
 
@@ -1686,7 +1718,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
         expected_p = 7.53729612963228856e-06
 
         # The observed results for the first marker
-        observed = fit_logistic(
+        observed = imputed_stats.fit_logistic(
             data=data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp1",
@@ -1717,7 +1749,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
         expected_p = 6.48319240531225471e-01
 
         # The observed results for the first marker
-        observed = fit_logistic(
+        observed = imputed_stats.fit_logistic(
             data=data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp2",
@@ -1748,7 +1780,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
         expected_p = 2.23198061422542684e-08
 
         # The observed results for the first marker
-        observed = fit_logistic(
+        observed = imputed_stats.fit_logistic(
             data=data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp3",
@@ -1767,15 +1799,15 @@ class TestImputedStatsLogistic(unittest.TestCase):
                                places=5)
 
         # Asking for an invalid column should raise a KeyError
-        with self.assertRaises(KeyError) as cm:
-            fit_logistic(
+        with self.assertRaises(KeyError):
+            imputed_stats.fit_logistic(
                 data=data[columns_to_keep].dropna(axis=0),
                 formula=formula,
                 result_col="unknown",
             )
 
-        with self.assertRaises(patsy.PatsyError) as cm:
-            fit_logistic(
+        with self.assertRaises(patsy.PatsyError):
+            imputed_stats.fit_logistic(
                 data=data[columns_to_keep].dropna(axis=0),
                 formula=formula + " + unknown",
                 result_col="snp4",
@@ -1806,7 +1838,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
         expected_p = 3.93660046768015970e-02
 
         # The observed results
-        observed = fit_logistic(
+        observed = imputed_stats.fit_logistic(
             data=data[columns_to_keep],
             formula=formula,
             result_col="snp1:C(gender)[T.2]",
@@ -1842,7 +1874,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=options)
+            imputed_stats.main(args=options)
         finally:
             clean_logging_handlers()
 
@@ -1956,7 +1988,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=options)
+            imputed_stats.main(args=options)
         finally:
             clean_logging_handlers()
 
@@ -2068,7 +2100,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=options)
+            imputed_stats.main(args=options)
         finally:
             clean_logging_handlers()
 
@@ -2161,7 +2193,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
                                    places=place)
 
 
-@unittest.skipIf(not HAS_STATSMODELS,
+@unittest.skipIf(not imputed_stats.HAS_STATSMODELS,
                  "optional requirement (statsmodels) not satisfied")
 class TestImputedStatsMixedLM(unittest.TestCase):
 
@@ -2200,7 +2232,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         expected_p = 3.279987709238652e-03
 
         # The observed results for the first marker
-        observed = fit_mixedlm(
+        observed = imputed_stats.fit_mixedlm(
             data=data[columns_to_keep],
             formula=formula,
             groups=data.index.values,
@@ -2233,7 +2265,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         expected_p = 7.942453301062471e-01
 
         # The observed results for the first marker
-        observed = fit_mixedlm(
+        observed = imputed_stats.fit_mixedlm(
             data=data[columns_to_keep],
             formula=formula,
             groups=data.index.values,
@@ -2266,7 +2298,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         expected_p = 7.484721142754225e-04
 
         # The observed results for the first marker
-        observed = fit_mixedlm(
+        observed = imputed_stats.fit_mixedlm(
             data=data[columns_to_keep],
             formula=formula,
             groups=data.index.values,
@@ -2287,8 +2319,8 @@ class TestImputedStatsMixedLM(unittest.TestCase):
                                places=8)
 
         # Asking for an invalid column should raise a KeyError
-        with self.assertRaises(KeyError) as cm:
-            fit_mixedlm(
+        with self.assertRaises(KeyError):
+            imputed_stats.fit_mixedlm(
                 data=data[columns_to_keep].dropna(axis=0),
                 formula=formula,
                 groups=data.index.values,
@@ -2296,8 +2328,8 @@ class TestImputedStatsMixedLM(unittest.TestCase):
                 use_ml=False,
             )
 
-        with self.assertRaises(patsy.PatsyError) as cm:
-            fit_mixedlm(
+        with self.assertRaises(patsy.PatsyError):
+            imputed_stats.fit_mixedlm(
                 data=data[columns_to_keep].dropna(axis=0),
                 formula=formula + " + unknown",
                 groups=data.index.values,
@@ -2330,7 +2362,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         expected_p = 3.27369009811673273e-03
 
         # The observed results for the first marker
-        observed = fit_mixedlm(
+        observed = imputed_stats.fit_mixedlm(
             data=data[columns_to_keep],
             formula=formula,
             groups=data.index.values,
@@ -2363,7 +2395,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         expected_p = 7.94204600712016484e-01
 
         # The observed results for the first marker
-        observed = fit_mixedlm(
+        observed = imputed_stats.fit_mixedlm(
             data=data[columns_to_keep],
             formula=formula,
             groups=data.index.values,
@@ -2396,7 +2428,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         expected_p = 7.46619406491788595e-04
 
         # The observed results for the first marker
-        observed = fit_mixedlm(
+        observed = imputed_stats.fit_mixedlm(
             data=data[columns_to_keep],
             formula=formula,
             groups=data.index.values,
@@ -2417,8 +2449,8 @@ class TestImputedStatsMixedLM(unittest.TestCase):
                                places=8)
 
         # Asking for an invalid column should raise a KeyError
-        with self.assertRaises(KeyError) as cm:
-            fit_mixedlm(
+        with self.assertRaises(KeyError):
+            imputed_stats.fit_mixedlm(
                 data=data[columns_to_keep].dropna(axis=0),
                 formula=formula,
                 groups=data.index.values,
@@ -2426,8 +2458,8 @@ class TestImputedStatsMixedLM(unittest.TestCase):
                 use_ml=False,
             )
 
-        with self.assertRaises(patsy.PatsyError) as cm:
-            fit_mixedlm(
+        with self.assertRaises(patsy.PatsyError):
+            imputed_stats.fit_mixedlm(
                 data=data[columns_to_keep].dropna(axis=0),
                 formula=formula + " + unknown",
                 groups=data.index.values,
@@ -2460,7 +2492,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         expected_p = 0.5797624694538319190
 
         # The observed results
-        observed = fit_mixedlm(
+        observed = imputed_stats.fit_mixedlm(
             data=data[columns_to_keep],
             formula=formula,
             groups=data.index.values,
@@ -2505,7 +2537,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         expected_p = 5.79674752511348590e-01
 
         # The observed results
-        observed = fit_mixedlm(
+        observed = imputed_stats.fit_mixedlm(
             data=data[columns_to_keep],
             formula=formula,
             groups=data.index.values,
@@ -2544,7 +2576,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=options)
+            imputed_stats.main(args=options)
         finally:
             clean_logging_handlers()
 
@@ -2646,7 +2678,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=options)
+            imputed_stats.main(args=options)
         finally:
             clean_logging_handlers()
 
@@ -2756,7 +2788,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=options)
+            imputed_stats.main(args=options)
         finally:
             clean_logging_handlers()
 
@@ -2861,7 +2893,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=options)
+            imputed_stats.main(args=options)
         finally:
             clean_logging_handlers()
 
@@ -2969,7 +3001,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=options)
+            imputed_stats.main(args=options)
         finally:
             clean_logging_handlers()
 
@@ -3077,7 +3109,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=options)
+            imputed_stats.main(args=options)
         finally:
             clean_logging_handlers()
 
@@ -3165,7 +3197,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
                                    places=place)
 
 
-@unittest.skipIf(not HAS_SKAT, "SKAT is not installed")
+@unittest.skipIf(not imputed_stats.HAS_SKAT, "SKAT is not installed")
 class TestImputedStatsSkat(unittest.TestCase):
 
     tmp_dir = None
@@ -3191,7 +3223,7 @@ class TestImputedStatsSkat(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=args)
+            imputed_stats.main(args=args)
         finally:
             clean_logging_handlers()
 
@@ -3226,7 +3258,7 @@ class TestImputedStatsSkat(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=args)
+            imputed_stats.main(args=args)
         finally:
             clean_logging_handlers()
 
@@ -3261,7 +3293,7 @@ class TestImputedStatsSkat(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=args)
+            imputed_stats.main(args=args)
         finally:
             clean_logging_handlers()
 
@@ -3297,7 +3329,7 @@ class TestImputedStatsSkat(unittest.TestCase):
 
         # Executing the tool
         try:
-            main(args=args)
+            imputed_stats.main(args=args)
         finally:
             clean_logging_handlers()
 

@@ -10,15 +10,12 @@
 import os
 import re
 import sys
-import json
 import shlex
 import logging
 import argparse
 from glob import glob
 from math import floor
-from shutil import which, copyfile
-from urllib.request import urlopen
-from urllib.error import HTTPError
+from shutil import copyfile
 from subprocess import Popen, PIPE
 from collections import defaultdict
 
@@ -27,9 +24,9 @@ import pandas as pd
 from ..task import launcher
 from ..db import utils as db
 from ..error import GenipeError
-from ..config import parse_drmaa_config
-from ..reporting import generate_report
 from .arguments import parse_args, check_args
+from ..config.parser import parse_drmaa_config
+from ..reporting.autoreport import generate_report
 from .. import __version__, autosomes, HAS_PYFAIDX, HAS_MATPLOTLIB
 
 
@@ -37,7 +34,6 @@ if HAS_MATPLOTLIB:
     import matplotlib as mpl
     mpl.use("Agg")
     import matplotlib.pyplot as plt
-    import matplotlib.patches as mpatches
 
 if HAS_PYFAIDX:
     from pyfaidx import Fasta

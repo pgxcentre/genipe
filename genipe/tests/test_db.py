@@ -14,7 +14,7 @@ import unittest
 from datetime import datetime
 from tempfile import TemporaryDirectory
 
-from ..db.utils import *
+from ..db import utils as db_utils
 from ..db.utils import _create_db_connection
 
 
@@ -34,7 +34,7 @@ class TestDB(unittest.TestCase):
         self.output_dir = TemporaryDirectory(prefix="genipe_test_")
 
         # We need to create an empty database
-        self.db_name = create_task_db(self.output_dir.name)
+        self.db_name = db_utils.create_task_db(self.output_dir.name)
 
         # We're going to add thee entries
         self.creation_times = []
@@ -42,7 +42,7 @@ class TestDB(unittest.TestCase):
         for i in range(4):
             task_name = "dummy_task_{}".format(i + 1)
             self.creation_times.append(datetime.now())
-            create_task_entry(task_name, self.db_name)
+            db_utils.create_task_entry(task_name, self.db_name)
             self.task_names.append(task_name)
 
     def tearDown(self):
@@ -111,22 +111,22 @@ class TestDB(unittest.TestCase):
         # Marking the first and fourth tasks as completed
         start = self.creation_times[3].timestamp()
         now = datetime.now().timestamp()
-        mark_task_completed(self.task_names[0], self.db_name)
-        mark_drmaa_task_completed(self.task_names[3], start, start, now,
-                                  self.db_name)
+        db_utils.mark_task_completed(self.task_names[0], self.db_name)
+        db_utils.mark_drmaa_task_completed(self.task_names[3], start, start,
+                                           now, self.db_name)
 
         # Marking the second one as incomplete
-        mark_task_incomplete(self.task_names[1], self.db_name)
+        db_utils.mark_task_incomplete(self.task_names[1], self.db_name)
 
         # Checking the values
-        self.assertTrue(check_task_completion(self.task_names[0],
-                                              self.db_name))
-        self.assertFalse(check_task_completion(self.task_names[1],
-                                               self.db_name))
-        self.assertFalse(check_task_completion(self.task_names[2],
-                                               self.db_name))
-        self.assertTrue(check_task_completion(self.task_names[3],
-                                              self.db_name))
+        self.assertTrue(db_utils.check_task_completion(self.task_names[0],
+                                                       self.db_name))
+        self.assertFalse(db_utils.check_task_completion(self.task_names[1],
+                                                        self.db_name))
+        self.assertFalse(db_utils.check_task_completion(self.task_names[2],
+                                                        self.db_name))
+        self.assertTrue(db_utils.check_task_completion(self.task_names[3],
+                                                       self.db_name))
 
         # Setting a completely random value for the third task
         conn, c = _create_db_connection(self.db_name)
@@ -134,8 +134,8 @@ class TestDB(unittest.TestCase):
                   (self.task_names[3], ))
         conn.commit()
         conn.close()
-        self.assertFalse(check_task_completion(self.task_names[3],
-                                               self.db_name))
+        self.assertFalse(db_utils.check_task_completion(self.task_names[3],
+                                                        self.db_name))
 
         # The logging capability might be disable...
         disable_lvl = logging.Logger.manager.disable
@@ -143,7 +143,7 @@ class TestDB(unittest.TestCase):
 
         # Checking the status of a missing task
         with self._my_compatibility_assertLogs(level="DEBUG") as cm:
-            check_task_completion("DUMMY_NAME", self.db_name)
+            db_utils.check_task_completion("DUMMY_NAME", self.db_name)
         log_m = ("DEBUG:root:'DUMMY_NAME' no entry")
         self.assertEqual(1, len(cm.output))
         self.assertEqual(log_m, cm.output[0])
@@ -189,7 +189,7 @@ class TestDB(unittest.TestCase):
         # We are going to relaunch a task after 3 seconds
         time.sleep(3)
         now = datetime.now()
-        create_task_entry(modified_task, self.db_name)
+        db_utils.create_task_entry(modified_task, self.db_name)
         c.execute(
             "SELECT name, launch, start, end, completed FROM genipe_task"
         )
@@ -230,7 +230,7 @@ class TestDB(unittest.TestCase):
         # We are going to mark the first task as completed after 3 seconds
         time.sleep(3)
         completion_time = datetime.now()
-        mark_task_completed(modified_task, self.db_name)
+        db_utils.mark_task_completed(modified_task, self.db_name)
 
         # Creating the connection
         conn, c = _create_db_connection(self.db_name)
@@ -277,7 +277,7 @@ class TestDB(unittest.TestCase):
         # Marking an incomplete task shouldn't change its values (except
         # completed)
         modified_task = self.task_names[0]
-        mark_task_incomplete(modified_task, self.db_name)
+        db_utils.mark_task_incomplete(modified_task, self.db_name)
 
         # Creating the connection
         conn, c = _create_db_connection(self.db_name)
@@ -312,9 +312,9 @@ class TestDB(unittest.TestCase):
         # as incomplete
         modified_task = self.task_names[1]
         completion_time = datetime.now()
-        mark_task_completed(modified_task, self.db_name)
+        db_utils.mark_task_completed(modified_task, self.db_name)
         time.sleep(3)
-        mark_task_incomplete(modified_task, self.db_name)
+        db_utils.mark_task_incomplete(modified_task, self.db_name)
 
         # Checking that the times are the same
         c.execute(
@@ -365,9 +365,10 @@ class TestDB(unittest.TestCase):
         # Waiting 3 seconds and "ending" task
         time.sleep(3)
         end_time = datetime.now()
-        mark_drmaa_task_completed(modified_task, launch_time.timestamp(),
-                                  start_time.timestamp(), end_time.timestamp(),
-                                  self.db_name)
+        db_utils.mark_drmaa_task_completed(
+            modified_task, launch_time.timestamp(), start_time.timestamp(),
+            end_time.timestamp(), self.db_name,
+        )
 
         # Creating the connection
         conn, c = _create_db_connection(self.db_name)
@@ -442,14 +443,15 @@ class TestDB(unittest.TestCase):
         # Waiting 3 seconds and "ending" two task
         time.sleep(3)
         end_time = datetime.now()
-        mark_task_completed(modified_task_1, self.db_name)
-        mark_drmaa_task_completed(modified_task_2, launch_time.timestamp(),
-                                  start_time.timestamp(), end_time.timestamp(),
-                                  self.db_name)
+        db_utils.mark_task_completed(modified_task_1, self.db_name)
+        db_utils.mark_drmaa_task_completed(
+            modified_task_2, launch_time.timestamp(), start_time.timestamp(),
+            end_time.timestamp(), self.db_name,
+        )
 
         # Getting the first task time
-        task_time_1 = get_task_runtime(modified_task_1, self.db_name)
-        task_time_2 = get_task_runtime(modified_task_2, self.db_name)
+        task_time_1 = db_utils.get_task_runtime(modified_task_1, self.db_name)
+        task_time_2 = db_utils.get_task_runtime(modified_task_2, self.db_name)
 
         # Comparing the time
         self.assertEqual(5, task_time_1)
@@ -465,12 +467,12 @@ class TestDB(unittest.TestCase):
         for task_name in self.task_names:
             time.sleep(1)
             if task_name != self.task_names[-1]:
-                mark_task_completed(task_name, self.db_name)
+                db_utils.mark_task_completed(task_name, self.db_name)
 
             else:
                 now = datetime.now().timestamp()
-                mark_drmaa_task_completed(task_name, start, start, now,
-                                          self.db_name)
+                db_utils.mark_drmaa_task_completed(task_name, start, start,
+                                                   now, self.db_name)
             end_times.append(time.time())
 
         # The expected time
@@ -480,7 +482,7 @@ class TestDB(unittest.TestCase):
         }
 
         # Getting the time for all tasks
-        observed_time = get_all_runtimes(self.db_name)
+        observed_time = db_utils.get_all_runtimes(self.db_name)
 
         # Comparing the results
         self.assertEqual(set(expected_time.keys()), set(observed_time.keys()))
@@ -496,7 +498,7 @@ class TestDB(unittest.TestCase):
         conn.commit()
         conn.close()
         with self._my_compatibility_assertLogs(level="WARNING") as cm:
-            get_all_runtimes(self.db_name)
+            db_utils.get_all_runtimes(self.db_name)
         log_m = "WARNING:root:{}: no execution time for task"
         self.assertEqual(1, len(cm.output))
         self.assertEqual(log_m.format(self.task_names[0]), cm.output[0])
@@ -508,7 +510,7 @@ class TestDB(unittest.TestCase):
         conn.commit()
         conn.close()
         with self._my_compatibility_assertLogs(level="WARNING") as cm:
-            get_all_runtimes(self.db_name)
+            db_utils.get_all_runtimes(self.db_name)
         log_m = "WARNING:root:{}: no execution time for task"
         self.assertEqual(1, len(cm.output))
         self.assertEqual(log_m.format(self.task_names[0]), cm.output[0])

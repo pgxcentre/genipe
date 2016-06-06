@@ -49,9 +49,6 @@ def main(args=None):
         # Parsing the options
         args = parse_args(parser, args)
 
-        # Getting the output directory (dirname of the output prefix
-        out_dir = os.path.dirname(args.prefix)
-
         # Adding the logging capability
         log_file = args.prefix + ".log"
         logging_fh = logging.FileHandler(log_file, mode="w")

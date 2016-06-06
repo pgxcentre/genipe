@@ -12,7 +12,7 @@ import shutil
 import unittest
 from tempfile import TemporaryDirectory
 
-from ..task.launcher import _check_output_files, _check_impute2_file
+from ..task.launcher import _check_output_files
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -43,13 +43,13 @@ class TestLauncher(unittest.TestCase):
             for i in range(1, 11)
         ]
         for filename in filenames:
-            with open(filename, "w") as o_file:
+            with open(filename, "w"):
                 pass
         self.assertTrue(_check_output_files(filenames, "dummy_task_id"))
 
         # Adding an 'impute2' file
         filenames.append(os.path.join(self.output_dir.name, "test.impute2"))
-        with open(filenames[-1], "w") as o_file:
+        with open(filenames[-1], "w"):
             pass
         self.assertTrue(_check_output_files(filenames, "dummy_task_id"))
 

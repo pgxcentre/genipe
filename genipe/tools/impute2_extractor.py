@@ -59,9 +59,6 @@ def main(args=None):
         # Parsing the options
         args = parse_args(parser, args)
 
-        # Getting the output directory (dirname of the output prefix)
-        out_dir = os.path.dirname(args.out)
-
         # The logging handlers
         handlers = [logging.StreamHandler()]
         if not args.index_only:
@@ -573,7 +570,7 @@ def check_args(args):
     """
     # Checking that the impute2 file exists
     if not os.path.isfile(args.impute2):
-        raise GenipeError("{}: no such file".format(filename))
+        raise GenipeError("{}: no such file".format(args.impute2))
 
     if args.index_only:
         return True

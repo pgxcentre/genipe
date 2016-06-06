@@ -13,10 +13,10 @@ from random import randint
 from tempfile import TemporaryDirectory
 
 from .. import autosomes
-from ..pipeline.cli import *
+from ..pipeline import cli
 from ..error import GenipeError
 
-if HAS_PYFAIDX:
+if cli.HAS_PYFAIDX:
     import pyfaidx
 
 
@@ -72,10 +72,10 @@ class TestMainPipeline(unittest.TestCase):
 
         # Trying the function
         for filename, expected in zip(filenames, expected_results):
-            self.assertEqual(expected, file_sorter(filename))
+            self.assertEqual(expected, cli.file_sorter(filename))
 
         # Trying the sort function
-        filenames.sort(key=file_sorter)
+        filenames.sort(key=cli.file_sorter)
         self.assertEqual(filenames, expected_filenames)
 
     def test_get_chromosome_length(self):
@@ -144,7 +144,7 @@ class TestMainPipeline(unittest.TestCase):
                     print("marker_{}".format(i+1), position, file=o_file)
 
         # Getting the chromosome length
-        chrom_length = get_chromosome_length(
+        chrom_length = cli.get_chromosome_length(
             required_chrom=expected_chrom,
             legend=legend_template,
             legend_chr23=legend_chr23,
@@ -175,7 +175,7 @@ class TestMainPipeline(unittest.TestCase):
                     print(chrom, length, sep="\t", file=o_file)
 
         # Comparing what we got
-        chrom_length = get_chromosome_length(
+        chrom_length = cli.get_chromosome_length(
             required_chrom=expected_chrom.keys(),
             legend=legend_template,
             legend_chr23=legend_chr23,
@@ -201,7 +201,7 @@ class TestMainPipeline(unittest.TestCase):
 
         # Tests that a warning is logged if there is a missing chromosome
         with self._my_compatibility_assertLogs(level="WARNING") as cm:
-            chrom_length = get_chromosome_length(
+            chrom_length = cli.get_chromosome_length(
                 required_chrom=sorted(expected_chrom.keys()),
                 legend=legend_template,
                 legend_chr23=legend_chr23,
@@ -219,7 +219,7 @@ class TestMainPipeline(unittest.TestCase):
         # Testing the content
         self.assertEqual(expected_chrom, chrom_length)
 
-    @unittest.skipIf(not HAS_PYFAIDX,
+    @unittest.skipIf(not cli.HAS_PYFAIDX,
                      "optional requirement (pyfaidx) not satisfied")
     def test_get_chrom_encoding(self):
         """Tests the 'get_chrom_encoding' function."""
@@ -271,7 +271,7 @@ class TestMainPipeline(unittest.TestCase):
         expected["26"] = "26"
 
         # The observed result
-        observed = get_chrom_encoding(reference)
+        observed = cli.get_chrom_encoding(reference)
         self.assertEqual(expected, observed)
         reference.close()
 
@@ -297,7 +297,7 @@ class TestMainPipeline(unittest.TestCase):
         expected["24"] = "Y"
 
         # The observed result
-        observed = get_chrom_encoding(reference)
+        observed = cli.get_chrom_encoding(reference)
         self.assertEqual(expected, observed)
         reference.close()
 
@@ -324,7 +324,7 @@ class TestMainPipeline(unittest.TestCase):
         expected["26"] = "chr26"
 
         # The observed result
-        observed = get_chrom_encoding(reference)
+        observed = cli.get_chrom_encoding(reference)
         self.assertEqual(expected, observed)
         reference.close()
 
@@ -350,7 +350,7 @@ class TestMainPipeline(unittest.TestCase):
         expected["24"] = "chr24"
 
         # The observed result
-        observed = get_chrom_encoding(reference)
+        observed = cli.get_chrom_encoding(reference)
         self.assertEqual(expected, observed)
         reference.close()
 
@@ -371,7 +371,7 @@ class TestMainPipeline(unittest.TestCase):
 
         # The observed result
         with self._my_compatibility_assertLogs(level="WARNING") as cm:
-            get_chrom_encoding(reference)
+            cli.get_chrom_encoding(reference)
         log_m = [
             "WARNING:root:{}: chromosome not in reference".format(i)
             for i in range(19, 27) if i != 25
@@ -379,7 +379,7 @@ class TestMainPipeline(unittest.TestCase):
         self.assertEqual(log_m, cm.output)
         reference.close()
 
-    @unittest.skipIf(not HAS_PYFAIDX,
+    @unittest.skipIf(not cli.HAS_PYFAIDX,
                      "optional requirement (pyfaidx) not satisfied")
     def test_is_reversed(self):
         """Tests the 'is_reversed' function."""
@@ -410,26 +410,42 @@ class TestMainPipeline(unittest.TestCase):
         encoding = {"1": "1", "2": "2", "3": "3"}
 
         # Testing invalid allele (should return False)
-        self.assertFalse(is_reversed("1", 1, "I", "D", reference, encoding))
-        self.assertFalse(is_reversed("1", 1, "Z", "A", reference, encoding))
-        self.assertFalse(is_reversed("1", 1, "A", "K", reference, encoding))
+        self.assertFalse(cli.is_reversed(
+            "1", 1, "I", "D", reference, encoding),
+        )
+        self.assertFalse(cli.is_reversed(
+            "1", 1, "Z", "A", reference, encoding),
+        )
+        self.assertFalse(cli.is_reversed(
+            "1", 1, "A", "K", reference, encoding),
+        )
 
         # Testing invalid chromosome (should return False)
-        self.assertFalse(is_reversed("23", 1, "A", "C", reference, encoding))
+        self.assertFalse(cli.is_reversed(
+            "23", 1, "A", "C", reference, encoding),
+        )
 
         # Testing invalid position (should return False)
-        self.assertFalse(is_reversed("1", 100, "A", "C", reference, encoding))
+        self.assertFalse(cli.is_reversed(
+            "1", 100, "A", "C", reference, encoding),
+        )
 
         # Testing valid input, without strand problem (should return False)
-        self.assertFalse(is_reversed("1", 3, "G", "T", reference, encoding))
-        self.assertFalse(is_reversed("2", 4, "G", "T", reference, encoding))
-        self.assertFalse(is_reversed("3", 2, "g", "c", reference, encoding))
+        self.assertFalse(cli.is_reversed(
+            "1", 3, "G", "T", reference, encoding),
+        )
+        self.assertFalse(cli.is_reversed(
+            "2", 4, "G", "T", reference, encoding),
+        )
+        self.assertFalse(cli.is_reversed(
+            "3", 2, "g", "c", reference, encoding),
+        )
 
         # Testing valid input, but strand problem (should return True)
-        self.assertTrue(is_reversed("1", 1, "T", "G", reference, encoding))
-        self.assertTrue(is_reversed("2", 2, "t", "g", reference, encoding))
-        self.assertTrue(is_reversed("3", 3, "T", "C", reference, encoding))
-        self.assertTrue(is_reversed("1", 4, "A", "C", reference, encoding))
+        self.assertTrue(cli.is_reversed("1", 1, "T", "G", reference, encoding))
+        self.assertTrue(cli.is_reversed("2", 2, "t", "g", reference, encoding))
+        self.assertTrue(cli.is_reversed("3", 3, "T", "C", reference, encoding))
+        self.assertTrue(cli.is_reversed("1", 4, "A", "C", reference, encoding))
 
         # Closing the reference
         reference.close()
@@ -512,7 +528,7 @@ class TestMainPipeline(unittest.TestCase):
 
         # The PDF generated
         frequency_barh = ""
-        if HAS_MATPLOTLIB:
+        if cli.HAS_MATPLOTLIB:
             frequency_barh = os.path.join(self.output_dir.name,
                                           "frequency_barh.pdf")
         # The expected results
@@ -567,7 +583,7 @@ class TestMainPipeline(unittest.TestCase):
         self.assertEqual(0, len(content))
 
         # Executing the command (getting the observed data)
-        observed = gather_maf_stats(
+        observed = cli.gather_maf_stats(
             required_chrom=autosomes,
             o_dir=self.output_dir.name,
         )
@@ -580,7 +596,7 @@ class TestMainPipeline(unittest.TestCase):
 
         # If matplotlib is installed, checking we have a figure (and not
         # otherwise)
-        if HAS_MATPLOTLIB:
+        if cli.HAS_MATPLOTLIB:
             self.assertTrue(os.path.isfile(frequency_barh))
         else:
             self.assertFalse(os.path.isfile(frequency_barh))
@@ -593,7 +609,7 @@ class TestMainPipeline(unittest.TestCase):
 
         # This should raise an exception
         with self.assertRaises(GenipeError) as cm:
-            gather_maf_stats(
+            cli.gather_maf_stats(
                 required_chrom=autosomes,
                 o_dir=self.output_dir.name,
             )
@@ -609,7 +625,7 @@ class TestMainPipeline(unittest.TestCase):
 
         # This should raise an exception
         with self.assertRaises(GenipeError) as cm:
-            gather_maf_stats(
+            cli.gather_maf_stats(
                 required_chrom=autosomes,
                 o_dir=self.output_dir.name,
             )
@@ -625,7 +641,7 @@ class TestMainPipeline(unittest.TestCase):
 
         # This should issue a warning
         with self._my_compatibility_assertLogs(level="WARNING") as cm:
-            gather_maf_stats(
+            cli.gather_maf_stats(
                 required_chrom=autosomes,
                 o_dir=self.output_dir.name,
             )
@@ -642,7 +658,7 @@ class TestMainPipeline(unittest.TestCase):
 
         # This should issue a warning
         with self._my_compatibility_assertLogs(level="WARNING") as cm:
-            gather_maf_stats(
+            cli.gather_maf_stats(
                 required_chrom=autosomes,
                 o_dir=self.output_dir.name,
             )
@@ -659,7 +675,7 @@ class TestMainPipeline(unittest.TestCase):
 
         # This should raise an exception
         with self.assertRaises(GenipeError) as cm:
-            gather_maf_stats(
+            cli.gather_maf_stats(
                 required_chrom=autosomes,
                 o_dir=self.output_dir.name,
             )
@@ -673,7 +689,7 @@ class TestMainPipeline(unittest.TestCase):
 
         # This should raise an exception
         with self.assertRaises(GenipeError) as cm:
-            gather_maf_stats(
+            cli.gather_maf_stats(
                 required_chrom=autosomes,
                 o_dir=self.output_dir.name,
             )

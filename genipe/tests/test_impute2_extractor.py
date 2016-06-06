@@ -8,7 +8,6 @@
 
 
 import os
-import shutil
 import logging
 import unittest
 from tempfile import TemporaryDirectory
