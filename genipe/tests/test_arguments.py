@@ -136,8 +136,9 @@ class TestArguments(unittest.TestCase):
         # bgzip
         self.args.bgzip = False
 
-        # Adding shapeit extra parameters
+        # Adding shapeit and impute2 extra parameters
         self.args.shapeit_extra = None
+        self.args.impute2_extra = None
 
     def tearDown(self):
         """Finishes the test."""
@@ -900,6 +901,30 @@ class TestArguments(unittest.TestCase):
             "The following SHAPEIT options are hidden from the user: "
             "--input-bed, --input-map, --output-log, --output-max, --thread, "
             "-B, -L, -M, -O, -phase",
+            str(cm.exception),
+        )
+
+    def test_impute2_extra_parameters(self):
+        """Tests when there are extra impute2 parameters."""
+        self.args.impute2_extra = "-Ne 250000 -buffer 300 --dummy to;rm"
+
+        # Launching and checking
+        self.assertTrue(check_args(self.args))
+        self.assertEqual(
+            ["-Ne", "250000", "-buffer", "300", "--dummy", "'to;rm'"],
+            self.args.impute2_extra,
+        )
+
+    def test_invalid_impute2_extra_parameters(self):
+        """Tests with invalid extra impute2 parameters."""
+        self.args.impute2_extra = "-Ne 250000 -int 30000 50000"
+
+        # Checking exception is raised
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual(
+            "The following IMPUTE2 options are hidden from the user: "
+            "-h, -int, -known_haps_g, -l, -m, -o, -use_prephased_g",
             str(cm.exception),
         )
 

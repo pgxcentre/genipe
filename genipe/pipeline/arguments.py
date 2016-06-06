@@ -110,8 +110,9 @@ def parse_args(parser):
     )
     group.add_argument(
         "--shapeit-extra", type=str, metavar="OPTIONS",
-        help="SHAPEIT extra parameters. Put extra parameters into single "
-             "quote (e.g. --shapeit-extra '--states 100 --window 2').",
+        help="SHAPEIT extra parameters. Put extra parameters between single "
+             "or normal quotes (e.g. --shapeit-extra '--states 100 "
+             "--window 2').",
     )
 
     # The Plink option
@@ -207,6 +208,12 @@ def parse_args(parser):
     group.add_argument(
         "--filtering-rules", type=str, metavar="RULE", nargs="+",
         help="IMPUTE2 filtering rules (optional).",
+    )
+    group.add_argument(
+        "--impute2-extra", type=str, metavar="OPTIONS",
+        help="IMPUTE2 extra parameters. Put the extra parameters between "
+             "single or normal quotes (e.g. --impute2-extra '-buffer 250 "
+             "-Ne 20000').",
     )
 
     # The impute2 file merger options
@@ -446,14 +453,30 @@ def check_args(args):
             shlex.quote(s) for s in args.shapeit_extra.split(" ")
         ]
 
-        # Checking that some options are now asked for
-        secured_options = {"-B", "--input-bed", "-M", "--input-map",
-                           "-O", "--output-max", "-L", "--output-log",
-                           "-phase", "--thread"}
-        if len(secured_options & set(args.shapeit_extra)) != 0:
+        # Checking for protected options
+        protected_args = {"-B", "--input-bed", "-M", "--input-map",
+                          "-O", "--output-max", "-L", "--output-log",
+                          "-phase", "--thread"}
+        if len(protected_args & set(args.shapeit_extra)) != 0:
             raise GenipeError(
                 "The following SHAPEIT options are hidden from the user: "
-                "{}".format(", ".join(sorted(secured_options))),
+                "{}".format(", ".join(sorted(protected_args))),
+            )
+
+    # The impute2 extra parameters (if required)
+    if args.impute2_extra is not None:
+        # Proofing the command
+        args.impute2_extra = [
+            shlex.quote(s) for s in args.impute2_extra.split(" ")
+        ]
+
+        # Checking for protected options
+        protected_args = {"-use_prephased_g", "-known_haps_g", "-h", "-l",
+                          "-m", "-int", "-o"}
+        if len(protected_args & set(args.impute2_extra)) != 0:
+            raise GenipeError(
+                "The following IMPUTE2 options are hidden from the user: "
+                "{}".format(", ".join(sorted(protected_args))),
             )
 
     return True

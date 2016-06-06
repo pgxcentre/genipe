@@ -489,8 +489,11 @@ def impute_markers(required_chrom, phased_haplotypes, out_prefix, chrom_length,
     base_command = [
         "impute2" if options.impute2_bin is None else options.impute2_bin,
         "-use_prephased_g",
-        "-Ne", "20000",
     ]
+
+    # If there are any extra parameters, now is the time to add them
+    if options.impute2_extra:
+        base_command.extend(options.impute2_extra)
 
     # Are there any filtering rules?
     if options.filtering_rules is not None:
