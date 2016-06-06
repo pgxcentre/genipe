@@ -492,10 +492,17 @@ def check_args(args):
 
     # Checking the DRMAA configuration file
     if args.use_drmaa:
+        # Checking the DRMAA module
         if not HAS_DRMAA:
             raise GenipeError("The --use-drmaa option was used, but the drmaa "
                               "module is not installed")
 
+        # Checking the DRMAA_LIBRARY_PATH environment variable
+        if "DRMAA_LIBRARY_PATH" not in os.environ:
+            raise GenipeError("The DRMAA_LIBRARY_PATH environment variable is "
+                              "not set (required by the drmaa module)")
+
+        # Checking the DRMAA configuration file
         if args.drmaa_config is None:
             raise GenipeError("DRMAA configuration file was not provided "
                               "(--drmaa-config), but DRMAA is used "
