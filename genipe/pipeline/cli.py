@@ -376,11 +376,17 @@ def phase_markers(required_chrom, prefix, o_prefix, db_name, options):
 
     """
     commands_info = []
+
+    # Creating the base command
     base_command = [
         "shapeit" if options.shapeit_bin is None else options.shapeit_bin,
         "-phase",
         "--thread", str(options.shapeit_thread),
     ]
+
+    # If there are any extra parameters, now is the time to add them
+    if options.shapeit_extra:
+        base_command.extend(options.shapeit_extra)
 
     for chrom in required_chrom:
         # The current output prefix

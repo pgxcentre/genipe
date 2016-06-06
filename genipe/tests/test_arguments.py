@@ -136,6 +136,9 @@ class TestArguments(unittest.TestCase):
         # bgzip
         self.args.bgzip = False
 
+        # Adding shapeit extra parameters
+        self.args.shapeit_extra = None
+
     def tearDown(self):
         """Finishes the test."""
         # Deleting the output directory
@@ -874,6 +877,31 @@ class TestArguments(unittest.TestCase):
 
         # Everything is fine
         self.assertTrue(check_args(self.args))
+
+    def test_shapeit_extra_parameters(self):
+        """Tests when there are extra shapeit parameters."""
+        self.args.shapeit_extra = "--window 110 --states 3 --dummy to;rm"
+
+        # Launching and checking
+        self.assertTrue(check_args(self.args))
+        self.assertEqual(
+            ["--window", "110", "--states", "3", "--dummy", "'to;rm'"],
+            self.args.shapeit_extra,
+        )
+
+    def test_invalid_shapeit_extra_parameters(self):
+        """Tests with invalid extra shapeit parameters."""
+        self.args.shapeit_extra = "--window 110 -B test"
+
+        # Checking exception is raised
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual(
+            "The following SHAPEIT options are hidden from the user: "
+            "--input-bed, --input-map, --output-log, --output-max, --thread, "
+            "-B, -L, -M, -O, -phase",
+            str(cm.exception),
+        )
 
     def _my_compatibility_assertLogs(self, logger=None, level=None):
         """Compatibility 'assertLogs' function for Python 3.3."""
