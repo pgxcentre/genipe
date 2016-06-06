@@ -9,6 +9,8 @@ before_install:
   - "export PATH=$HOME/miniconda/bin:$PATH"
   - "hash -r"
   - "conda config --set always_yes yes --set changeps1 no"
+  - "conda update -q conda"
+  - "conda update -q --all"
   - "conda create -q -n test-environment python=$TRAVIS_PYTHON_VERSION"
   - "source activate test-environment"
   - "conda update -q --all"
