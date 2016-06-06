@@ -16,6 +16,7 @@ before_install:
   - "conda info -a"
   - "python --version"
 install:
+  - "conda install -q nomkl"
   - "conda install -q jinja2"
   - "conda install -q numpy"
   - "conda install -q pandas"
