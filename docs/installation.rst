@@ -9,7 +9,8 @@ Installation
 Requirements
 -------------
 
-The tools require a standard Python 3 installation with the following modules:
+The tools require a standard Python 3.4 (or latest) installation with the
+following modules:
 
 * ``numpy`` version 1.8.2 or latest
 * ``jinja2`` version 2.7.3 or latest
@@ -29,7 +30,7 @@ management):
 
 .. note::
 
-   Only Python versions 3.3 and higher are supported for now.
+   Only Python versions 3.4 and higher are supported for now.
 
 
 .. _install-virt:
@@ -44,7 +45,8 @@ Using python's pyvenv
 ^^^^^^^^^^^^^^^^^^^^^^
 
 The following commands should successfully create a virtual environment and
-activate it, as long as Python 3 was previously installed on the machine.
+activate it, as long as Python 3.4 (or latest) was previously installed on the
+machine.
 
 .. code-block:: bash
 
@@ -91,7 +93,7 @@ doesn't required a previous Python 3 installation.
    bash miniconda.sh -b -p $HOME/miniconda
 
    # Creating the environment
-   $HOME/miniconda/bin/conda create -q -n genipe_pyvenv python=3.4
+   $HOME/miniconda/bin/conda create -q -n genipe_pyvenv python=3
 
    # Activating the environment
    source $HOME/miniconda/bin/activate genipe_pyvenv

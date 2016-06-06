@@ -18,8 +18,8 @@ Full documentation is available at
 
 ## Installation
 
-We recommend installing the package in a Python 3 virtual environment. There
-are two ways to install: `pip` or `conda`.
+We recommend installing the package in a Python 3.4 (or latest) virtual
+environment. There are two ways to install: `pip` or `conda`.
 
 ```bash
 # Using pip
@@ -41,8 +41,8 @@ The complete installation procedure is available in the
 
 ### Dependencies
 
-The tool requires a standard [Python](http://python.org/) 3 installation with
-the following modules:
+The tool requires a standard [Python](http://python.org/) 3.4 (or latest)
+installation with the following modules:
 
 * `numpy` version 1.8.2 and latest
 * `Jinja2` version 2.7.3 and latest
