@@ -777,7 +777,7 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
 
         # We need to compute the random effects if it's a MixedLM analysis
         random_effects = None
-        if options.analysis_type == "mixedlm":
+        if options.analysis_type == "mixedlm" and options.interaction is None:
             random_effects = smf.mixedlm(
                 formula=formula.replace("_GenoD + ", ""),
                 data=phenotypes,
@@ -1005,6 +1005,7 @@ def process_impute2_site(site_info):
             use_ml=site_info.use_ml,
             random_effects=site_info.random_effects,
             mixedlm_p=site_info.mixedlm_p,
+            interaction=site_info.inter_c is not None,
         )
     except LinAlgError as e:
         # Something strange happened...
@@ -1139,7 +1140,7 @@ def fit_logistic(data, formula, result_col, **kwargs):
 
 
 def fit_mixedlm(data, formula, use_ml, groups, result_col, random_effects,
-                mixedlm_p, **kwargs):
+                mixedlm_p, interaction, **kwargs):
     """Fit a linear mixed effects model to the data.
 
     Args:
@@ -1151,33 +1152,36 @@ def fit_mixedlm(data, formula, use_ml, groups, result_col, random_effects,
         random_effects (pandas.Series): the random effects
         mixedlm_p (float): the p-value threshold for which loci will be
                            computed with the real MixedLM analysis
+        interaction (bool): Whether there is an interaction or not
 
     Returns:
         list: the results from the linear mixed effects model
 
     """
-    # Getting the single copy of each genotypes
-    geno = data.reset_index()[["index", "_GenoD"]]
-    indexes = geno[["index"]].drop_duplicates().index
-    geno = geno.loc[indexes, :]
+    # We perform the optimization if there is no interaction
+    if not interaction:
+        # Getting the single copy of each genotypes
+        geno = data.reset_index()[["index", "_GenoD"]]
+        indexes = geno[["index"]].drop_duplicates().index
+        geno = geno.loc[indexes, :]
 
-    # Merging with the random effects
-    t_data = pd.merge(random_effects, geno.set_index("index"), left_index=True,
-                      right_index=True)
+        # Merging with the random effects
+        t_data = pd.merge(random_effects, geno.set_index("index"), left_index=True,
+                        right_index=True)
 
-    # Approximating the results
-    approximate_r = _get_result_from_linear(
-        smf.ols(formula="RE ~ _GenoD", data=t_data).fit(),
-        result_col="_GenoD",
-    )
+        # Approximating the results
+        approximate_r = _get_result_from_linear(
+            smf.ols(formula="RE ~ _GenoD", data=t_data).fit(),
+            result_col="_GenoD",
+        )
 
-    # If the approximated p-value is higher or equal to the threshold, we
-    # return the approximation
-    if approximate_r[5] >= mixedlm_p:
-        result = ["NA"] * (len(approximate_r) - 2)
-        result.append(approximate_r[5])
-        result.append("TS-MixedLM")
-        return result
+        # If the approximated p-value is higher or equal to the threshold, we
+        # return the approximation
+        if approximate_r[5] >= mixedlm_p:
+            result = ["NA"] * (len(approximate_r) - 2)
+            result.append(approximate_r[5])
+            result.append("TS-MixedLM")
+            return result
 
     # If we get here, it's because the p-value was low enough so we compute the
     # real statistics
@@ -1187,7 +1191,7 @@ def fit_mixedlm(data, formula, use_ml, groups, result_col, random_effects,
         result_col=result_col,
     )
     result.append("MixedLM")
-    return  result
+    return result
 
 
 _fit_map = {
@@ -1402,8 +1406,12 @@ def check_args(args):
                 )
             )
         if args.interaction in args.categorical:
-            logging.warning("{}: interaction term is categorical: the last "
-                            "category will used in the rsults")
+            logging.warning("interaction term is categorical: the last "
+                            "category will be used in the results")
+
+        if args.analysis_type == "mixedlm":
+            logging.warning("when using interaction, mixedlm optimization "
+                            "cannot be performed, analysis will be slow")
 
     return True
 
