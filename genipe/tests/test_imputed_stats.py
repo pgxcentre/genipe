@@ -158,7 +158,6 @@ def create_input_files(i_filename, output_dirname, analysis_type,
         "--pheno", pheno_filename,
         "--out", o_prefix,
         "--gender-column", "gender",
-        "--covar", "C1,C2,C3,age,gender",
         "--missing-value", "999999",
         "--sample-column", sample_col,
     ]
@@ -173,6 +172,10 @@ def create_input_files(i_filename, output_dirname, analysis_type,
     if analysis_type == "mixedlm":
         if use_ml:
             options.append("--use-ml")
+        options.extend(["--covar", "C1,C2,C3,age,gender,visit"])
+        options.extend(["--categorical", "visit"])
+    else:
+        options.extend(["--covar", "C1,C2,C3,age,gender"])
 
     # Is there interaction?
     if interaction is not None:
@@ -2197,6 +2200,40 @@ class TestImputedStatsLogistic(unittest.TestCase):
                  "optional requirement (statsmodels) not satisfied")
 class TestImputedStatsMixedLM(unittest.TestCase):
 
+    @classmethod
+    def setUpClass(cls):
+        """Gets the data and compute random effects."""
+        # Reading the data
+        cls.data_filename = resource_filename(
+            __name__,
+            "data/regression_mixedlm.txt.bz2",
+        )
+
+        # This dataset contains 3 markers + 6 covariables (including visit)
+        data = pd.read_csv(cls.data_filename, sep="\t", compression="bz2")
+        data = data[data.gender != 0].set_index("SampleID")
+        del data.index.name
+        cls.data = data
+
+        # Computing the random effect for REML
+        data = data.drop(["snp1", "snp2", "snp3"], axis=1).dropna()
+        cls.random_effects = imputed_stats.smf.mixedlm(
+            formula="y ~ C1 + C2 + C3 + age + C(gender) + C(visit)",
+            data=data,
+            groups=data.index,
+        ).fit(reml=True).random_effects.rename(
+            columns={"Intercept": "RE"},
+        )
+
+        # Computing the random effect for ML
+        cls.random_effects_ml = imputed_stats.smf.mixedlm(
+            formula="y ~ C1 + C2 + C3 + age + C(gender) + C(visit)",
+            data=data,
+            groups=data.index,
+        ).fit(reml=False).random_effects.rename(
+            columns={"Intercept": "RE"},
+        )
+
     def setUp(self):
         """Setup the tests."""
         # Creating the temporary directory
@@ -2207,367 +2244,389 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # Deleting the output directory
         self.output_dir.cleanup()
 
-    def test_fit_mixedlm(self):
-        """Tests the 'fit_mixedlm' function."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_mixedlm.txt.bz2",
-        )
-
-        # This dataset contains 3 markers + 5 covariables
-        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
-        data = data[data.gender != 0].set_index("SampleID").dropna(axis=0)
-
+    def test_fit_mixedlm_snp1(self):
+        """Tests the 'fit_mixedlm' function for the first SNP."""
         # The formula for the first marker
-        formula = "y ~ snp1 + C1 + C2 + C3 + age + C(gender)"
-        columns_to_keep = ["y", "snp1", "C1", "C2", "C3", "age", "gender"]
+        formula = "y ~ _GenoD + C1 + C2 + C3 + age + C(gender) + C(visit)"
+
+        # Removing unwanted columns and renaming the first SNP
+        data = self.data.drop(["snp2", "snp3"], axis=1).dropna()
+        data = data.rename(columns={"snp1": "_GenoD"})
 
         # The expected results for the first marker (according to R)
-        expected_coef = 0.12265168980987724
-        expected_se = 0.041715401481444134
-        expected_min_ci = 0.04090301809382547
-        expected_max_ci = 0.20440036152516114
-        expected_z = 2.9402015911182162
-        expected_p = 3.279987709238652e-03
+        expected_coef = 0.12265168980977093
+        expected_se = 0.026125844399462177
+        expected_min_ci = 0.07144597572112760
+        expected_max_ci = 0.1738574038984143
+        expected_z = 4.6946497856465763
+        expected_p = 2.670638639346024e-06
+        expected_type = "MixedLM"
 
         # The observed results for the first marker
         observed = imputed_stats.fit_mixedlm(
-            data=data[columns_to_keep],
+            data=data,
             formula=formula,
-            groups=data.index.values,
-            result_col="snp1",
+            groups=data.index,
+            result_col="_GenoD",
             use_ml=False,
+            random_effects=self.random_effects,
+            mixedlm_p=1e-4,
+            interaction=False,
         )
-        self.assertEqual(6, len(observed))
+        self.assertEqual(7, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
-            observed_z, observed_p, = observed
+            observed_z, observed_p, observed_type = observed
 
         # Comparing the results
-        self.assertAlmostEqual(expected_coef, observed_coef, places=9)
-        self.assertAlmostEqual(expected_se, observed_se, places=10)
-        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
-        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
-        self.assertAlmostEqual(expected_z, observed_z, places=8)
+        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_se, observed_se, places=7)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=7)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=7)
+        self.assertAlmostEqual(expected_z, observed_z, places=5)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=8)
+                               places=4)
+        self.assertEqual(expected_type, observed_type)
 
+    def test_fit_mixedlm_snp2(self):
+        """Tests the 'fit_mixedlm' function for the second SNP."""
         # The formula for the second marker
-        formula = "y ~ snp2 + C1 + C2 + C3 + age + C(gender)"
-        columns_to_keep = ["y", "snp2", "C1", "C2", "C3", "age", "gender"]
+        formula = "y ~ _GenoD + C1 + C2 + C3 + age + C(gender) + C(visit)"
+
+        # Removing unwanted columns and renaming the second SNP
+        data = self.data.drop(["snp1", "snp3"], axis=1).dropna()
+        data = data.rename(columns={"snp2": "_GenoD"})
 
         # The expected results for the second marker (according to R)
-        expected_coef = 0.007945559606616614
-        expected_se = 0.030465888551648834
-        expected_min_ci = -0.05175771144653040
-        expected_max_ci = 0.06764883066030558
-        expected_z = 0.2608018339313000
-        expected_p = 7.942453301062471e-01
+        expected_coef = "NA"
+        expected_se = "NA"
+        expected_min_ci = "NA"
+        expected_max_ci = "NA"
+        expected_z = "NA"
+        expected_p = 0.6780830649776308
+        expected_type = "TS-MixedLM"
 
         # The observed results for the first marker
         observed = imputed_stats.fit_mixedlm(
-            data=data[columns_to_keep],
+            data=data,
             formula=formula,
-            groups=data.index.values,
-            result_col="snp2",
+            groups=data.index,
+            result_col="_GenoD",
             use_ml=False,
+            random_effects=self.random_effects,
+            mixedlm_p=1e-4,
+            interaction=False,
         )
-        self.assertEqual(6, len(observed))
+        self.assertEqual(7, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
-            observed_z, observed_p, = observed
+            observed_z, observed_p, observed_type = observed
 
         # Comparing the results
-        self.assertAlmostEqual(expected_coef, observed_coef, places=9)
-        self.assertAlmostEqual(expected_se, observed_se, places=10)
-        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
-        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
-        self.assertAlmostEqual(expected_z, observed_z, places=7)
-        self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=8)
+        self.assertEqual(expected_coef, observed_coef)
+        self.assertEqual(expected_se, observed_se)
+        self.assertEqual(expected_min_ci, observed_min_ci)
+        self.assertEqual(expected_max_ci, observed_max_ci)
+        self.assertEqual(expected_z, observed_z)
+        self.assertAlmostEqual(expected_p, observed_p, places=9)
+        self.assertEqual(expected_type, observed_type)
 
+    def test_fit_mixedlm_snp3(self):
+        """Tests the 'fit_mixedlm' function for the third SNP."""
         # The formula for the third (and last) marker
-        formula = "y ~ snp3 + C1 + C2 + C3 + age + C(gender)"
-        columns_to_keep = ["y", "snp3", "C1", "C2", "C3", "age", "gender"]
+        formula = "y ~ _GenoD + C1 + C2 + C3 + age + C(gender) + C(visit)"
+
+        # Removing unwanted columns and renaming the second SNP
+        data = self.data.drop(["snp1", "snp2"], axis=1).dropna()
+        data = data.rename(columns={"snp3": "_GenoD"})
 
         # The expected results for the second marker (according to R)
-        expected_coef = -0.15454491556451655
-        expected_se = 0.045842987304696339
-        expected_min_ci = -0.24438231821546189
-        expected_max_ci = -0.06470751291475632
-        expected_z = -3.3711789883440764
-        expected_p = 7.484721142754225e-04
+        expected_coef = -0.15449981039313726
+        expected_se = 0.028692891145471563
+        expected_min_ci = -0.21073684365058973
+        expected_max_ci = -0.09826277713568479
+        expected_z = -5.3846023954097459
+        expected_p = 7.260496248662207e-08
+        expected_type = "MixedLM"
 
         # The observed results for the first marker
         observed = imputed_stats.fit_mixedlm(
-            data=data[columns_to_keep],
+            data=data,
             formula=formula,
-            groups=data.index.values,
-            result_col="snp3",
+            groups=data.index,
+            result_col="_GenoD",
             use_ml=False,
+            random_effects=self.random_effects,
+            mixedlm_p=1e-4,
+            interaction=False,
         )
-        self.assertEqual(6, len(observed))
+        self.assertEqual(7, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
-            observed_z, observed_p, = observed
+            observed_z, observed_p, observed_type = observed
 
         # Comparing the results
-        self.assertAlmostEqual(expected_coef, observed_coef, places=9)
-        self.assertAlmostEqual(expected_se, observed_se, places=10)
-        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
-        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
-        self.assertAlmostEqual(expected_z, observed_z, places=8)
+        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_se, observed_se, places=8)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=7)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=7)
+        self.assertAlmostEqual(expected_z, observed_z, places=6)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=8)
+                               places=6)
+        self.assertEqual(expected_type, observed_type)
+
+    def test_fit_mixedlm_invalid_column(self):
+        """Tests when asking an invalid column."""
+        # The formula for the first marker
+        formula = "y ~ _GenoD + C1 + C2 + C3 + age + C(gender) + C(visit)"
+
+        # Removing unwanted columns and renaming the first SNP
+        data = self.data.drop(["snp2", "snp3"], axis=1).dropna()
+        data = data.rename(columns={"snp1": "_GenoD"})
 
         # Asking for an invalid column should raise a KeyError
         with self.assertRaises(KeyError):
             imputed_stats.fit_mixedlm(
-                data=data[columns_to_keep].dropna(axis=0),
+                data=data,
                 formula=formula,
-                groups=data.index.values,
+                groups=data.index,
                 result_col="unknown",
                 use_ml=False,
+                random_effects=self.random_effects,
+                mixedlm_p=1e-4,
+                interaction=False,
             )
 
         with self.assertRaises(patsy.PatsyError):
             imputed_stats.fit_mixedlm(
-                data=data[columns_to_keep].dropna(axis=0),
+                data=data,
                 formula=formula + " + unknown",
-                groups=data.index.values,
-                result_col="snp4",
+                groups=data.index,
+                result_col="_GenoD",
                 use_ml=False,
+                random_effects=self.random_effects,
+                mixedlm_p=1e-4,
+                interaction=False,
             )
 
-    def test_fit_mixedlm_use_ml(self):
-        """Tests the 'fit_mixedlm' function (using ML instead of REML)."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_mixedlm.txt.bz2",
-        )
-
-        # This dataset contains 3 markers + 5 covariables
-        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
-        data = data[data.gender != 0].set_index("SampleID").dropna(axis=0)
-
+    def test_fit_mixedlm_snp1_use_ml(self):
+        """Tests mixedlm using ML on first SNP."""
         # The formula for the first marker
-        formula = "y ~ snp1 + C1 + C2 + C3 + age + C(gender)"
-        columns_to_keep = ["y", "snp1", "C1", "C2", "C3", "age", "gender"]
+        formula = "y ~ _GenoD + C1 + C2 + C3 + age + C(gender) + C(visit)"
+
+        # Removing unwanted columns and renaming the first SNP
+        data = self.data.drop(["snp2", "snp3"], axis=1).dropna()
+        data = data.rename(columns={"snp1": "_GenoD"})
 
         # The expected results for the first marker (according to R)
-        expected_coef = 0.1226516898098772429
-        expected_se = 0.04170695572479218849
-        expected_min_ci = 0.0409030180938254675
-        expected_max_ci = 0.2044003615251611394
-        expected_z = 2.940796988857387273
-        expected_p = 3.27369009811673273e-03
+        expected_coef = 0.12265168980975952
+        expected_se = 0.026109971717277716
+        expected_min_ci = 0.07147708560653579
+        expected_max_ci = 0.1738262940129832
+        expected_z = 4.6975037406339810
+        expected_p = 2.633603631840842e-06
+        expected_type = "MixedLM"
 
         # The observed results for the first marker
         observed = imputed_stats.fit_mixedlm(
-            data=data[columns_to_keep],
+            data=data,
             formula=formula,
-            groups=data.index.values,
-            result_col="snp1",
+            groups=data.index,
+            result_col="_GenoD",
             use_ml=True,
+            random_effects=self.random_effects_ml,
+            mixedlm_p=1e-4,
+            interaction=False,
         )
-        self.assertEqual(6, len(observed))
+        self.assertEqual(7, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
-            observed_z, observed_p, = observed
+            observed_z, observed_p, observed_type = observed
 
         # Comparing the results
-        self.assertAlmostEqual(expected_coef, observed_coef, places=9)
-        self.assertAlmostEqual(expected_se, observed_se, places=10)
-        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=5)
-        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=5)
-        self.assertAlmostEqual(expected_z, observed_z, places=8)
+        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_se, observed_se, places=7)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=7)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=7)
+        self.assertAlmostEqual(expected_z, observed_z, places=5)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=8)
+                               places=4)
+        self.assertEqual(expected_type, observed_type)
 
+    def test_fit_mixedlm_snp2_use_ml(self):
+        """Tests mixedlm using ML on second SNP."""
         # The formula for the second marker
-        formula = "y ~ snp2 + C1 + C2 + C3 + age + C(gender)"
-        columns_to_keep = ["y", "snp2", "C1", "C2", "C3", "age", "gender"]
+        formula = "y ~ snp2 + C1 + C2 + C3 + age + C(gender) + C(visit)"
+
+        # Removing unwanted columns and renaming the first SNP
+        data = self.data.drop(["snp1", "snp3"], axis=1).dropna()
+        data = data.rename(columns={"snp2": "_GenoD"})
 
         # The expected results for the second marker (according to R)
-        expected_coef = 0.00794555960661661419
-        expected_se = 0.03045972038661254669
-        expected_min_ci = -0.0517577114465304008
-        expected_max_ci = 0.0676488306603055811
-        expected_z = 0.260854646916220345
-        expected_p = 7.94204600712016484e-01
+        expected_coef = "NA"
+        expected_se = "NA"
+        expected_min_ci = "NA"
+        expected_max_ci = "NA"
+        expected_z = "NA"
+        expected_p = 0.6780830649776319
+        expected_type = "TS-MixedLM"
 
         # The observed results for the first marker
         observed = imputed_stats.fit_mixedlm(
-            data=data[columns_to_keep],
+            data=data,
             formula=formula,
-            groups=data.index.values,
-            result_col="snp2",
+            groups=data.index,
+            result_col="_GenoD",
             use_ml=True,
+            random_effects=self.random_effects_ml,
+            mixedlm_p=1e-4,
+            interaction=False,
         )
-        self.assertEqual(6, len(observed))
+        self.assertEqual(7, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
-            observed_z, observed_p, = observed
+            observed_z, observed_p, observed_type = observed
 
         # Comparing the results
-        self.assertAlmostEqual(expected_coef, observed_coef, places=9)
-        self.assertAlmostEqual(expected_se, observed_se, places=10)
-        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=5)
-        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=5)
+        self.assertEqual(expected_coef, observed_coef)
+        self.assertEqual(expected_se, observed_se)
+        self.assertEqual(expected_min_ci, observed_min_ci)
+        self.assertEqual(expected_max_ci, observed_max_ci)
+        self.assertEqual(expected_z, observed_z)
+        self.assertAlmostEqual(expected_p, observed_p, places=9)
+        self.assertEqual(expected_type, observed_type)
+
+    def test_fit_mixedlm_snp3_use_ml(self):
+        """Tests mixedlm using ML on third SNP."""
+        # The formula for the third (and last) marker
+        formula = "y ~ _GenoD + C1 + C2 + C3 + age + C(gender) + C(visit)"
+
+        # Removing unwanted columns and renaming the first SNP
+        data = self.data.drop(["snp1", "snp2"], axis=1).dropna()
+        data = data.rename(columns={"snp3": "_GenoD"})
+
+        # The expected results for the second marker (according to R)
+        expected_coef = -0.15449981039314364
+        expected_se = 0.02867546407987996
+        expected_min_ci = -0.21070268722968036
+        expected_max_ci = -0.09829693355660693
+        expected_z = -5.3878748034473105
+        expected_p = 7.129568602159964e-08
+        expected_type = "MixedLM"
+
+        # The observed results for the first marker
+        observed = imputed_stats.fit_mixedlm(
+            data=data,
+            formula=formula,
+            groups=data.index,
+            result_col="_GenoD",
+            use_ml=True,
+            random_effects=self.random_effects_ml,
+            mixedlm_p=1e-4,
+            interaction=False,
+        )
+        self.assertEqual(7, len(observed))
+        observed_coef, observed_se, observed_min_ci, observed_max_ci, \
+            observed_z, observed_p, observed_type = observed
+
+        # Comparing the results
+        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_se, observed_se, places=9)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=9)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=9)
         self.assertAlmostEqual(expected_z, observed_z, places=7)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=8)
-
-        # The formula for the third (and last) marker
-        formula = "y ~ snp3 + C1 + C2 + C3 + age + C(gender)"
-        columns_to_keep = ["y", "snp3", "C1", "C2", "C3", "age", "gender"]
-
-        # The expected results for the second marker (according to R)
-        expected_coef = -0.1545449155645165495
-        expected_se = 0.0458337058714313184
-        expected_min_ci = -0.2443823182154618856
-        expected_max_ci = -0.0647075129147563211
-        expected_z = -3.371861660020081253
-        expected_p = 7.46619406491788595e-04
-
-        # The observed results for the first marker
-        observed = imputed_stats.fit_mixedlm(
-            data=data[columns_to_keep],
-            formula=formula,
-            groups=data.index.values,
-            result_col="snp3",
-            use_ml=True,
-        )
-        self.assertEqual(6, len(observed))
-        observed_coef, observed_se, observed_min_ci, observed_max_ci, \
-            observed_z, observed_p, = observed
-
-        # Comparing the results
-        self.assertAlmostEqual(expected_coef, observed_coef, places=9)
-        self.assertAlmostEqual(expected_se, observed_se, places=10)
-        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=5)
-        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=5)
-        self.assertAlmostEqual(expected_z, observed_z, places=8)
-        self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=8)
-
-        # Asking for an invalid column should raise a KeyError
-        with self.assertRaises(KeyError):
-            imputed_stats.fit_mixedlm(
-                data=data[columns_to_keep].dropna(axis=0),
-                formula=formula,
-                groups=data.index.values,
-                result_col="unknown",
-                use_ml=False,
-            )
-
-        with self.assertRaises(patsy.PatsyError):
-            imputed_stats.fit_mixedlm(
-                data=data[columns_to_keep].dropna(axis=0),
-                formula=formula + " + unknown",
-                groups=data.index.values,
-                result_col="snp4",
-                use_ml=False,
-            )
+                               places=7)
+        self.assertEqual(expected_type, observed_type)
 
     def test_fit_mixedlm_interaction(self):
         """Tests the 'fit_mixedlm' function with interaction."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_mixedlm.txt.bz2",
-        )
-
-        # This dataset contains 3 markers + 5 covariables
-        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
-        data = data[data.gender != 0].set_index("SampleID").dropna(axis=0)
-
         # The formula for the first marker
-        formula = "y ~ snp1 + C1 + C2 + C3 + age + C(gender) + snp1*C(gender)"
-        columns_to_keep = ["y", "snp1", "C1", "C2", "C3", "age", "gender"]
+        formula = ("y ~ _GenoD + C1 + C2 + C3 + age + C(gender) + C(visit) + "
+                   "_GenoD*C(visit)")
+
+        # Removing unwanted columns and renaming the first SNP
+        data = self.data.drop(["snp2", "snp3"], axis=1).dropna()
+        data = data.rename(columns={"snp1": "_GenoD"})
 
         # The expected results for the first marker (according to R)
-        expected_coef = -0.04619683922092099
-        expected_se = 0.08342819867401344
-        expected_min_ci = -0.20968434904114919
-        expected_max_ci = 0.11729067060054199
-        expected_z = -0.5537317112818183
-        expected_p = 0.5797624694538319190
+        expected_coef = 0.05156182795999706
+        expected_se = 0.06049308027425798
+        expected_min_ci = -0.06700243069143892
+        expected_max_ci = 0.1701260866114330
+        expected_z = 0.8523591082852910
+        expected_p = 3.940148087160935e-01
+        expected_type = "MixedLM"
 
         # The observed results
         observed = imputed_stats.fit_mixedlm(
-            data=data[columns_to_keep],
+            data=data,
             formula=formula,
-            groups=data.index.values,
-            result_col="snp1:C(gender)[T.2]",
+            groups=data.index,
+            result_col="_GenoD:C(visit)[T.3]",
             use_ml=False,
+            random_effects=None,
+            mixedlm_p=None,
+            interaction=True,
         )
-        self.assertEqual(6, len(observed))
+        self.assertEqual(7, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
-            observed_z, observed_p = observed
+            observed_z, observed_p, observed_type = observed
 
         # Comparing the results
         self.assertAlmostEqual(expected_coef, observed_coef, places=10)
-        self.assertAlmostEqual(expected_se, observed_se, places=10)
-        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
-        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
-        self.assertAlmostEqual(expected_z, observed_z, places=9)
+        self.assertAlmostEqual(expected_se, observed_se, places=8)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=8)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=8)
+        self.assertAlmostEqual(expected_z, observed_z, places=7)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=9)
+                               places=7)
+        self.assertEqual(expected_type, observed_type)
 
     def test_fit_mixedlm_interaction_use_ml(self):
         """Tests the 'fit_mixedlm' function with interaction (using ML)."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_mixedlm.txt.bz2",
-        )
-
-        # This dataset contains 3 markers + 5 covariables
-        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
-        data = data[data.gender != 0].set_index("SampleID").dropna(axis=0)
-
         # The formula for the first marker
-        formula = "y ~ snp1 + C1 + C2 + C3 + age + C(gender) + snp1*C(gender)"
-        columns_to_keep = ["y", "snp1", "C1", "C2", "C3", "age", "gender"]
+        formula = ("y ~ _GenoD + C1 + C2 + C3 + age + C(gender) + C(visit) + "
+                   "_GenoD*C(visit)")
+
+        # Removing unwanted columns and renaming the first SNP
+        data = self.data.drop(["snp2", "snp3"], axis=1).dropna()
+        data = data.rename(columns={"snp1": "_GenoD"})
 
         # The expected results for the first marker (according to R)
-        expected_coef = -0.0461968392209209863
-        expected_se = 0.08340889441074257615
-        expected_min_ci = -0.2096843490411491873
-        expected_max_ci = 0.1172906706005419908
-        expected_z = -0.553859867671032235
-        expected_p = 5.79674752511348590e-01
+        expected_coef = 0.05156182795997794
+        expected_se = 0.060482583773306557
+        expected_min_ci = -0.06698185792762956
+        expected_max_ci = 0.1701055138475855
+        expected_z = 0.8525070316644490
+        expected_p = 3.939327379391016e-01
+        expected_type = "MixedLM"
 
         # The observed results
         observed = imputed_stats.fit_mixedlm(
-            data=data[columns_to_keep],
+            data=data,
             formula=formula,
-            groups=data.index.values,
-            result_col="snp1:C(gender)[T.2]",
+            groups=data.index,
+            result_col="_GenoD:C(visit)[T.3]",
             use_ml=True,
+            random_effects=None,
+            mixedlm_p=None,
+            interaction=True,
         )
-        self.assertEqual(6, len(observed))
+        self.assertEqual(7, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
-            observed_z, observed_p = observed
+            observed_z, observed_p, observed_type = observed
 
         # Comparing the results
         self.assertAlmostEqual(expected_coef, observed_coef, places=10)
         self.assertAlmostEqual(expected_se, observed_se, places=10)
-        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
-        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
-        self.assertAlmostEqual(expected_z, observed_z, places=9)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=9)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=9)
+        self.assertAlmostEqual(expected_z, observed_z, places=8)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=9)
+        self.assertEqual(expected_type, observed_type)
 
     def test_full_fit_mixedlm(self):
         """Tests the full pipeline for mixed effect model."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_mixedlm.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="mixedlm",
             pheno_name="y",
@@ -2587,11 +2646,11 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         observed = pd.read_csv(o_prefix + ".mixedlm.dosage", sep="\t")
 
         # Checking the shape
-        self.assertEqual((3, 13), observed.shape)
+        self.assertEqual((3, 14), observed.shape)
 
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
-                          "coef", "se", "lower", "upper", "z", "p"],
+                          "coef", "se", "lower", "upper", "z", "p", "type"],
                          list(observed.columns))
 
         # Chromosomes
@@ -2621,54 +2680,44 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             self.assertEqual(expected_n, observed_n)
 
         # The coefficients
-        expected = [0.12265168980987724, 0.007931606465841023,
-                    -0.15449981039313940]
-        for expected_coef, observed_coef in zip(expected, observed.coef):
-            self.assertAlmostEqual(expected_coef, observed_coef, places=9)
+        expected = np.array([0.12265168980977093, np.nan,
+                             -0.15449981039313726])
+        np.testing.assert_array_almost_equal(expected, observed.coef, 10)
 
         # The standard error
-        expected = [0.041715401481444134, 0.030464140147980882,
-                    0.04583966116454336]
-        zipped = zip(expected, observed.se)
-        for expected_se, observed_se in zipped:
-            self.assertAlmostEqual(expected_se, observed_se, places=10)
+        expected = np.array([0.026125844399462177, np.nan,
+                             0.028692891145471563])
+        np.testing.assert_array_almost_equal(expected, observed.se, 8)
 
         # The lower CI
-        expected = [0.04090301809382547, -0.05176823980480887,
-                    -0.24433069717817782]
-        for expected_min_ci, observed_min_ci in zip(expected, observed.lower):
-            self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
+        expected = np.array([0.07144597572112760, np.nan,
+                             -0.21073684365058973])
+        np.testing.assert_array_almost_equal(expected, observed.lower, 8)
 
         # The upper CI
-        expected = [0.20440036152516114, 0.06763145273676965,
-                    -0.06466892360820460]
-        for expected_max_ci, observed_max_ci in zip(expected, observed.upper):
-            self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
+        expected = np.array([0.1738574038984143, np.nan, -0.09826277713568479])
+        np.testing.assert_array_almost_equal(expected, observed.upper, 8)
 
         # The Z statistics
-        expected = [2.9402015911182162, 0.2603587833863980,
-                    -3.3704396251655511]
-        for expected_z, observed_z in zip(expected, observed.z):
-            self.assertAlmostEqual(expected_z, observed_z, places=8)
+        expected = np.array([4.6946497856465763, np.nan, -5.3846023954097459])
+        np.testing.assert_array_almost_equal(expected, observed.z, 6)
 
         # The p values
-        expected = [3.279987709238652e-03, 7.945870329397586e-01,
-                    7.504834930376347e-04]
-        for expected_p, observed_p in zip(expected, observed.p):
-            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                                   places=8)
+        expected = np.array([2.670638639346024e-06, 0.6780830649776308,
+                             7.260496248662207e-08])
+        np.testing.assert_array_almost_equal(
+            np.log10(expected), np.log10(observed.p), 6,
+        )
+
+        # The analysis type
+        expected = np.array(["MixedLM", "TS-MixedLM", "MixedLM"])
+        np.testing.assert_array_equal(expected, observed.type)
 
     def test_full_fit_mixedlm_use_ml(self):
         """Tests the full pipeline for mixed effect model (using ML)."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_mixedlm.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="mixedlm",
             pheno_name="y",
@@ -2689,11 +2738,11 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         observed = pd.read_csv(o_prefix + ".mixedlm.dosage", sep="\t")
 
         # Checking the shape
-        self.assertEqual((3, 13), observed.shape)
+        self.assertEqual((3, 14), observed.shape)
 
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
-                          "coef", "se", "lower", "upper", "z", "p"],
+                          "coef", "se", "lower", "upper", "z", "p", "type"],
                          list(observed.columns))
 
         # Chromosomes
@@ -2723,62 +2772,46 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             self.assertEqual(expected_n, observed_n)
 
         # The coefficients
-        expected = [0.1226516898098772429, 0.00793160646584102277,
-                    -0.1544998103931393973]
-        for expected_coef, observed_coef in zip(expected, observed.coef):
-            self.assertAlmostEqual(expected_coef, observed_coef, places=9)
+        expected = np.array([0.12265168980975952, np.nan,
+                             -0.15449981039314364])
+        np.testing.assert_array_almost_equal(expected, observed.coef, 10)
 
         # The standard error
-        expected = [0.04170695572479218849, 0.03045797340709452752,
-                    0.04583038201498106784]
-        zipped = zip(expected, observed.se)
-        for expected_se, observed_se in zipped:
-            self.assertAlmostEqual(expected_se, observed_se, places=10)
+        expected = np.array([0.026109971717277716, np.nan,
+                             0.02867546407987996])
+        np.testing.assert_array_almost_equal(expected, observed.se, 9)
 
         # The lower CI
-        expected = [0.0409030180938254675, -0.0517682398048088729,
-                    -0.2443306971781778192]
-        places = [4, 5, 5]
-        zipped = zip(expected, observed.lower, places)
-        for expected_min_ci, observed_min_ci, place in zipped:
-            self.assertAlmostEqual(expected_min_ci, observed_min_ci,
-                                   places=place)
+        expected = np.array([0.07147708560653579, np.nan,
+                             -0.21070268722968036])
+        np.testing.assert_array_almost_equal(expected, observed.lower, 8)
 
         # The upper CI
-        expected = [0.2044003615251611394, 0.0676314527367696539,
-                    -0.0646689236082046010]
-        places = [4, 5, 5]
-        zipped = zip(expected, observed.upper, places)
-        for expected_max_ci, observed_max_ci, place in zipped:
-            self.assertAlmostEqual(expected_max_ci, observed_max_ci,
-                                   places=place)
+        expected = np.array([0.1738262940129832, np.nan, -0.09829693355660693])
+        np.testing.assert_array_almost_equal(expected, observed.upper, 8)
 
         # The Z statistics
-        expected = [2.940796988857387273, 0.260411497502769707,
-                    -3.371122028671643900]
-        for expected_z, observed_z in zip(expected, observed.z):
-            self.assertAlmostEqual(expected_z, observed_z, places=8)
+        expected = np.array([4.6975037406339810, np.nan, -5.3878748034473105])
+        np.testing.assert_array_almost_equal(expected, observed.z, 6)
 
         # The p values
-        expected = [3.27369009811673273e-03, 7.94546375098304614e-01,
-                    7.48626890377357412e-04]
-        for expected_p, observed_p in zip(expected, observed.p):
-            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                                   places=8)
+        expected = np.array([2.633603631840842e-06, 0.6780830649776319,
+                             7.129568602159964e-08])
+        np.testing.assert_array_almost_equal(
+            np.log10(expected), np.log10(observed.p), 6,
+        )
+
+        # The type
+        expected = np.array(["MixedLM", "TS-MixedLM", "MixedLM"])
+        np.testing.assert_array_equal(expected, observed.type)
 
     @unittest.skipIf(platform.system() == "Darwin",
                      "multiprocessing not supported with Mac OS")
     def test_full_fit_mixedlm_multiprocess(self):
         """Tests the full pipeline, mixed linear model with >1 processes."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_mixedlm.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="mixedlm",
             pheno_name="y",
@@ -2799,11 +2832,11 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         observed = pd.read_csv(o_prefix + ".mixedlm.dosage", sep="\t")
 
         # Checking the shape
-        self.assertEqual((3, 13), observed.shape)
+        self.assertEqual((3, 14), observed.shape)
 
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
-                          "coef", "se", "lower", "upper", "z", "p"],
+                          "coef", "se", "lower", "upper", "z", "p", "type"],
                          list(observed.columns))
 
         # Chromosomes
@@ -2833,56 +2866,46 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             self.assertEqual(expected_n, observed_n)
 
         # The coefficients
-        expected = [0.12265168980987724, 0.007931606465841023,
-                    -0.15449981039313940]
-        for expected_coef, observed_coef in zip(expected, observed.coef):
-            self.assertAlmostEqual(expected_coef, observed_coef, places=9)
+        expected = np.array([0.12265168980977093, np.nan,
+                             -0.15449981039313726])
+        np.testing.assert_array_almost_equal(expected, observed.coef, 10)
 
         # The standard error
-        expected = [0.041715401481444134, 0.030464140147980882,
-                    0.04583966116454336]
-        zipped = zip(expected, observed.se)
-        for expected_se, observed_se in zipped:
-            self.assertAlmostEqual(expected_se, observed_se, places=10)
+        expected = np.array([0.026125844399462177, np.nan,
+                             0.028692891145471563])
+        np.testing.assert_array_almost_equal(expected, observed.se, 8)
 
         # The lower CI
-        expected = [0.04090301809382547, -0.05176823980480887,
-                    -0.24433069717817782]
-        for expected_min_ci, observed_min_ci in zip(expected, observed.lower):
-            self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
+        expected = np.array([0.07144597572112760, np.nan,
+                             -0.21073684365058973])
+        np.testing.assert_array_almost_equal(expected, observed.lower, 8)
 
         # The upper CI
-        expected = [0.20440036152516114, 0.06763145273676965,
-                    -0.06466892360820460]
-        for expected_max_ci, observed_max_ci in zip(expected, observed.upper):
-            self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
+        expected = np.array([0.1738574038984143, np.nan, -0.09826277713568479])
+        np.testing.assert_array_almost_equal(expected, observed.upper, 8)
 
         # The Z statistics
-        expected = [2.9402015911182162, 0.2603587833863980,
-                    -3.3704396251655511]
-        for expected_z, observed_z in zip(expected, observed.z):
-            self.assertAlmostEqual(expected_z, observed_z, places=8)
+        expected = np.array([4.6946497856465763, np.nan, -5.3846023954097459])
+        np.testing.assert_array_almost_equal(expected, observed.z, 6)
 
         # The p values
-        expected = [3.279987709238652e-03, 7.945870329397586e-01,
-                    7.504834930376347e-04]
-        for expected_p, observed_p in zip(expected, observed.p):
-            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                                   places=8)
+        expected = np.array([2.670638639346024e-06, 0.6780830649776308,
+                             7.260496248662207e-08])
+        np.testing.assert_array_almost_equal(
+            np.log10(expected), np.log10(observed.p), 6,
+        )
+
+        # The type
+        expected = np.array(["MixedLM", "TS-MixedLM", "MixedLM"])
+        np.testing.assert_array_equal(expected, observed.type)
 
     @unittest.skipIf(platform.system() == "Darwin",
                      "multiprocessing not supported with Mac OS")
     def test_full_fit_mixedlm_multiprocess_use_ml(self):
         """Tests the full pipeline, mixed linear with >1 processes (ML)."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_mixedlm.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="mixedlm",
             pheno_name="y",
@@ -2904,11 +2927,11 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         observed = pd.read_csv(o_prefix + ".mixedlm.dosage", sep="\t")
 
         # Checking the shape
-        self.assertEqual((3, 13), observed.shape)
+        self.assertEqual((3, 14), observed.shape)
 
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
-                          "coef", "se", "lower", "upper", "z", "p"],
+                          "coef", "se", "lower", "upper", "z", "p", "type"],
                          list(observed.columns))
 
         # Chromosomes
@@ -2938,65 +2961,49 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             self.assertEqual(expected_n, observed_n)
 
         # The coefficients
-        expected = [0.1226516898098772429, 0.00793160646584102277,
-                    -0.1544998103931393973]
-        for expected_coef, observed_coef in zip(expected, observed.coef):
-            self.assertAlmostEqual(expected_coef, observed_coef, places=9)
+        expected = np.array([0.12265168980975952, np.nan,
+                             -0.15449981039314364])
+        np.testing.assert_array_almost_equal(expected, observed.coef, 10)
 
         # The standard error
-        expected = [0.04170695572479218849, 0.03045797340709452752,
-                    0.04583038201498106784]
-        zipped = zip(expected, observed.se)
-        for expected_se, observed_se in zipped:
-            self.assertAlmostEqual(expected_se, observed_se, places=10)
+        expected = np.array([0.026109971717277716, np.nan,
+                             0.02867546407987996])
+        np.testing.assert_array_almost_equal(expected, observed.se, 9)
 
         # The lower CI
-        expected = [0.0409030180938254675, -0.0517682398048088729,
-                    -0.2443306971781778192]
-        places = [4, 5, 5]
-        zipped = zip(expected, observed.lower, places)
-        for expected_min_ci, observed_min_ci, place in zipped:
-            self.assertAlmostEqual(expected_min_ci, observed_min_ci,
-                                   places=place)
+        expected = np.array([0.07147708560653579, np.nan,
+                             -0.21070268722968036])
+        np.testing.assert_array_almost_equal(expected, observed.lower, 8)
 
         # The upper CI
-        expected = [0.2044003615251611394, 0.0676314527367696539,
-                    -0.0646689236082046010]
-        places = [4, 5, 5]
-        zipped = zip(expected, observed.upper, places)
-        for expected_max_ci, observed_max_ci, place in zipped:
-            self.assertAlmostEqual(expected_max_ci, observed_max_ci,
-                                   places=place)
+        expected = np.array([0.1738262940129832, np.nan, -0.09829693355660693])
+        np.testing.assert_array_almost_equal(expected, observed.upper, 8)
 
         # The Z statistics
-        expected = [2.940796988857387273, 0.260411497502769707,
-                    -3.371122028671643900]
-        for expected_z, observed_z in zip(expected, observed.z):
-            self.assertAlmostEqual(expected_z, observed_z, places=8)
+        expected = np.array([4.6975037406339810, np.nan, -5.3878748034473105])
+        np.testing.assert_array_almost_equal(expected, observed.z, 6)
 
         # The p values
-        expected = [3.27369009811673273e-03, 7.94546375098304614e-01,
-                    7.48626890377357412e-04]
-        for expected_p, observed_p in zip(expected, observed.p):
-            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                                   places=8)
+        expected = np.array([2.633603631840842e-06, 0.6780830649776319,
+                             7.129568602159964e-08])
+        np.testing.assert_array_almost_equal(
+            np.log10(expected), np.log10(observed.p), 6,
+        )
+
+        # The type
+        expected = np.array(["MixedLM", "TS-MixedLM", "MixedLM"])
+        np.testing.assert_array_equal(expected, observed.type)
 
     def test_full_fit_mixedlm_interaction(self):
         """Tests the full pipeline for mixed linear model with interaction."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_mixedlm.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="mixedlm",
             pheno_name="y",
             sample_col="SampleID",
-            interaction="gender",
+            interaction="visit",
         )
 
         # Executing the tool
@@ -3012,11 +3019,11 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         observed = pd.read_csv(o_prefix + ".mixedlm.dosage", sep="\t")
 
         # Checking the shape
-        self.assertEqual((3, 13), observed.shape)
+        self.assertEqual((3, 14), observed.shape)
 
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
-                          "coef", "se", "lower", "upper", "z", "p"],
+                          "coef", "se", "lower", "upper", "z", "p", "type"],
                          list(observed.columns))
 
         # Chromosomes
@@ -3046,64 +3053,51 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             self.assertEqual(expected_n, observed_n)
 
         # The coefficients
-        expected = [-0.04619683922092099, 0.011409877542661442,
-                    -0.003218416854476458]
-        places = [10, 9, 10]
-        zipped = zip(expected, observed.coef, places)
-        for expected_coef, observed_coef, place in zipped:
-            self.assertAlmostEqual(expected_coef, observed_coef, places=place)
+        expected = np.array([0.05156182795999706, 0.014028504378343923,
+                             -0.101164199650016218])
+        np.testing.assert_array_almost_equal(expected, observed.coef, 10)
 
         # The standard error
-        expected = [0.08342819867401344, 0.060927215816902323,
-                    0.091755870420978478]
-        for expected_se, observed_se in zip(expected, observed.se):
-            self.assertAlmostEqual(expected_se, observed_se, places=10)
+        expected = np.array([0.06049308027425798, 0.044179901027834402,
+                             0.066498803156555431])
+        np.testing.assert_array_almost_equal(expected, observed.se, 9)
 
         # The lower CI
-        expected = [-0.20968434904114919, -0.10798427523465945,
-                    -0.18302499859617510]
-        for expected_min_ci, observed_min_ci in zip(expected, observed.lower):
-            self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
+        expected = np.array([-0.06700243069143892, -0.07256251047675560,
+                             -0.23149945885188331])
+        np.testing.assert_array_almost_equal(expected, observed.lower, 8)
 
         # The upper CI
-        expected = [0.11729067060054199, 0.13080403032042959,
-                    0.17658816488845774]
-        for expected_max_ci, observed_max_ci in zip(expected, observed.upper):
-            self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
+        expected = np.array([0.1701260866114330, 0.10061951923344345,
+                             0.02917105955185087])
+        np.testing.assert_array_almost_equal(expected, observed.upper, 8)
 
         # The Z statistics
-        expected = [-0.5537317112818183, 0.18727062101360839,
-                    -0.03507586860339586]
-        places = [8, 8, 9]
-        zipped = zip(expected, observed.z, places)
-        for expected_z, observed_z, place in zipped:
-            self.assertAlmostEqual(expected_z, observed_z, places=place)
+        expected = np.array([0.8523591082852910, 0.3175313672501355,
+                             -1.5212935398528820])
+        np.testing.assert_array_almost_equal(expected, observed.z, 7)
 
         # The p values
-        expected = [0.5797624694538319190, 0.851448456503608009,
-                    9.720192436335240e-01]
-        places = [9, 8, 9]
-        zipped = zip(expected, observed.p, places)
-        for expected_p, observed_p, place in zipped:
-            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                                   places=place)
+        expected = np.array([3.940148087160935e-01, 7.508404423440460e-01,
+                             1.281861906944759e-01])
+        np.testing.assert_array_almost_equal(
+            np.log10(expected), np.log10(observed.p), 7,
+        )
+
+        # The analysis type
+        expected = np.array(["MixedLM"] * 3)
+        np.testing.assert_array_equal(expected, observed.type)
 
     def test_full_fit_mixedlm_interaction_use_ml(self):
         """Tests the full pipeline for mixed linear model (interaction, ML)."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_mixedlm.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="mixedlm",
             pheno_name="y",
             sample_col="SampleID",
-            interaction="gender",
+            interaction="visit",
             use_ml=True,
         )
 
@@ -3120,11 +3114,11 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         observed = pd.read_csv(o_prefix + ".mixedlm.dosage", sep="\t")
 
         # Checking the shape
-        self.assertEqual((3, 13), observed.shape)
+        self.assertEqual((3, 14), observed.shape)
 
         # Checking all columns are present
         self.assertEqual(["chr", "pos", "snp", "major", "minor", "maf", "n",
-                          "coef", "se", "lower", "upper", "z", "p"],
+                          "coef", "se", "lower", "upper", "z", "p", "type"],
                          list(observed.columns))
 
         # Chromosomes
@@ -3154,47 +3148,40 @@ class TestImputedStatsMixedLM(unittest.TestCase):
             self.assertEqual(expected_n, observed_n)
 
         # The coefficients
-        expected = [-0.0461968392209209863, 0.01140987754266144238,
-                    -0.00321841685447645789]
-        places = [10, 9, 10]
-        zipped = zip(expected, observed.coef, places)
-        for expected_coef, observed_coef, place in zipped:
-            self.assertAlmostEqual(expected_coef, observed_coef, places=place)
+        expected = np.array([0.05156182795997794, 0.014028504378316063,
+                             -0.101164199649998621])
+        np.testing.assert_array_almost_equal(expected, observed.coef, 10)
 
         # The standard error
-        expected = [0.08340889441074257615, 0.06091312045157387667,
-                    0.09173464292030783507]
-        for expected_se, observed_se in zip(expected, observed.se):
-            self.assertAlmostEqual(expected_se, observed_se, places=10)
+        expected = np.array([0.060482583773306557, 0.044172234988136105,
+                             0.06648726468681930])
+        np.testing.assert_array_almost_equal(expected, observed.se, 9)
 
         # The lower CI
-        expected = [-0.2096843490411491873, -0.1079842752346594492,
-                    -0.1830249985961751036]
-        for expected_min_ci, observed_min_ci in zip(expected, observed.lower):
-            self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
+        expected = np.array([-0.06698185792762956, -0.07254748531507074,
+                             -0.23147684386674616])
+        np.testing.assert_array_almost_equal(expected, observed.lower, 8)
 
         # The upper CI
-        expected = [0.1172906706005419908, 0.1308040303204295873,
-                    0.1765881648884577437]
-        for expected_max_ci, observed_max_ci in zip(expected, observed.upper):
-            self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
+        expected = np.array([0.1701055138475855, 0.10060449407170288,
+                             0.02914844456674892])
+        np.testing.assert_array_almost_equal(expected, observed.upper, 8)
 
         # The Z statistics
-        expected = [-0.553859867671032235, 0.1873139556482306678,
-                    -0.0350839851992706467]
-        places = [8, 8, 9]
-        zipped = zip(expected, observed.z, places)
-        for expected_z, observed_z, place in zipped:
-            self.assertAlmostEqual(expected_z, observed_z, places=place)
+        expected = np.array([0.8525070316644490, 0.3175864744467622,
+                             -1.5215575513073230])
+        np.testing.assert_array_almost_equal(expected, observed.z, 7)
 
         # The p values
-        expected = [5.79674752511348590e-01, 0.85141448161648325410,
-                    9.72012771510516016e-01]
-        places = [9, 8, 9]
-        zipped = zip(expected, observed.p, places)
-        for expected_p, observed_p, place in zipped:
-            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                                   places=place)
+        expected = np.array([3.939327379391016e-01, 7.507986352043505e-01,
+                             1.281199805761517e-01])
+        np.testing.assert_array_almost_equal(
+            np.log10(expected), np.log10(observed.p), 8,
+        )
+
+        # The analysis type
+        expected = np.array(["MixedLM"] * 3)
+        np.testing.assert_array_equal(expected, observed.type)
 
 
 @unittest.skipIf(not imputed_stats.HAS_SKAT, "SKAT is not installed")

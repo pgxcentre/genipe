@@ -77,7 +77,7 @@ _Row = namedtuple("_Row", ("row", "samples", "pheno", "pheno_name", "use_ml",
                            "categorical", "formula", "time_to_event", "event",
                            "inter_c", "is_chrx", "gender_c", "del_g", "scale",
                            "maf_t", "prob_t", "analysis_type",
-                           "number_to_print"))
+                           "number_to_print", "random_effects", "mixedlm_p"))
 
 # The Cox's regression required values
 _COX_REQ_COLS = ["coef", "se(coef)", "lower 0.95", "upper 0.95", "z", "p"]
@@ -767,11 +767,24 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
                   "t" if options.analysis_type == "linear" else "z", "p")
         if options.analysis_type == "linear":
             header = header + ("adj.r-squared", )
+        if options.analysis_type == "mixedlm":
+            header = header + ("type", )
 
         print(*header, sep="\t", file=o_file)
 
         # The sites to process (if multiprocessing)
         sites_to_process = []
+
+        # We need to compute the random effects if it's a MixedLM analysis
+        random_effects = None
+        if options.analysis_type == "mixedlm" and options.interaction is None:
+            random_effects = smf.mixedlm(
+                formula=formula.replace("_GenoD + ", ""),
+                data=phenotypes,
+                groups=phenotypes.index,
+            ).fit(reml=not options.use_ml).random_effects.rename(
+                columns={"Intercept": "RE"},
+            )
 
         # Reading the file
         nb_processed = 0
@@ -802,6 +815,8 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
                 analysis_type=options.analysis_type,
                 number_to_print=len(header),
                 categorical=options.categorical,
+                random_effects=random_effects,
+                mixedlm_p=vars(options).get("p_threshold", None),
             )
 
             # Is there more than one process
@@ -988,6 +1003,9 @@ def process_impute2_site(site_info):
             formula=site_info.formula,
             result_col=result_from_column,
             use_ml=site_info.use_ml,
+            random_effects=site_info.random_effects,
+            mixedlm_p=site_info.mixedlm_p,
+            interaction=site_info.inter_c is not None,
         )
     except LinAlgError as e:
         # Something strange happened...
@@ -1121,7 +1139,8 @@ def fit_logistic(data, formula, result_col, **kwargs):
     )
 
 
-def fit_mixedlm(data, formula, use_ml, groups, result_col, **kwargs):
+def fit_mixedlm(data, formula, use_ml, groups, result_col, random_effects,
+                mixedlm_p, interaction, **kwargs):
     """Fit a linear mixed effects model to the data.
 
     Args:
@@ -1130,16 +1149,49 @@ def fit_mixedlm(data, formula, use_ml, groups, result_col, **kwargs):
         use_ml (bool): whether to use ML instead of REML
         groups (str): the column containing the groups
         result_col (str): the column that will contain the results
+        random_effects (pandas.Series): the random effects
+        mixedlm_p (float): the p-value threshold for which loci will be
+                           computed with the real MixedLM analysis
+        interaction (bool): Whether there is an interaction or not
 
     Returns:
         list: the results from the linear mixed effects model
 
     """
-    return _get_result_from_logistic_mixedlm(
+    # We perform the optimization if there is no interaction
+    if not interaction:
+        # Getting the single copy of each genotypes
+        geno = data.reset_index()[["index", "_GenoD"]]
+        indexes = geno[["index"]].drop_duplicates().index
+        geno = geno.loc[indexes, :]
+
+        # Merging with the random effects
+        t_data = pd.merge(random_effects, geno.set_index("index"), left_index=True,
+                        right_index=True)
+
+        # Approximating the results
+        approximate_r = _get_result_from_linear(
+            smf.ols(formula="RE ~ _GenoD", data=t_data).fit(),
+            result_col="_GenoD",
+        )
+
+        # If the approximated p-value is higher or equal to the threshold, we
+        # return the approximation
+        if approximate_r[5] >= mixedlm_p:
+            result = ["NA"] * (len(approximate_r) - 2)
+            result.append(approximate_r[5])
+            result.append("TS-MixedLM")
+            return result
+
+    # If we get here, it's because the p-value was low enough so we compute the
+    # real statistics
+    result = _get_result_from_logistic_mixedlm(
         smf.mixedlm(formula=formula, data=data,
                     groups=groups).fit(reml=not use_ml),
         result_col=result_col,
     )
+    result.append("MixedLM")
+    return result
 
 
 _fit_map = {
@@ -1354,8 +1406,12 @@ def check_args(args):
                 )
             )
         if args.interaction in args.categorical:
-            logging.warning("{}: interaction term is categorical: the last "
-                            "category will used in the rsults")
+            logging.warning("interaction term is categorical: the last "
+                            "category will be used in the results")
+
+        if args.analysis_type == "mixedlm":
+            logging.warning("when using interaction, mixedlm optimization "
+                            "cannot be performed, analysis will be slow")
 
     return True
 
@@ -1389,86 +1445,60 @@ def parse_args(parser, args=None):
 
     # The parser object
     p_parser.add_argument(
-        "-v",
-        "--version",
-        action="version",
+        "-v", "--version", action="version",
         version="%(prog)s (part of genipe version {})".format(__version__),
     )
     p_parser.add_argument(
-        "--debug",
-        action="store_true",
+        "--debug", action="store_true",
         help="set the logging level to debug",
     )
 
     # The input files
     group = p_parser.add_argument_group("Input Files")
     group.add_argument(
-        "--impute2",
-        type=str,
-        metavar="FILE",
-        required=True,
+        "--impute2", type=str, metavar="FILE", required=True,
         help="The output from IMPUTE2.",
     )
     group.add_argument(
-        "--sample",
-        type=str,
-        metavar="FILE",
-        required=True,
+        "--sample", type=str, metavar="FILE", required=True,
         help="The sample file (the order should be the same as in the IMPUTE2 "
              "files).",
     )
     group.add_argument(
-        "--pheno",
-        type=str,
-        metavar="FILE",
-        required=True,
+        "--pheno", type=str, metavar="FILE", required=True,
         help="The file containing phenotypes and co variables.",
     )
     group.add_argument(
-        "--extract-sites",
-        type=str,
-        metavar="FILE",
+        "--extract-sites", type=str, metavar="FILE",
         help="A list of sites to extract for analysis (optional).",
     )
 
     # The output files
     group = p_parser.add_argument_group("Output Options")
     group.add_argument(
-        "--out",
-        metavar="FILE",
-        default="imputed_stats",
+        "--out", metavar="FILE", default="imputed_stats",
         help="The prefix for the output files. [%(default)s]",
     )
 
     # General options
     group = p_parser.add_argument_group("General Options")
     group.add_argument(
-        "--nb-process",
-        type=int,
-        metavar="INT",
-        default=1,
+        "--nb-process", type=int, metavar="INT", default=1,
         help="The number of process to use. [%(default)d]",
     )
     group.add_argument(
-        "--nb-lines",
-        type=int,
-        metavar="INT",
-        default=1000,
+        "--nb-lines", type=int, metavar="INT", default=1000,
         help="The number of line to read at a time. [%(default)d]",
     )
     group.add_argument(
-        "--chrx",
-        action="store_true",
+        "--chrx", action="store_true",
         help="The analysis is performed for the non pseudo-autosomal region "
              "of the chromosome X (male dosage will be divided by 2 to get "
              "values [0, 0.5] instead of [0, 1]) (males are coded as 1 and "
              "option '--gender-column' should be used).",
     )
     group.add_argument(
-        "--gender-column",
-        type=str,
-        metavar="NAME",
-        default="Gender",
+        "--gender-column", type=str, metavar="NAME", default="Gender",
         help="The name of the gender column (use to exclude samples with "
              "unknown gender (i.e. not 1, male, or 2, female). If gender not "
              "available, use 'None'. [%(default)s]",
@@ -1477,27 +1507,17 @@ def parse_args(parser, args=None):
     # The dosage options
     group = p_parser.add_argument_group("Dosage Options")
     group.add_argument(
-        "--scale",
-        type=int,
-        metavar="INT",
-        default=2,
-        choices=[1, 2],
+        "--scale", type=int, metavar="INT", default=2, choices=[1, 2],
         help="Scale dosage so that values are in [0, n] (possible values are "
              "1 (no scaling) or 2). [%(default)d]",
     )
     group.add_argument(
-        "--prob",
-        type=float,
-        metavar="FLOAT",
-        default=0.9,
+        "--prob", type=float, metavar="FLOAT", default=0.9,
         help="The minimal probability for which a genotype should be "
              "considered. [>=%(default).1f]",
     )
     group.add_argument(
-        "--maf",
-        type=float,
-        metavar="FLOAT",
-        default=0.01,
+        "--maf", type=float, metavar="FLOAT", default=0.01,
         help="Minor allele frequency threshold for which marker will be "
              "skipped. [<%(default).2f]",
     )
@@ -1505,40 +1525,27 @@ def parse_args(parser, args=None):
     # The general phenotype options
     group = p_parser.add_argument_group("Phenotype Options")
     group.add_argument(
-        "--covar",
-        type=str,
-        metavar="NAME",
-        default="",
+        "--covar", type=str, metavar="NAME", default="",
         help="The co variable names (in the phenotype file), separated by "
              "coma.",
     )
     group.add_argument(
-        "--categorical",
-        type=str,
-        metavar="NAME",
-        default="",
+        "--categorical", type=str, metavar="NAME", default="",
         help="The name of the variables that are categorical (note that the "
              "gender is always categorical). The variables are separated by "
              "coma.",
     )
     group.add_argument(
-        "--missing-value",
-        type=str,
-        metavar="NAME",
+        "--missing-value", type=str, metavar="NAME",
         help="The missing value in the phenotype file.",
     )
     group.add_argument(
-        "--sample-column",
-        type=str,
-        metavar="NAME",
-        default="sample_id",
+        "--sample-column", type=str, metavar="NAME", default="sample_id",
         help="The name of the sample ID column (in the phenotype file). "
              "[%(default)s]",
     )
     group.add_argument(
-        "--interaction",
-        type=str,
-        metavar="NAME",
+        "--interaction", type=str, metavar="NAME",
         help="Add an interaction between the genotype and this variable.",
     )
 
@@ -1565,18 +1572,11 @@ def parse_args(parser, args=None):
     group = cox_parser.add_argument_group("Cox's Proportional Hazard Model "
                                           "Options")
     group.add_argument(
-        "--time-to-event",
-        type=str,
-        metavar="NAME",
-        required=True,
-        dest="tte",
+        "--time-to-event", type=str, metavar="NAME", required=True, dest="tte",
         help="The time to event variable (in the pheno file).",
     )
     group.add_argument(
-        "--event",
-        type=str,
-        metavar="NAME",
-        required=True,
+        "--event", type=str, metavar="NAME", required=True,
         help="The event variable (1 if observed, 0 if not observed)",
     )
 
@@ -1593,10 +1593,7 @@ def parse_args(parser, args=None):
     # The phenotype options for linear regression
     group = lin_parser.add_argument_group("Linear Regression Options")
     group.add_argument(
-        "--pheno-name",
-        type=str,
-        metavar="NAME",
-        required=True,
+        "--pheno-name", type=str, metavar="NAME", required=True,
         help="The phenotype.",
     )
 
@@ -1613,10 +1610,7 @@ def parse_args(parser, args=None):
     # The phenotype options for logistic regression
     group = logit_parser.add_argument_group("Logistic Regression Options")
     group.add_argument(
-        "--pheno-name",
-        type=str,
-        metavar="NAME",
-        required=True,
+        "--pheno-name", type=str, metavar="NAME", required=True,
         help="The phenotype.",
     )
 
@@ -1625,27 +1619,30 @@ def parse_args(parser, args=None):
         "mixedlm",
         help="Linear mixed effect model (random intercept).",
         description="Performs a linear mixed effects regression on imputed "
-                    "data using a random intercept for each group. This "
-                    "script is part of the 'genipe' package, version "
-                    "{}).".format(__version__),
+                    "data using a random intercept for each group. A p-value "
+                    "approximation is performed so that computation time is "
+                    "acceptable for imputed data. This script is part of the "
+                    "'genipe' package, version {}).".format(__version__),
         parents=[p_parser],
     )
 
     # The phenotype options for the mixed effect model
     group = mixedlm_parser.add_argument_group("Linear Mixed Effects Options")
     group.add_argument(
-        "--pheno-name",
-        type=str,
-        metavar="NAME",
-        required=True,
+        "--pheno-name", type=str, metavar="NAME", required=True,
         help="The phenotype.",
     )
 
     group.add_argument(
-        "--use-ml",
-        action="store_true",
+        "--use-ml", action="store_true",
         help="Fit the standard likelihood using maximum likelihood (ML) "
              "estimation instead of REML (default is REML).",
+    )
+
+    group.add_argument(
+        "--p-threshold", type=float, metavar="FLOAT", default=1e-4,
+        help="The p-value threshold for which the real MixedLM analysis will "
+             "be performed. [<%(default).4f]",
     )
 
     # The SKAT parser.
@@ -1663,36 +1660,27 @@ def parse_args(parser, args=None):
 
     # The SNP set file.
     group.add_argument(
-        "--snp-sets",
-        type=str,
-        metavar="FILE",
-        required=True,
+        "--snp-sets", type=str, metavar="FILE", required=True,
         help="A file indicating a snp_set and an optional weight for every "
              "variant."
     )
 
     # The outcome type: discrete or continuous.
     group.add_argument(
-        "--outcome-type",
-        type=str,
-        choices=("continuous", "discrete"),
+        "--outcome-type", type=str, choices=("continuous", "discrete"),
         required=True,
         help="The variable type for the outcome. This will be passed to SKAT."
     )
 
     # SKAT-O flag.
     group.add_argument(
-        "--skat-o",
-        action="store_true",
+        "--skat-o", action="store_true",
         help="By default, the regular SKAT is used. Setting this flag will "
              "use the SKAT-O algorithm instead."
     )
 
     group.add_argument(
-        "--pheno-name",
-        type=str,
-        metavar="NAME",
-        required=True,
+        "--pheno-name", type=str, metavar="NAME", required=True,
         help="The phenotype.",
     )
 
