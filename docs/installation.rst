@@ -14,7 +14,7 @@ following modules:
 
 * ``numpy`` version 1.8.2 or latest
 * ``jinja2`` version 2.7.3 or latest
-* ``pandas`` version 0.15.2 or latest
+* ``pandas`` version 0.17.0 or latest
 * ``setuptools`` version 12.0.5 or latest
 
 The following modules are optional (required for statistical analysis and data
@@ -30,7 +30,7 @@ management):
 
 .. note::
 
-   Only Python versions 3.4 and higher are supported for now.
+   Only Python version 3.4 and higher are supported.
 
 
 .. _install-virt:
@@ -84,7 +84,7 @@ Using Miniconda
 
 The following commands should successfully download and install Miniconda,
 create and activate a new python virtual environment. This installation method
-doesn't required a previous Python 3 installation.
+doesn't require a previous Python 3 installation.
 
 .. code-block:: bash
 
@@ -108,7 +108,7 @@ following command:
 .. note::
 
    It is possible to add the channel to conda's configuration (so that you
-   won't need to use the ``-c`` option for installing or updatign). To do so,
+   won't need to use the ``-c`` option for installing or updating). To do so,
    perform the following command:
 
    .. code-block:: bash
@@ -170,8 +170,10 @@ following command to activate it.
 Testing the installation
 -------------------------
 
-To test the installation, make sure that the virtual environment is activated.
-Then, launch Python and use the following python commands:
+The :py:mod:`genipe` module has been tested with the most recent versions of
+the requirements. To test the installation, make sure that the virtual
+environment is activated. Then, launch Python and use the following python
+commands:
 
 .. code-block:: python
 
@@ -185,7 +187,7 @@ Updating the package
 ---------------------
 
 If there is a new :py:mod:`genipe` release, perform one of the following
-command (depending of the installation method). Don't forget to first activate
+commands (depending of the installation method). Don't forget to first activate
 the python virtual environment.
 
 

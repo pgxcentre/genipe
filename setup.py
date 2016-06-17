@@ -79,7 +79,7 @@ def setup_package():
             ],
         },
         install_requires=["numpy >= 1.9.2", "Jinja2 >= 2.7.3",
-                          "pandas >= 0.15.2", "setuptools >= 12.0.5"],
+                          "pandas >= 0.17.0", "setuptools >= 12.0.5"],
         packages=["genipe", "genipe.pipeline", "genipe.task", "genipe.db",
                   "genipe.tools", "genipe.formats", "genipe.reporting",
                   "genipe.config", "genipe.tests"],

@@ -46,7 +46,7 @@ installation with the following modules:
 
 * `numpy` version 1.8.2 and latest
 * `Jinja2` version 2.7.3 and latest
-* `pandas` version 0.15.2 and latest
+* `pandas` version 0.17.0 and latest
 * `setuptools` version 12.0.5 and latest
 
 The tool requires the binaries for
