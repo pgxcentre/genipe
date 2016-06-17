@@ -1565,7 +1565,7 @@ def parse_args(parser, args=None):
         help="Cox's proportional hazard model (survival regression).",
         description="Performs a survival regression on imputed data using "
                     "Cox's proportional hazard model. This script is part of "
-                    "the 'genipe' package, version {}).".format(__version__),
+                    "the 'genipe' package, version {}.".format(__version__),
         parents=[p_parser],
     )
 
@@ -1586,7 +1586,7 @@ def parse_args(parser, args=None):
         help="Linear regression (ordinary least squares).",
         description="Performs a linear regression (ordinary least squares) on "
                     "imputed data. This script is part of the 'genipe' "
-                    "package, version {}).".format(__version__),
+                    "package, version {}.".format(__version__),
         parents=[p_parser],
     )
 
@@ -1603,7 +1603,7 @@ def parse_args(parser, args=None):
         help="Logistic regression (GLM with binomial distribution).",
         description="Performs a logistic regression on imputed data using a "
                     "GLM with a binomial distribution. This script is part of "
-                    "the 'genipe' package, version {}).".format(__version__),
+                    "the 'genipe' package, version {}.".format(__version__),
         parents=[p_parser],
     )
 
@@ -1622,7 +1622,7 @@ def parse_args(parser, args=None):
                     "data using a random intercept for each group. A p-value "
                     "approximation is performed so that computation time is "
                     "acceptable for imputed data. This script is part of the "
-                    "'genipe' package, version {}).".format(__version__),
+                    "'genipe' package, version {}.".format(__version__),
         parents=[p_parser],
     )
 
@@ -1651,7 +1651,7 @@ def parse_args(parser, args=None):
         help="SKAT analysis.",
         description="Uses the SKAT R package to analyze user defined gene "
                     "sets. This script is part of the 'genipe' package, "
-                    "version {}).".format(__version__),
+                    "version {}.".format(__version__),
         parents=[p_parser],
     )
 
