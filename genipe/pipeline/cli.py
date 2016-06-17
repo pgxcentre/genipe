@@ -1296,19 +1296,14 @@ def find_exclusion_before_phasing(prefix, db_name, options):
     """
     # Task information
     task_id = "find_exclusions"
-    run_task = False
+    already_done = False
     summary_fn = os.path.join(options.out_dir, "exclusion_summary.txt")
 
     # The exclusion statistics
     exclusion_statistics = {}
 
     if db.check_task_completion(task_id, db_name):
-        # Checks if the summary file exists
-        if not os.path.isfile(summary_fn):
-            # The file is missing, so we rerun...
-            run_task = True
-
-        else:
+        if os.path.isfile(summary_fn):
             # We gather the statistics
             logging.info("Gathering exclusion summary")
             with open(summary_fn, "r") as f:
@@ -1316,7 +1311,23 @@ def find_exclusion_before_phasing(prefix, db_name, options):
                     name, number = line.rstrip("\r\n").split(" ")
                     exclusion_statistics[name] = int(number)
 
-    if run_task:
+            # Checking the content
+            required = ("nb_special_markers", "nb_ambiguous", "nb_dup",
+                        "nb_kept", "nb_to_flip", "nb_markers", "nb_samples")
+            missing_variable = False
+            for name in required:
+                if name not in exclusion_statistics:
+                    missing_variable = True
+                    db.mark_task_incomplete(task_id, db_name)
+                    break
+
+            # If everything is fine, we don't run again
+            already_done = not missing_variable
+
+        else:
+            db.mark_task_incomplete(task_id, db_name)
+
+    if not already_done:
         # Creating the database entry
         db.create_task_entry(task_id, db_name)
 
