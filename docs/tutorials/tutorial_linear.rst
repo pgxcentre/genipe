@@ -165,9 +165,8 @@ execute the linear regression analysis.
        --pheno-name Pheno1
 
 For more information about the arguments and options, see the
-:ref:`lin-tut-usage` section. The number of process to use might differ
-according to the installation type and to the computer/server. See the
-:ref:`lin-tut-execution-time` section for more information.
+:ref:`lin-tut-usage` section. For an approximation of the execution time, refer
+to the :ref:`stats-exec-time` section.
 
 .. note::
 
@@ -236,7 +235,7 @@ analysis in the console:
                                --pheno-name NAME
 
    Performs a linear regression (ordinary least squares) on imputed data. This
-   script is part of the 'genipe' package, version 1.2.3).
+   script is part of the 'genipe' package, version 1.3.0.
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -287,59 +286,6 @@ analysis in the console:
 
    Linear Regression Options:
      --pheno-name NAME     The phenotype.
-
-
-.. _lin-tut-execution-time:
-
-Execution time
----------------
-
-The following figure shows the approximate execution time for different number
-of processes (the ``--nb-process`` option) with different installation methods
-(*pyvenv* in blue, versus *miniconda* in orange). This analysis was performed
-on a computer with an *Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz* (8 cores) and
-16Go of RAM. The analysis contained the 195,473 imputed markers and 90 samples
-from the previous command (where phenotypes were available for only 60 of the
-samples). Each test was performed only one time (no repetition).
-
-.. _linear_exec_time:
-
-.. figure:: ../_static/images/Linear_Walltime.png
-    :align: center
-    :width: 60%
-    :alt: Linear regression execution time vs number of processes.
-
-.. note::
-
-   Execution times between *Plink* and :py:mod:`genipe` were compared for this
-   analysis. When data processing is required prior to the statistical analysis
-   (*e.g.* removing poor quality genotypes and excluding the 60 samples without
-   phenotype), *Plink* was **significantly faster** than :py:mod:`genipe`, even
-   if the latter is using more than one processes. This is due to prior data
-   manipulation, which significantly increse computation time.
-
-   When no data processing is required (*i.e.* keeping bad quality genotypes
-   and keeping all samples), :py:mod:`genipe` was faster with two processes or
-   more (as shown in the figure below). Note that for this example (30,000
-   imputed markers for 2,402 samples), all samples were used for the analysis
-   because they all had a phenotype.
-
-   .. _linear_exec_time_plink:
-
-   .. figure:: ../_static/images/Linear_Walltime_Plink.png
-       :align: center
-       :width: 60%
-       :alt: Linear regression execution time vs number of processes (Plink).
-
-   Note that the linear regression from *Statsmodels 0.6.1* (at least when
-   compiled on a modern Linux system, *i.e.* when :py:mod:`genipe` is installed
-   using the *pyvenv* method) uses more than 100% of each process when no data
-   preprocessing is required. Hence, we recommend testing with :math:`n/2`
-   processes (where :math:`n` is the number of processing cores on the machine)
-   and monitor the system load average. This explains the increase in
-   computation time with more than :math:`n/2` processes. This is not true when
-   using a *miniconda* installation, since all processes uses no more than
-   100%.
 
 
 .. _lin-tut-comparison:

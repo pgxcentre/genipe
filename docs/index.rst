@@ -11,26 +11,29 @@ Introduction
 -------------
 
 The :py:mod:`genipe` (GENome-wide Imputation PipelinE) module provides an easy
-an efficient way of performing genome-wide imputation analysis using the three
-commonly used softwares `PLINK <http://pngu.mgh.harvard.edu/~purcell/plink/>`_,
+and efficient way of performing genome-wide imputation analysis using the three
+commonly used tools `PLINK <http://pngu.mgh.harvard.edu/~purcell/plink/>`_,
 `SHAPEIT <https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html>`_ and
 `IMPUTE2 <https://mathgen.stats.ox.ac.uk/impute/impute_v2.html>`_.
 
 A quality metrics report is automatically generated at the end of the
 imputation process to easily assess the quality of the analysis. The report is
-compiled into a PDF. For information on how to compile the report, refer to the
-:ref:`genipe-tut-compile-report` section in the main :ref:`genipe-tut-page`.
+compiled into a PDF using LaTeX. For information on how to compile the report,
+refer to :ref:`this section <genipe-tut-compile-report>` of the main
+:ref:`pipeline tutorial <genipe-tut-page>`.
 
 Finally, it also provides a useful standalone tool to perform statistical
-analysis on imputed (dosage) data (such as linear, logistic or survival
-regressions, or `SKAT <http://www.hsph.harvard.edu/skat/>`_ analysis of rare
-variants).
+analysis on imputed (dosage) data (such as linear, logistic, repeated
+measurements, survival analysis, or `SKAT <http://www.hsph.harvard.edu/skat/>`_
+analysis of rare variants). For more information about execution time, see the
+:ref:`stats-exec-time` page.
 
 .. toctree::
    :maxdepth: 2
 
    installation
    tutorials
+   execution_time
    input_files
    output_files
    implementation
@@ -45,20 +48,27 @@ Usage
 
    $ genipe-launcher --help
    usage: genipe-launcher [-h] [-v] [--debug] [--thread THREAD] --bfile PREFIX
-                          [--reference FILE] [--output-dir DIR] [--bgzip]
-                          [--use-drmaa] [--drmaa-config FILE] [--preamble FILE]
+                          [--reference FILE] [--chrom CHROM [CHROM ...]]
+                          [--output-dir DIR] [--bgzip] [--use-drmaa]
+                          [--drmaa-config FILE] [--preamble FILE]
                           [--shapeit-bin BINARY] [--shapeit-thread INT]
-                          [--plink-bin BINARY] [--impute2-bin BINARY]
-                          [--segment-length BP] --hap-template TEMPLATE
-                          --legend-template TEMPLATE --map-template TEMPLATE
-                          --sample-file FILE [--filtering-rules RULE [RULE ...]]
-                          [--probability FLOAT] [--completion FLOAT]
-                          [--info FLOAT] [--report-number NB]
-                          [--report-title TITLE] [--report-author AUTHOR]
+                          [--shapeit-extra OPTIONS] [--plink-bin BINARY]
+                          [--hap-template TEMPLATE] [--legend-template TEMPLATE]
+                          [--map-template TEMPLATE] --sample-file FILE
+                          [--hap-nonPAR FILE] [--hap-PAR1 FILE] [--hap-PAR2 FILE]
+                          [--legend-nonPAR FILE] [--legend-PAR1 FILE]
+                          [--legend-PAR2 FILE] [--map-nonPAR FILE]
+                          [--map-PAR1 FILE] [--map-PAR2 FILE]
+                          [--impute2-bin BINARY] [--segment-length BP]
+                          [--filtering-rules RULE [RULE ...]]
+                          [--impute2-extra OPTIONS] [--probability FLOAT]
+                          [--completion FLOAT] [--info FLOAT]
+                          [--report-number NB] [--report-title TITLE]
+                          [--report-author AUTHOR]
                           [--report-background BACKGROUND]
 
    Execute the genome-wide imputation pipeline. This script is part of the
-   'genipe' package, version 1.2.3.
+   'genipe' package, version 1.3.0.
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -73,6 +83,8 @@ Usage
                            reference files) (optional).
 
    Output Options:
+     --chrom CHROM [CHROM ...]
+                           The chromosomes to process.
      --output-dir DIR      The name of the output directory. [genipe]
      --bgzip               Use bgzip to compress the impute2 files.
 
@@ -90,13 +102,15 @@ Usage
    SHAPEIT Options:
      --shapeit-bin BINARY  The SHAPEIT binary if it's not in the path.
      --shapeit-thread INT  The number of thread for phasing. [1]
+     --shapeit-extra OPTIONS
+                           SHAPEIT extra parameters. Put extra parameters between
+                           single or normal quotes (e.g. --shapeit-extra '--
+                           states 100 --window 2').
 
    Plink Options:
      --plink-bin BINARY    The Plink binary if it's not in the path.
 
-   IMPUTE2 Options:
-     --impute2-bin BINARY  The IMPUTE2 binary if it's not in the path.
-     --segment-length BP   The length of a single segment for imputation. [5e+06]
+   IMPUTE2 Autosomal Reference:
      --hap-template TEMPLATE
                            The template for IMPUTE2's haplotype files (replace
                            the chromosome number by '{chrom}', e.g.
@@ -110,8 +124,36 @@ Usage
                            chromosome number by '{chrom}', e.g.
                            'genetic_map_chr{chrom}_combined_b37.txt').
      --sample-file FILE    The name of IMPUTE2's sample file.
+
+   IMPUTE2 Chromosome X Reference:
+     --hap-nonPAR FILE     The IMPUTE2's haplotype file for the non-
+                           pseudoautosomal region of chromosome 23.
+     --hap-PAR1 FILE       The IMPUTE2's haplotype file for the first
+                           pseudoautosomal region of chromosome 23.
+     --hap-PAR2 FILE       The IMPUTE2's haplotype file for the second
+                           pseudoautosomal region of chromosome 23.
+     --legend-nonPAR FILE  The IMPUTE2's legend file for the non-pseudoautosomal
+                           region of chromosome 23.
+     --legend-PAR1 FILE    The IMPUTE2's legend file for the first
+                           pseudoautosomal region of chromosome 23.
+     --legend-PAR2 FILE    The IMPUTE2's legend file for the second
+                           pseudoautosomal region of chromosome 23.
+     --map-nonPAR FILE     The IMPUTE2's map file for the non-pseudoautosomal
+                           region of chromosome 23.
+     --map-PAR1 FILE       The IMPUTE2's map file for the first pseudoautosomal
+                           region of chromosome 23.
+     --map-PAR2 FILE       The IMPUTE2's map file for the second pseudoautosomal
+                           region of chromosome 23.
+
+   IMPUTE2 Options:
+     --impute2-bin BINARY  The IMPUTE2 binary if it's not in the path.
+     --segment-length BP   The length of a single segment for imputation. [5e+06]
      --filtering-rules RULE [RULE ...]
                            IMPUTE2 filtering rules (optional).
+     --impute2-extra OPTIONS
+                           IMPUTE2 extra parameters. Put the extra parameters
+                           between single or normal quotes (e.g. --impute2-extra
+                           '-buffer 250 -Ne 20000').
 
    IMPUTE2 Merger Options:
      --probability FLOAT   The probability threshold for no calls. [<0.9]
@@ -139,7 +181,8 @@ About
 This project was initiated at the
 `Beaulieu-Saucier Pharmacogenomics Centre <http://www.pharmacogenomics.ca>`_ of
 the `Montreal Heart Institute <https://www.icm-mhi.org>`_. The aim was to speed
-up (and automatize) the imputation process for the whole genome.
+up (and automatize) the imputation process for the whole genome and facilitate
+its analysis.
 
 .. image:: _static/logo_pgx.png
    :width: 350px

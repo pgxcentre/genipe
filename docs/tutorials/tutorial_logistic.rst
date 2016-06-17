@@ -156,18 +156,16 @@ execute the logistic regression analysis.
        --sample ../genipe/chr22/final_impute2/chr22.imputed.sample \
        --pheno phenotypes_logistic.txt \
        --extract-sites ../genipe/chr22/final_impute2/chr22.imputed.good_sites \
-       --nb-process 4 \
-       --nb-lines 3000 \
+       --nb-process 8 \
+       --nb-lines 6000 \
        --gender-column Gender \
        --covar Age,Var1,Gender \
        --sample-column SampleID \
        --pheno-name Pheno2
 
 For more information about the arguments and options, see the
-:ref:`logit-tut-usage` section. The number of process to use might differ
-according to the installation type and to the computer/server. See the
-:ref:`logit-tut-execution-time` section for more information.
-
+:ref:`logit-tut-usage` section. For an approximation of the execution time,
+refer to the :ref:`stats-exec-time` section.
 
 .. _logit-tut-output-files:
 
@@ -226,7 +224,7 @@ regression analysis in the console:
                                  --pheno-name NAME
 
    Performs a logistic regression on imputed data using a GLM with a binomial
-   distribution. This script is part of the 'genipe' package, version 1.2.3).
+   distribution. This script is part of the 'genipe' package, version 1.3.0.
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -277,57 +275,6 @@ regression analysis in the console:
 
    Logistic Regression Options:
      --pheno-name NAME     The phenotype.
-
-
-.. _logit-tut-execution-time:
-
-Execution time
----------------
-
-The following figure shows the approximate execution time for different number
-of processes (the ``--nb-process`` option) with different installation methods
-(*pyvenv* in blue, versus *miniconda* in orange). This analysis was performed
-on a computer with an *Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz* (8 cores) and
-16Go of RAM. The analysis contained the 195,473 imputed markers and 90 samples
-from the previous command (where phenotypes were available for only 60 of the
-samples). Each test was performed only one time (no repetition).
-
-.. _logistic_exec_time:
-
-.. figure:: ../_static/images/Logistic_Walltime.png
-    :align: center
-    :width: 60%
-    :alt: Logistic regression execution time vs number of processes.
-
-.. note::
-
-   Execution times between *Plink* and :py:mod:`genipe` were compared for this
-   analysis. When data processing is required prior to the statistical analysis
-   (*e.g.* removing poor quality genotypes and excluding the 60 samples without
-   phenotype), *Plink* was **significantly faster** than :py:mod:`genipe`, even
-   if the latter is using more than one processes. This is due to prior data
-   manipulation, which significantly increse computation time.
-
-   When no data processing is required (*i.e.* keeping bad quality genotypes
-   and keeping all samples), :py:mod:`genipe` was faster with two processes or
-   more (as show in the figure below). Note that for this example (30,000
-   imputed markers for 2,402 samples), all samples were used for the analysis
-   because they all had a phenotype.
-
-   .. figure:: ../_static/images/Logistic_Walltime_Plink.png
-       :align: center
-       :width: 60%
-       :alt: Logistic regression execution time vs number of processes (Plink).
-
-   Note that the logistic regression from *Statsmodels 0.6.1* (at least when
-   compiled on a modern Linux system, *i.e.* when :py:mod:`genipe` is installed
-   using the *pyvenv* method) uses more than 100% of each process and much more
-   memory. We couldn't perform the analysis with more than 50% of the
-   processes, as the system started to swap (due to lack of available memory
-   and the quantity of samples). Hence we recommend testing with a lower number
-   of processes and monitor the memory consumption and the system load average.
-   This is not true when using a *miniconda* installation, since all processes
-   uses no more than 100% and a normal amount of memory.
 
 
 .. _logit-tut-comparison:
