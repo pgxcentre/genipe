@@ -1294,99 +1294,156 @@ def find_exclusion_before_phasing(prefix, db_name, options):
     along with the number of markers to flip if the reference was checked.
 
     """
-    # The ambiguous genotypes
-    ambiguous_genotypes = {"AT", "TA", "GC", "CG"}
+    # Task information
+    task_id = "find_exclusions"
+    run_task = False
+    summary_fn = os.path.join(options.out_dir, "exclusion_summary.txt")
 
-    # The positions that have been written to file
-    kept_positions = set()
-    nb_ambiguous = 0
-    nb_kept = 0
-    nb_dup = 0
-    to_flip = set()
+    # The exclusion statistics
+    exclusion_statistics = {}
 
-    reference = None
-    chrom_encoding = None
-    if options.reference is not None:
-        reference = Fasta(options.reference, as_raw=True)
-        chrom_encoding = get_chrom_encoding(reference)
+    if db.check_task_completion(task_id, db_name):
+        # Checks if the summary file exists
+        if not os.path.isfile(summary_fn):
+            # The file is missing, so we rerun...
+            run_task = True
 
-    # Logging
-    logging.info("Finding markers to exclude" +
-                 (" and to flip" if reference else ""))
+        else:
+            # We gather the statistics
+            logging.info("Gathering exclusion summary")
+            with open(summary_fn, "r") as f:
+                for line in f:
+                    name, number = line.rstrip("\r\n").split(" ")
+                    exclusion_statistics[name] = int(number)
 
-    # Counting the total number of markers and samples
-    nb_markers = 0
-    nb_samples = 0
-    nb_special_markers = 0
+    if run_task:
+        # Creating the database entry
+        db.create_task_entry(task_id, db_name)
 
-    with open(prefix + ".fam", "r") as i_file:
-        for line in i_file:
-            nb_samples += 1
+        # The ambiguous genotypes
+        ambiguous_genotypes = {"AT", "TA", "GC", "CG"}
 
-    o_filename = os.path.join(options.out_dir, "markers_to_exclude.txt")
-    with open(o_filename, "w") as o_file, \
-            open(prefix + ".bim", "r") as i_file:
-        for line in i_file:
-            nb_markers += 1
-            row = line.rstrip("\r\n").split("\t")
+        # The positions that have been written to file
+        kept_positions = set()
+        nb_ambiguous = 0
+        nb_kept = 0
+        nb_dup = 0
+        to_flip = set()
 
-            # The marker information
-            chrom = row[0]
-            name = row[1]
-            pos = row[3]
-            a1 = row[4]
-            a2 = row[5]
+        reference = None
+        chrom_encoding = None
+        if options.reference is not None:
+            reference = Fasta(options.reference, as_raw=True)
+            chrom_encoding = get_chrom_encoding(reference)
 
-            is_special = False
-            if chrom in {"24", "26"}:
-                nb_special_markers += 1
-                is_special = True
+        # Logging
+        logging.info("Finding markers to exclude" +
+                    (" and to flip" if reference else ""))
 
-            # Checking the alleles
-            if a1 + a2 in ambiguous_genotypes:
+        # Counting the total number of markers and samples
+        nb_markers = 0
+        nb_samples = 0
+        nb_special_markers = 0
+
+        with open(prefix + ".fam", "r") as i_file:
+            for line in i_file:
+                nb_samples += 1
+
+        o_filename = os.path.join(options.out_dir, "markers_to_exclude.txt")
+        with open(o_filename, "w") as o_file, \
+                open(prefix + ".bim", "r") as i_file:
+            for line in i_file:
+                nb_markers += 1
+                row = line.rstrip("\r\n").split("\t")
+
+                # The marker information
+                chrom = row[0]
+                name = row[1]
+                pos = row[3]
+                a1 = row[4]
+                a2 = row[5]
+
+                is_special = False
+                if chrom in {"24", "26"}:
+                    nb_special_markers += 1
+                    is_special = True
+
+                # Checking the alleles
+                if a1 + a2 in ambiguous_genotypes:
+                    if not is_special:
+                        nb_ambiguous += 1
+                    print(name, file=o_file)
+                    logging.debug("  - {}: {}: "
+                                "ambiguous".format(name, a1 + a2))
+                    continue
+
+                # Checking if we already have this marker
+                if (chrom, pos) in kept_positions:
+                    if not is_special:
+                        nb_dup += 1
+                    print(name, file=o_file)
+                    logging.debug("  - {}: duplicated".format(name))
+                    continue
+
+                # Checking strand if required
+                if not is_special and (reference is not None):
+                    if is_reversed(chrom, int(pos), a1, a2, reference,
+                                chrom_encoding):
+                        to_flip.add(name)
+
+                # We keep this marker
+                kept_positions.add((chrom, pos))
                 if not is_special:
-                    nb_ambiguous += 1
-                print(name, file=o_file)
-                logging.debug("  - {}: {}: "
-                              "ambiguous".format(name, a1 + a2))
-                continue
+                    nb_kept += 1
 
-            # Checking if we already have this marker
-            if (chrom, pos) in kept_positions:
-                if not is_special:
-                    nb_dup += 1
-                print(name, file=o_file)
-                logging.debug("  - {}: duplicated".format(name))
-                continue
+        # Closing the reference
+        if reference is not None:
+            reference.close()
 
-            # Checking strand if required
-            if not is_special and (reference is not None):
-                if is_reversed(chrom, int(pos), a1, a2, reference,
-                               chrom_encoding):
-                    to_flip.add(name)
+        # Saving the exclusion statistics
+        exclusion_statistics["nb_special_markers"] = nb_special_markers
+        exclusion_statistics["nb_ambiguous"] = nb_ambiguous
+        exclusion_statistics["nb_dup"] = nb_dup
+        exclusion_statistics["nb_kept"] = nb_kept
+        exclusion_statistics["nb_to_flip"] = len(to_flip)
+        exclusion_statistics["nb_markers"] = nb_markers
+        exclusion_statistics["nb_samples"] = nb_samples
 
-            # We keep this marker
-            kept_positions.add((chrom, pos))
-            if not is_special:
-                nb_kept += 1
+        # Needs to flip?
+        o_filename = os.path.join(options.out_dir, "markers_to_flip.txt")
+        if len(to_flip) > 0:
+            with open(o_filename, "w") as o_file:
+                print(*to_flip, sep="\n", file=o_file)
 
-    # Closing the reference
-    if reference is not None:
-        reference.close()
+        # Saving the exclusion summary to file
+        with open(summary_fn, "w") as f:
+            print("nb_special_markers", nb_special_markers, file=f)
+            print("nb_ambiguous", nb_ambiguous, file=f)
+            print("nb_dup", nb_dup, file=f)
+            print("nb_kept", nb_kept, file=f)
+            print("nb_to_flip", len(to_flip), file=f)
+            print("nb_markers", nb_markers, file=f)
+            print("nb_samples", nb_samples, file=f)
+
+        # Marking the task as complete
+        db.mark_task_completed(task_id, db_name)
+
+    # Gathering the exclusions statistics
+    nb_special_markers = exclusion_statistics["nb_special_markers"]
+    nb_ambiguous = exclusion_statistics["nb_ambiguous"]
+    nb_dup = exclusion_statistics["nb_dup"]
+    nb_kept = exclusion_statistics["nb_kept"]
+    nb_to_flip = exclusion_statistics["nb_to_flip"]
+    nb_markers = exclusion_statistics["nb_markers"]
+    nb_samples = exclusion_statistics["nb_samples"]
 
     # Logging
     logging.info("  - {:,d} Y/mito markers".format(nb_special_markers))
     logging.info("  - {:,d} ambiguous markers removed".format(nb_ambiguous))
     logging.info("  - {:,d} duplicated markers removed".format(nb_dup))
     logging.info("  - {:,d} markers kept".format(nb_kept))
-    if reference is not None:
-        logging.info("  - {:,d} markers to flip".format(len(to_flip)))
-
-    # Needs to flip?
-    o_filename = os.path.join(options.out_dir, "markers_to_flip.txt")
-    if len(to_flip) > 0:
-        with open(o_filename, "w") as o_file:
-            print(*to_flip, sep="\n", file=o_file)
+    if options.reference is not None:
+        logging.info("  - {:,d} markers to flip".format(nb_to_flip))
 
     return {
         "initial_nb_markers": "{:,d}".format(nb_markers),
@@ -1394,7 +1451,7 @@ def find_exclusion_before_phasing(prefix, db_name, options):
         "nb_ambiguous":       "{:,d}".format(nb_ambiguous),
         "nb_duplicates":      "{:,d}".format(nb_dup),
         "nb_special_markers": "{:,d}".format(nb_special_markers),
-        "nb_flip_reference":  "{:,d}".format(len(to_flip)),
+        "nb_flip_reference":  "{:,d}".format(nb_to_flip),
         "reference_checked":  options.reference is not None
     }
 
