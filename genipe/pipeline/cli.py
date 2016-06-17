@@ -1349,7 +1349,7 @@ def find_exclusion_before_phasing(prefix, db_name, options):
 
         # Logging
         logging.info("Finding markers to exclude" +
-                    (" and to flip" if reference else ""))
+                     (" and to flip" if reference else ""))
 
         # Counting the total number of markers and samples
         nb_markers = 0
@@ -1385,7 +1385,7 @@ def find_exclusion_before_phasing(prefix, db_name, options):
                         nb_ambiguous += 1
                     print(name, file=o_file)
                     logging.debug("  - {}: {}: "
-                                "ambiguous".format(name, a1 + a2))
+                                  "ambiguous".format(name, a1 + a2))
                     continue
 
                 # Checking if we already have this marker
@@ -1399,7 +1399,7 @@ def find_exclusion_before_phasing(prefix, db_name, options):
                 # Checking strand if required
                 if not is_special and (reference is not None):
                     if is_reversed(chrom, int(pos), a1, a2, reference,
-                                chrom_encoding):
+                                   chrom_encoding):
                         to_flip.add(name)
 
                 # We keep this marker
