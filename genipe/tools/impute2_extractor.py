@@ -49,7 +49,7 @@ def main(args=None):
     # Creating the option parser
     desc = ("Extract imputed markers located in a specific genomic region. "
             "This script is part of the 'genipe' package, version "
-            "{}).".format(__version__))
+            "{}.".format(__version__))
     parser = argparse.ArgumentParser(description=desc)
 
     # Files that need closing
