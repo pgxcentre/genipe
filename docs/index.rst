@@ -34,6 +34,7 @@ analysis of rare variants). For more information about execution time, see the
    installation
    tutorials
    execution_time
+   parameters
    input_files
    output_files
    implementation
