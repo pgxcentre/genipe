@@ -46,6 +46,7 @@ except ImportError:
 try:
     import statsmodels.api as sm
     import statsmodels.formula.api as smf
+    from patsy import dmatrices
     HAS_STATSMODELS = True
 except ImportError:
     HAS_STATSMODELS = False
@@ -742,6 +743,16 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
         if options.analysis_type == "mixedlm" and options.use_ml:
             logging.info("  - using ML")
 
+    else:
+        # This is Cox
+        formula = get_formula(
+            phenotype=options.tte + " + " + options.event,
+            covars=options.covar,
+            interaction=options.interaction,
+            gender_c=options.gender_column,
+            categorical=options.categorical,
+        )
+
     # Reading the IMPUTE2 file one line (site) at a time, creating a subprocess
     # if required
     proc = None
@@ -965,11 +976,6 @@ def process_impute2_site(site_info):
         scale=site_info.scale,
     )
 
-    # We might need to specifically add the interaction column (if Cox and if
-    # interaction)
-    if (site_info.inter_c is not None) and (site_info.analysis_type == "cox"):
-        data["_Inter"] = data._GenoD * data[site_info.inter_c]
-
     # Removing the unwanted columns
     unwanted_columns = dosage_columns
     if site_info.del_g:
@@ -987,10 +993,6 @@ def process_impute2_site(site_info):
             )
         else:
             result_from_column = "_GenoD:" + site_info.inter_c
-
-        # Cox is the _Inter column
-        if site_info.analysis_type == "cox":
-            result_from_column = "_Inter"
 
     # Fitting
     results = []
@@ -1080,13 +1082,14 @@ def get_formula(phenotype, covars, interaction, gender_c, categorical):
     return formula
 
 
-def fit_cox(data, time_to_event, event, result_col, **kwargs):
+def fit_cox(data, time_to_event, event, formula, result_col, **kwargs):
     """Fit a Cox' proportional hazard to the data.
 
     Args:
         data (pandas.DataFrame): the data to analyse
         time_to_event (str): the time to event column for the survival analysis
         event (str): the event column for the survival analysis
+        formula (str): the formula for the data preparation
         result_col (str): the column that will contain the results
 
     Returns:
@@ -1097,6 +1100,12 @@ def fit_cox(data, time_to_event, event, result_col, **kwargs):
         The tie method used is ``Efron``. Normalization is set to ``False``.
 
     """
+    # Preparing the data using Patsy
+    y, X = dmatrices(formula, data=data, return_type="dataframe")
+    data = pd.merge(y, X.drop("Intercept", axis=1), left_index=True,
+                    right_index=True)
+
+    # Fitting
     cf = CoxPHFitter(alpha=0.95, tie_method="Efron", normalize=False)
     cf.fit(data, duration_col=time_to_event, event_col=event)
     return cf.summary.loc[result_col, _COX_REQ_COLS].values
@@ -1166,8 +1175,8 @@ def fit_mixedlm(data, formula, use_ml, groups, result_col, random_effects,
         geno = geno.loc[indexes, :]
 
         # Merging with the random effects
-        t_data = pd.merge(random_effects, geno.set_index("index"), left_index=True,
-                        right_index=True)
+        t_data = pd.merge(random_effects, geno.set_index("index"),
+                          left_index=True, right_index=True)
 
         # Approximating the results
         approximate_r = _get_result_from_linear(

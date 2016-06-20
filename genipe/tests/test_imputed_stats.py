@@ -689,21 +689,25 @@ class TestImputedStatsCox(unittest.TestCase):
         # Creating the temporary directory
         self.output_dir = TemporaryDirectory(prefix="genipe_test_")
 
-    def tearDown(self):
-        """Finishes the test."""
-        # Deleting the output directory
-        self.output_dir.cleanup()
-
-    def test_fit_cox(self):
-        """Tests the 'fit_cox' function."""
-        # Reading the data
-        data_filename = resource_filename(
+        # The name of the file containing the phenotypes
+        self.data_filename = resource_filename(
             __name__,
             "data/regression_sim.txt.bz2",
         )
 
         # This dataset contains 3 markers + 5 covariables
-        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
+        self.data = pd.read_csv(self.data_filename, sep="\t",
+                                compression="bz2")
+
+    def tearDown(self):
+        """Finishes the test."""
+        # Deleting the output directory
+        self.output_dir.cleanup()
+
+    def test_fit_cox_snp1(self):
+        """Tests the 'fit_cox' function, first SNP."""
+        # Formula and columns to keep
+        formula = "y + y_d ~ snp1 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y", "y_d", "snp1", "C1", "C2", "C3", "age",
                            "gender"]
 
@@ -719,10 +723,11 @@ class TestImputedStatsCox(unittest.TestCase):
 
         # The observed results for the first marker
         observed = imputed_stats.fit_cox(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
             event="y_d",
             result_col="snp1",
+            formula=formula,
         )
         self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
@@ -734,10 +739,14 @@ class TestImputedStatsCox(unittest.TestCase):
         self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
         self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
         self.assertAlmostEqual(expected_z, observed_z, places=4)
-        self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=3)
+        self.assertAlmostEqual(
+            np.log10(expected_p), np.log10(observed_p), places=3,
+        )
 
-        # The second marker
+    def test_fit_cox_snp2(self):
+        """Tests the 'fit_cox' function, second SNP."""
+        # Formula and columns to keep
+        formula = "y + y_d ~ snp2 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y", "y_d", "snp2", "C1", "C2", "C3", "age",
                            "gender"]
 
@@ -751,10 +760,11 @@ class TestImputedStatsCox(unittest.TestCase):
 
         # The observed results for the first marker
         observed = imputed_stats.fit_cox(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
             event="y_d",
             result_col="snp2",
+            formula=formula,
         )
         self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
@@ -769,7 +779,10 @@ class TestImputedStatsCox(unittest.TestCase):
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=8)
 
-        # The third marker
+    def test_fit_cox_snp3(self):
+        """Tests the 'fit_cox' function, third SNP."""
+        # Formula and columns to keep
+        formula = "y + y_d ~ snp3 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y", "y_d", "snp3", "C1", "C2", "C3", "age",
                            "gender"]
 
@@ -783,10 +796,11 @@ class TestImputedStatsCox(unittest.TestCase):
 
         # The observed results for the first marker
         observed = imputed_stats.fit_cox(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
             event="y_d",
             result_col="snp3",
+            formula=formula,
         )
         self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
@@ -801,36 +815,55 @@ class TestImputedStatsCox(unittest.TestCase):
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=4)
 
-    def test_fit_cox_interaction(self):
-        """Tests the 'fit_cox' function with interaction."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim_inter.txt.bz2",
-        )
+    def test_fit_cox_invalid(self):
+        """Tests the 'fit_linear' function, third SNP."""
+        # The columns to keep
+        formula = "y + y_d ~ snp3 + C1 + C2 + C3 + age + C(gender)"
+        columns_to_keep = ["y", "y_d", "snp3", "C1", "C2", "C3", "age",
+                           "gender"]
 
-        # This dataset contains 3 markers + 5 covariables
-        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
+        # Asking for an invalid column should raise a KeyError
+        with self.assertRaises(KeyError):
+            imputed_stats.fit_cox(
+                data=self.data[columns_to_keep].dropna(axis=0),
+                time_to_event="y",
+                event="y_d",
+                result_col="unknown",
+                formula=formula,
+            )
 
-        # Computing the interaction
-        data["interaction"] = data.snp1 * data.gender
+        with self.assertRaises(patsy.PatsyError):
+            imputed_stats.fit_linear(
+                data=self.data[columns_to_keep].dropna(axis=0),
+                formula=formula + " + unknown",
+                time_to_event="y",
+                event="y_d",
+                result_col="snp3",
+            )
+
+    def test_fit_cox_interaction_snp1(self):
+        """Tests the 'fit_cox' function with interaction, first SNP."""
+        # Formula and columns to keep
+        formula = ("y + y_d ~ snp1 + C1 + C2 + C3 + age + C(gender) + "
+                   "snp1*C(gender)")
         columns_to_keep = ["y", "y_d", "snp1", "C1", "C2", "C3", "age",
-                           "gender", "interaction"]
+                           "gender"]
 
         # The expected results for the first marker (according to R)
-        expected_coef = -0.6446297920053343233
-        expected_se = 0.1430770156758568168
-        expected_min_ci = -0.925055589745486406
-        expected_max_ci = -0.364203994265182296
-        expected_z = -4.5054741249688419202
-        expected_p = 6.62249088800859198e-06
+        expected_coef = 0.08002859476478209
+        expected_se = 0.12198270334604862
+        expected_min_ci = -0.15905311053030668
+        expected_max_ci = 0.31911030005987090
+        expected_z = 0.6560651024248222
+        expected_p = 0.51178223698621716
 
         # The observed results
         observed = imputed_stats.fit_cox(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             time_to_event="y",
             event="y_d",
-            result_col="interaction",
+            result_col="snp1:C(gender)[T.2]",
+            formula=formula,
         )
         self.assertEqual(6, len(observed))
         observed_coef, observed_se, observed_min_ci, observed_max_ci, \
@@ -838,24 +871,17 @@ class TestImputedStatsCox(unittest.TestCase):
 
         # Comparing the results
         self.assertAlmostEqual(expected_coef, observed_coef, places=10)
-        self.assertAlmostEqual(expected_se, observed_se, places=7)
+        self.assertAlmostEqual(expected_se, observed_se, places=6)
         self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=3)
         self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=3)
-        self.assertAlmostEqual(expected_z, observed_z, places=5)
-        self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=5)
+        self.assertAlmostEqual(expected_z, observed_z, places=6)
+        self.assertAlmostEqual(expected_p, observed_p, places=6)
 
     def test_full_fit_cox(self):
         """Tests the full pipeline for Cox's regression."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="cox",
             tte="y",
@@ -899,71 +925,52 @@ class TestImputedStatsCox(unittest.TestCase):
         self.assertEqual(["C", "A", "A"], list(observed.minor))
 
         # Minor allele frequency
-        expected = [1724 / 11526, 4604 / 11526, 1379 / 11526]
-        for expected_maf, observed_maf in zip(expected, observed.maf):
-            self.assertAlmostEqual(expected_maf, observed_maf, places=10)
+        expected = np.array([1724 / 11526, 4604 / 11526, 1379 / 11526])
+        np.testing.assert_array_almost_equal(expected, observed.maf, 10)
 
         # The number of samples
-        expected = [5763, 5763, 5763]
-        for expected_n, observed_n in zip(expected, observed.n):
-            self.assertEqual(expected_n, observed_n)
+        expected = np.array([5763, 5763, 5763])
+        np.testing.assert_array_equal(expected, observed.n)
 
         # The coefficients
-        expected = [-0.9892699611323815256, 0.0499084338021939383,
-                    1.114732193640146418]
-        for expected_coef, observed_coef in zip(expected, observed.coef):
-            self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        expected = np.array([-0.9892699611323815256, 0.0499084338021939383,
+                             1.114732193640146418])
+        np.testing.assert_array_almost_equal(expected, observed.coef, 10)
 
         # The standard error
-        expected = [0.0645633075569013448, 0.0401904025600694215,
-                    0.0631205046371715733]
-        places = [6, 9, 7]
-        zipped = zip(expected, observed.se, places)
-        for expected_se, observed_se, place in zipped:
-            self.assertAlmostEqual(expected_se, observed_se, places=place)
+        expected = np.array([0.0645633075569013448, 0.0401904025600694215,
+                             0.0631205046371715733])
+        np.testing.assert_array_almost_equal(expected, observed.se, 7)
 
         # The lower CI
-        expected = [-1.11581171866669093, -0.0288633077397084936,
-                    0.991018277865296726]
-        for expected_min_ci, observed_min_ci in zip(expected, observed.lower):
-            self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
+        expected = np.array([-1.11581171866669093, -0.0288633077397084936,
+                             0.991018277865296726])
+        np.testing.assert_array_almost_equal(expected, observed.lower, 4)
 
         # The upper CI
-        expected = [-0.86272820359807223, 0.12868017534409637,
-                    1.23844610941499611]
-        for expected_max_ci, observed_max_ci in zip(expected, observed.upper):
-            self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
+        expected = np.array([-0.86272820359807223, 0.12868017534409637,
+                             1.23844610941499611])
+        np.testing.assert_array_almost_equal(expected, observed.upper, 4)
 
         # The Z statistics
-        expected = [-15.32247957186071652, 1.241799798536472599,
-                    17.660381520202268035]
-        places = [4, 8, 5]
-        zipped = zip(expected, observed.z, places)
-        for expected_z, observed_z, place in zipped:
-            self.assertAlmostEqual(expected_z, observed_z, places=place)
+        expected = np.array([-15.32247957186071652, 1.241799798536472599,
+                             17.660381520202268035])
+        np.testing.assert_array_almost_equal(expected, observed.z, 4)
 
         # The p values
-        expected = [5.41131727236088009e-53, 0.21431043709814412423,
-                    8.46654634146707403e-70]
-        places = [3, 8, 4]
-        zipped = zip(expected, observed.p, places)
-        for expected_p, observed_p, place in zipped:
-            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                                   places=place)
+        expected = np.array([5.41131727236088009e-53, 0.21431043709814412423,
+                             8.46654634146707403e-70])
+        np.testing.assert_array_almost_equal(
+            np.log10(expected), np.log10(observed.p), 4,
+        )
 
     @unittest.skipIf(platform.system() == "Darwin",
                      "multiprocessing not supported with Mac OS")
     def test_full_fit_cox_multiprocess(self):
         """Tests the full pipeline for Cox's regression with >1 processes."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="cox",
             tte="y",
@@ -1008,69 +1015,50 @@ class TestImputedStatsCox(unittest.TestCase):
         self.assertEqual(["C", "A", "A"], list(observed.minor))
 
         # Minor allele frequency
-        expected = [1724 / 11526, 4604 / 11526, 1379 / 11526]
-        for expected_maf, observed_maf in zip(expected, observed.maf):
-            self.assertAlmostEqual(expected_maf, observed_maf, places=10)
+        expected = np.array([1724 / 11526, 4604 / 11526, 1379 / 11526])
+        np.testing.assert_array_almost_equal(expected, observed.maf, 10)
 
         # The number of samples
-        expected = [5763, 5763, 5763]
-        for expected_n, observed_n in zip(expected, observed.n):
-            self.assertEqual(expected_n, observed_n)
+        expected = np.array([5763, 5763, 5763])
+        np.testing.assert_array_equal(expected, observed.n)
 
         # The coefficients
-        expected = [-0.9892699611323815256, 0.0499084338021939383,
-                    1.114732193640146418]
-        for expected_coef, observed_coef in zip(expected, observed.coef):
-            self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        expected = np.array([-0.9892699611323815256, 0.0499084338021939383,
+                             1.114732193640146418])
+        np.testing.assert_array_almost_equal(expected, observed.coef, 10)
 
         # The standard error
-        expected = [0.0645633075569013448, 0.0401904025600694215,
-                    0.0631205046371715733]
-        places = [6, 9, 7]
-        zipped = zip(expected, observed.se, places)
-        for expected_se, observed_se, place in zipped:
-            self.assertAlmostEqual(expected_se, observed_se, places=place)
+        expected = np.array([0.0645633075569013448, 0.0401904025600694215,
+                             0.0631205046371715733])
+        np.testing.assert_array_almost_equal(expected, observed.se, 7)
 
         # The lower CI
-        expected = [-1.11581171866669093, -0.0288633077397084936,
-                    0.991018277865296726]
-        for expected_min_ci, observed_min_ci in zip(expected, observed.lower):
-            self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
+        expected = np.array([-1.11581171866669093, -0.0288633077397084936,
+                             0.991018277865296726])
+        np.testing.assert_array_almost_equal(expected, observed.lower, 4)
 
         # The upper CI
-        expected = [-0.86272820359807223, 0.12868017534409637,
-                    1.23844610941499611]
-        for expected_max_ci, observed_max_ci in zip(expected, observed.upper):
-            self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
+        expected = np.array([-0.86272820359807223, 0.12868017534409637,
+                             1.23844610941499611])
+        np.testing.assert_array_almost_equal(expected, observed.upper, 4)
 
         # The Z statistics
-        expected = [-15.32247957186071652, 1.241799798536472599,
-                    17.660381520202268035]
-        places = [4, 8, 5]
-        zipped = zip(expected, observed.z, places)
-        for expected_z, observed_z, place in zipped:
-            self.assertAlmostEqual(expected_z, observed_z, places=place)
+        expected = np.array([-15.32247957186071652, 1.241799798536472599,
+                             17.660381520202268035])
+        np.testing.assert_array_almost_equal(expected, observed.z, 4)
 
         # The p values
-        expected = [5.41131727236088009e-53, 0.21431043709814412423,
-                    8.46654634146707403e-70]
-        places = [3, 8, 4]
-        zipped = zip(expected, observed.p, places)
-        for expected_p, observed_p, place in zipped:
-            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                                   places=place)
+        expected = np.array([5.41131727236088009e-53, 0.21431043709814412423,
+                             8.46654634146707403e-70])
+        np.testing.assert_array_almost_equal(
+            np.log10(expected), np.log10(observed.p), 4,
+        )
 
     def test_full_fit_cox_interaction(self):
         """Tests the full pipeline for Cox's regression with interaction."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim_inter.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="cox",
             tte="y",
@@ -1125,55 +1113,34 @@ class TestImputedStatsCox(unittest.TestCase):
             self.assertEqual(expected_n, observed_n)
 
         # The coefficients
-        expected = [-0.6446297920053343233, -0.00626679211298179859,
-                    -0.468685693217335109]
-        places = [10, 8, 8]
-        zipped = zip(expected, observed.coef, places)
-        for expected_coef, observed_coef, place in zipped:
-            self.assertAlmostEqual(expected_coef, observed_coef, places=place)
+        expected = np.array([0.08002859476478209, 0.06043867499981825,
+                             -0.1346941460446854])
+        np.testing.assert_array_almost_equal(expected, observed.coef, 10)
 
         # The standard error
-        expected = [0.1430770156758568168, 0.0834709381328159472,
-                    0.1209229684191305970]
-        places = [7, 10, 10]
-        zipped = zip(expected, observed.se, places)
-        for expected_se, observed_se, place in zipped:
-            self.assertAlmostEqual(expected_se, observed_se, places=place)
+        expected = np.array([0.12198270334604862, 0.08096689170729621,
+                             0.12150431017471298])
+        np.testing.assert_array_almost_equal(expected, observed.se, 6)
 
         # The lower CI
-        expected = [-0.925055589745486406, -0.16986682460907207,
-                    -0.705690356222505422]
-        places = [3, 4, 3]
-        zipped = zip(expected, observed.lower, places)
-        for expected_min_ci, observed_min_ci, place in zipped:
-            self.assertAlmostEqual(expected_min_ci, observed_min_ci,
-                                   places=place)
+        expected = np.array([-0.15905311053030668, -0.09825351668663704,
+                             -0.3728382179535064])
+        np.testing.assert_array_almost_equal(expected, observed.lower, 4)
 
         # The upper CI
-        expected = [-0.364203994265182296, 0.157333240383108447,
-                    -0.231681030212164824]
-        places = [3, 4, 3]
-        zipped = zip(expected, observed.upper, places)
-        for expected_max_ci, observed_max_ci, place in zipped:
-            self.assertAlmostEqual(expected_max_ci, observed_max_ci,
-                                   places=place)
+        expected = np.array([0.31911030005987090, 0.2191308666862735,
+                             0.1034499258641357])
+        np.testing.assert_array_almost_equal(expected, observed.upper, 4)
 
         # The Z statistics
-        expected = [-4.5054741249688419202, -0.0750775330092768867,
-                    -3.875902976453783122]
-        places = [5, 7, 7]
-        zipped = zip(expected, observed.z, places)
-        for expected_z, observed_z, place in zipped:
-            self.assertAlmostEqual(expected_z, observed_z, places=place)
+        expected = np.array([0.6560651024248222, 0.7464615934413091,
+                             -1.1085544689814419])
+        np.testing.assert_array_almost_equal(expected, observed.z, 6)
 
         # The p values
-        expected = [6.62249088800859198e-06, 9.40153023426109735e-01,
-                    1.06230010246344264e-04]
-        places = [5, 8, 7]
-        zipped = zip(expected, observed.p, places)
-        for expected_p, observed_p, place in zipped:
-            self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                                   places=place)
+        expected = np.array([0.51178223698621716, 0.455388623883973054,
+                             0.267622429183913102])
+        np.testing.assert_array_almost_equal(expected, observed.p, 6)
 
 
 @unittest.skipIf(not imputed_stats.HAS_STATSMODELS,
@@ -1185,23 +1152,35 @@ class TestImputedStatsLinear(unittest.TestCase):
         # Creating the temporary directory
         self.output_dir = TemporaryDirectory(prefix="genipe_test_")
 
+        # The name of the dataset
+        self.data_filename = resource_filename(
+            __name__,
+            "data/regression_sim.txt.bz2",
+        )
+
+        # The name of the dataset with interaction
+        self.data_inter_filename = resource_filename(
+            __name__,
+            "data/regression_sim_inter.txt.bz2",
+        )
+
+        # The dataset
+        self.data = pd.read_csv(self.data_filename, sep="\t",
+                                compression="bz2")
+
+        # This dataset contains 3 markers + 5 covariables
+        self.data_inter = pd.read_csv(self.data_inter_filename, sep="\t",
+                                      compression="bz2")
+
+
     def tearDown(self):
         """Finishes the test."""
         # Deleting the output directory
         self.output_dir.cleanup()
 
-    def test_fit_linear(self):
-        """Tests the 'fit_linear' function."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
-        )
-
-        # This dataset contains 3 markers + 5 covariables
-        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
-
-        # The formula for the first marker
+    def test_fit_linear_snp1(self):
+        """Tests the 'fit_linear' function, first SNP."""
+        # The formula and columns
         formula = "y ~ snp1 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y", "snp1", "C1", "C2", "C3", "age", "gender"]
 
@@ -1217,7 +1196,7 @@ class TestImputedStatsLinear(unittest.TestCase):
 
         # The observed results for the first marker
         observed = imputed_stats.fit_linear(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp1",
         )
@@ -1235,7 +1214,9 @@ class TestImputedStatsLinear(unittest.TestCase):
                                places=10)
         self.assertAlmostEqual(expected_r, observed_r, places=10)
 
-        # The formula for the second marker
+    def test_fit_linear_snp2(self):
+        """Tests the 'fit_linear' function, second SNP."""
+        # The formula and columns
         formula = "y ~ snp2 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y", "snp2", "C1", "C2", "C3", "age", "gender"]
 
@@ -1251,7 +1232,7 @@ class TestImputedStatsLinear(unittest.TestCase):
 
         # The observed results for the first marker
         observed = imputed_stats.fit_linear(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp2",
         )
@@ -1269,7 +1250,9 @@ class TestImputedStatsLinear(unittest.TestCase):
                                places=10)
         self.assertAlmostEqual(expected_r, observed_r, places=10)
 
-        # The formula for the third (and last) marker
+    def test_fit_linear_snp3(self):
+        """Tests the 'fit_linear' function, third SNP."""
+        # The formula and columns
         formula = "y ~ snp3 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y", "snp3", "C1", "C2", "C3", "age", "gender"]
 
@@ -1285,7 +1268,7 @@ class TestImputedStatsLinear(unittest.TestCase):
 
         # The observed results for the first marker
         observed = imputed_stats.fit_linear(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp3",
         )
@@ -1303,32 +1286,29 @@ class TestImputedStatsLinear(unittest.TestCase):
                                places=10)
         self.assertAlmostEqual(expected_r, observed_r, places=10)
 
+    def test_fit_linear_invalid(self):
+        """Tests the 'fit_linear' function, invalid values."""
+        # The columns to keep
+        formula = "y ~ snp3 + C1 + C2 + C3 + age + C(gender)"
+        columns_to_keep = ["y", "snp3", "C1", "C2", "C3", "age", "gender"]
+
         # Asking for an invalid column should raise a KeyError
         with self.assertRaises(KeyError):
             imputed_stats.fit_linear(
-                data=data[columns_to_keep].dropna(axis=0),
+                data=self.data[columns_to_keep].dropna(axis=0),
                 formula=formula,
                 result_col="unknown",
             )
 
         with self.assertRaises(patsy.PatsyError):
             imputed_stats.fit_linear(
-                data=data[columns_to_keep].dropna(axis=0),
+                data=self.data[columns_to_keep].dropna(axis=0),
                 formula=formula + " + unknown",
-                result_col="snp4",
+                result_col="snp3",
             )
 
     def test_fit_linear_interaction(self):
         """Tests the 'fit_linear' function with interaction."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim_inter.txt.bz2",
-        )
-
-        # This dataset contains 3 markers + 5 covariables
-        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
-
         # The formula for the first marker
         formula = "y ~ snp1 + C1 + C2 + C3 + age + C(gender) + snp1*C(gender)"
         columns_to_keep = ["y", "snp1", "C1", "C2", "C3", "age", "gender"]
@@ -1345,7 +1325,7 @@ class TestImputedStatsLinear(unittest.TestCase):
 
         # The observed results
         observed = imputed_stats.fit_linear(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data_inter[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp1:C(gender)[T.2]",
         )
@@ -1365,15 +1345,9 @@ class TestImputedStatsLinear(unittest.TestCase):
 
     def test_full_fit_linear(self):
         """Tests the full pipeline for linear regression."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="linear",
         )
@@ -1472,15 +1446,9 @@ class TestImputedStatsLinear(unittest.TestCase):
                      "multiprocessing not supported with Mac OS")
     def test_full_fit_linear_multiprocess(self):
         """Tests the full pipeline for linear regression with >1 processes."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="linear",
             nb_process=2,
@@ -1578,15 +1546,9 @@ class TestImputedStatsLinear(unittest.TestCase):
 
     def test_full_fit_linear_interaction(self):
         """Tests the full pipeline for linear regression with interaction."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim_inter.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_inter_filename,
             output_dirname=self.output_dir.name,
             analysis_type="linear",
             interaction="gender",
@@ -1692,23 +1654,35 @@ class TestImputedStatsLogistic(unittest.TestCase):
         # Creating the temporary directory
         self.output_dir = TemporaryDirectory(prefix="genipe_test_")
 
+        # The name of the data
+        self.data_filename = resource_filename(
+            __name__,
+            "data/regression_sim.txt.bz2",
+        )
+
+        # The name of the data with interaction
+        self.data_inter_filename = resource_filename(
+            __name__,
+            "data/regression_sim_inter.txt.bz2",
+        )
+
+        # This dataset contains 3 markers + 5 covariables
+        self.data = pd.read_csv(self.data_filename, sep="\t",
+                                compression="bz2")
+
+        # This dataset contains 3 markers + 5 covariables
+        self.data_inter = pd.read_csv(self.data_inter_filename, sep="\t",
+                                      compression="bz2")
+
+
     def tearDown(self):
         """Finishes the test."""
         # Deleting the output directory
         self.output_dir.cleanup()
 
-    def test_fit_logistic(self):
-        """Tests the 'fit_logistic' function."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
-        )
-
-        # This dataset contains 3 markers + 5 covariables
-        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
-
-        # The formula for the first marker
+    def test_fit_logistic_snp1(self):
+        """Tests the 'fit_logistic' function, first SNP."""
+        # The formula and columns
         formula = "y_d ~ snp1 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y_d", "snp1", "C1", "C2", "C3", "age", "gender"]
 
@@ -1722,7 +1696,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
         # The observed results for the first marker
         observed = imputed_stats.fit_logistic(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp1",
         )
@@ -1739,7 +1713,9 @@ class TestImputedStatsLogistic(unittest.TestCase):
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=5)
 
-        # The formula for the second marker
+    def test_fit_logistic_snp2(self):
+        """Tests the 'fit_logistic' function, second SNP."""
+        # The formula and columns
         formula = "y_d ~ snp2 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y_d", "snp2", "C1", "C2", "C3", "age", "gender"]
 
@@ -1753,7 +1729,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
         # The observed results for the first marker
         observed = imputed_stats.fit_logistic(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp2",
         )
@@ -1770,7 +1746,9 @@ class TestImputedStatsLogistic(unittest.TestCase):
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=5)
 
-        # The formula for the third (and last) marker
+    def test_fit_logistic_snp3(self):
+        """Tests the 'fit_logistic' function, third SNP."""
+        # The formula and columns
         formula = "y_d ~ snp3 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y_d", "snp3", "C1", "C2", "C3", "age", "gender"]
 
@@ -1784,7 +1762,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
         # The observed results for the first marker
         observed = imputed_stats.fit_logistic(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp3",
         )
@@ -1801,32 +1779,29 @@ class TestImputedStatsLogistic(unittest.TestCase):
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=5)
 
+    def test_fit_logistic_invalid(self):
+        """Tests the 'fit_logistic' function, invalid values."""
+        # The formula and columns
+        formula = "y_d ~ snp3 + C1 + C2 + C3 + age + C(gender)"
+        columns_to_keep = ["y_d", "snp3", "C1", "C2", "C3", "age", "gender"]
+
         # Asking for an invalid column should raise a KeyError
         with self.assertRaises(KeyError):
             imputed_stats.fit_logistic(
-                data=data[columns_to_keep].dropna(axis=0),
+                data=self.data[columns_to_keep].dropna(axis=0),
                 formula=formula,
                 result_col="unknown",
             )
 
         with self.assertRaises(patsy.PatsyError):
             imputed_stats.fit_logistic(
-                data=data[columns_to_keep].dropna(axis=0),
+                data=self.data[columns_to_keep].dropna(axis=0),
                 formula=formula + " + unknown",
-                result_col="snp4",
+                result_col="snp3",
             )
 
     def test_fit_logistic_interaction(self):
         """Tests the 'fit_logistic' function with interaction."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim_inter.txt.bz2",
-        )
-
-        # This dataset contains 3 markers + 5 covariables
-        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
-
         # The formula for the first marker
         formula = ("y_d ~ snp1 + C1 + C2 + C3 + age + C(gender) + "
                    "snp1*C(gender)")
@@ -1842,7 +1817,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
         # The observed results
         observed = imputed_stats.fit_logistic(
-            data=data[columns_to_keep],
+            data=self.data_inter[columns_to_keep],
             formula=formula,
             result_col="snp1:C(gender)[T.2]",
         )
@@ -1861,15 +1836,9 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
     def test_full_fit_logistic(self):
         """Tests the full pipeline for logistic regression."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="logistic",
             pheno_name="y_d",
@@ -1974,15 +1943,9 @@ class TestImputedStatsLogistic(unittest.TestCase):
                      "multiprocessing not supported with Mac OS")
     def test_full_fit_logistic_multiprocess(self):
         """Tests the full pipeline, logistic regression with >1 processes."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="logistic",
             pheno_name="y_d",
@@ -2086,15 +2049,9 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
     def test_full_fit_logistic_interaction(self):
         """Tests the full pipeline for logistic regression with interaction."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim_inter.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_inter_filename,
             output_dirname=self.output_dir.name,
             analysis_type="logistic",
             pheno_name="y_d",
