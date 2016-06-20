@@ -815,6 +815,32 @@ class TestImputedStatsCox(unittest.TestCase):
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=4)
 
+    def test_fit_cox_invalid(self):
+        """Tests the 'fit_linear' function, third SNP."""
+        # The columns to keep
+        formula = "y + y_d ~ snp3 + C1 + C2 + C3 + age + C(gender)"
+        columns_to_keep = ["y", "y_d", "snp3", "C1", "C2", "C3", "age",
+                           "gender"]
+
+        # Asking for an invalid column should raise a KeyError
+        with self.assertRaises(KeyError):
+            imputed_stats.fit_cox(
+                data=self.data[columns_to_keep].dropna(axis=0),
+                time_to_event="y",
+                event="y_d",
+                result_col="unknown",
+                formula=formula,
+            )
+
+        with self.assertRaises(patsy.PatsyError):
+            imputed_stats.fit_linear(
+                data=self.data[columns_to_keep].dropna(axis=0),
+                formula=formula + " + unknown",
+                time_to_event="y",
+                event="y_d",
+                result_col="snp3",
+            )
+
     def test_fit_cox_interaction_snp1(self):
         """Tests the 'fit_cox' function with interaction, first SNP."""
         # Formula and columns to keep
@@ -1126,23 +1152,35 @@ class TestImputedStatsLinear(unittest.TestCase):
         # Creating the temporary directory
         self.output_dir = TemporaryDirectory(prefix="genipe_test_")
 
+        # The name of the dataset
+        self.data_filename = resource_filename(
+            __name__,
+            "data/regression_sim.txt.bz2",
+        )
+
+        # The name of the dataset with interaction
+        self.data_inter_filename = resource_filename(
+            __name__,
+            "data/regression_sim_inter.txt.bz2",
+        )
+
+        # The dataset
+        self.data = pd.read_csv(self.data_filename, sep="\t",
+                                compression="bz2")
+
+        # This dataset contains 3 markers + 5 covariables
+        self.data_inter = pd.read_csv(self.data_inter_filename, sep="\t",
+                                      compression="bz2")
+
+
     def tearDown(self):
         """Finishes the test."""
         # Deleting the output directory
         self.output_dir.cleanup()
 
-    def test_fit_linear(self):
-        """Tests the 'fit_linear' function."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
-        )
-
-        # This dataset contains 3 markers + 5 covariables
-        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
-
-        # The formula for the first marker
+    def test_fit_linear_snp1(self):
+        """Tests the 'fit_linear' function, first SNP."""
+        # The formula and columns
         formula = "y ~ snp1 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y", "snp1", "C1", "C2", "C3", "age", "gender"]
 
@@ -1158,7 +1196,7 @@ class TestImputedStatsLinear(unittest.TestCase):
 
         # The observed results for the first marker
         observed = imputed_stats.fit_linear(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp1",
         )
@@ -1176,7 +1214,9 @@ class TestImputedStatsLinear(unittest.TestCase):
                                places=10)
         self.assertAlmostEqual(expected_r, observed_r, places=10)
 
-        # The formula for the second marker
+    def test_fit_linear_snp2(self):
+        """Tests the 'fit_linear' function, second SNP."""
+        # The formula and columns
         formula = "y ~ snp2 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y", "snp2", "C1", "C2", "C3", "age", "gender"]
 
@@ -1192,7 +1232,7 @@ class TestImputedStatsLinear(unittest.TestCase):
 
         # The observed results for the first marker
         observed = imputed_stats.fit_linear(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp2",
         )
@@ -1210,7 +1250,9 @@ class TestImputedStatsLinear(unittest.TestCase):
                                places=10)
         self.assertAlmostEqual(expected_r, observed_r, places=10)
 
-        # The formula for the third (and last) marker
+    def test_fit_linear_snp3(self):
+        """Tests the 'fit_linear' function, third SNP."""
+        # The formula and columns
         formula = "y ~ snp3 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y", "snp3", "C1", "C2", "C3", "age", "gender"]
 
@@ -1226,7 +1268,7 @@ class TestImputedStatsLinear(unittest.TestCase):
 
         # The observed results for the first marker
         observed = imputed_stats.fit_linear(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp3",
         )
@@ -1244,32 +1286,29 @@ class TestImputedStatsLinear(unittest.TestCase):
                                places=10)
         self.assertAlmostEqual(expected_r, observed_r, places=10)
 
+    def test_fit_linear_invalid(self):
+        """Tests the 'fit_linear' function, invalid values."""
+        # The columns to keep
+        formula = "y ~ snp3 + C1 + C2 + C3 + age + C(gender)"
+        columns_to_keep = ["y", "snp3", "C1", "C2", "C3", "age", "gender"]
+
         # Asking for an invalid column should raise a KeyError
         with self.assertRaises(KeyError):
             imputed_stats.fit_linear(
-                data=data[columns_to_keep].dropna(axis=0),
+                data=self.data[columns_to_keep].dropna(axis=0),
                 formula=formula,
                 result_col="unknown",
             )
 
         with self.assertRaises(patsy.PatsyError):
             imputed_stats.fit_linear(
-                data=data[columns_to_keep].dropna(axis=0),
+                data=self.data[columns_to_keep].dropna(axis=0),
                 formula=formula + " + unknown",
-                result_col="snp4",
+                result_col="snp3",
             )
 
     def test_fit_linear_interaction(self):
         """Tests the 'fit_linear' function with interaction."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim_inter.txt.bz2",
-        )
-
-        # This dataset contains 3 markers + 5 covariables
-        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
-
         # The formula for the first marker
         formula = "y ~ snp1 + C1 + C2 + C3 + age + C(gender) + snp1*C(gender)"
         columns_to_keep = ["y", "snp1", "C1", "C2", "C3", "age", "gender"]
@@ -1286,7 +1325,7 @@ class TestImputedStatsLinear(unittest.TestCase):
 
         # The observed results
         observed = imputed_stats.fit_linear(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data_inter[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp1:C(gender)[T.2]",
         )
@@ -1306,15 +1345,9 @@ class TestImputedStatsLinear(unittest.TestCase):
 
     def test_full_fit_linear(self):
         """Tests the full pipeline for linear regression."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="linear",
         )
@@ -1413,15 +1446,9 @@ class TestImputedStatsLinear(unittest.TestCase):
                      "multiprocessing not supported with Mac OS")
     def test_full_fit_linear_multiprocess(self):
         """Tests the full pipeline for linear regression with >1 processes."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="linear",
             nb_process=2,
@@ -1519,15 +1546,9 @@ class TestImputedStatsLinear(unittest.TestCase):
 
     def test_full_fit_linear_interaction(self):
         """Tests the full pipeline for linear regression with interaction."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim_inter.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_inter_filename,
             output_dirname=self.output_dir.name,
             analysis_type="linear",
             interaction="gender",
@@ -1633,23 +1654,35 @@ class TestImputedStatsLogistic(unittest.TestCase):
         # Creating the temporary directory
         self.output_dir = TemporaryDirectory(prefix="genipe_test_")
 
+        # The name of the data
+        self.data_filename = resource_filename(
+            __name__,
+            "data/regression_sim.txt.bz2",
+        )
+
+        # The name of the data with interaction
+        self.data_inter_filename = resource_filename(
+            __name__,
+            "data/regression_sim_inter.txt.bz2",
+        )
+
+        # This dataset contains 3 markers + 5 covariables
+        self.data = pd.read_csv(self.data_filename, sep="\t",
+                                compression="bz2")
+
+        # This dataset contains 3 markers + 5 covariables
+        self.data_inter = pd.read_csv(self.data_inter_filename, sep="\t",
+                                      compression="bz2")
+
+
     def tearDown(self):
         """Finishes the test."""
         # Deleting the output directory
         self.output_dir.cleanup()
 
-    def test_fit_logistic(self):
-        """Tests the 'fit_logistic' function."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
-        )
-
-        # This dataset contains 3 markers + 5 covariables
-        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
-
-        # The formula for the first marker
+    def test_fit_logistic_snp1(self):
+        """Tests the 'fit_logistic' function, first SNP."""
+        # The formula and columns
         formula = "y_d ~ snp1 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y_d", "snp1", "C1", "C2", "C3", "age", "gender"]
 
@@ -1663,7 +1696,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
         # The observed results for the first marker
         observed = imputed_stats.fit_logistic(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp1",
         )
@@ -1680,7 +1713,9 @@ class TestImputedStatsLogistic(unittest.TestCase):
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=5)
 
-        # The formula for the second marker
+    def test_fit_logistic_snp2(self):
+        """Tests the 'fit_logistic' function, second SNP."""
+        # The formula and columns
         formula = "y_d ~ snp2 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y_d", "snp2", "C1", "C2", "C3", "age", "gender"]
 
@@ -1694,7 +1729,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
         # The observed results for the first marker
         observed = imputed_stats.fit_logistic(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp2",
         )
@@ -1711,7 +1746,9 @@ class TestImputedStatsLogistic(unittest.TestCase):
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=5)
 
-        # The formula for the third (and last) marker
+    def test_fit_logistic_snp3(self):
+        """Tests the 'fit_logistic' function, third SNP."""
+        # The formula and columns
         formula = "y_d ~ snp3 + C1 + C2 + C3 + age + C(gender)"
         columns_to_keep = ["y_d", "snp3", "C1", "C2", "C3", "age", "gender"]
 
@@ -1725,7 +1762,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
         # The observed results for the first marker
         observed = imputed_stats.fit_logistic(
-            data=data[columns_to_keep].dropna(axis=0),
+            data=self.data[columns_to_keep].dropna(axis=0),
             formula=formula,
             result_col="snp3",
         )
@@ -1742,32 +1779,29 @@ class TestImputedStatsLogistic(unittest.TestCase):
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=5)
 
+    def test_fit_logistic_invalid(self):
+        """Tests the 'fit_logistic' function, invalid values."""
+        # The formula and columns
+        formula = "y_d ~ snp3 + C1 + C2 + C3 + age + C(gender)"
+        columns_to_keep = ["y_d", "snp3", "C1", "C2", "C3", "age", "gender"]
+
         # Asking for an invalid column should raise a KeyError
         with self.assertRaises(KeyError):
             imputed_stats.fit_logistic(
-                data=data[columns_to_keep].dropna(axis=0),
+                data=self.data[columns_to_keep].dropna(axis=0),
                 formula=formula,
                 result_col="unknown",
             )
 
         with self.assertRaises(patsy.PatsyError):
             imputed_stats.fit_logistic(
-                data=data[columns_to_keep].dropna(axis=0),
+                data=self.data[columns_to_keep].dropna(axis=0),
                 formula=formula + " + unknown",
-                result_col="snp4",
+                result_col="snp3",
             )
 
     def test_fit_logistic_interaction(self):
         """Tests the 'fit_logistic' function with interaction."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim_inter.txt.bz2",
-        )
-
-        # This dataset contains 3 markers + 5 covariables
-        data = pd.read_csv(data_filename, sep="\t", compression="bz2")
-
         # The formula for the first marker
         formula = ("y_d ~ snp1 + C1 + C2 + C3 + age + C(gender) + "
                    "snp1*C(gender)")
@@ -1783,7 +1817,7 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
         # The observed results
         observed = imputed_stats.fit_logistic(
-            data=data[columns_to_keep],
+            data=self.data_inter[columns_to_keep],
             formula=formula,
             result_col="snp1:C(gender)[T.2]",
         )
@@ -1802,15 +1836,9 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
     def test_full_fit_logistic(self):
         """Tests the full pipeline for logistic regression."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="logistic",
             pheno_name="y_d",
@@ -1915,15 +1943,9 @@ class TestImputedStatsLogistic(unittest.TestCase):
                      "multiprocessing not supported with Mac OS")
     def test_full_fit_logistic_multiprocess(self):
         """Tests the full pipeline, logistic regression with >1 processes."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_filename,
             output_dirname=self.output_dir.name,
             analysis_type="logistic",
             pheno_name="y_d",
@@ -2027,15 +2049,9 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
     def test_full_fit_logistic_interaction(self):
         """Tests the full pipeline for logistic regression with interaction."""
-        # Reading the data
-        data_filename = resource_filename(
-            __name__,
-            "data/regression_sim_inter.txt.bz2",
-        )
-
         # Creating the input files
         o_prefix, options = create_input_files(
-            i_filename=data_filename,
+            i_filename=self.data_inter_filename,
             output_dirname=self.output_dir.name,
             analysis_type="logistic",
             pheno_name="y_d",
