@@ -47,6 +47,7 @@ In summary, here is the structure of the output files. Again, refer to the
    ├── .../
    │
    ├── chromosome_lengths.txt
+   ├── exclusion_summary.txt
    ├── frequency_pie.pdf
    ├── genipe.log
    ├── markers_to_exclude.txt
