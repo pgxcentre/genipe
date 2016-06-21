@@ -1172,7 +1172,6 @@ class TestImputedStatsLinear(unittest.TestCase):
         self.data_inter = pd.read_csv(self.data_inter_filename, sep="\t",
                                       compression="bz2")
 
-
     def tearDown(self):
         """Finishes the test."""
         # Deleting the output directory
@@ -1673,7 +1672,6 @@ class TestImputedStatsLogistic(unittest.TestCase):
         # This dataset contains 3 markers + 5 covariables
         self.data_inter = pd.read_csv(self.data_inter_filename, sep="\t",
                                       compression="bz2")
-
 
     def tearDown(self):
         """Finishes the test."""
