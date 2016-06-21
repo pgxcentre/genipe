@@ -22,6 +22,7 @@ management):
 
 * ``matplotlib`` version 1.4.2
 * ``scipy`` version 0.15.1 or latest (required by ``statsmodels``)
+* ``patsy`` version 0.4.1 or latest
 * ``statsmodels`` version 0.6.1 or latest
 * ``lifelines`` version 0.7.0 or latest
 * ``biopython`` version 1.65 or latest
@@ -69,6 +70,7 @@ command:
 .. code-block:: bash
 
    pip install scipy
+   pip install patsy
    pip install statsmodels
    pip install lifelines
    pip install biopython
@@ -125,6 +127,7 @@ command:
 .. code-block:: bash
 
    conda install -y scipy
+   conda install -y patsy
    conda install -y statsmodels
    conda install -y biopython
    conda install -y matplotlib

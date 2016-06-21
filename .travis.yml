@@ -20,6 +20,7 @@ install:
   - "conda install -q numpy"
   - "conda install -q pandas"
   - "conda install -q scipy"
+  - "conda install -q patsy"
   - "conda install -q statsmodels"
   - "pip install --no-deps pyfaidx"
   - "pip install --no-deps lifelines"
