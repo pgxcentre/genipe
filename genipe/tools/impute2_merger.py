@@ -400,7 +400,7 @@ def parse_args(parser, args=None):
         "-i",
         "--impute2",
         type=str,
-        metavar="GEN",
+        metavar="FILE",
         required=True,
         nargs="+",
         help="IMPUTE2 file(s) to merge.",
