@@ -10,4 +10,6 @@ scripts provided by :py:mod:`genipe`.
 
    parameters/main_pipeline
    parameters/imputed_stats
+   parameters/impute2_merger
+   parameters/impute2_extractor
 
