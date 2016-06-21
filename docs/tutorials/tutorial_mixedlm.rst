@@ -15,20 +15,20 @@ most probable. A value close to 2 means that a homozygous genotype of the rare
 allele is the most probable. Finally, a value close to 1 means that a
 heterozygous genotype is the most probable.
 
-An optimization is made so that the analysis isn't too time consuming for large
+An optimization is made so that the analysis is less time consuming for large
 scale imputation data. The p-value of the SNP is estimated using the two-step
 linear mixed model (as describe by Sikorska *et al.*, 2015 [doi:
 `10.1038/ejhg.2015.1
 <http://www.nature.com/ejhg/journal/v23/n10/abs/ejhg20151a.html>`_]). If the
-p-value is lower than a user specified threshold, the real mixed linear model
+p-value is lower than a user specified threshold, the exact mixed linear model
 analysis is performed for this marker to gather all the important statistics
 (*e.g.* beta).
 
-The precision of the estimated p-value is quite precise, as demonstrated by the
+The precision of the estimated p-value is quite high, as demonstrated by the
 following figure. The p-values were compared between the two-step approach (*y*
 axis) and the original one (*x* axis). The analysis was performed on 5,045
-samples imputed for chromosome 2 (528,932 imputed markers with MAF higher than
-1%).
+samples imputed on chromosome 2 (528,932 high quality imputed markers with MAF
+higher than 1%).
 
 .. figure:: ../_static/images/MixedLM_TS_Diff.png
     :align: center

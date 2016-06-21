@@ -1,7 +1,7 @@
 Input Files
 ============
 
-Multiple input files are required for :py:mod:`genipe` including the initial
+Multiple input files are required for :py:mod:`genipe`, including the initial
 genotypes and the reference files (for imputation). For a thorough description
 of these files, see the :ref:`genipe-tut-input-files` section of the tutorial.
 
