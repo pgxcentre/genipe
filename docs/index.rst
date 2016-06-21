@@ -16,17 +16,17 @@ commonly used tools `PLINK <http://pngu.mgh.harvard.edu/~purcell/plink/>`_,
 `SHAPEIT <https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html>`_ and
 `IMPUTE2 <https://mathgen.stats.ox.ac.uk/impute/impute_v2.html>`_.
 
-A quality metrics report is automatically generated at the end of the
-imputation process to easily assess the quality of the analysis. The report is
-compiled into a PDF using LaTeX. For information on how to compile the report,
-refer to :ref:`this section <genipe-tut-compile-report>` of the main
-:ref:`pipeline tutorial <genipe-tut-page>`.
+A report is automatically generated at the end of the imputation process to
+easily assess important quality metrics. This report can be rendered to PDF
+using LaTeX. For information on rendering, refer to :ref:`this section
+<genipe-tut-compile-report>` of the main :ref:`pipeline tutorial
+<genipe-tut-page>`.
 
 Finally, it also provides a useful standalone tool to perform statistical
 analysis on imputed (dosage) data (such as linear, logistic, repeated
-measurements, survival analysis, or `SKAT <http://www.hsph.harvard.edu/skat/>`_
-analysis of rare variants). For more information about execution time, see the
-:ref:`stats-exec-time` page.
+measurements, survival analysis, or `SKAT
+<http://www.hsph.harvard.edu/skat/>`_). For more information about execution
+time, see the :ref:`stats-exec-time` page.
 
 .. toctree::
    :maxdepth: 2
@@ -179,11 +179,11 @@ Usage
 About
 ------
 
-This project was initiated at the
+This project was conducted at the
 `Beaulieu-Saucier Pharmacogenomics Centre <http://www.pharmacogenomics.ca>`_ of
 the `Montreal Heart Institute <https://www.icm-mhi.org>`_. The aim was to speed
-up (and automatize) the imputation process for the whole genome and facilitate
-its analysis.
+up (and automatize) the imputation process of the whole genome and facilitate
+downstream data analysis.
 
 .. image:: _static/logo_pgx.png
    :width: 350px

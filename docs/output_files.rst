@@ -2,7 +2,7 @@ Output Files
 =============
 
 The :py:mod:`genipe` pipeline generates output files for each of the autosomal
-chromosome (from 1 to 22). To get a description of those file, refer to the
+chromosomes (from 1 to 22). To get a description of those file, refer to the
 :ref:`genipe-tut-output-files` section of the tutorial.
 
 In summary, here is the structure of the output files. Again, refer to the

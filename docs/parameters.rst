@@ -4,7 +4,6 @@ Options and Parameters
 This section presents all the options and parameters available for all the
 scripts provided by :py:mod:`genipe`.
 
-
 .. toctree::
    :maxdepth: 1
 
@@ -12,4 +11,3 @@ scripts provided by :py:mod:`genipe`.
    parameters/imputed_stats
    parameters/impute2_merger
    parameters/impute2_extractor
-

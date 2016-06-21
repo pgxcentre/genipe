@@ -1,10 +1,9 @@
 Input Files
 ============
 
-Multiple input files are required for :py:mod:`genipe` in order to perform the
-genome-wide imputation. Those includes the original genotypes of the study
-cohort, and the reference files (for imputation). For a description of the
-required files, see the :ref:`genipe-tut-input-files` section of the tutorial.
+Multiple input files are required for :py:mod:`genipe` including the initial
+genotypes and the reference files (for imputation). For a thorough description
+of these files, see the :ref:`genipe-tut-input-files` section of the tutorial.
 
 Here is a typical project directory structure. Again, refer to the
 :ref:`genipe-tut-input-files` section of the tutorial for more information.

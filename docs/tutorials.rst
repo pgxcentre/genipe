@@ -78,7 +78,7 @@ expected input and output files.
 Linear tutorial
 ----------------
 
-This tutorial is a waltk-through of a linear regression analysis (using
+This tutorial is a walk-through of a linear regression analysis (using
 ordinary least squares). It describes in detail the expected input and output
 files.
 

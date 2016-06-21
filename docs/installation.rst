@@ -9,7 +9,7 @@ Installation
 Requirements
 -------------
 
-The tools require a standard Python 3.4 (or latest) installation with the
+`genipe` requires a standard Python 3.4 (or latest) installation with the
 following modules:
 
 * ``numpy`` version 1.8.2 or latest
@@ -38,7 +38,6 @@ management):
 
 Installing in a virtual environment
 ------------------------------------
-
 
 .. _install-pyvenv:
 
@@ -122,7 +121,7 @@ following command:
    updating).
 
 If required, the optional dependencies can be installed using the following
-command:
+commands:
 
 .. code-block:: bash
 
