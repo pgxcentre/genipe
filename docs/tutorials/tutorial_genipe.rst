@@ -108,8 +108,33 @@ Once all the input files are ready for analysis, you can finally execute the
 pipeline. Make sure that the virtual Python environment was properly activated
 (see :ref:`genipe-pyvenv-activation` for more details).
 
-When automatically preparing the data using the `genipe-tutorial` script, a
-new script named `execute.sh` will be created to execute the analysis.
+When automatically preparing the data using the ``genipe-tutorial`` script, a
+new script named ``execute.sh`` will be created to execute the analysis. Here
+is the content of the ``execute.sh`` script.
+
+.. code-block:: bash
+
+   #!/usr/bin/env bash
+   # Changing directory
+   cd $HOME/genipe_tutorial
+
+   # Launching the imputation with genipe
+   genipe-launcher \
+       --chrom autosomes \
+       --bfile $HOME/genipe_tutorial/data/hapmap_CEU_r23a_hg19 \
+       --shapeit-bin $HOME/genipe_tutorial/bin/shapeit \
+       --impute2-bin $HOME/genipe_tutorial/bin/impute2 \
+       --plink-bin $HOME/genipe_tutorial/bin/plink \
+       --reference $HOME/genipe_tutorial/hg19/hg19.fasta \
+       --hap-template $HOME/genipe_tutorial/1000GP_Phase3/1000GP_Phase3_chr{chrom}.hap.gz \
+       --legend-template $HOME/genipe_tutorial/1000GP_Phase3/1000GP_Phase3_chr{chrom}.legend.gz \
+       --map-template $HOME/genipe_tutorial/1000GP_Phase3/genetic_map_chr{chrom}_combined_b37.txt \
+       --sample-file $HOME/genipe_tutorial/1000GP_Phase3/1000GP_Phase3.sample \
+       --filtering-rules 'ALL<0.01' 'ALL>0.99' \
+       --thread 4 \
+       --report-title "Tutorial" \
+       --report-number "Test Report"
+
 When in the correct working directory, the following command should execute the
 genome-wide imputation of the *HapMap* CEU dataset.
 
@@ -117,32 +142,36 @@ genome-wide imputation of the *HapMap* CEU dataset.
 
    cd $HOME/genipe_tutorial
 
-   genipe-launcher \
-       --bfile data/hapmap_CEU_r23a_hg19 \
-       --shapeit-bin bin/shapeit \
-       --impute2-bin bin/impute2 \
-       --plink-bin bin/plink \
-       --reference hg19/hg19.fasta \
-       --hap-template 1000GP_Phase3/1000GP_Phase3_chr{chrom}.hap.gz \
-       --legend-template 1000GP_Phase3/1000GP_Phase3_chr{chrom}.legend.gz \
-       --map-template 1000GP_Phase3/genetic_map_chr{chrom}_combined_b37.txt \
-       --sample-file 1000GP_Phase3/1000GP_Phase3.sample \
-       --filtering-rules 'ALL<0.01' 'ALL>0.99' \
-       --thread 4 \
-       --report-title "Tutorial" \
-       --report-number "Test Report"
+   ./execute.sh
 
 .. note::
 
-   In the previous command, the ``--reference`` option is optional and might be
-   skipped.
+   In the script ``execute.sh``, the ``--reference`` option is optional and
+   might be removed.
 
-   It is possible to compress IMPUTE2's output files using the ``--bgzip``
+.. note::
+
+   It is possible to compress IMPUTE2's output files by adding the ``--bgzip``
    option (the ``bgzip`` software should be in the path).
 
-   It is possible to skip (in the previous command) the ``--shapeit-bin``, the
-   ``--impute2-bin`` and/or the ``--plink-bin`` options if the SHAPEIT, IMPUTE2
-   and/or the Plink binaries are in  the ``PATH`` variable.
+.. note::
+
+   It is possible to remove the ``--shapeit-bin``, the ``--impute2-bin`` and/or
+   the ``--plink-bin`` options if the SHAPEIT, IMPUTE2 and/or the Plink
+   binaries are in  the ``PATH`` variable.
+
+.. note::
+
+   The ``--chrom autosomes`` option will run the imputation only on the
+   autosomes. If all chromosomes are required (including chromosomes 23 and 25
+   (pseudo-autosomal region), then the ``--chrom`` option can be removed, and
+   the imputation reference files for chromosome 23 PAR and nonPAR are required
+   (see :ref:`this section <params-chrom-x>` for more information).
+
+.. note::
+
+   It is possible to add extra options to SHAPEIT and IMPUTE2 using the
+   ``--shapeit-extra`` and ``--impute2-extra`` options, respectively.
 
 The following table describes the options **used by** :py:mod:`genipe` **in the
 previous command** (see the :ref:`genipe-usage` section for a full list):
@@ -152,6 +181,8 @@ previous command** (see the :ref:`genipe-usage` section for a full list):
     +-----------------------+-------------------------------------------------+
     | Option                | Description                                     |
     +=======================+=================================================+
+    | ``--chrom``           | The chromosome to impute (here, the autosomes). |
+    +-----------------------+-------------------------------------------------+
     | ``--bfile``           | The genotypes of the study cohort to be imputed.|
     +-----------------------+-------------------------------------------------+
     | ``--shapeit-bin``     | The ``shapeit`` binary.                         |
@@ -180,10 +211,13 @@ previous command** (see the :ref:`genipe-usage` section for a full list):
     | ``--filtering-rules`` | Rules used by *IMPUTE2* to exclude sites from   |
     |                       | its reference files (using the legend files).   |
     |                       | Each terms are joined using a logical *OR*.     |
+    |                       | Here, loci with an alternative allele frequency |
+    |                       | lower than 0.01 and higher than 0.99 will be    |
+    |                       | excluded from the imputation reference.         |
     +-----------------------+-------------------------------------------------+
     | ``--thread``          | The number of thread to use for the analysis.   |
     |                       | When using *DRMAA*, this will be the number of  |
-    |                       | simultaneous tasks.                             |
+    |                       | simultaneous tasks. Four threads will be used.  |
     +-----------------------+-------------------------------------------------+
     | ``--report-title``    | The title of the automatic report.              |
     +-----------------------+-------------------------------------------------+
@@ -281,6 +315,7 @@ files.
    ├── .../
    │
    ├── chromosome_lengths.txt
+   ├── exclusion_summary.txt
    ├── frequency_pie.pdf
    ├── genipe.log
    ├── markers_to_exclude.txt
@@ -316,6 +351,11 @@ directory content is describe below. The following files are created inside the
     | ``chromosome_lengths.txt`` | The length of each chromosome (this        |
     |                            | information is fetched from Ensembl using  |
     |                            | its REST API and saved to file).           |
+    +----------------------------+--------------------------------------------+
+    | ``exclusion_summary.txt``  | A file containing the exclusion summary    |
+    |                            | prior to phasing (*e.g* the number of      |
+    |                            | ambiguous markers, the number of flipped   |
+    |                            | markers, etc.).                            |
     +----------------------------+--------------------------------------------+
     | ``frequency_pie.pdf``      | This file contains a pie chart describing  |
     |                            | the minor allele frequency distribution of |
@@ -374,7 +414,10 @@ autosomal chromosomes. They will contain the following files:
     |                               | the default is higher and equal to 0.98)|
     |                               | using the probability threshold (set by |
     |                               | the user, where the default is higher   |
-    |                               | and equal to 0.9).                      |
+    |                               | and equal to 0.9). The sites also pass  |
+    |                               | the INFO threshold (set by the user,    |
+    |                               | where the default is higher and equal to|
+    |                               | 0).                                     |
     +-------------------------------+-----------------------------------------+
     | ``.imputed.impute2`` or       | Imputation results (merged from the     |
     | ``.imputed.impute2.gz``       | individual segment files. This file     |

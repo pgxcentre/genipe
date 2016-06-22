@@ -200,7 +200,7 @@ class TestMainPipeline(unittest.TestCase):
         expected_chrom[25] = expected_length[25]
 
         # Tests that a warning is logged if there is a missing chromosome
-        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+        with self.assertLogs(level="WARNING") as cm:
             chrom_length = cli.get_chromosome_length(
                 required_chrom=sorted(expected_chrom.keys()),
                 legend=legend_template,
@@ -370,7 +370,7 @@ class TestMainPipeline(unittest.TestCase):
         reference = pyfaidx.Fasta(reference_filename, as_raw=True)
 
         # The observed result
-        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+        with self.assertLogs(level="WARNING") as cm:
             cli.get_chrom_encoding(reference)
         log_m = [
             "WARNING:root:{}: chromosome not in reference".format(i)
@@ -640,7 +640,7 @@ class TestMainPipeline(unittest.TestCase):
             print("marker_1", "NA", sep="\t", file=o_file)
 
         # This should issue a warning
-        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+        with self.assertLogs(level="WARNING") as cm:
             cli.gather_maf_stats(
                 required_chrom=autosomes,
                 o_dir=self.output_dir.name,
@@ -657,7 +657,7 @@ class TestMainPipeline(unittest.TestCase):
                 pass
 
         # This should issue a warning
-        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+        with self.assertLogs(level="WARNING") as cm:
             cli.gather_maf_stats(
                 required_chrom=autosomes,
                 o_dir=self.output_dir.name,
@@ -700,12 +700,3 @@ class TestMainPipeline(unittest.TestCase):
     def test_gather_execution_time(self):
         """Tests the 'gather_execution_time' function."""
         self.fail("Test not implemented")
-
-    def _my_compatibility_assertLogs(self, logger=None, level=None):
-        """Compatibility 'assertLogs' function for Python 3.3."""
-        if hasattr(self, "assertLogs"):
-            return self.assertLogs(logger, level)
-
-        else:
-            from .python_3_3_compatibility import Python_3_4_AssertLogsContext
-            return Python_3_4_AssertLogsContext(self, logger, level)

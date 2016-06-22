@@ -49,7 +49,10 @@ Output options
     +-------------------------------+-----------------------------------------+
     | Option                        | Description                             |
     +===============================+=========================================+
-    | ``--chrom CHROM [CHROM ...]`` | The chromosomes to process.             |
+    | ``--chrom CHROM [CHROM ...]`` | The chromosomes to process. It is       |
+    |                               | possible to write 'autosomes' to process|
+    |                               | all the autosomes (from chromosome 1 to |
+    |                               | 22, inclusively).                       |
     +-------------------------------+-----------------------------------------+
     | ``--output-dir DIR``          | The name of the output directory.       |
     |                               | [``genipe``]                            |
@@ -140,6 +143,8 @@ IMPUTE2 autosomal reference
     | ``--sample-file FILE``         | The name of IMPUTE2's sample file.     |
     +--------------------------------+----------------------------------------+
 
+
+.. _params-chrom-x:
 
 IMPUTE2 chromosome X reference
 -------------------------------

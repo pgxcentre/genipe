@@ -142,7 +142,7 @@ class TestDB(unittest.TestCase):
         logging.disable(logging.NOTSET)
 
         # Checking the status of a missing task
-        with self._my_compatibility_assertLogs(level="DEBUG") as cm:
+        with self.assertLogs(level="DEBUG") as cm:
             db_utils.check_task_completion("DUMMY_NAME", self.db_name)
         log_m = ("DEBUG:root:'DUMMY_NAME' no entry")
         self.assertEqual(1, len(cm.output))
@@ -497,7 +497,7 @@ class TestDB(unittest.TestCase):
                   (self.task_names[0], ))
         conn.commit()
         conn.close()
-        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+        with self.assertLogs(level="WARNING") as cm:
             db_utils.get_all_runtimes(self.db_name)
         log_m = "WARNING:root:{}: no execution time for task"
         self.assertEqual(1, len(cm.output))
@@ -509,17 +509,8 @@ class TestDB(unittest.TestCase):
                   (self.task_names[0], ))
         conn.commit()
         conn.close()
-        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+        with self.assertLogs(level="WARNING") as cm:
             db_utils.get_all_runtimes(self.db_name)
         log_m = "WARNING:root:{}: no execution time for task"
         self.assertEqual(1, len(cm.output))
         self.assertEqual(log_m.format(self.task_names[0]), cm.output[0])
-
-    def _my_compatibility_assertLogs(self, logger=None, level=None):
-        """Compatibility 'assertLogs' function for Python 3.3."""
-        if hasattr(self, "assertLogs"):
-            return self.assertLogs(logger, level)
-
-        else:
-            from .python_3_3_compatibility import Python_3_4_AssertLogsContext
-            return Python_3_4_AssertLogsContext(self, logger, level)

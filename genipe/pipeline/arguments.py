@@ -62,10 +62,13 @@ def parse_args(parser):
 
     # The output options
     group = parser.add_argument_group("Output Options")
+    possible_chromosomes = chromosomes + ("autosomes", )
     group.add_argument(
-        "--chrom", type=int, nargs="+", metavar="CHROM", choices=chromosomes,
-        default=chromosomes, dest="required_chrom",
-        help="The chromosomes to process.",
+        "--chrom", type=str, nargs="+", metavar="CHROM", dest="required_chrom",
+        choices=[str(c) for c in possible_chromosomes], default=chromosomes,
+        help="The chromosomes to process. It is possible to write 'autosomes' "
+             "to process all the autosomes (from chromosome 1 to  22, "
+             "inclusively).",
     )
     group.add_argument(
         "--output-dir", type=str, metavar="DIR", default="genipe",
@@ -284,6 +287,18 @@ def check_args(args):
         raise GenipeError("thread should be one or more")
     if args.shapeit_thread < 1:
         raise GenipeError("thread should be one or more")
+
+    # Checking the chromosome (if autosomes)
+    if args.required_chrom == ["autosomes"]:
+        args.required_chrom = tuple(autosomes)
+    else:
+        try:
+            args.required_chrom = [int(c) for c in args.required_chrom]
+        except ValueError:
+            raise GenipeError(
+                "{}: invalid chromosome(s) (if all autosomes are required, "
+                "write only 'autosomes')".format(args.required_chrom)
+            )
 
     # Checking IMPUTE2's templates (if required)
     for chrom in args.required_chrom:
