@@ -45,6 +45,7 @@ cd {path}
 
 # Launching the imputation with genipe
 genipe-launcher \
+    --chrom autosomes \
     --bfile {genotypes_prefix} \
     --shapeit-bin {shapeit_bin} \
     --impute2-bin {impute2_bin} \
