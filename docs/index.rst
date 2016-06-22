@@ -69,7 +69,7 @@ Usage
                           [--report-background BACKGROUND]
 
    Execute the genome-wide imputation pipeline. This script is part of the
-   'genipe' package, version 1.3.0.
+   'genipe' package, version 1.3.1.
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -85,7 +85,9 @@ Usage
 
    Output Options:
      --chrom CHROM [CHROM ...]
-                           The chromosomes to process.
+                           The chromosomes to process. It is possible to write
+                           'autosomes' to process all the autosomes (from
+                           chromosome 1 to 22, inclusively).
      --output-dir DIR      The name of the output directory. [genipe]
      --bgzip               Use bgzip to compress the impute2 files.
 

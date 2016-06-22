@@ -66,7 +66,9 @@ def parse_args(parser):
     group.add_argument(
         "--chrom", type=str, nargs="+", metavar="CHROM", dest="required_chrom",
         choices=[str(c) for c in possible_chromosomes], default=chromosomes,
-        help="The chromosomes to process.",
+        help="The chromosomes to process. It is possible to write 'autosomes' "
+             "to process all the autosomes (from chromosome 1 to  22, "
+             "inclusively).",
     )
     group.add_argument(
         "--output-dir", type=str, metavar="DIR", default="genipe",
