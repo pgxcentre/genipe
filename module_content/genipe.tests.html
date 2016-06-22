@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tests package &mdash; genipe 1.3.0 documentation</title>
+    <title>genipe.tests package &mdash; genipe 1.3.1 documentation</title>
     
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.3.0',
+        VERSION:     '1.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.3.0 documentation" href="../index.html" />
+    <link rel="top" title="genipe 1.3.1 documentation" href="../index.html" />
     <link rel="up" title="genipe package" href="genipe.html" />
     <link rel="next" title="genipe.tools package" href="genipe.tools.html" />
     <link rel="prev" title="genipe.task package" href="genipe.task.html" />
@@ -51,7 +51,7 @@
         <li class="right" >
           <a href="genipe.task.html" title="genipe.task package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &raquo;</li> 
@@ -64,7 +64,6 @@
 <li><a class="reference internal" href="#">genipe.tests package</a><ul>
 <li><a class="reference internal" href="#module-genipe.tests">Module contents</a></li>
 <li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-genipe.tests.python_3_3_compatibility">genipe.tests.python_3_3_compatibility module</a></li>
 <li><a class="reference internal" href="#module-genipe.tests.test_db">genipe.tests.test_db module</a></li>
 <li><a class="reference internal" href="#module-genipe.tests.test_formats">genipe.tests.test_formats module</a></li>
 <li><a class="reference internal" href="#module-genipe.tests.test_impute2_extractor">genipe.tests.test_impute2_extractor module</a></li>
@@ -115,44 +114,6 @@
 </div>
 <div class="section" id="submodules">
 <h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-genipe.tests.python_3_3_compatibility">
-<span id="genipe-tests-python-3-3-compatibility-module"></span><h2>genipe.tests.python_3_3_compatibility module<a class="headerlink" href="#module-genipe.tests.python_3_3_compatibility" title="Permalink to this headline">¶</a></h2>
-<dl class="class">
-<dt id="genipe.tests.python_3_3_compatibility.Python_3_4_AssertLogsContext">
-<em class="property">class </em><code class="descclassname">genipe.tests.python_3_3_compatibility.</code><code class="descname">Python_3_4_AssertLogsContext</code><span class="sig-paren">(</span><em>test_case</em>, <em>logger_name</em>, <em>level</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/python_3_3_compatibility.html#Python_3_4_AssertLogsContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.python_3_3_compatibility.Python_3_4_AssertLogsContext" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference internal" href="#genipe.tests.python_3_3_compatibility.Python_3_4_BaseTestCaseContext" title="genipe.tests.python_3_3_compatibility.Python_3_4_BaseTestCaseContext"><code class="xref py py-class docutils literal"><span class="pre">genipe.tests.python_3_3_compatibility.Python_3_4_BaseTestCaseContext</span></code></a></p>
-<p>A context manager used to implement TestCase.assertLogs().</p>
-<dl class="attribute">
-<dt id="genipe.tests.python_3_3_compatibility.Python_3_4_AssertLogsContext.LOGGING_FORMAT">
-<code class="descname">LOGGING_FORMAT</code><em class="property"> = '%(levelname)s:%(name)s:%(message)s'</em><a class="headerlink" href="#genipe.tests.python_3_3_compatibility.Python_3_4_AssertLogsContext.LOGGING_FORMAT" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
-<dl class="class">
-<dt id="genipe.tests.python_3_3_compatibility.Python_3_4_BaseTestCaseContext">
-<em class="property">class </em><code class="descclassname">genipe.tests.python_3_3_compatibility.</code><code class="descname">Python_3_4_BaseTestCaseContext</code><span class="sig-paren">(</span><em>test_case</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/python_3_3_compatibility.html#Python_3_4_BaseTestCaseContext"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.python_3_3_compatibility.Python_3_4_BaseTestCaseContext" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.4/library/functions.html#object" title="(in Python v3.4)"><code class="xref py py-class docutils literal"><span class="pre">object</span></code></a></p>
-</dd></dl>
-
-<dl class="class">
-<dt id="genipe.tests.python_3_3_compatibility.Python_3_4_CapturingHandler">
-<em class="property">class </em><code class="descclassname">genipe.tests.python_3_3_compatibility.</code><code class="descname">Python_3_4_CapturingHandler</code><a class="reference internal" href="../_modules/genipe/tests/python_3_3_compatibility.html#Python_3_4_CapturingHandler"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.python_3_3_compatibility.Python_3_4_CapturingHandler" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">logging.Handler</span></code></p>
-<p>A logging handler capturing all (raw and formatted) logging output.</p>
-<dl class="method">
-<dt id="genipe.tests.python_3_3_compatibility.Python_3_4_CapturingHandler.emit">
-<code class="descname">emit</code><span class="sig-paren">(</span><em>record</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/python_3_3_compatibility.html#Python_3_4_CapturingHandler.emit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.python_3_3_compatibility.Python_3_4_CapturingHandler.emit" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-<dl class="method">
-<dt id="genipe.tests.python_3_3_compatibility.Python_3_4_CapturingHandler.flush">
-<code class="descname">flush</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/python_3_3_compatibility.html#Python_3_4_CapturingHandler.flush"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.python_3_3_compatibility.Python_3_4_CapturingHandler.flush" title="Permalink to this definition">¶</a></dt>
-<dd></dd></dl>
-
-</dd></dl>
-
 </div>
 <div class="section" id="module-genipe.tests.test_db">
 <span id="genipe-tests-test-db-module"></span><h2>genipe.tests.test_db module<a class="headerlink" href="#module-genipe.tests.test_db" title="Permalink to this headline">¶</a></h2>
@@ -1109,7 +1070,7 @@
         <li class="right" >
           <a href="genipe.task.html" title="genipe.task package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &raquo;</li> 

@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tests.test_main_pipeline &mdash; genipe 1.3.0 documentation</title>
+    <title>genipe.tests.test_main_pipeline &mdash; genipe 1.3.1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.3.0',
+        VERSION:     '1.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.3.0 documentation" href="../../../index.html" />
+    <link rel="top" title="genipe 1.3.1 documentation" href="../../../index.html" />
     <link rel="up" title="genipe" href="../../genipe.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
       </ul>
@@ -271,7 +271,7 @@
         <span class="n">expected_chrom</span><span class="p">[</span><span class="mi">25</span><span class="p">]</span> <span class="o">=</span> <span class="n">expected_length</span><span class="p">[</span><span class="mi">25</span><span class="p">]</span>
 
         <span class="c1"># Tests that a warning is logged if there is a missing chromosome</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_compatibility_assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
             <span class="n">chrom_length</span> <span class="o">=</span> <span class="n">cli</span><span class="o">.</span><span class="n">get_chromosome_length</span><span class="p">(</span>
                 <span class="n">required_chrom</span><span class="o">=</span><span class="nb">sorted</span><span class="p">(</span><span class="n">expected_chrom</span><span class="o">.</span><span class="n">keys</span><span class="p">()),</span>
                 <span class="n">legend</span><span class="o">=</span><span class="n">legend_template</span><span class="p">,</span>
@@ -441,7 +441,7 @@
         <span class="n">reference</span> <span class="o">=</span> <span class="n">pyfaidx</span><span class="o">.</span><span class="n">Fasta</span><span class="p">(</span><span class="n">reference_filename</span><span class="p">,</span> <span class="n">as_raw</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
         <span class="c1"># The observed result</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_compatibility_assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
             <span class="n">cli</span><span class="o">.</span><span class="n">get_chrom_encoding</span><span class="p">(</span><span class="n">reference</span><span class="p">)</span>
         <span class="n">log_m</span> <span class="o">=</span> <span class="p">[</span>
             <span class="s2">&quot;WARNING:root:{}: chromosome not in reference&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span>
@@ -711,7 +711,7 @@
             <span class="k">print</span><span class="p">(</span><span class="s2">&quot;marker_1&quot;</span><span class="p">,</span> <span class="s2">&quot;NA&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
 
         <span class="c1"># This should issue a warning</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_compatibility_assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
             <span class="n">cli</span><span class="o">.</span><span class="n">gather_maf_stats</span><span class="p">(</span>
                 <span class="n">required_chrom</span><span class="o">=</span><span class="n">autosomes</span><span class="p">,</span>
                 <span class="n">o_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -728,7 +728,7 @@
                 <span class="k">pass</span>
 
         <span class="c1"># This should issue a warning</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_compatibility_assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
             <span class="n">cli</span><span class="o">.</span><span class="n">gather_maf_stats</span><span class="p">(</span>
                 <span class="n">required_chrom</span><span class="o">=</span><span class="n">autosomes</span><span class="p">,</span>
                 <span class="n">o_dir</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span>
@@ -770,16 +770,7 @@
     <span class="nd">@unittest.skip</span><span class="p">(</span><span class="s2">&quot;Test not implemented&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="TestMainPipeline.test_gather_execution_time"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_main_pipeline.TestMainPipeline.test_gather_execution_time">[docs]</a>    <span class="k">def</span> <span class="nf">test_gather_execution_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Tests the &#39;gather_execution_time&#39; function.&quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Test not implemented&quot;</span><span class="p">)</span></div>
-
-    <span class="k">def</span> <span class="nf">_my_compatibility_assertLogs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compatibility &#39;assertLogs&#39; function for Python 3.3.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;assertLogs&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertLogs</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.python_3_3_compatibility</span> <span class="kn">import</span> <span class="n">Python_3_4_AssertLogsContext</span>
-            <span class="k">return</span> <span class="n">Python_3_4_AssertLogsContext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Test not implemented&quot;</span><span class="p">)</span></div></div>
 </pre></div>
 
           </div>
@@ -796,7 +787,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>

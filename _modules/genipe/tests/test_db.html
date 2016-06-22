@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tests.test_db &mdash; genipe 1.3.0 documentation</title>
+    <title>genipe.tests.test_db &mdash; genipe 1.3.1 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.3.0',
+        VERSION:     '1.3.1',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.3.0 documentation" href="../../../index.html" />
+    <link rel="top" title="genipe 1.3.1 documentation" href="../../../index.html" />
     <link rel="up" title="genipe" href="../../genipe.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
       </ul>
@@ -213,7 +213,7 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">disable</span><span class="p">(</span><span class="n">logging</span><span class="o">.</span><span class="n">NOTSET</span><span class="p">)</span>
 
         <span class="c1"># Checking the status of a missing task</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_compatibility_assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;DEBUG&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
             <span class="n">db_utils</span><span class="o">.</span><span class="n">check_task_completion</span><span class="p">(</span><span class="s2">&quot;DUMMY_NAME&quot;</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">db_name</span><span class="p">)</span>
         <span class="n">log_m</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;DEBUG:root:&#39;DUMMY_NAME&#39; no entry&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">output</span><span class="p">))</span>
@@ -568,7 +568,7 @@
                   <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">))</span>
         <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
         <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_compatibility_assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
             <span class="n">db_utils</span><span class="o">.</span><span class="n">get_all_runtimes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_name</span><span class="p">)</span>
         <span class="n">log_m</span> <span class="o">=</span> <span class="s2">&quot;WARNING:root:{}: no execution time for task&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">output</span><span class="p">))</span>
@@ -580,20 +580,11 @@
                   <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_names</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">))</span>
         <span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
         <span class="n">conn</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_compatibility_assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
             <span class="n">db_utils</span><span class="o">.</span><span class="n">get_all_runtimes</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">db_name</span><span class="p">)</span>
         <span class="n">log_m</span> <span class="o">=</span> <span class="s2">&quot;WARNING:root:{}: no execution time for task&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">output</span><span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">log_m</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">cm</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div>
-
-    <span class="k">def</span> <span class="nf">_my_compatibility_assertLogs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
-        <span class="sd">&quot;&quot;&quot;Compatibility &#39;assertLogs&#39; function for Python 3.3.&quot;&quot;&quot;</span>
-        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;assertLogs&quot;</span><span class="p">):</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertLogs</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
-
-        <span class="k">else</span><span class="p">:</span>
-            <span class="kn">from</span> <span class="nn">.python_3_3_compatibility</span> <span class="kn">import</span> <span class="n">Python_3_4_AssertLogsContext</span>
-            <span class="k">return</span> <span class="n">Python_3_4_AssertLogsContext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">log_m</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">task_names</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">cm</span><span class="o">.</span><span class="n">output</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span></div></div>
 </pre></div>
 
           </div>
@@ -610,7 +601,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.1 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>

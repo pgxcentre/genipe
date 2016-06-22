@@ -15,15 +15,6 @@ Submodules
 -----------
 
 
-genipe.tests.python_3_3_compatibility module
----------------------------------------------
-
-.. automodule:: genipe.tests.python_3_3_compatibility
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
 genipe.tests.test_db module
 ----------------------------
 
