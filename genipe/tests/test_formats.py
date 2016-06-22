@@ -498,7 +498,7 @@ class TestFormats(unittest.TestCase):
         expected_major = "A"
         expected_dosage = np.array([0.1, 0.9, 1.9, 0.1, 1.9, 0.1, 0.1, 0.9,
                                     0.9, 0.1], dtype=float)
-        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+        with self.assertLogs(level="WARNING") as cm:
             obs_results = impute2.maf_dosage_from_probs(
                 probs, "A", "B", gender=all_unknown,
             )
@@ -604,12 +604,3 @@ class TestFormats(unittest.TestCase):
         self.assertEqual("A", minor)
         self.assertEqual("B", major)
         self.assertEqual([0, 1, 2, 0, 2, 0, 0, 1, 1, 0], list(calls))
-
-    def _my_compatibility_assertLogs(self, logger=None, level=None):
-        """Compatibility 'assertLogs' function for Python 3.3."""
-        if hasattr(self, "assertLogs"):
-            return self.assertLogs(logger, level)
-
-        else:
-            from .python_3_3_compatibility import Python_3_4_AssertLogsContext
-            return Python_3_4_AssertLogsContext(self, logger, level)

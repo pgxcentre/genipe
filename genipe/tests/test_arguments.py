@@ -785,7 +785,7 @@ class TestArguments(unittest.TestCase):
         self.args.segment_length = 5e6 + 1
 
         # Checking the warning is logged
-        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+        with self.assertLogs(level="WARNING") as cm:
             check_args(self.args)
         log_m = ["WARNING:root:segment length (5e+06 bp) is more than 5Mb"]
         self.assertEqual(log_m, cm.output)
@@ -795,7 +795,7 @@ class TestArguments(unittest.TestCase):
         self.args.segment_length = 1e3 - 1
 
         # Checking the warning is logged
-        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+        with self.assertLogs(level="WARNING") as cm:
             check_args(self.args)
         log_m = ["WARNING:root:segment length (999 bp) is too small"]
         self.assertEqual(log_m, cm.output)
@@ -1017,12 +1017,3 @@ class TestArguments(unittest.TestCase):
             "-h, -int, -known_haps_g, -l, -m, -o, -use_prephased_g",
             str(cm.exception),
         )
-
-    def _my_compatibility_assertLogs(self, logger=None, level=None):
-        """Compatibility 'assertLogs' function for Python 3.3."""
-        if hasattr(self, "assertLogs"):
-            return self.assertLogs(logger, level)
-
-        else:
-            from .python_3_3_compatibility import Python_3_4_AssertLogsContext
-            return Python_3_4_AssertLogsContext(self, logger, level)

@@ -98,7 +98,6 @@ def setup_package():
                      "Operating System :: POSIX :: Linux",
                      "Operating System :: MacOS :: MacOS X",
                      "Programming Language :: Python",
-                     "Programming Language :: Python :: 3.3",
                      "Programming Language :: Python :: 3.4",
                      "Programming Language :: Python :: 3.5",
                      "Topic :: Scientific/Engineering :: Bio-Informatics"],
