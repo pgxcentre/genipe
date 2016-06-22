@@ -17,16 +17,16 @@ from setuptools import setup
 
 MAJOR = 1
 MINOR = 3
-MICRO = "0b1"
+MICRO = 0
 VERSION = "{0}.{1}.{2}".format(MAJOR, MINOR, MICRO)
 
 
 def check_python_version():
-    """Checks the python version, exits if < 3.3."""
+    """Checks the python version, exits if < 3.4."""
     python_major, python_minor = sys.version_info[:2]
 
     if python_major != 3 or python_minor < 4:
-        sys.stderr.write("genipe requires python 3 (version 3.3 or higher)\n")
+        sys.stderr.write("genipe requires python 3 (version 3.4 or higher)\n")
         sys.exit(1)
 
 

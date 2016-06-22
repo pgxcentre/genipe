@@ -263,7 +263,7 @@ usage: imputed-stats [-h] [-v] {cox,linear,logistic,mixedlm,skat} ...
 
 Performs statistical analysis on imputed data (either SKAT analysis, or
 linear, logistic or survival regression). This script is part of the 'genipe'
-package, version 1.3.0).
+package, version 1.3.0.
 
 optional arguments:
   -h, --help            show this help message and exit

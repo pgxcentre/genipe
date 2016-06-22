@@ -97,7 +97,7 @@ def main(args=None):
     desc = ("Performs statistical analysis on imputed data (either SKAT "
             "analysis, or linear, logistic or survival regression). This "
             "script is part of the 'genipe' package, version "
-            "{}).".format(__version__))
+            "{}.".format(__version__))
     parser = argparse.ArgumentParser(description=desc)
 
     # Files that need closing
