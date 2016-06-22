@@ -13,10 +13,10 @@ from shutil import which
 from unittest.mock import patch
 from tempfile import TemporaryDirectory
 
-from .. import autosomes
 from .. import HAS_PYFAIDX
 from ..error import GenipeError
 from ..pipeline import arguments
+from .. import autosomes, chromosomes
 from ..pipeline.arguments import check_args
 
 
@@ -62,7 +62,7 @@ class TestArguments(unittest.TestCase):
         leg_template = os.path.join(self.output_dir.name, "chr{chrom}.leg.gz")
         map_template = os.path.join(self.output_dir.name, "chr{chrom}.map")
         for filename in [hap_template, leg_template, map_template]:
-            for chrom in self.args.required_chrom + ("23_PAR1", "23_PAR2"):
+            for chrom in chromosomes + ("23_PAR1", "23_PAR2"):
                 with open(filename.format(chrom=chrom), "w"):
                     pass
         self.args.hap_template = hap_template
@@ -165,6 +165,30 @@ class TestArguments(unittest.TestCase):
         check_args(self.args)
         self.assertEqual(expected, self.args.required_chrom_names)
 
+    def test_autosomes_keyword(self):
+        """Tests when '--chrom autosomes'."""
+        self.args.required_chrom = ["autosomes"]
+
+        # The expected values
+        expected = tuple(sorted(autosomes))
+
+        # Comparing
+        check_args(self.args)
+        self.assertEqual(expected, self.args.required_chrom)
+        self.assertEqual(expected, self.args.required_chrom_names)
+
+    def test_autosomes_keyword_and_chrom(self):
+        """Tests when '--chrom 1 2 autosomes'."""
+        self.args.required_chrom = ["1", "2", "autosomes"]
+
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual(
+            "{}: invalid chromosome(s) (if all autosomes are required, write "
+            "only 'autosomes')".format(["1", "2", "autosomes"]),
+            str(cm.exception),
+        )
+
     def test_chromosome_names_(self):
         """Tests the required chromosome names with autosomes only."""
         # The expected value
@@ -212,6 +236,17 @@ class TestArguments(unittest.TestCase):
                 pass
             self.assertTrue(os.path.isfile(self.args.bfile + ext))
 
+    def test_legend_none(self):
+        """Tests when legend file is None (not set)."""
+        self.args.legend_template = None
+
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual(
+            "chr1 requires '--legend-template'",
+            str(cm.exception),
+        )
+
     def test_missing_legend_autosomes(self):
         """Tests with missing legend file (autosome)."""
         # Deleting each of the legend files
@@ -255,6 +290,17 @@ class TestArguments(unittest.TestCase):
 
         # Checking everything works fine
         self.assertTrue(check_args(self.args))
+
+    def test_legend_chr23_none(self):
+        """Tests when hap file is None (not set)."""
+        self.args.legend_chr23 = None
+
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual(
+            "chr23 requires '--legend-nonPAR'",
+            str(cm.exception),
+        )
 
     def test_missing_legend_chr23(self):
         """Tests with missing legend file (non pseudo-autosomal region)."""
@@ -337,6 +383,17 @@ class TestArguments(unittest.TestCase):
         # Checking everything works
         self.assertTrue(check_args(self.args))
 
+    def test_map_none(self):
+        """Tests when map file is None (not set)."""
+        self.args.map_template = None
+
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual(
+            "chr1 requires '--map-template'",
+            str(cm.exception),
+        )
+
     def test_missing_map_autosomes(self):
         """Tests with missing map file (autosome)."""
         # Deleting each of the map files
@@ -380,6 +437,17 @@ class TestArguments(unittest.TestCase):
 
         # Checking everything works
         self.assertTrue(check_args(self.args))
+
+    def test_map_chr23_none(self):
+        """Tests when hap file is None (not set)."""
+        self.args.map_chr23 = None
+
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual(
+            "chr23 requires '--map-nonPAR'",
+            str(cm.exception),
+        )
 
     def test_missing_map_chr23(self):
         """Tests with missing map file (non pseudo-autosomal region)."""
@@ -462,6 +530,17 @@ class TestArguments(unittest.TestCase):
         # Checking everything works
         self.assertTrue(check_args(self.args))
 
+    def test_hap_none(self):
+        """Tests when hap file is None (not set)."""
+        self.args.hap_template = None
+
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual(
+            "chr1 requires '--hap-template'",
+            str(cm.exception),
+        )
+
     def test_missing_hap_autosomes(self):
         """Tests with missing haplotype file (autosome)."""
         # Deleting each of the hap files
@@ -505,6 +584,17 @@ class TestArguments(unittest.TestCase):
 
         # Checking everything works
         self.assertTrue(check_args(self.args))
+
+    def test_hap_chr23_none(self):
+        """Tests when hap file is None (not set)."""
+        self.args.hap_chr23 = None
+
+        with self.assertRaises(GenipeError) as cm:
+            check_args(self.args)
+        self.assertEqual(
+            "chr23 requires '--hap-nonPAR'",
+            str(cm.exception),
+        )
 
     def test_missing_hap_chr23(self):
         """Tests with missing hap file (non pseudo-autosomal region)."""
