@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tests package &mdash; genipe 1.2.3 documentation</title>
+    <title>genipe.tests package &mdash; genipe 1.3.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.2.3',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.2.3 documentation" href="../index.html" />
+    <link rel="top" title="genipe 1.3.0 documentation" href="../index.html" />
     <link rel="up" title="genipe package" href="genipe.html" />
     <link rel="next" title="genipe.tools package" href="genipe.tools.html" />
     <link rel="prev" title="genipe.task package" href="genipe.task.html" />
@@ -51,7 +51,7 @@
         <li class="right" >
           <a href="genipe.task.html" title="genipe.task package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &raquo;</li> 
@@ -93,8 +93,8 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -236,6 +236,12 @@
 <em class="property">class </em><code class="descclassname">genipe.tests.test_formats.</code><code class="descname">TestFormats</code><span class="sig-paren">(</span><em>methodName='runTest'</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_formats.html#TestFormats"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_formats.TestFormats" title="Permalink to this definition">¶</a></dt>
 <dd><p>Bases: <code class="xref py py-class docutils literal"><span class="pre">unittest.case.TestCase</span></code></p>
 <dl class="method">
+<dt id="genipe.tests.test_formats.TestFormats.test_additive_from_probs">
+<code class="descname">test_additive_from_probs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_formats.html#TestFormats.test_additive_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_formats.TestFormats.test_additive_from_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;additive_from_probs&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
 <dt id="genipe.tests.test_formats.TestFormats.test_dosage_from_probs">
 <code class="descname">test_dosage_from_probs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_formats.html#TestFormats.test_dosage_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_formats.TestFormats.test_dosage_from_probs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests the &#8216;dosage_from_probs&#8217; function.</p>
@@ -251,6 +257,12 @@
 <dt id="genipe.tests.test_formats.TestFormats.test_hard_calls_from_probs">
 <code class="descname">test_hard_calls_from_probs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_formats.html#TestFormats.test_hard_calls_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_formats.TestFormats.test_hard_calls_from_probs" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests the &#8216;hard_calls_from_probs&#8217; function.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_formats.TestFormats.test_maf_dosage_from_probs">
+<code class="descname">test_maf_dosage_from_probs</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_formats.html#TestFormats.test_maf_dosage_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_formats.TestFormats.test_maf_dosage_from_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;maf_dosage_from_probs&#8217; function.</p>
 </dd></dl>
 
 <dl class="method">
@@ -501,12 +513,6 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="genipe.tests.test_imputed_stats.TestImputedStats.test_get_result_from_linear_logistic">
-<code class="descname">test_get_result_from_linear_logistic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStats.test_get_result_from_linear_logistic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStats.test_get_result_from_linear_logistic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the &#8216;_get_result_from_linear_logistic&#8217; function.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="genipe.tests.test_imputed_stats.TestImputedStats.test_process_impute2_site">
 <code class="descname">test_process_impute2_site</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStats.test_process_impute2_site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStats.test_process_impute2_site" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests the &#8216;process_impute2_site&#8217; function.</p>
@@ -555,15 +561,33 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="genipe.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox">
-<code class="descname">test_fit_cox</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsCox.test_fit_cox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the &#8216;fit_cox&#8217; function.</p>
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox_interaction_snp1">
+<code class="descname">test_fit_cox_interaction_snp1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsCox.test_fit_cox_interaction_snp1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox_interaction_snp1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_cox&#8217; function with interaction, first SNP.</p>
 </dd></dl>
 
 <dl class="method">
-<dt id="genipe.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox_interaction">
-<code class="descname">test_fit_cox_interaction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsCox.test_fit_cox_interaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox_interaction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the &#8216;fit_cox&#8217; function with interaction.</p>
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox_invalid">
+<code class="descname">test_fit_cox_invalid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsCox.test_fit_cox_invalid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox_invalid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_linear&#8217; function, third SNP.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox_snp1">
+<code class="descname">test_fit_cox_snp1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsCox.test_fit_cox_snp1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox_snp1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_cox&#8217; function, first SNP.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox_snp2">
+<code class="descname">test_fit_cox_snp2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsCox.test_fit_cox_snp2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox_snp2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_cox&#8217; function, second SNP.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox_snp3">
+<code class="descname">test_fit_cox_snp3</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsCox.test_fit_cox_snp3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsCox.test_fit_cox_snp3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_cox&#8217; function, third SNP.</p>
 </dd></dl>
 
 <dl class="method">
@@ -603,15 +627,33 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="genipe.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear">
-<code class="descname">test_fit_linear</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsLinear.test_fit_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the &#8216;fit_linear&#8217; function.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="genipe.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear_interaction">
 <code class="descname">test_fit_linear_interaction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsLinear.test_fit_linear_interaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear_interaction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests the &#8216;fit_linear&#8217; function with interaction.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear_invalid">
+<code class="descname">test_fit_linear_invalid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsLinear.test_fit_linear_invalid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear_invalid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_linear&#8217; function, invalid values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear_snp1">
+<code class="descname">test_fit_linear_snp1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsLinear.test_fit_linear_snp1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear_snp1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_linear&#8217; function, first SNP.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear_snp2">
+<code class="descname">test_fit_linear_snp2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsLinear.test_fit_linear_snp2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear_snp2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_linear&#8217; function, second SNP.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear_snp3">
+<code class="descname">test_fit_linear_snp3</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsLinear.test_fit_linear_snp3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsLinear.test_fit_linear_snp3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_linear&#8217; function, third SNP.</p>
 </dd></dl>
 
 <dl class="method">
@@ -651,15 +693,33 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="genipe.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic">
-<code class="descname">test_fit_logistic</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsLogistic.test_fit_logistic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the &#8216;fit_logistic&#8217; function.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="genipe.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic_interaction">
 <code class="descname">test_fit_logistic_interaction</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsLogistic.test_fit_logistic_interaction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic_interaction" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests the &#8216;fit_logistic&#8217; function with interaction.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic_invalid">
+<code class="descname">test_fit_logistic_invalid</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsLogistic.test_fit_logistic_invalid"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic_invalid" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_logistic&#8217; function, invalid values.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic_snp1">
+<code class="descname">test_fit_logistic_snp1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsLogistic.test_fit_logistic_snp1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic_snp1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_logistic&#8217; function, first SNP.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic_snp2">
+<code class="descname">test_fit_logistic_snp2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsLogistic.test_fit_logistic_snp2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic_snp2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_logistic&#8217; function, second SNP.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic_snp3">
+<code class="descname">test_fit_logistic_snp3</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsLogistic.test_fit_logistic_snp3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsLogistic.test_fit_logistic_snp3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_logistic&#8217; function, third SNP.</p>
 </dd></dl>
 
 <dl class="method">
@@ -692,16 +752,16 @@
 <dd><p>Setup the tests.</p>
 </dd></dl>
 
+<dl class="classmethod">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.setUpClass">
+<em class="property">classmethod </em><code class="descname">setUpClass</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsMixedLM.setUpClass"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.setUpClass" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the data and compute random effects.</p>
+</dd></dl>
+
 <dl class="method">
 <dt id="genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.tearDown">
 <code class="descname">tearDown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsMixedLM.tearDown"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.tearDown" title="Permalink to this definition">¶</a></dt>
 <dd><p>Finishes the test.</p>
-</dd></dl>
-
-<dl class="method">
-<dt id="genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm">
-<code class="descname">test_fit_mixedlm</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsMixedLM.test_fit_mixedlm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the &#8216;fit_mixedlm&#8217; function.</p>
 </dd></dl>
 
 <dl class="method">
@@ -717,9 +777,45 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_use_ml">
-<code class="descname">test_fit_mixedlm_use_ml</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsMixedLM.test_fit_mixedlm_use_ml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_use_ml" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the &#8216;fit_mixedlm&#8217; function (using ML instead of REML).</p>
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_invalid_column">
+<code class="descname">test_fit_mixedlm_invalid_column</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsMixedLM.test_fit_mixedlm_invalid_column"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_invalid_column" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests when asking an invalid column.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_snp1">
+<code class="descname">test_fit_mixedlm_snp1</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsMixedLM.test_fit_mixedlm_snp1"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_snp1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_mixedlm&#8217; function for the first SNP.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_snp1_use_ml">
+<code class="descname">test_fit_mixedlm_snp1_use_ml</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsMixedLM.test_fit_mixedlm_snp1_use_ml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_snp1_use_ml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests mixedlm using ML on first SNP.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_snp2">
+<code class="descname">test_fit_mixedlm_snp2</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsMixedLM.test_fit_mixedlm_snp2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_snp2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_mixedlm&#8217; function for the second SNP.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_snp2_use_ml">
+<code class="descname">test_fit_mixedlm_snp2_use_ml</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsMixedLM.test_fit_mixedlm_snp2_use_ml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_snp2_use_ml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests mixedlm using ML on second SNP.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_snp3">
+<code class="descname">test_fit_mixedlm_snp3</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsMixedLM.test_fit_mixedlm_snp3"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_snp3" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests the &#8216;fit_mixedlm&#8217; function for the third SNP.</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_snp3_use_ml">
+<code class="descname">test_fit_mixedlm_snp3_use_ml</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_imputed_stats.html#TestImputedStatsMixedLM.test_fit_mixedlm_snp3_use_ml"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_snp3_use_ml" title="Permalink to this definition">¶</a></dt>
+<dd><p>Tests mixedlm using ML on third SNP.</p>
 </dd></dl>
 
 <dl class="method">
@@ -871,12 +967,6 @@
 </dd></dl>
 
 <dl class="method">
-<dt id="genipe.tests.test_main_pipeline.TestMainPipeline.test_check_args">
-<code class="descname">test_check_args</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_main_pipeline.html#TestMainPipeline.test_check_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_main_pipeline.TestMainPipeline.test_check_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Tests the &#8216;check_args&#8217; function.</p>
-</dd></dl>
-
-<dl class="method">
 <dt id="genipe.tests.test_main_pipeline.TestMainPipeline.test_file_sorter">
 <code class="descname">test_file_sorter</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tests/test_main_pipeline.html#TestMainPipeline.test_file_sorter"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tests.test_main_pipeline.TestMainPipeline.test_file_sorter" title="Permalink to this definition">¶</a></dt>
 <dd><p>Tests the &#8216;file_sorter&#8217; function.</p>
@@ -1019,7 +1109,7 @@
         <li class="right" >
           <a href="genipe.task.html" title="genipe.task package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &raquo;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &raquo;</li> 
@@ -1027,7 +1117,7 @@
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
     </div>
   </body>
 </html>

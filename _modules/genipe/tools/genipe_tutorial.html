@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tools.genipe_tutorial &mdash; genipe 1.2.3 documentation</title>
+    <title>genipe.tools.genipe_tutorial &mdash; genipe 1.3.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.2.3',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.2.3 documentation" href="../../../index.html" />
+    <link rel="top" title="genipe 1.3.0 documentation" href="../../../index.html" />
     <link rel="up" title="genipe" href="../../genipe.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
       </ul>
@@ -53,8 +53,8 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -93,7 +93,7 @@
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">check_call</span><span class="p">,</span> <span class="n">CalledProcessError</span>
 
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">__version__</span>
-<span class="kn">from</span> <span class="nn">..error</span> <span class="kn">import</span> <span class="n">ProgramError</span>
+<span class="kn">from</span> <span class="nn">..error</span> <span class="kn">import</span> <span class="n">GenipeError</span>
 
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
@@ -253,8 +253,8 @@
         <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cancelled by user&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="c1"># Catching the ProgramError</span>
-    <span class="k">except</span> <span class="n">ProgramError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="c1"># Catching the GenipeError</span>
+    <span class="k">except</span> <span class="n">GenipeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
 
@@ -324,12 +324,12 @@
     <span class="c1"># Getting the OS name</span>
     <span class="n">os_name</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span>
     <span class="k">if</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Windows&quot;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Windows OS it not compatible with tutorial&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Windows OS it not compatible with tutorial&quot;</span><span class="p">)</span>
 
     <span class="c1"># Getting the system&#39;s architecture</span>
     <span class="n">architecture</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">architecture</span><span class="p">()[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">2</span><span class="p">]</span>
     <span class="k">if</span> <span class="n">architecture</span> <span class="o">!=</span> <span class="s2">&quot;64&quot;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: unknown architecture&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">architecture</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: unknown architecture&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">architecture</span><span class="p">))</span>
 
     <span class="k">return</span> <span class="n">os_name</span><span class="p">,</span> <span class="n">architecture</span></div>
 
@@ -361,7 +361,7 @@
 
     <span class="c1"># Checking the directory exists</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isdir</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;1000GP_Phase3&quot;</span><span class="p">)):</span>
-        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Problem extracting the impute2 reference files&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Problem extracting the impute2 reference files&quot;</span><span class="p">)</span>
 
     <span class="c1"># Creating an empty file to say that the download and extraction was</span>
     <span class="c1"># completed</span>
@@ -397,10 +397,10 @@
         <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">filename</span><span class="p">))</span>
         <span class="n">genotypes_files</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;hapmap_CEU_r23a_hg19.*&quot;</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">genotypes_files</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">3</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Unable to locate genotypes&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Unable to locate genotypes&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">genotypes_files</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Unable to locate genotypes&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Unable to locate genotypes&quot;</span><span class="p">)</span>
 
         <span class="c1"># Moving the files</span>
         <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">genotypes_files</span><span class="p">:</span>
@@ -434,10 +434,10 @@
         <span class="c1"># Finding the hg19 file</span>
         <span class="n">hg19_files</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;hg19.fasta*&quot;</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">hg19_files</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">2</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Unable to locate hg19&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Unable to locate hg19&quot;</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">hg19_files</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Unable to locate hg19&quot;</span><span class="p">)</span>
+                <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Unable to locate hg19&quot;</span><span class="p">)</span>
 
         <span class="c1"># Moving the files</span>
         <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">hg19_files</span><span class="p">:</span>
@@ -463,8 +463,8 @@
     <span class="k">elif</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Linux&quot;</span><span class="p">:</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;plink-1.07-x86_64.zip&quot;</span>
     <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Problem choosing a file to download for &quot;</span>
-                           <span class="s2">&quot;{} {} bits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Problem choosing a file to download for &quot;</span>
+                          <span class="s2">&quot;{} {} bits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
 
     <span class="c1"># Downloading Plink in a temporary directory</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
@@ -480,7 +480,7 @@
         <span class="c1"># Finding the plink file</span>
         <span class="n">plink_file</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;plink&quot;</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plink_file</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">plink_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Unable to locate Plink&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Unable to locate Plink&quot;</span><span class="p">)</span>
         <span class="n">plink_file</span> <span class="o">=</span> <span class="n">plink_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># Moving the file</span>
@@ -510,8 +510,8 @@
     <span class="k">elif</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Linux&quot;</span><span class="p">:</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;impute_v2.3.2_x86_64_static.tgz&quot;</span>
     <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Problem choosing a file to download for &quot;</span>
-                           <span class="s2">&quot;{} {} bits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Problem choosing a file to download for &quot;</span>
+                          <span class="s2">&quot;{} {} bits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
 
     <span class="c1"># Downloading Impute2 in a temporary directory</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
@@ -526,7 +526,7 @@
         <span class="c1"># Finding the impute2 file</span>
         <span class="n">impute2_file</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;impute2&quot;</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">impute2_file</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">impute2_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Unable to locate impute2&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Unable to locate impute2&quot;</span><span class="p">)</span>
         <span class="n">impute2_file</span> <span class="o">=</span> <span class="n">impute2_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># Moving the file</span>
@@ -556,8 +556,8 @@
     <span class="k">elif</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Linux&quot;</span><span class="p">:</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;shapeit.v2.r837.GLIBCv2.12.Linux.static.tgz&quot;</span>
     <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Problem choosing a file to download for &quot;</span>
-                           <span class="s2">&quot;{} {} bits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Problem choosing a file to download for &quot;</span>
+                          <span class="s2">&quot;{} {} bits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
 
     <span class="c1"># Downloading shapeit in a temporary directory</span>
     <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
@@ -572,7 +572,7 @@
         <span class="c1"># Finding the shapeit file</span>
         <span class="n">shapeit_file</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;shapeit&quot;</span><span class="p">))</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shapeit_file</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">shapeit_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Unable to locate shapeit&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Unable to locate shapeit&quot;</span><span class="p">)</span>
         <span class="n">shapeit_file</span> <span class="o">=</span> <span class="n">shapeit_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
         <span class="c1"># Moving the file</span>
@@ -594,7 +594,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">urlretrieve</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
     <span class="k">except</span> <span class="p">(</span><span class="n">HTTPError</span><span class="p">,</span> <span class="n">URLError</span><span class="p">):</span>
-        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;URL not available: &quot;</span> <span class="o">+</span> <span class="n">url</span><span class="p">)</span></div>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;URL not available: &quot;</span> <span class="o">+</span> <span class="n">url</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="untar_file"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.untar_file">[docs]</a><span class="k">def</span> <span class="nf">untar_file</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="n">fn</span><span class="p">):</span>
@@ -608,7 +608,7 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="n">check_call</span><span class="p">([</span><span class="s2">&quot;tar&quot;</span><span class="p">,</span> <span class="s2">&quot;-C&quot;</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="s2">&quot;-xf&quot;</span><span class="p">,</span> <span class="n">fn</span><span class="p">])</span>
     <span class="k">except</span> <span class="n">CalledProcessError</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;Could not extract {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span></div>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Could not extract {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.parse_args">[docs]</a><span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
@@ -631,7 +631,7 @@
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">&quot;--version&quot;</span><span class="p">,</span>
         <span class="n">action</span><span class="o">=</span><span class="s2">&quot;version&quot;</span><span class="p">,</span>
-        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(prog)s</span><span class="s2"> (part of genipe version {})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(prog)s</span><span class="s2">, part of genipe version {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
     <span class="p">)</span>
 
     <span class="n">parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -668,14 +668,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
     </div>
   </body>
 </html>

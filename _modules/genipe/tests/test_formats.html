@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tests.test_formats &mdash; genipe 1.2.3 documentation</title>
+    <title>genipe.tests.test_formats &mdash; genipe 1.3.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.2.3',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.2.3 documentation" href="../../../index.html" />
+    <link rel="top" title="genipe 1.3.0 documentation" href="../../../index.html" />
     <link rel="up" title="genipe" href="../../genipe.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
       </ul>
@@ -53,8 +53,8 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -79,12 +79,11 @@
 
 
 <span class="kn">import</span> <span class="nn">unittest</span>
-<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">TemporaryDirectory</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..formats</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">..error</span> <span class="kn">import</span> <span class="n">ProgramError</span>
+<span class="kn">from</span> <span class="nn">..formats</span> <span class="kn">import</span> <span class="n">impute2</span>
+<span class="kn">from</span> <span class="nn">..error</span> <span class="kn">import</span> <span class="n">GenipeError</span>
 
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
@@ -109,7 +108,9 @@
                                   <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.033</span><span class="p">,</span> <span class="mf">0.067</span><span class="p">],</span> <span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">]],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
 
         <span class="c1"># The observed results</span>
-        <span class="n">observed_info</span><span class="p">,</span> <span class="n">observed_geno</span> <span class="o">=</span> <span class="n">matrix_from_line</span><span class="p">(</span><span class="n">input_line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">))</span>
+        <span class="n">observed_info</span><span class="p">,</span> <span class="n">observed_geno</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">matrix_from_line</span><span class="p">(</span>
+            <span class="n">input_line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">),</span>
+        <span class="p">)</span>
 
         <span class="c1"># The marker information should be the same</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_info</span><span class="p">,</span> <span class="n">observed_info</span><span class="p">)</span>
@@ -122,7 +123,7 @@
 
         <span class="c1"># An invalid line should raise an exception</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
-            <span class="n">matrix_from_line</span><span class="p">(</span><span class="n">input_line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">impute2</span><span class="o">.</span><span class="n">matrix_from_line</span><span class="p">(</span><span class="n">input_line</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">error_m</span> <span class="o">=</span> <span class="s2">&quot;total size of new array must be unchanged&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">error_m</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">exception</span><span class="p">))</span></div>
 
@@ -136,17 +137,17 @@
 
         <span class="c1"># The expected results (for a probability of 0.9)</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">True</span><span class="p">]</span> <span class="o">*</span> <span class="mi">6</span> <span class="o">+</span> <span class="p">[</span><span class="bp">False</span><span class="p">]</span> <span class="o">*</span> <span class="mi">5</span> <span class="o">+</span> <span class="p">[</span><span class="bp">True</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
-        <span class="n">observed</span> <span class="o">=</span> <span class="n">get_good_probs</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">get_good_probs</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">((</span><span class="n">expected</span> <span class="o">==</span> <span class="n">observed</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
 
         <span class="c1"># The expected results (for a probability of 0.8)</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="bp">True</span><span class="p">]</span> <span class="o">*</span> <span class="mi">9</span> <span class="o">+</span> <span class="p">[</span><span class="bp">False</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span> <span class="o">+</span> <span class="p">[</span><span class="bp">True</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
-        <span class="n">observed</span> <span class="o">=</span> <span class="n">get_good_probs</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">get_good_probs</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">((</span><span class="n">expected</span> <span class="o">==</span> <span class="n">observed</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
 
         <span class="c1"># The expected results (for a probability of 0)</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">bool</span><span class="p">)</span>
-        <span class="n">observed</span> <span class="o">=</span> <span class="n">get_good_probs</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">get_good_probs</span><span class="p">(</span><span class="n">input_data</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">((</span><span class="n">expected</span> <span class="o">==</span> <span class="n">observed</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span></div>
 
 <div class="viewcode-block" id="TestFormats.test_maf_from_probs"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_formats.TestFormats.test_maf_from_probs">[docs]</a>    <span class="k">def</span> <span class="nf">test_maf_from_probs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -177,9 +178,9 @@
         <span class="n">expected_maf</span> <span class="o">=</span> <span class="mi">7</span> <span class="o">/</span> <span class="mi">20</span>
         <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
         <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
-        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_from_probs</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)</span>
         <span class="n">observed_maf</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">,</span> <span class="n">observed_major</span> <span class="o">=</span> <span class="n">observed_results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">observed_major</span><span class="p">)</span>
 
@@ -188,9 +189,9 @@
         <span class="n">expected_maf</span> <span class="o">=</span> <span class="mi">7</span> <span class="o">/</span> <span class="mi">20</span>
         <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
         <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
-        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">r_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_from_probs</span><span class="p">(</span><span class="n">r_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)</span>
         <span class="n">observed_maf</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">,</span> <span class="n">observed_major</span> <span class="o">=</span> <span class="n">observed_results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">observed_major</span><span class="p">)</span>
 
@@ -198,9 +199,9 @@
         <span class="n">expected_maf</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">/</span> <span class="mi">14</span>
         <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
         <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
-        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_from_probs</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="p">)</span>
         <span class="n">observed_maf</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">,</span> <span class="n">observed_major</span> <span class="o">=</span> <span class="n">observed_results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">observed_major</span><span class="p">)</span>
 
@@ -209,9 +210,9 @@
         <span class="n">expected_maf</span> <span class="o">=</span> <span class="mi">5</span> <span class="o">/</span> <span class="mi">14</span>
         <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
         <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
-        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">r_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_from_probs</span><span class="p">(</span><span class="n">r_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="p">)</span>
         <span class="n">observed_maf</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">,</span> <span class="n">observed_major</span> <span class="o">=</span> <span class="n">observed_results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">observed_major</span><span class="p">)</span>
 
@@ -219,9 +220,11 @@
         <span class="n">expected_maf</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">/</span> <span class="mi">11</span>
         <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
         <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
-        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">unknown_gender</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_from_probs</span><span class="p">(</span>
+            <span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">unknown_gender</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">observed_maf</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">,</span> <span class="n">observed_major</span> <span class="o">=</span> <span class="n">observed_results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">observed_major</span><span class="p">)</span>
 
@@ -230,9 +233,11 @@
         <span class="n">expected_maf</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">/</span> <span class="mi">11</span>
         <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
         <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
-        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">r_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">unknown_gender</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_from_probs</span><span class="p">(</span>
+            <span class="n">r_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">unknown_gender</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">observed_maf</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">,</span> <span class="n">observed_major</span> <span class="o">=</span> <span class="n">observed_results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">observed_major</span><span class="p">)</span>
 
@@ -241,8 +246,8 @@
         <span class="n">tmp_probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
             <span class="p">[[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, male   (A)</span>
              <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>   <span class="c1"># BB, male   (B)</span>
-             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, female (A)</span>
-             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, female (A)</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, male   (A)</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, male   (A)</span>
              <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, male   (A)</span>
              <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, male   (A)</span>
              <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, male   (A)</span>
@@ -255,9 +260,11 @@
         <span class="n">expected_maf</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">/</span> <span class="mi">10</span>
         <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
         <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
-        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">tmp_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">tmp_gender</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_from_probs</span><span class="p">(</span>
+            <span class="n">tmp_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">tmp_gender</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">observed_maf</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">,</span> <span class="n">observed_major</span> <span class="o">=</span> <span class="n">observed_results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">observed_major</span><span class="p">)</span>
 
@@ -266,9 +273,11 @@
         <span class="n">expected_maf</span> <span class="o">=</span> <span class="mi">3</span> <span class="o">/</span> <span class="mi">10</span>
         <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
         <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
-        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">tmp_r_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">tmp_gender</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_from_probs</span><span class="p">(</span>
+            <span class="n">tmp_r_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">tmp_gender</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">observed_maf</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">,</span> <span class="n">observed_major</span> <span class="o">=</span> <span class="n">observed_results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">observed_major</span><span class="p">)</span>
 
@@ -277,9 +286,9 @@
         <span class="n">expected_maf</span> <span class="o">=</span> <span class="mi">7</span> <span class="o">/</span> <span class="mi">20</span>
         <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
         <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
-        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">tmp_gender</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_from_probs</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">tmp_gender</span><span class="p">)</span>
         <span class="n">observed_maf</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">,</span> <span class="n">observed_major</span> <span class="o">=</span> <span class="n">observed_results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">observed_major</span><span class="p">)</span>
 
@@ -288,9 +297,11 @@
         <span class="n">expected_maf</span> <span class="o">=</span> <span class="mi">7</span> <span class="o">/</span> <span class="mi">20</span>
         <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
         <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
-        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">r_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">tmp_gender</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_from_probs</span><span class="p">(</span>
+            <span class="n">r_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">tmp_gender</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">observed_maf</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">,</span> <span class="n">observed_major</span> <span class="o">=</span> <span class="n">observed_results</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">observed_major</span><span class="p">)</span>
 
@@ -299,7 +310,7 @@
         <span class="n">expected_maf</span> <span class="o">=</span> <span class="s2">&quot;NA&quot;</span>
         <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
         <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
-        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">tmp_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_from_probs</span><span class="p">(</span><span class="n">tmp_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)</span>
         <span class="n">observed_maf</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">,</span> <span class="n">observed_major</span> <span class="o">=</span> <span class="n">observed_results</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">)</span>
@@ -309,7 +320,7 @@
         <span class="n">expected_maf</span> <span class="o">=</span> <span class="s2">&quot;NA&quot;</span>
         <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
         <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
-        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">tmp_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_from_probs</span><span class="p">(</span><span class="n">tmp_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="p">)</span>
         <span class="n">observed_maf</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">,</span> <span class="n">observed_major</span> <span class="o">=</span> <span class="n">observed_results</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">)</span>
@@ -320,15 +331,263 @@
         <span class="n">expected_maf</span> <span class="o">=</span> <span class="s2">&quot;NA&quot;</span>
         <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
         <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
-        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">all_unknown</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_from_probs</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">all_unknown</span><span class="p">)</span>
         <span class="n">observed_maf</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">,</span> <span class="n">observed_major</span> <span class="o">=</span> <span class="n">observed_results</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">observed_maf</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">observed_minor</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">observed_major</span><span class="p">)</span>
 
         <span class="c1"># An heterozygous male (using gender) should raise an exception</span>
-        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">ProgramError</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
-            <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;marker_1&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">GenipeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+            <span class="n">impute2</span><span class="o">.</span><span class="n">maf_from_probs</span><span class="p">(</span>
+                <span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span> <span class="s2">&quot;marker_1&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s2">&quot;marker_1: heterozygous male present&quot;</span><span class="p">,</span>
+                         <span class="nb">str</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">exception</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="TestFormats.test_maf_dosage_from_probs"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_formats.TestFormats.test_maf_dosage_from_probs">[docs]</a>    <span class="k">def</span> <span class="nf">test_maf_dosage_from_probs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Tests the &#39;maf_dosage_from_probs&#39; function.&quot;&quot;&quot;</span>
+        <span class="n">probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, male   (A)    0.1</span>
+             <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AB, female (AB)   0.9</span>
+             <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>   <span class="c1"># BB, male   (B)*   1.9</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, female (AA)   0.1</span>
+             <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>   <span class="c1"># BB, male   (B)    1.9</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, male   (A)    0.1</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, male   (A)    0.1</span>
+             <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AB, female (AB)*  0.9</span>
+             <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AB, female (AB)   0.9</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]],</span>  <span class="c1"># AA, male   (A)    0.1</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="p">)</span>
+
+        <span class="c1"># The reversed probability matrix</span>
+        <span class="n">r_probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">probs</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="c1"># The gender array (10 samples, 6 males, 4 females)</span>
+        <span class="n">gender</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">unknown_gender</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+
+        <span class="c1"># Checking without gender</span>
+        <span class="n">expected_maf</span> <span class="o">=</span> <span class="mi">7</span> <span class="o">/</span> <span class="mi">20</span>
+        <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+        <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+        <span class="n">expected_dosage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span>
+                                    <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_dosage_from_probs</span><span class="p">(</span><span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)</span>
+        <span class="n">obs_dosage</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">,</span> <span class="n">obs_major</span> <span class="o">=</span> <span class="n">observed_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expected_dosage</span><span class="p">,</span> <span class="n">obs_dosage</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">obs_major</span><span class="p">)</span>
+
+        <span class="c1"># Reversing the matrix should give the same maf, but different major</span>
+        <span class="c1"># and minor allele</span>
+        <span class="n">expected_maf</span> <span class="o">=</span> <span class="mi">7</span> <span class="o">/</span> <span class="mi">20</span>
+        <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+        <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+        <span class="n">expected_dosage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span>
+                                    <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_dosage_from_probs</span><span class="p">(</span><span class="n">r_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)</span>
+        <span class="n">obs_dosage</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">,</span> <span class="n">obs_major</span> <span class="o">=</span> <span class="n">observed_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expected_dosage</span><span class="p">,</span> <span class="n">obs_dosage</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">obs_major</span><span class="p">)</span>
+
+        <span class="c1"># Checking with gender</span>
+        <span class="n">expected_maf</span> <span class="o">=</span> <span class="mf">4.9</span> <span class="o">/</span> <span class="mi">14</span>
+        <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+        <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+        <span class="n">expected_dosage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span>
+                                    <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_dosage_from_probs</span><span class="p">(</span>
+            <span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="n">gender</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">obs_dosage</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">,</span> <span class="n">obs_major</span> <span class="o">=</span> <span class="n">observed_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expected_dosage</span><span class="p">,</span> <span class="n">obs_dosage</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">obs_major</span><span class="p">)</span>
+
+        <span class="c1"># Reversing the matrix should give the same maf, but different major</span>
+        <span class="c1"># and minor allele</span>
+        <span class="n">expected_maf</span> <span class="o">=</span> <span class="mf">4.9</span> <span class="o">/</span> <span class="mi">14</span>
+        <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+        <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+        <span class="n">expected_dosage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span>
+                                    <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_dosage_from_probs</span><span class="p">(</span>
+            <span class="n">r_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="n">gender</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">obs_dosage</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">,</span> <span class="n">obs_major</span> <span class="o">=</span> <span class="n">observed_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expected_dosage</span><span class="p">,</span> <span class="n">obs_dosage</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">obs_major</span><span class="p">)</span>
+
+        <span class="c1"># Checking with gender, unknown samples</span>
+        <span class="n">expected_maf</span> <span class="o">=</span> <span class="mf">3.05</span> <span class="o">/</span> <span class="mi">11</span>
+        <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+        <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+        <span class="n">expected_dosage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span>
+                                    <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">obs_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_dosage_from_probs</span><span class="p">(</span>
+            <span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="n">unknown_gender</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">obs_dosage</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">,</span> <span class="n">obs_major</span> <span class="o">=</span> <span class="n">obs_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expected_dosage</span><span class="p">,</span> <span class="n">obs_dosage</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">obs_major</span><span class="p">)</span>
+
+        <span class="c1"># Reversing the matrix should give the same maf, but different major</span>
+        <span class="c1"># and minor allele</span>
+        <span class="n">expected_maf</span> <span class="o">=</span> <span class="mf">3.05</span> <span class="o">/</span> <span class="mi">11</span>
+        <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+        <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+        <span class="n">expected_dosage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span>
+                                    <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">obs_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_dosage_from_probs</span><span class="p">(</span>
+            <span class="n">r_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="n">unknown_gender</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">obs_dosage</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">,</span> <span class="n">obs_major</span> <span class="o">=</span> <span class="n">obs_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expected_dosage</span><span class="p">,</span> <span class="n">obs_dosage</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">obs_major</span><span class="p">)</span>
+
+        <span class="c1"># Checking with gender (only males)</span>
+        <span class="n">tmp_gender</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">tmp_probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, male   (A)    0.1</span>
+             <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>   <span class="c1"># BB, male   (B)    1.9</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, male   (A)    0.1</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, male   (A)    0.1</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, male   (A)    0.1</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, male   (A)    0.1</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA, male   (A)    0.1</span>
+             <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>   <span class="c1"># BB, male   (B)    1.9</span>
+             <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>   <span class="c1"># BB, male   (B)    1.9</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]],</span>  <span class="c1"># AA, male   (A)    0.1</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">tmp_r_probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">tmp_probs</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">expected_maf</span> <span class="o">=</span> <span class="mf">3.2</span> <span class="o">/</span> <span class="mi">10</span>
+        <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+        <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+        <span class="n">expected_dosage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span>
+                                    <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">obs_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_dosage_from_probs</span><span class="p">(</span>
+            <span class="n">tmp_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="n">tmp_gender</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">obs_dosage</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">,</span> <span class="n">obs_major</span> <span class="o">=</span> <span class="n">obs_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expected_dosage</span><span class="p">,</span> <span class="n">obs_dosage</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">obs_major</span><span class="p">)</span>
+
+        <span class="c1"># Reversing the matrix should give the same maf, but different major</span>
+        <span class="c1"># and minor allele</span>
+        <span class="n">expected_maf</span> <span class="o">=</span> <span class="mf">3.2</span> <span class="o">/</span> <span class="mi">10</span>
+        <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+        <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+        <span class="n">expected_dosage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span>
+                                    <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">obs_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_dosage_from_probs</span><span class="p">(</span>
+            <span class="n">tmp_r_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="n">tmp_gender</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">obs_dosage</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">,</span> <span class="n">obs_major</span> <span class="o">=</span> <span class="n">obs_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expected_dosage</span><span class="p">,</span> <span class="n">obs_dosage</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">obs_major</span><span class="p">)</span>
+
+        <span class="c1"># Checking with gender (only females)</span>
+        <span class="n">tmp_gender</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">expected_maf</span> <span class="o">=</span> <span class="mi">7</span> <span class="o">/</span> <span class="mi">20</span>
+        <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+        <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+        <span class="n">expected_dosage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span>
+                                    <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">obs_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_dosage_from_probs</span><span class="p">(</span>
+            <span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="n">tmp_gender</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">obs_dosage</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">,</span> <span class="n">obs_major</span> <span class="o">=</span> <span class="n">obs_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expected_dosage</span><span class="p">,</span> <span class="n">obs_dosage</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">obs_major</span><span class="p">)</span>
+
+        <span class="c1"># Reversing the matrix should give the same maf, but different major</span>
+        <span class="c1"># and minor allele</span>
+        <span class="n">expected_maf</span> <span class="o">=</span> <span class="mi">7</span> <span class="o">/</span> <span class="mi">20</span>
+        <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+        <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+        <span class="n">expected_dosage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span>
+                                    <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">obs_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_dosage_from_probs</span><span class="p">(</span>
+            <span class="n">r_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="n">tmp_gender</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">obs_dosage</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">,</span> <span class="n">obs_major</span> <span class="o">=</span> <span class="n">obs_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expected_dosage</span><span class="p">,</span> <span class="n">obs_dosage</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">obs_major</span><span class="p">)</span>
+
+        <span class="c1"># Checking empty probabilities (without gender)</span>
+        <span class="n">tmp_probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">expected_maf</span> <span class="o">=</span> <span class="s2">&quot;NA&quot;</span>
+        <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+        <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+        <span class="n">expected_dosage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">observed_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_dosage_from_probs</span><span class="p">(</span><span class="n">tmp_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">)</span>
+        <span class="n">obs_dosage</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">,</span> <span class="n">obs_major</span> <span class="o">=</span> <span class="n">observed_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expected_dosage</span><span class="p">,</span> <span class="n">obs_dosage</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">obs_major</span><span class="p">)</span>
+
+        <span class="c1"># Checking empty probabilities (with gender)</span>
+        <span class="n">expected_maf</span> <span class="o">=</span> <span class="s2">&quot;NA&quot;</span>
+        <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+        <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+        <span class="n">expected_dosage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="n">obs_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_dosage_from_probs</span><span class="p">(</span>
+            <span class="n">tmp_probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="n">gender</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">obs_dosage</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">,</span> <span class="n">obs_major</span> <span class="o">=</span> <span class="n">obs_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expected_dosage</span><span class="p">,</span> <span class="n">obs_dosage</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">obs_major</span><span class="p">)</span>
+
+        <span class="c1"># Checking all unknown gender</span>
+        <span class="n">all_unknown</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
+        <span class="n">expected_maf</span> <span class="o">=</span> <span class="s2">&quot;NA&quot;</span>
+        <span class="n">expected_minor</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
+        <span class="n">expected_major</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
+        <span class="n">expected_dosage</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">1.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span>
+                                    <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">_my_compatibility_assertLogs</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="s2">&quot;WARNING&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+            <span class="n">obs_results</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_dosage_from_probs</span><span class="p">(</span>
+                <span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="n">all_unknown</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="n">log_m</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;WARNING:root:All samples have unknown gender, &quot;</span>
+                 <span class="s2">&quot;MAF will be NA&quot;</span><span class="p">]</span>
+        <span class="n">obs_dosage</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">,</span> <span class="n">obs_major</span> <span class="o">=</span> <span class="n">obs_results</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_maf</span><span class="p">,</span> <span class="n">obs_maf</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expected_dosage</span><span class="p">,</span> <span class="n">obs_dosage</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_minor</span><span class="p">,</span> <span class="n">obs_minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_major</span><span class="p">,</span> <span class="n">obs_major</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">log_m</span><span class="p">,</span> <span class="n">cm</span><span class="o">.</span><span class="n">output</span><span class="p">)</span>
+
+        <span class="c1"># An heterozygous male (using gender) should raise an exception</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">GenipeError</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
+            <span class="n">impute2</span><span class="o">.</span><span class="n">maf_dosage_from_probs</span><span class="p">(</span>
+                <span class="n">probs</span><span class="p">,</span> <span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">site_name</span><span class="o">=</span><span class="s2">&quot;marker_1&quot;</span><span class="p">,</span>
+                <span class="n">gender</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">),</span>
+            <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s2">&quot;marker_1: heterozygous male present&quot;</span><span class="p">,</span>
                          <span class="nb">str</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">exception</span><span class="p">))</span></div>
 
@@ -350,12 +609,12 @@
                                  <span class="p">(</span><span class="mf">0.1</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.2</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span>
                                  <span class="p">(</span><span class="mf">0.5</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.4</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">scale</span><span class="p">,</span>
                                  <span class="p">(</span><span class="mf">0.3</span> <span class="o">+</span> <span class="p">(</span><span class="mf">0.6</span> <span class="o">/</span> <span class="mi">2</span><span class="p">))</span> <span class="o">*</span> <span class="n">scale</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
-            <span class="n">observed</span> <span class="o">=</span> <span class="n">dosage_from_probs</span><span class="p">(</span><span class="n">homo_probs</span><span class="p">,</span> <span class="n">het_probs</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">dosage_from_probs</span><span class="p">(</span><span class="n">homo_probs</span><span class="p">,</span> <span class="n">het_probs</span><span class="p">,</span> <span class="n">scale</span><span class="p">)</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">allclose</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">))</span>
 
         <span class="c1"># This one should cause an exception</span>
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">)</span> <span class="k">as</span> <span class="n">cm</span><span class="p">:</span>
-            <span class="n">dosage_from_probs</span><span class="p">(</span><span class="n">homo_probs</span><span class="p">,</span> <span class="n">het_probs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+            <span class="n">impute2</span><span class="o">.</span><span class="n">dosage_from_probs</span><span class="p">(</span><span class="n">homo_probs</span><span class="p">,</span> <span class="n">het_probs</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
         <span class="n">error_m</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;operands could not be broadcast together with shapes &quot;</span>
                    <span class="s2">&quot;(8,) (7,)&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">error_m</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">cm</span><span class="o">.</span><span class="n">exception</span><span class="p">)</span><span class="o">.</span><span class="n">strip</span><span class="p">())</span></div>
@@ -372,7 +631,7 @@
         <span class="n">a1</span> <span class="o">=</span> <span class="s2">&quot;A&quot;</span>
         <span class="n">a2</span> <span class="o">=</span> <span class="s2">&quot;B&quot;</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;B B&quot;</span><span class="p">,</span> <span class="s2">&quot;A B&quot;</span><span class="p">,</span> <span class="s2">&quot;A A&quot;</span><span class="p">])</span>
-        <span class="n">observed</span> <span class="o">=</span> <span class="n">hard_calls_from_probs</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">prob_matrix</span><span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">hard_calls_from_probs</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">prob_matrix</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">((</span><span class="n">expected</span> <span class="o">==</span> <span class="n">observed</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span>
 
@@ -380,9 +639,51 @@
         <span class="n">a1</span> <span class="o">=</span> <span class="s2">&quot;ABB&quot;</span>
         <span class="n">a2</span> <span class="o">=</span> <span class="s2">&quot;AB&quot;</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;AB AB&quot;</span><span class="p">,</span> <span class="s2">&quot;ABB AB&quot;</span><span class="p">,</span> <span class="s2">&quot;ABB ABB&quot;</span><span class="p">])</span>
-        <span class="n">observed</span> <span class="o">=</span> <span class="n">hard_calls_from_probs</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">prob_matrix</span><span class="p">)</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">hard_calls_from_probs</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">prob_matrix</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="o">.</span><span class="n">shape</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">((</span><span class="n">expected</span> <span class="o">==</span> <span class="n">observed</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span></div></div>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">((</span><span class="n">expected</span> <span class="o">==</span> <span class="n">observed</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">())</span></div>
+
+<div class="viewcode-block" id="TestFormats.test_additive_from_probs"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_formats.TestFormats.test_additive_from_probs">[docs]</a>    <span class="k">def</span> <span class="nf">test_additive_from_probs</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Tests the &#39;additive_from_probs&#39; function.&quot;&quot;&quot;</span>
+        <span class="n">probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span>
+            <span class="p">[[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA</span>
+             <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AB</span>
+             <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>   <span class="c1"># BB</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA</span>
+             <span class="p">[</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">],</span>   <span class="c1"># BB</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AA</span>
+             <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AB</span>
+             <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">],</span>   <span class="c1"># AB</span>
+             <span class="p">[</span><span class="mf">0.9</span><span class="p">,</span> <span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">]],</span>  <span class="c1"># AA</span>
+            <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">r_probs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="n">i</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">probs</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+
+        <span class="c1"># Getting the observed data for the normal probabilities</span>
+        <span class="n">calls</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">major</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">additive_from_probs</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">probs</span><span class="p">)</span>
+
+        <span class="c1"># Comparing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">major</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">calls</span><span class="p">))</span>
+
+        <span class="c1"># Getting the observed data for the reversed probabilities</span>
+        <span class="n">calls</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">major</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">additive_from_probs</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">r_probs</span><span class="p">)</span>
+
+        <span class="c1"># Comparing</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s2">&quot;A&quot;</span><span class="p">,</span> <span class="n">minor</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s2">&quot;B&quot;</span><span class="p">,</span> <span class="n">major</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">],</span> <span class="nb">list</span><span class="p">(</span><span class="n">calls</span><span class="p">))</span></div>
+
+    <span class="k">def</span> <span class="nf">_my_compatibility_assertLogs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="sd">&quot;&quot;&quot;Compatibility &#39;assertLogs&#39; function for Python 3.3.&quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="s2">&quot;assertLogs&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertLogs</span><span class="p">(</span><span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="kn">from</span> <span class="nn">.python_3_3_compatibility</span> <span class="kn">import</span> <span class="n">Python_3_4_AssertLogsContext</span>
+            <span class="k">return</span> <span class="n">Python_3_4_AssertLogsContext</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">logger</span><span class="p">,</span> <span class="n">level</span><span class="p">)</span></div>
 </pre></div>
 
           </div>
@@ -399,14 +700,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
     </div>
   </body>
 </html>

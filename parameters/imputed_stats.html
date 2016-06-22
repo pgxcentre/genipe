@@ -1,0 +1,507 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Imputed Stats - Options and Parameters &mdash; genipe 1.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="top" title="genipe 1.3.0 documentation" href="../index.html" />
+    <link rel="up" title="Options and Parameters" href="../parameters.html" />
+    <link rel="next" title="Impute2 Merger - Options and Parameters" href="impute2_merger.html" />
+    <link rel="prev" title="Main Pipeline - Options and Parameters" href="main_pipeline.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="impute2_merger.html" title="Impute2 Merger - Options and Parameters"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="main_pipeline.html" title="Main Pipeline - Options and Parameters"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../parameters.html" accesskey="U">Options and Parameters</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Imputed Stats - Options and Parameters</a><ul>
+<li><a class="reference internal" href="#available-statistical-models">Available statistical models</a></li>
+<li><a class="reference internal" href="#common-options">Common options</a><ul>
+<li><a class="reference internal" href="#general-options">General options</a></li>
+<li><a class="reference internal" href="#input-files">Input files</a></li>
+<li><a class="reference internal" href="#output-options">Output options</a></li>
+<li><a class="reference internal" href="#id1">General options</a></li>
+<li><a class="reference internal" href="#dosage-options">Dosage options</a></li>
+<li><a class="reference internal" href="#phenotype-options">Phenotype options</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cox-s-proportional-hazard-model-options">Cox&#8217;s proportional hazard model options</a></li>
+<li><a class="reference internal" href="#linear-regression-options">Linear regression options</a></li>
+<li><a class="reference internal" href="#logistic-regression-options">Logistic regression options</a></li>
+<li><a class="reference internal" href="#linear-mixed-effects-options">Linear mixed effects options</a></li>
+<li><a class="reference internal" href="#skat-options">SKAT options</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="main_pipeline.html"
+                        title="previous chapter">Main Pipeline - Options and Parameters</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="impute2_merger.html"
+                        title="next chapter">Impute2 Merger - Options and Parameters</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/parameters/imputed_stats.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="contents topic" id="quick-navigation">
+<p class="topic-title first">Quick navigation</p>
+<ul class="simple">
+<li><a class="reference internal" href="#imputed-stats-options-and-parameters" id="id2">Imputed Stats - Options and Parameters</a><ul>
+<li><a class="reference internal" href="#available-statistical-models" id="id3">Available statistical models</a></li>
+<li><a class="reference internal" href="#common-options" id="id4">Common options</a><ul>
+<li><a class="reference internal" href="#general-options" id="id5">General options</a></li>
+<li><a class="reference internal" href="#input-files" id="id6">Input files</a></li>
+<li><a class="reference internal" href="#output-options" id="id7">Output options</a></li>
+<li><a class="reference internal" href="#id1" id="id8">General options</a></li>
+<li><a class="reference internal" href="#dosage-options" id="id9">Dosage options</a></li>
+<li><a class="reference internal" href="#phenotype-options" id="id10">Phenotype options</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#cox-s-proportional-hazard-model-options" id="id11">Cox&#8217;s proportional hazard model options</a></li>
+<li><a class="reference internal" href="#linear-regression-options" id="id12">Linear regression options</a></li>
+<li><a class="reference internal" href="#logistic-regression-options" id="id13">Logistic regression options</a></li>
+<li><a class="reference internal" href="#linear-mixed-effects-options" id="id14">Linear mixed effects options</a></li>
+<li><a class="reference internal" href="#skat-options" id="id15">SKAT options</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="imputed-stats-options-and-parameters">
+<h1><a class="toc-backref" href="#id2">Imputed Stats - Options and Parameters</a><a class="headerlink" href="#imputed-stats-options-and-parameters" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="available-statistical-models">
+<h2><a class="toc-backref" href="#id3">Available statistical models</a><a class="headerlink" href="#available-statistical-models" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="19%" />
+<col width="81%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Name</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">cox</span></code></td>
+<td>Cox&#8217;s proportional hazard model (survival regression).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">linear</span></code></td>
+<td>Linear regression (ordinary least squares).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">logistic</span></code></td>
+<td>Logistic regression (GLM with binomial distribution).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">mixedlm</span></code></td>
+<td>Linear mixed effect model (random intercept).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">skat</span></code></td>
+<td>SKAT analysis.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="common-options">
+<h2><a class="toc-backref" href="#id4">Common options</a><a class="headerlink" href="#common-options" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="general-options">
+<h3><a class="toc-backref" href="#id5">General options</a><a class="headerlink" href="#general-options" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">-h</span></code>, <code class="docutils literal"><span class="pre">--help</span></code></td>
+<td>Show this help message and exit.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">-v</span></code>, <code class="docutils literal"><span class="pre">--version</span></code></td>
+<td>Show program&#8217;s version number and exit.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--debug</span></code></td>
+<td>Set the logging level to debug.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="input-files">
+<h3><a class="toc-backref" href="#id6">Input files</a><a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--impute2</span> <span class="pre">FILE</span></code></td>
+<td>The output from IMPUTE2.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--sample</span> <span class="pre">FILE</span></code></td>
+<td>The sample file (the order should be the same
+as in the IMPUTE2 files).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--pheno</span> <span class="pre">FILE</span></code></td>
+<td>The file containing phenotypes and co
+variables.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--extract-sites</span> <span class="pre">FILE</span></code></td>
+<td>A list of sites to extract for analysis
+(optional).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="output-options">
+<h3><a class="toc-backref" href="#id7">Output options</a><a class="headerlink" href="#output-options" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="22%" />
+<col width="78%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--out</span> <span class="pre">FILE</span></code></td>
+<td>The prefix for the output files. [<code class="docutils literal"><span class="pre">imputed_stats</span></code>]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="id1">
+<h3><a class="toc-backref" href="#id8">General options</a><a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--nb-process</span> <span class="pre">INT</span></code></td>
+<td>The number of process to use. [<code class="docutils literal"><span class="pre">1</span></code>]</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--nb-lines</span> <span class="pre">INT</span></code></td>
+<td>The number of line to read at a time.
+[<code class="docutils literal"><span class="pre">1000</span></code>]</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--chrx</span></code></td>
+<td>The analysis is performed for the non
+pseudo-autosomal region of the chromosome X
+(male dosage will be divided by 2 to get
+values [0, 0.5] instead of [0, 1]) (males are
+coded as 1 and option &#8216;<code class="docutils literal"><span class="pre">--gender-column</span></code>&#8216;
+should be used).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--gender-column</span> <span class="pre">NAME</span></code></td>
+<td>The name of the gender column (use to exclude
+samples with unknown gender (<em>i.e.</em> not 1,
+male, or 2, female). If gender not available,
+use &#8216;None&#8217;. [<code class="docutils literal"><span class="pre">Gender</span></code>]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="dosage-options">
+<h3><a class="toc-backref" href="#id9">Dosage options</a><a class="headerlink" href="#dosage-options" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="75%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--scale</span> <span class="pre">INT</span></code></td>
+<td>Scale dosage so that values are in [0, n] (possible
+values are 1 (no scaling) or 2). [<code class="docutils literal"><span class="pre">2</span></code>]</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--prob</span> <span class="pre">FLOAT</span></code></td>
+<td>The minimal probability for which a genotype should
+be considered. [<code class="docutils literal"><span class="pre">&gt;=0.9</span></code>]</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--maf</span> <span class="pre">FLOAT</span></code></td>
+<td>Minor allele frequency threshold for which marker
+will be skipped. [<code class="docutils literal"><span class="pre">&lt;0.01</span></code>]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="phenotype-options">
+<h3><a class="toc-backref" href="#id10">Phenotype options</a><a class="headerlink" href="#phenotype-options" title="Permalink to this headline">¶</a></h3>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--covar</span> <span class="pre">NAME</span></code></td>
+<td>The co variable names (in the phenotype
+file), separated by coma.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--categorical</span> <span class="pre">NAME</span></code></td>
+<td>The name of the variables that are
+categorical (note that the gender is always
+categorical). The variables are separated by
+coma.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--missing-value</span> <span class="pre">NAME</span></code></td>
+<td>The missing value in the phenotype file.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--sample-column</span> <span class="pre">NAME</span></code></td>
+<td>The name of the sample ID column (in the
+phenotype file). [<code class="docutils literal"><span class="pre">sample_id</span></code>]</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--interaction</span> <span class="pre">NAME</span></code></td>
+<td>Add an interaction between the genotype and
+this variable.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="cox-s-proportional-hazard-model-options">
+<h2><a class="toc-backref" href="#id11">Cox&#8217;s proportional hazard model options</a><a class="headerlink" href="#cox-s-proportional-hazard-model-options" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="36%" />
+<col width="64%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--time-to-event</span> <span class="pre">NAME</span></code></td>
+<td>The time to event variable (in the pheno
+file).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--event</span> <span class="pre">NAME</span></code></td>
+<td>The event variable (1 if observed, 0 if not
+observed).</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="linear-regression-options">
+<h2><a class="toc-backref" href="#id12">Linear regression options</a><a class="headerlink" href="#linear-regression-options" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--pheno-name</span> <span class="pre">NAME</span></code></td>
+<td>The phenotype.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="logistic-regression-options">
+<h2><a class="toc-backref" href="#id13">Logistic regression options</a><a class="headerlink" href="#logistic-regression-options" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--pheno-name</span> <span class="pre">NAME</span></code></td>
+<td>The phenotype.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="linear-mixed-effects-options">
+<h2><a class="toc-backref" href="#id14">Linear mixed effects options</a><a class="headerlink" href="#linear-mixed-effects-options" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="35%" />
+<col width="65%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--pheno-name</span> <span class="pre">NAME</span></code></td>
+<td>The phenotype.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--use-ml</span></code></td>
+<td>Fit the standard likelihood using maximum
+likelihood (ML) estimation instead of REML
+(default is REML).</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--p-threshold</span> <span class="pre">FLOAT</span></code></td>
+<td>The p-value threshold for which the real
+MixedLM analysis will be performed.
+[<code class="docutils literal"><span class="pre">&lt;0.0001</span></code>]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="skat-options">
+<h2><a class="toc-backref" href="#id15">SKAT options</a><a class="headerlink" href="#skat-options" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="58%" />
+<col width="42%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--snp-sets</span> <span class="pre">FILE</span></code></td>
+<td>A file indicating a snp_set
+and an optional weight for
+every variant.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--outcome-type</span> <span class="pre">{continuous,discrete}</span></code></td>
+<td>The variable type for the
+outcome. This will be passed
+to SKAT.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--skat-o</span></code></td>
+<td>By default, the regular SKAT
+is used. Setting this flag
+will use the SKAT-O algorithm
+instead.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--pheno-name</span> <span class="pre">NAME</span></code></td>
+<td>The phenotype.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="impute2_merger.html" title="Impute2 Merger - Options and Parameters"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="main_pipeline.html" title="Main Pipeline - Options and Parameters"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../parameters.html" >Options and Parameters</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

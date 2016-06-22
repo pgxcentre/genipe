@@ -15,6 +15,26 @@ most probable. A value close to 2 means that a homozygous genotype of the rare
 allele is the most probable. Finally, a value close to 1 means that a
 heterozygous genotype is the most probable.
 
+An optimization is made so that the analysis is less time consuming for large
+scale imputation data. The p-value of the SNP is estimated using the two-step
+linear mixed model (as describe by Sikorska *et al.*, 2015 [doi:
+`10.1038/ejhg.2015.1
+<http://www.nature.com/ejhg/journal/v23/n10/abs/ejhg20151a.html>`_]). If the
+p-value is lower than a user specified threshold, the exact mixed linear model
+analysis is performed for this marker to gather all the important statistics
+(*e.g.* beta).
+
+The precision of the estimated p-value is quite high, as demonstrated by the
+following figure. The p-values were compared between the two-step approach (*y*
+axis) and the original one (*x* axis). The analysis was performed on 5,045
+samples imputed on chromosome 2 (528,932 high quality imputed markers with MAF
+higher than 1%).
+
+.. figure:: ../_static/images/MixedLM_TS_Diff.png
+    :align: center
+    :width: 60%
+    :alt: Comparison of p-values between the two-step and original approaches.
+
 We suppose that you have followed the main :ref:`genipe-tut-page`. The
 following command will create the working directory for this tutorial.
 
@@ -96,16 +116,16 @@ measurements per sample):
 
 .. code-block:: text
 
-   SampleID	Pheno3	Age	Var1	Gender
-   NA06985	58.6923101992	53	48.01043142060001	2
-   NA06985	79.18026839086532	53	48.01043142060001	2
-   NA06985	97.6831921953767	53	48.01043142060001	2
-   NA06993	64.8981628053	47	23.7615117523	1
-   NA06993	81.26389783395985	47	23.7615117523	1
-   NA06993	100.71531297841553	47	23.7615117523	1
-   NA06994	129.562482664	48	20.2946857226	1
-   NA06994	144.2513248255908	48	20.2946857226	1
-   NA06994	161.94488318622535	48	20.2946857226	1
+   SampleID        Pheno3  Visit   Age     Var1    Gender
+   NA06985 58.6923101992   1       53      48.01043142060001       2
+   NA06985 79.18026839086532       2       53      48.01043142060001       2
+   NA06985 97.6831921953767        3       53      48.01043142060001       2
+   NA06993 64.8981628053   1       47      23.7615117523   1
+   NA06993 81.26389783395985       2       47      23.7615117523   1
+   NA06993 100.71531297841551      3       47      23.7615117523   1
+   NA06994 129.562482664   1       48      20.2946857226   1
+   NA06994 144.2513248255908       2       48      20.2946857226   1
+   NA06994 161.94488318622538      3       48      20.2946857226   1
    ...
 
 We provide a *dummy* phenotype file (where values, except for ``Gender``, were
@@ -174,9 +194,8 @@ execute the linear mixed effects analysis.
        --pheno-name Pheno3
 
 For more information about the arguments and options, see the
-:ref:`lin-tut-usage` section. The number of process to use might differ
-according to the installation type and to the computer/server. See the
-:ref:`lin-tut-execution-time` section for more information.
+:ref:`mixedlm-tut-usage` section. For an approximation of the execution time,
+refer to the :ref:`stats-exec-time` section.
 
 .. note::
 
@@ -242,10 +261,12 @@ effects analysis in the console:
                                 [--categorical NAME] [--missing-value NAME]
                                 [--sample-column NAME] [--interaction NAME]
                                 --pheno-name NAME [--use-ml]
+                                [--p-threshold FLOAT]
 
    Performs a linear mixed effects regression on imputed data using a random
-   intercept for each group. This script is part of the 'genipe' package, version
-   1.2.3).
+   intercept for each group. A p-value approximation is performed so that
+   computation time is acceptable for imputed data. This script is part of the
+   'genipe' package, version 1.3.0.
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -298,27 +319,8 @@ effects analysis in the console:
      --pheno-name NAME     The phenotype.
      --use-ml              Fit the standard likelihood using maximum likelihood
                            (ML) estimation instead of REML (default is REML).
-
-
-.. _mixedlm-tut-execution-time:
-
-Execution time
----------------
-
-The following figure shows the approximate execution time for different number
-of processes (the ``--nb-process`` option) with different installation methods
-(*pyvenv* in blue, versus *miniconda* in orange). This analysis was performed
-on a computer with an *Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz* (8 cores) and
-16Go of RAM. The analysis contained the 195,473 imputed markers and 90 samples
-from the previous command (where phenotypes were available for only 60 of the
-samples). Each test was performed only one time (no repetition).
-
-.. _mixedlm_exec_time:
-
-.. figure:: ../_static/images/MixedLM_Walltime.png
-    :align: center
-    :width: 60%
-    :alt: Linear mixed effects execution time vs number of processes.
+     --p-threshold FLOAT   The p-value threshold for which the real MixedLM
+                           analysis will be performed. [<0.0001]
 
 
 .. _mixedlm-tut-comparison:

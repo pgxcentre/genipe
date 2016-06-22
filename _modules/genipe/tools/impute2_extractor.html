@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tools.impute2_extractor &mdash; genipe 1.2.3 documentation</title>
+    <title>genipe.tools.impute2_extractor &mdash; genipe 1.3.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.2.3',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.2.3 documentation" href="../../../index.html" />
+    <link rel="top" title="genipe 1.3.0 documentation" href="../../../index.html" />
     <link rel="up" title="genipe" href="../../genipe.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
       </ul>
@@ -53,8 +53,8 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -81,6 +81,7 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">re</span>
 <span class="kn">import</span> <span class="nn">sys</span>
+<span class="kn">import</span> <span class="nn">shlex</span>
 <span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">argparse</span>
@@ -89,10 +90,17 @@
 <span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
 <span class="kn">from</span> <span class="nn">numpy</span> <span class="kn">import</span> <span class="n">nan</span>
 
-<span class="kn">from</span> <span class="nn">..formats.index</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">..formats.impute2</span> <span class="kn">import</span> <span class="o">*</span>
-<span class="kn">from</span> <span class="nn">..error</span> <span class="kn">import</span> <span class="n">ProgramError</span>
+<span class="kn">from</span> <span class="nn">..formats</span> <span class="kn">import</span> <span class="n">index</span>
+<span class="kn">from</span> <span class="nn">..formats</span> <span class="kn">import</span> <span class="n">impute2</span>
+<span class="kn">from</span> <span class="nn">..error</span> <span class="kn">import</span> <span class="n">GenipeError</span>
 <span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">__version__</span><span class="p">,</span> <span class="n">chromosomes</span>
+
+<span class="c1"># Check if pyplink is installed</span>
+<span class="k">try</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">pyplink</span> <span class="kn">import</span> <span class="n">PyPlink</span>
+    <span class="n">HAS_PYPLINK</span> <span class="o">=</span> <span class="bp">True</span>
+<span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
+    <span class="n">HAS_PYPLINK</span> <span class="o">=</span> <span class="bp">False</span>
 
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
@@ -112,7 +120,7 @@
     <span class="c1"># Creating the option parser</span>
     <span class="n">desc</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Extract imputed markers located in a specific genomic region. &quot;</span>
             <span class="s2">&quot;This script is part of the &#39;genipe&#39; package, version &quot;</span>
-            <span class="s2">&quot;{}).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">))</span>
+            <span class="s2">&quot;{}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">))</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">desc</span><span class="p">)</span>
 
     <span class="c1"># Files that need closing</span>
@@ -121,9 +129,6 @@
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Parsing the options</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">parse_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
-
-        <span class="c1"># Getting the output directory (dirname of the output prefix)</span>
-        <span class="n">out_dir</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">out</span><span class="p">)</span>
 
         <span class="c1"># The logging handlers</span>
         <span class="n">handlers</span> <span class="o">=</span> <span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">()]</span>
@@ -143,17 +148,19 @@
         <span class="c1"># First log</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">index_only</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Logging everything into &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">log_file</span><span class="p">))</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Program arguments: &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Program arguments: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">part</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
+        <span class="p">))</span>
 
         <span class="c1"># Checking the options</span>
         <span class="n">check_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">index_only</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">index_files</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">index_file</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">)</span>
 
         <span class="c1"># Gathering what needs to be extracted</span>
         <span class="n">to_extract</span> <span class="o">=</span> <span class="n">gather_extraction</span><span class="p">(</span>
-            <span class="n">i_filenames</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">,</span>
+            <span class="n">fn</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">,</span>
             <span class="n">maf</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">maf</span><span class="p">,</span>
             <span class="n">rate</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">rate</span><span class="p">,</span>
             <span class="n">info</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">info</span><span class="p">,</span>
@@ -163,11 +170,12 @@
 
         <span class="c1"># Extraction</span>
         <span class="n">extract_markers</span><span class="p">(</span>
-            <span class="n">i_filenames</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">,</span>
+            <span class="n">fn</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">,</span>
             <span class="n">to_extract</span><span class="o">=</span><span class="n">to_extract</span><span class="p">,</span>
             <span class="n">out_prefix</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">out</span><span class="p">,</span>
             <span class="n">out_format</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">out_format</span><span class="p">,</span>
             <span class="n">prob_t</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">prob</span><span class="p">,</span>
+            <span class="n">is_long</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">long_format</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="c1"># Catching the Ctrl^C</span>
@@ -175,8 +183,8 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Cancelled by user&quot;</span><span class="p">)</span>
         <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
-    <span class="c1"># Catching the ProgramError</span>
-    <span class="k">except</span> <span class="n">ProgramError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+    <span class="c1"># Catching the GenipeError</span>
+    <span class="k">except</span> <span class="n">GenipeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
         <span class="n">parser</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">message</span><span class="p">)</span>
 
@@ -189,106 +197,160 @@
             <span class="n">logging_fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="index_files"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.impute2_extractor.index_files">[docs]</a><span class="k">def</span> <span class="nf">index_files</span><span class="p">(</span><span class="n">i_filenames</span><span class="p">):</span>
-    <span class="sd">&quot;&quot;&quot;Indexes the impute2 files.</span>
+<div class="viewcode-block" id="index_file"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.impute2_extractor.index_file">[docs]</a><span class="k">def</span> <span class="nf">index_file</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Indexes the impute2 file.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        i_filenames (list): the list of input file names</span>
+<span class="sd">        fn (str): the name of the impute2 file</span>
 
 <span class="sd">    This function uses the :py:func:`genipe.formats.index.get_index` to create</span>
 <span class="sd">    the index file if it&#39;s missing.</span>
 
 <span class="sd">    Note</span>
 <span class="sd">    ----</span>
-<span class="sd">        We won&#39;t catch the :py:class:`genipe.error.ProgramError` exception if</span>
+<span class="sd">        We won&#39;t catch the :py:class:`genipe.error.GenipeError` exception if</span>
 <span class="sd">        it&#39;s raised, since the message will be relevant to the user.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># For each input file</span>
-    <span class="k">for</span> <span class="n">i_filename</span> <span class="ow">in</span> <span class="n">i_filenames</span><span class="p">:</span>
-        <span class="n">get_index</span><span class="p">(</span><span class="n">i_filename</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chrom&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;pos&quot;</span><span class="p">],</span>
-                  <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span></div>
+    <span class="n">index</span><span class="o">.</span><span class="n">get_index</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span> <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chrom&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;pos&quot;</span><span class="p">],</span>
+                    <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="extract_markers"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.impute2_extractor.extract_markers">[docs]</a><span class="k">def</span> <span class="nf">extract_markers</span><span class="p">(</span><span class="n">i_filenames</span><span class="p">,</span> <span class="n">to_extract</span><span class="p">,</span> <span class="n">out_prefix</span><span class="p">,</span> <span class="n">out_format</span><span class="p">,</span> <span class="n">prob_t</span><span class="p">):</span>
+<div class="viewcode-block" id="extract_markers"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.impute2_extractor.extract_markers">[docs]</a><span class="k">def</span> <span class="nf">extract_markers</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">to_extract</span><span class="p">,</span> <span class="n">out_prefix</span><span class="p">,</span> <span class="n">out_format</span><span class="p">,</span> <span class="n">prob_t</span><span class="p">,</span> <span class="n">is_long</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Extracts according to names.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        i_filenames (list): the list of input file names</span>
-<span class="sd">        to_extract (dict): the list of markers to extract for each input file</span>
+<span class="sd">        fn (str): the name of the input file</span>
+<span class="sd">        to_extract (set): the list of markers to extract for each input file</span>
 <span class="sd">        out_prefix (str): the output prefix</span>
 <span class="sd">        out_format (list): the output format(s)</span>
 <span class="sd">        prob_t (float): the probability threshold</span>
+<span class="sd">        is_long (bool): True if format needs to be long</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># The output files (probabilities)</span>
     <span class="n">o_files</span> <span class="o">=</span> <span class="p">{</span>
-        <span class="n">suffix</span><span class="p">:</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_prefix</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">out_format</span>
+        <span class="n">suffix</span><span class="p">:</span> <span class="nb">open</span><span class="p">(</span><span class="n">out_prefix</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">suffix</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">suffix</span> <span class="ow">in</span> <span class="n">out_format</span> <span class="k">if</span> <span class="n">suffix</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;bed&quot;</span><span class="p">}</span>
     <span class="p">}</span>
 
-    <span class="c1"># Writing the header</span>
+    <span class="c1"># If there is the &#39;bed&#39; format, we actually need pyplink</span>
+    <span class="k">if</span> <span class="s2">&quot;bed&quot;</span> <span class="ow">in</span> <span class="n">out_format</span><span class="p">:</span>
+        <span class="n">o_files</span><span class="p">[</span><span class="s2">&quot;bed&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">PyPlink</span><span class="p">(</span><span class="n">out_prefix</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">),</span>
+            <span class="nb">open</span><span class="p">(</span><span class="n">out_prefix</span> <span class="o">+</span> <span class="s2">&quot;.bim&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">),</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Creating a fam (if bed)</span>
+    <span class="n">samples</span> <span class="o">=</span> <span class="n">get_samples</span><span class="p">(</span><span class="n">get_file_prefix</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.sample&quot;</span><span class="p">)</span>
+    <span class="n">sample_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;{}/{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">id_1</span><span class="p">,</span> <span class="n">id_2</span><span class="p">)</span> <span class="k">for</span> <span class="n">id_1</span><span class="p">,</span> <span class="n">id_2</span>
+                    <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">ID_1</span><span class="p">,</span> <span class="n">samples</span><span class="o">.</span><span class="n">ID_2</span><span class="p">)]</span>
+
+    <span class="c1"># Writing the header (for dosage)</span>
     <span class="k">if</span> <span class="s2">&quot;dosage&quot;</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;chrom&quot;</span><span class="p">,</span> <span class="s2">&quot;pos&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;minor&quot;</span><span class="p">,</span> <span class="s2">&quot;major&quot;</span><span class="p">,</span> <span class="s2">&quot;dosage&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
-              <span class="nb">file</span><span class="o">=</span><span class="n">o_files</span><span class="p">[</span><span class="s2">&quot;dosage&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">is_long</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;fid&quot;</span><span class="p">,</span> <span class="s2">&quot;iid&quot;</span><span class="p">,</span> <span class="s2">&quot;chrom&quot;</span><span class="p">,</span> <span class="s2">&quot;pos&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;minor&quot;</span><span class="p">,</span> <span class="s2">&quot;major&quot;</span><span class="p">,</span>
+                  <span class="s2">&quot;dosage&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_files</span><span class="p">[</span><span class="s2">&quot;dosage&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;chrom&quot;</span><span class="p">,</span> <span class="s2">&quot;pos&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;minor&quot;</span><span class="p">,</span> <span class="s2">&quot;major&quot;</span><span class="p">,</span>
+                  <span class="o">*</span><span class="n">sample_names</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_files</span><span class="p">[</span><span class="s2">&quot;dosage&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Writing the header (for calls)</span>
+    <span class="k">if</span> <span class="s2">&quot;calls&quot;</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">is_long</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;fid&quot;</span><span class="p">,</span> <span class="s2">&quot;iid&quot;</span><span class="p">,</span> <span class="s2">&quot;chrom&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;cm&quot;</span><span class="p">,</span> <span class="s2">&quot;pos&quot;</span><span class="p">,</span> <span class="s2">&quot;call&quot;</span><span class="p">,</span>
+                  <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_files</span><span class="p">[</span><span class="s2">&quot;calls&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;chrom&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;cm&quot;</span><span class="p">,</span> <span class="s2">&quot;pos&quot;</span><span class="p">,</span>
+                  <span class="o">*</span><span class="n">sample_names</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_files</span><span class="p">[</span><span class="s2">&quot;calls&quot;</span><span class="p">])</span>
 
     <span class="c1"># Extracted positions</span>
     <span class="n">all_extracted</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-    <span class="c1"># Reading all impute2 files</span>
-    <span class="k">for</span> <span class="n">i_filename</span> <span class="ow">in</span> <span class="n">i_filenames</span><span class="p">:</span>
-        <span class="n">names</span> <span class="o">=</span> <span class="n">to_extract</span><span class="p">[</span><span class="n">i_filename</span><span class="p">]</span>
-        <span class="n">extracted</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+    <span class="c1"># Reading the impute2 file</span>
+    <span class="n">extracted</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-        <span class="c1"># Finding the name of the file containing the index</span>
-        <span class="n">file_index</span> <span class="o">=</span> <span class="n">get_index</span><span class="p">(</span><span class="n">i_filename</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
-                               <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chrom&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;pos&quot;</span><span class="p">],</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+    <span class="c1"># Finding the name of the file containing the index</span>
+    <span class="n">file_index</span> <span class="o">=</span> <span class="n">index</span><span class="o">.</span><span class="n">get_index</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">cols</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">],</span>
+                                 <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chrom&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;pos&quot;</span><span class="p">],</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
 
-        <span class="c1"># Keeping only required values from the index</span>
-        <span class="n">file_index</span> <span class="o">=</span> <span class="n">file_index</span><span class="p">[</span><span class="n">file_index</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">names</span><span class="p">)]</span>
+    <span class="c1"># Keeping only required values from the index</span>
+    <span class="n">file_index</span> <span class="o">=</span> <span class="n">file_index</span><span class="p">[</span><span class="n">file_index</span><span class="o">.</span><span class="n">name</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">to_extract</span><span class="p">)]</span>
 
-        <span class="c1"># Getting all the markers value</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Extracting {:,d} markers&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">file_index</span><span class="p">)))</span>
-        <span class="k">with</span> <span class="n">get_open_func</span><span class="p">(</span><span class="n">i_filename</span><span class="p">)(</span><span class="n">i_filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
-            <span class="k">for</span> <span class="n">seek_value</span> <span class="ow">in</span> <span class="n">file_index</span><span class="o">.</span><span class="n">seek</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
-                <span class="c1"># Seeking</span>
-                <span class="n">i_file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">seek_value</span><span class="p">))</span>
+    <span class="c1"># Getting all the markers value</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Extracting {:,d} markers&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">file_index</span><span class="p">)))</span>
+    <span class="k">with</span> <span class="n">index</span><span class="o">.</span><span class="n">get_open_func</span><span class="p">(</span><span class="n">fn</span><span class="p">)(</span><span class="n">fn</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">seek_value</span> <span class="ow">in</span> <span class="n">file_index</span><span class="o">.</span><span class="n">seek</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
+            <span class="c1"># Seeking</span>
+            <span class="n">i_file</span><span class="o">.</span><span class="n">seek</span><span class="p">(</span><span class="nb">int</span><span class="p">(</span><span class="n">seek_value</span><span class="p">))</span>
 
-                <span class="c1"># Reading the line</span>
-                <span class="n">line</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
-                <span class="n">row</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+            <span class="c1"># Reading the line</span>
+            <span class="n">line</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span>
+            <span class="n">row</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
 
-                <span class="c1"># The marker name</span>
-                <span class="n">name</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="c1"># The marker name</span>
+            <span class="n">name</span> <span class="o">=</span> <span class="n">row</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
 
-                <span class="c1"># Printing the data</span>
-                <span class="n">print_data</span><span class="p">(</span><span class="n">o_files</span><span class="p">,</span> <span class="n">prob_t</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="n">line</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">)</span>
+            <span class="c1"># Printing the data</span>
+            <span class="n">print_data</span><span class="p">(</span><span class="n">o_files</span><span class="p">,</span> <span class="n">prob_t</span><span class="p">,</span> <span class="n">samples</span><span class="o">.</span><span class="n">ID_1</span><span class="p">,</span> <span class="n">samples</span><span class="o">.</span><span class="n">ID_2</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="n">line</span><span class="p">,</span>
+                       <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span> <span class="n">is_long</span><span class="o">=</span><span class="n">is_long</span><span class="p">)</span>
 
-                <span class="c1"># Saving statistics</span>
-                <span class="n">extracted</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+            <span class="c1"># Saving statistics</span>
+            <span class="n">extracted</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Extracted {:,d} markers&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">extracted</span><span class="p">)))</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">names</span> <span class="o">-</span> <span class="n">extracted</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Missing {:,d} &quot;</span>
-                            <span class="s2">&quot;markers&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">names</span> <span class="o">-</span> <span class="n">extracted</span><span class="p">)))</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Extracted {:,d} markers&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">extracted</span><span class="p">)))</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">to_extract</span> <span class="o">-</span> <span class="n">extracted</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;Missing {:,d} &quot;</span>
+                        <span class="s2">&quot;markers&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">to_extract</span> <span class="o">-</span> <span class="n">extracted</span><span class="p">)))</span>
 
-        <span class="c1"># Keeping track of what has been extracted</span>
-        <span class="n">all_extracted</span> <span class="o">|=</span> <span class="n">extracted</span>
+    <span class="c1"># Keeping track of what has been extracted</span>
+    <span class="n">all_extracted</span> <span class="o">|=</span> <span class="n">extracted</span>
 
-        <span class="c1"># Extracting the companion files (if impute2 and files are present)</span>
-        <span class="k">if</span> <span class="s2">&quot;impute2&quot;</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">:</span>
-            <span class="n">extract_companion_files</span><span class="p">(</span>
-                <span class="n">i_prefix</span><span class="o">=</span><span class="n">get_file_prefix</span><span class="p">(</span><span class="n">i_filename</span><span class="p">),</span>
-                <span class="n">to_extract</span><span class="o">=</span><span class="n">names</span><span class="p">,</span>
-                <span class="n">o_prefix</span><span class="o">=</span><span class="n">out_prefix</span><span class="p">,</span>
-            <span class="p">)</span>
+    <span class="c1"># Extracting the companion files (if impute2 and files are present)</span>
+    <span class="k">if</span> <span class="s2">&quot;impute2&quot;</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">:</span>
+        <span class="n">extract_companion_files</span><span class="p">(</span>
+            <span class="n">i_prefix</span><span class="o">=</span><span class="n">get_file_prefix</span><span class="p">(</span><span class="n">fn</span><span class="p">),</span>
+            <span class="n">to_extract</span><span class="o">=</span><span class="n">to_extract</span><span class="p">,</span>
+            <span class="n">o_prefix</span><span class="o">=</span><span class="n">out_prefix</span><span class="p">,</span>
+        <span class="p">)</span>
+
+    <span class="c1"># Writing the FAM file if bed</span>
+    <span class="k">if</span> <span class="s2">&quot;bed&quot;</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">:</span>
+        <span class="n">cols</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;ID_1&quot;</span><span class="p">,</span> <span class="s2">&quot;ID_2&quot;</span><span class="p">,</span> <span class="s2">&quot;father&quot;</span><span class="p">,</span> <span class="s2">&quot;mother&quot;</span><span class="p">,</span> <span class="s2">&quot;sex&quot;</span><span class="p">,</span> <span class="s2">&quot;plink_pheno&quot;</span><span class="p">]</span>
+        <span class="n">samples</span><span class="p">[</span><span class="n">cols</span><span class="p">]</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">out_prefix</span> <span class="o">+</span> <span class="s2">&quot;.fam&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                             <span class="n">header</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 
     <span class="c1"># Closing the files</span>
-    <span class="k">for</span> <span class="n">o_file</span> <span class="ow">in</span> <span class="n">o_files</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-        <span class="n">o_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+    <span class="k">for</span> <span class="n">o_format</span><span class="p">,</span> <span class="n">o_file</span> <span class="ow">in</span> <span class="n">o_files</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+        <span class="k">if</span> <span class="n">o_format</span> <span class="o">==</span> <span class="s2">&quot;bed&quot;</span><span class="p">:</span>
+            <span class="n">o_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+            <span class="n">o_file</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">o_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
     <span class="c1"># Extraction complete</span>
     <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Extraction of {:,d} markers &quot;</span>
                  <span class="s2">&quot;completed&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">all_extracted</span><span class="p">)))</span></div>
+
+
+<div class="viewcode-block" id="get_samples"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.impute2_extractor.get_samples">[docs]</a><span class="k">def</span> <span class="nf">get_samples</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+    <span class="sd">&quot;&quot;&quot;Reads the sample files, and extract the information.</span>
+
+<span class="sd">    Args:</span>
+<span class="sd">        fn (str): the name of the sample file</span>
+
+<span class="sd">    Returns:</span>
+<span class="sd">        pandas.DataFrame: the sample information</span>
+
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="c1"># Reading the file</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+
+    <span class="c1"># Removing the first data row</span>
+    <span class="n">sample</span> <span class="o">=</span> <span class="n">sample</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">]</span><span class="o">.</span><span class="n">reset_index</span><span class="p">(</span><span class="n">drop</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+
+    <span class="k">return</span> <span class="n">sample</span></div>
 
 
 <div class="viewcode-block" id="extract_companion_files"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.impute2_extractor.extract_companion_files">[docs]</a><span class="k">def</span> <span class="nf">extract_companion_files</span><span class="p">(</span><span class="n">i_prefix</span><span class="p">,</span> <span class="n">o_prefix</span><span class="p">,</span> <span class="n">to_extract</span><span class="p">):</span>
@@ -329,7 +391,7 @@
                 <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;header&quot;</span><span class="p">]</span> <span class="ow">and</span> <span class="n">i</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
                     <span class="n">header</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span><span class="p">:</span> <span class="n">i</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">row</span><span class="p">)}</span>
                     <span class="k">if</span> <span class="n">info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">]</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
-                        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: missing column {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: missing column {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                             <span class="n">i_fn</span><span class="p">,</span>
                             <span class="n">info</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span>
                         <span class="p">))</span>
@@ -348,12 +410,15 @@
         <span class="n">shutil</span><span class="o">.</span><span class="n">copyfile</span><span class="p">(</span><span class="n">sample_fn</span><span class="p">,</span> <span class="n">o_fn</span><span class="p">)</span></div>
 
 
-<div class="viewcode-block" id="print_data"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.impute2_extractor.print_data">[docs]</a><span class="k">def</span> <span class="nf">print_data</span><span class="p">(</span><span class="n">o_files</span><span class="p">,</span> <span class="n">prob_t</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="print_data"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.impute2_extractor.print_data">[docs]</a><span class="k">def</span> <span class="nf">print_data</span><span class="p">(</span><span class="n">o_files</span><span class="p">,</span> <span class="n">prob_t</span><span class="p">,</span> <span class="n">fid</span><span class="p">,</span> <span class="n">iid</span><span class="p">,</span> <span class="n">is_long</span><span class="p">,</span> <span class="o">*</span><span class="p">,</span> <span class="n">line</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">row</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Prints an impute2 line.</span>
 
 <span class="sd">    Args:</span>
 <span class="sd">        o_files (dict): the output files</span>
 <span class="sd">        prob_t (float): the probability threshold</span>
+<span class="sd">        fid (list): the list of family IDs</span>
+<span class="sd">        iid (list): the list of sample IDs</span>
+<span class="sd">        is_long (bool): True if the format is long (dosage, calls)</span>
 <span class="sd">        line (str): the impute2 line</span>
 <span class="sd">        row (list): the impute2 line, split by spaces</span>
 
@@ -370,39 +435,67 @@
     <span class="n">chrom</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">good_calls</span> <span class="o">=</span> <span class="bp">None</span>
     <span class="n">probabilities</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="k">if</span> <span class="s2">&quot;dosage&quot;</span> <span class="ow">in</span> <span class="n">o_files</span> <span class="ow">or</span> <span class="s2">&quot;calls&quot;</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">:</span>
+    <span class="k">if</span> <span class="p">(</span><span class="s2">&quot;dosage&quot;</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s2">&quot;calls&quot;</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="s2">&quot;bed&quot;</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">):</span>
         <span class="c1"># Getting the informations</span>
-        <span class="n">marker_info</span><span class="p">,</span> <span class="n">probabilities</span> <span class="o">=</span> <span class="n">matrix_from_line</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
+        <span class="n">marker_info</span><span class="p">,</span> <span class="n">probabilities</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">matrix_from_line</span><span class="p">(</span><span class="n">row</span><span class="p">)</span>
         <span class="n">chrom</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">marker_info</span>
 
         <span class="c1"># Getting the good calls</span>
-        <span class="n">good_calls</span> <span class="o">=</span> <span class="n">get_good_probs</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">min_prob</span><span class="o">=</span><span class="n">prob_t</span><span class="p">)</span>
+        <span class="n">good_calls</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">get_good_probs</span><span class="p">(</span><span class="n">probabilities</span><span class="p">,</span> <span class="n">min_prob</span><span class="o">=</span><span class="n">prob_t</span><span class="p">)</span>
 
     <span class="c1"># Dosage?</span>
     <span class="k">if</span> <span class="s2">&quot;dosage&quot;</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">:</span>
         <span class="c1"># Getting the maf</span>
-        <span class="n">maf</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">major</span> <span class="o">=</span> <span class="n">maf_from_probs</span><span class="p">(</span><span class="n">probabilities</span><span class="p">[</span><span class="n">good_calls</span><span class="p">,</span> <span class="p">:],</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
-        <span class="n">dosage</span> <span class="o">=</span> <span class="n">dosage_from_probs</span><span class="p">(</span><span class="n">probabilities</span><span class="p">[:,</span> <span class="n">minor</span><span class="p">],</span>
-                                   <span class="n">probabilities</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+        <span class="n">maf</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">major</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">maf_from_probs</span><span class="p">(</span>
+            <span class="n">prob_matrix</span><span class="o">=</span><span class="n">probabilities</span><span class="p">[</span><span class="n">good_calls</span><span class="p">,</span> <span class="p">:],</span>
+            <span class="n">a1</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span>
+            <span class="n">a2</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">dosage</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">dosage_from_probs</span><span class="p">(</span>
+            <span class="n">homo_probs</span><span class="o">=</span><span class="n">probabilities</span><span class="p">[:,</span> <span class="n">minor</span><span class="p">],</span>
+            <span class="n">hetero_probs</span><span class="o">=</span><span class="n">probabilities</span><span class="p">[:,</span> <span class="mi">1</span><span class="p">],</span>
+            <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+        <span class="p">)</span>
         <span class="n">dosage</span><span class="p">[</span><span class="o">~</span><span class="n">good_calls</span><span class="p">]</span> <span class="o">=</span> <span class="n">nan</span>
 
         <span class="n">alleles</span> <span class="o">=</span> <span class="p">[</span><span class="n">a1</span><span class="p">,</span> <span class="n">nan</span><span class="p">,</span> <span class="n">a2</span><span class="p">]</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">alleles</span><span class="p">[</span><span class="n">minor</span><span class="p">],</span> <span class="n">alleles</span><span class="p">[</span><span class="n">major</span><span class="p">],</span> <span class="o">*</span><span class="n">dosage</span><span class="p">,</span>
-              <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_files</span><span class="p">[</span><span class="s2">&quot;dosage&quot;</span><span class="p">])</span>
+
+        <span class="k">if</span> <span class="n">is_long</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">sample_f</span><span class="p">,</span> <span class="n">sample_i</span><span class="p">,</span> <span class="n">sample_d</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">iid</span><span class="p">,</span> <span class="n">dosage</span><span class="p">):</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">sample_f</span><span class="p">,</span> <span class="n">sample_i</span><span class="p">,</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">alleles</span><span class="p">[</span><span class="n">minor</span><span class="p">],</span>
+                      <span class="n">alleles</span><span class="p">[</span><span class="n">major</span><span class="p">],</span> <span class="n">sample_d</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
+                      <span class="nb">file</span><span class="o">=</span><span class="n">o_files</span><span class="p">[</span><span class="s2">&quot;dosage&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="n">alleles</span><span class="p">[</span><span class="n">minor</span><span class="p">],</span> <span class="n">alleles</span><span class="p">[</span><span class="n">major</span><span class="p">],</span> <span class="o">*</span><span class="n">dosage</span><span class="p">,</span>
+                  <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_files</span><span class="p">[</span><span class="s2">&quot;dosage&quot;</span><span class="p">])</span>
+
+    <span class="c1"># Bed?</span>
+    <span class="k">if</span> <span class="s2">&quot;bed&quot;</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">:</span>
+        <span class="n">geno</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">major</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">additive_from_probs</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
+        <span class="n">geno</span><span class="p">[</span><span class="o">~</span><span class="n">good_calls</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mi">1</span>
+        <span class="n">o_files</span><span class="p">[</span><span class="s2">&quot;bed&quot;</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">write_genotypes</span><span class="p">(</span><span class="n">geno</span><span class="p">)</span>
+        <span class="k">print</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">major</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
+              <span class="nb">file</span><span class="o">=</span><span class="n">o_files</span><span class="p">[</span><span class="s2">&quot;bed&quot;</span><span class="p">][</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="c1"># Hard calls?</span>
     <span class="k">if</span> <span class="s2">&quot;calls&quot;</span> <span class="ow">in</span> <span class="n">o_files</span><span class="p">:</span>
-        <span class="n">calls</span> <span class="o">=</span> <span class="n">hard_calls_from_probs</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
+        <span class="n">calls</span> <span class="o">=</span> <span class="n">impute2</span><span class="o">.</span><span class="n">hard_calls_from_probs</span><span class="p">(</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">probabilities</span><span class="p">)</span>
         <span class="n">calls</span><span class="p">[</span><span class="o">~</span><span class="n">good_calls</span><span class="p">]</span> <span class="o">=</span> <span class="s2">&quot;0 0&quot;</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="o">*</span><span class="n">calls</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_files</span><span class="p">[</span><span class="s2">&quot;calls&quot;</span><span class="p">])</span></div>
+
+        <span class="k">if</span> <span class="n">is_long</span><span class="p">:</span>
+            <span class="k">for</span> <span class="n">sample_f</span><span class="p">,</span> <span class="n">sample_i</span><span class="p">,</span> <span class="n">sample_c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">fid</span><span class="p">,</span> <span class="n">iid</span><span class="p">,</span> <span class="n">calls</span><span class="p">):</span>
+                <span class="k">print</span><span class="p">(</span><span class="n">sample_f</span><span class="p">,</span> <span class="n">sample_i</span><span class="p">,</span> <span class="n">chrom</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="n">sample_c</span><span class="p">,</span>
+                      <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_files</span><span class="p">[</span><span class="s2">&quot;calls&quot;</span><span class="p">])</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">print</span><span class="p">(</span><span class="n">chrom</span><span class="p">,</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="n">pos</span><span class="p">,</span> <span class="o">*</span><span class="n">calls</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
+                  <span class="nb">file</span><span class="o">=</span><span class="n">o_files</span><span class="p">[</span><span class="s2">&quot;calls&quot;</span><span class="p">])</span></div>
 
 
-<div class="viewcode-block" id="gather_extraction"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.impute2_extractor.gather_extraction">[docs]</a><span class="k">def</span> <span class="nf">gather_extraction</span><span class="p">(</span><span class="n">i_filenames</span><span class="p">,</span> <span class="n">maf</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">extract_filename</span><span class="p">,</span>
-                      <span class="n">genomic_range</span><span class="p">):</span>
+<div class="viewcode-block" id="gather_extraction"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.impute2_extractor.gather_extraction">[docs]</a><span class="k">def</span> <span class="nf">gather_extraction</span><span class="p">(</span><span class="n">fn</span><span class="p">,</span> <span class="n">maf</span><span class="p">,</span> <span class="n">rate</span><span class="p">,</span> <span class="n">info</span><span class="p">,</span> <span class="n">extract_filename</span><span class="p">,</span> <span class="n">genomic_range</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Gather positions that are required.</span>
 
 <span class="sd">    Args:</span>
-<span class="sd">        i_filenames (list): the list of input files</span>
+<span class="sd">        fn (str): the impute2 filename</span>
 <span class="sd">        maf (float): the minor allele frequency threshold (might be ``None``)</span>
 <span class="sd">        rate (float): the call rate threshold (might be ``None``)</span>
 <span class="sd">        info (float): the marker information value threshold (might be</span>
@@ -412,7 +505,7 @@
 <span class="sd">        genomic_range (str): the genomic range for extraction</span>
 
 <span class="sd">    Returns:</span>
-<span class="sd">        dict: the list of markers to extract for each input file</span>
+<span class="sd">        set: the set of markers to extract</span>
 
 <span class="sd">    If extraction by marker name is required, only those markers will be</span>
 <span class="sd">    extracted. Otherwise, ``maf``, ``rate``, ``info`` or ``genomic_range`` can</span>
@@ -420,97 +513,91 @@
 <span class="sd">    allele frequency, call rate and genomic location.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">to_extract</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Gathering information about {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
 
-    <span class="k">for</span> <span class="n">i_filename</span> <span class="ow">in</span> <span class="n">i_filenames</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Gathering information about {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i_filename</span><span class="p">))</span>
+    <span class="c1"># The prefix of all the input files</span>
+    <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_file_prefix</span><span class="p">(</span><span class="n">fn</span><span class="p">)</span>
 
-        <span class="c1"># The prefix of all the input files</span>
-        <span class="n">prefix</span> <span class="o">=</span> <span class="n">get_file_prefix</span><span class="p">(</span><span class="n">i_filename</span><span class="p">)</span>
+    <span class="c1"># Reading the map file</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading MAP data&quot;</span><span class="p">)</span>
+    <span class="n">map_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.map&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
+                           <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chrom&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;pos&quot;</span><span class="p">])</span>
+    <span class="n">map_data</span> <span class="o">=</span> <span class="n">map_data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MAP data contained {:,d} markers&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">map_data</span><span class="p">)))</span>
 
-        <span class="c1"># Reading the map file</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading MAP data&quot;</span><span class="p">)</span>
-        <span class="n">map_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.map&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">],</span>
-                               <span class="n">names</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;chrom&quot;</span><span class="p">,</span> <span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="s2">&quot;pos&quot;</span><span class="p">])</span>
-        <span class="n">map_data</span> <span class="o">=</span> <span class="n">map_data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;MAP data contained {:,d} markers&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">map_data</span><span class="p">)))</span>
+    <span class="c1"># If extraction, we only require a list of marker names</span>
+    <span class="k">if</span> <span class="n">extract_filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">available_markers</span> <span class="o">=</span> <span class="n">map_data</span><span class="o">.</span><span class="n">index</span>
+        <span class="n">marker_list</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">extract_filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
+            <span class="n">marker_list</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
 
-        <span class="c1"># If extraction, we only require a list of marker names</span>
-        <span class="k">if</span> <span class="n">extract_filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">available_markers</span> <span class="o">=</span> <span class="n">map_data</span><span class="o">.</span><span class="n">index</span>
-            <span class="n">marker_list</span> <span class="o">=</span> <span class="bp">None</span>
-            <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">extract_filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
-                <span class="n">marker_list</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
+        <span class="k">return</span> <span class="nb">set</span><span class="p">(</span><span class="n">available_markers</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">marker_list</span><span class="p">))</span>
 
-            <span class="n">to_extract</span><span class="p">[</span><span class="n">i_filename</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span>
-                <span class="n">available_markers</span><span class="o">.</span><span class="n">intersection</span><span class="p">(</span><span class="n">marker_list</span><span class="p">)</span>
-            <span class="p">)</span>
-            <span class="k">continue</span>
+    <span class="c1"># Do we require a genomic location?</span>
+    <span class="k">if</span> <span class="n">genomic_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Keeping markers in required genomic region&quot;</span><span class="p">)</span>
+        <span class="n">map_data</span> <span class="o">=</span> <span class="n">map_data</span><span class="p">[(</span>
+            <span class="p">(</span><span class="n">map_data</span><span class="o">.</span><span class="n">chrom</span> <span class="o">==</span> <span class="n">genomic_range</span><span class="o">.</span><span class="n">chrom</span><span class="p">)</span> <span class="o">&amp;</span>
+            <span class="p">(</span><span class="n">map_data</span><span class="o">.</span><span class="n">pos</span> <span class="o">&gt;=</span> <span class="n">genomic_range</span><span class="o">.</span><span class="n">start</span><span class="p">)</span> <span class="o">&amp;</span>
+            <span class="p">(</span><span class="n">map_data</span><span class="o">.</span><span class="n">pos</span> <span class="o">&lt;=</span> <span class="n">genomic_range</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
+        <span class="p">)]</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Required genomic region contained {:,d} &quot;</span>
+                     <span class="s2">&quot;markers&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">map_data</span><span class="p">)))</span>
 
-        <span class="c1"># Do we require a genomic location?</span>
-        <span class="k">if</span> <span class="n">genomic_range</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Keeping markers in required genomic region&quot;</span><span class="p">)</span>
-            <span class="n">map_data</span> <span class="o">=</span> <span class="n">map_data</span><span class="p">[(</span>
-                <span class="p">(</span><span class="n">map_data</span><span class="o">.</span><span class="n">chrom</span> <span class="o">==</span> <span class="n">genomic_range</span><span class="o">.</span><span class="n">chrom</span><span class="p">)</span> <span class="o">&amp;</span>
-                <span class="p">(</span><span class="n">map_data</span><span class="o">.</span><span class="n">pos</span> <span class="o">&gt;=</span> <span class="n">genomic_range</span><span class="o">.</span><span class="n">start</span><span class="p">)</span> <span class="o">&amp;</span>
-                <span class="p">(</span><span class="n">map_data</span><span class="o">.</span><span class="n">pos</span> <span class="o">&lt;=</span> <span class="n">genomic_range</span><span class="o">.</span><span class="n">end</span><span class="p">)</span>
-            <span class="p">)]</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Required genomic region contained {:,d} &quot;</span>
-                         <span class="s2">&quot;markers&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">map_data</span><span class="p">)))</span>
+    <span class="c1"># Do we require a certain MAF?</span>
+    <span class="k">if</span> <span class="n">maf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading MAF data&quot;</span><span class="p">)</span>
+        <span class="n">maf_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.maf&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">maf_data</span> <span class="o">=</span> <span class="n">maf_data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
 
-        <span class="c1"># Do we require a certain MAF?</span>
-        <span class="k">if</span> <span class="n">maf</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading MAF data&quot;</span><span class="p">)</span>
-            <span class="n">maf_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.maf&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">maf_data</span> <span class="o">=</span> <span class="n">maf_data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="c1"># Merging</span>
+        <span class="n">map_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">map_data</span><span class="p">,</span>
+            <span class="n">maf_data</span><span class="p">[</span><span class="n">maf_data</span><span class="o">.</span><span class="n">maf</span> <span class="o">&gt;=</span> <span class="n">maf</span><span class="p">],</span>
+            <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span>
+            <span class="n">left_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;{:,d} markers with maf &gt;= {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">map_data</span><span class="p">),</span> <span class="n">maf</span><span class="p">))</span>
 
-            <span class="c1"># Merging</span>
-            <span class="n">map_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-                <span class="n">map_data</span><span class="p">,</span>
-                <span class="n">maf_data</span><span class="p">[</span><span class="n">maf_data</span><span class="o">.</span><span class="n">maf</span> <span class="o">&gt;=</span> <span class="n">maf</span><span class="p">],</span>
-                <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span>
-                <span class="n">left_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;{:,d} markers with maf &gt;= &quot;</span>
-                         <span class="s2">&quot;{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">map_data</span><span class="p">),</span> <span class="n">maf</span><span class="p">))</span>
+    <span class="c1"># Do we required a certain completion rate?</span>
+    <span class="k">if</span> <span class="n">rate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading completion rates&quot;</span><span class="p">)</span>
+        <span class="n">rate_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.completion_rates&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
+                                <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
+        <span class="n">rate_data</span> <span class="o">=</span> <span class="n">rate_data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">map_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">map_data</span><span class="p">,</span>
+            <span class="n">rate_data</span><span class="p">[</span><span class="n">rate_data</span><span class="o">.</span><span class="n">completion_rate</span> <span class="o">&gt;=</span> <span class="n">rate</span><span class="p">],</span>
+            <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span>
+            <span class="n">left_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;{:,d} markers with completion rate &gt;= &quot;</span>
+                     <span class="s2">&quot;{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">map_data</span><span class="p">),</span> <span class="n">rate</span><span class="p">))</span>
 
-        <span class="c1"># Do we required a certain completion rate?</span>
-        <span class="k">if</span> <span class="n">rate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading completion rates&quot;</span><span class="p">)</span>
-            <span class="n">rate_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.completion_rates&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span>
-                                    <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">])</span>
-            <span class="n">rate_data</span> <span class="o">=</span> <span class="n">rate_data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-            <span class="n">map_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-                <span class="n">map_data</span><span class="p">,</span>
-                <span class="n">rate_data</span><span class="p">[</span><span class="n">rate_data</span><span class="o">.</span><span class="n">completion_rate</span> <span class="o">&gt;=</span> <span class="n">rate</span><span class="p">],</span>
-                <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span>
-                <span class="n">left_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;{:,d} markers with completion rate &gt;= &quot;</span>
-                         <span class="s2">&quot;{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">map_data</span><span class="p">),</span> <span class="n">rate</span><span class="p">))</span>
+    <span class="c1"># Do we required a certain information value?</span>
+    <span class="k">if</span> <span class="n">info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading information values&quot;</span><span class="p">)</span>
+        <span class="n">info_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.impute2_info&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="n">info_data</span> <span class="o">=</span> <span class="n">info_data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">map_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+            <span class="n">map_data</span><span class="p">,</span>
+            <span class="n">info_data</span><span class="p">[</span><span class="n">info_data</span><span class="p">[</span><span class="s2">&quot;info&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">info</span><span class="p">],</span>
+            <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span>
+            <span class="n">left_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;{:,d} markers with information value &gt;= &quot;</span>
+                     <span class="s2">&quot;{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">map_data</span><span class="p">),</span> <span class="n">info</span><span class="p">))</span>
 
-        <span class="c1"># Do we required a certain information value?</span>
-        <span class="k">if</span> <span class="n">info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading information values&quot;</span><span class="p">)</span>
-            <span class="n">info_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.impute2_info&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)</span>
-            <span class="n">info_data</span> <span class="o">=</span> <span class="n">info_data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
-            <span class="n">map_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
-                <span class="n">map_data</span><span class="p">,</span>
-                <span class="n">info_data</span><span class="p">[</span><span class="n">info_data</span><span class="p">[</span><span class="s2">&quot;info&quot;</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">info</span><span class="p">],</span>
-                <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span>
-                <span class="n">left_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-            <span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;{:,d} markers with information value &gt;= &quot;</span>
-                         <span class="s2">&quot;{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">map_data</span><span class="p">),</span> <span class="n">info</span><span class="p">))</span>
+    <span class="c1"># Extracting the names</span>
+    <span class="n">to_extract</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">map_data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
 
-        <span class="c1"># Extracting the names</span>
-        <span class="n">to_extract</span><span class="p">[</span><span class="n">i_filename</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">map_data</span><span class="o">.</span><span class="n">index</span><span class="p">)</span>
-
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">to_extract</span><span class="p">[</span><span class="n">i_filename</span><span class="p">])</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No marker left for analysis&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">to_extract</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;No marker left for analysis&quot;</span><span class="p">)</span>
+        <span class="n">sys</span><span class="o">.</span><span class="n">exit</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">to_extract</span></div>
 
@@ -543,7 +630,7 @@
 
 <span class="sd">    Note</span>
 <span class="sd">    ----</span>
-<span class="sd">        If there is a problem, a :py:class:`genipe.error.ProgramError` is</span>
+<span class="sd">        If there is a problem, a :py:class:`genipe.error.GenipeError` is</span>
 <span class="sd">        raised.</span>
 
 <span class="sd">    Note</span>
@@ -552,10 +639,9 @@
 <span class="sd">        (``--index`` option).</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># Checking that the impute2 files exists</span>
-    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">:</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: no such file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+    <span class="c1"># Checking that the impute2 file exists</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">):</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: no such file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">index_only</span><span class="p">:</span>
         <span class="k">return</span> <span class="bp">True</span>
@@ -563,11 +649,11 @@
     <span class="c1"># Is there something to extract?</span>
     <span class="k">if</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">genomic</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">maf</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">rate</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">args</span><span class="o">.</span><span class="n">info</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">extract</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;nothing to extract: use &#39;--extract&#39;, &quot;</span>
-                               <span class="s2">&quot;&#39;--genomic&#39;, &#39;--maf&#39; or &#39;--rate&#39;&quot;</span><span class="p">)</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;nothing to extract: use &#39;--extract&#39;, &quot;</span>
+                              <span class="s2">&quot;&#39;--genomic&#39;, &#39;--maf&#39; or &#39;--rate&#39;&quot;</span><span class="p">)</span>
 
     <span class="k">elif</span> <span class="n">args</span><span class="o">.</span><span class="n">extract</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;&#39;--extract&#39; can only be use alone&quot;</span><span class="p">)</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;&#39;--extract&#39; can only be use alone&quot;</span><span class="p">)</span>
 
     <span class="c1"># What extensions to look for after checking arguments</span>
     <span class="n">extensions</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
@@ -575,20 +661,20 @@
     <span class="c1"># If extract, check the file</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">extract</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">extract</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: no such file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">extract</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: no such file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">extract</span><span class="p">))</span>
 
     <span class="c1"># If genomic, we check the format</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">genomic</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">genomic_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">r&quot;(.+):(\d+)-(\d+)$&quot;</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">genomic</span><span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">genomic_match</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: no a valid genomic &quot;</span>
-                               <span class="s2">&quot;region&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">genomic</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: no a valid genomic &quot;</span>
+                              <span class="s2">&quot;region&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">genomic</span><span class="p">))</span>
         <span class="n">chrom</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">genomic_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;chr&quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">))</span>
         <span class="n">start</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">genomic_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
         <span class="n">end</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">genomic_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">chrom</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">chromosomes</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: invalid chromosome&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chrom</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: invalid chromosome&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chrom</span><span class="p">))</span>
 
         <span class="k">if</span> <span class="n">end</span> <span class="o">&lt;</span> <span class="n">start</span><span class="p">:</span>
             <span class="n">start</span><span class="p">,</span> <span class="n">end</span> <span class="o">=</span> <span class="n">end</span><span class="p">,</span> <span class="n">start</span>
@@ -601,40 +687,49 @@
         <span class="n">extensions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;map&quot;</span><span class="p">)</span>
         <span class="n">extensions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;maf&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">maf</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">maf</span> <span class="o">&gt;</span> <span class="mf">0.5</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: invalid MAF&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">maf</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: invalid MAF&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">maf</span><span class="p">))</span>
 
     <span class="c1"># If completion rate, we check what&#39;s required</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">rate</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">extensions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;map&quot;</span><span class="p">)</span>
         <span class="n">extensions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;completion_rates&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">rate</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">rate</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: invalid rate&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">rate</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: invalid rate&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">rate</span><span class="p">))</span>
 
     <span class="c1"># If info, we check what&#39;s required</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">info</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
         <span class="n">extensions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;map&quot;</span><span class="p">)</span>
         <span class="n">extensions</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;impute2_info&quot;</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">info</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">info</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: invalid information &quot;</span>
-                               <span class="s2">&quot;value&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">info</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: invalid information &quot;</span>
+                              <span class="s2">&quot;value&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">info</span><span class="p">))</span>
 
     <span class="c1"># Checking the probability threshold</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">prob</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">prob</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: invalid probability &quot;</span>
-                           <span class="s2">&quot;threshold&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">prob</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: invalid probability &quot;</span>
+                          <span class="s2">&quot;threshold&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">prob</span><span class="p">))</span>
 
-    <span class="c1"># Checking the other files (for each impute2 file)</span>
-    <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">:</span>
-        <span class="n">f_prefix</span> <span class="o">=</span> <span class="n">get_file_prefix</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">f_extension</span> <span class="ow">in</span> <span class="n">extensions</span><span class="p">:</span>
-            <span class="n">fn</span> <span class="o">=</span> <span class="n">f_prefix</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">f_extension</span>
-            <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: no such file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
+    <span class="c1"># Checking the companion files (for impute2)</span>
+    <span class="n">f_prefix</span> <span class="o">=</span> <span class="n">get_file_prefix</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">f_extension</span> <span class="ow">in</span> <span class="n">extensions</span><span class="p">:</span>
+        <span class="n">fn</span> <span class="o">=</span> <span class="n">f_prefix</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span> <span class="o">+</span> <span class="n">f_extension</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">fn</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: no such file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">fn</span><span class="p">))</span>
 
     <span class="c1"># Checking the output format</span>
     <span class="k">for</span> <span class="n">out_format</span> <span class="ow">in</span> <span class="n">args</span><span class="o">.</span><span class="n">out_format</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">out_format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;impute2&quot;</span><span class="p">,</span> <span class="s2">&quot;dosage&quot;</span><span class="p">,</span> <span class="s2">&quot;calls&quot;</span><span class="p">}:</span>
-            <span class="k">raise</span> <span class="n">ProgramError</span><span class="p">(</span><span class="s2">&quot;{}: invalid output format&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">out_format</span><span class="p">))</span>
+        <span class="k">if</span> <span class="n">out_format</span> <span class="ow">not</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;impute2&quot;</span><span class="p">,</span> <span class="s2">&quot;dosage&quot;</span><span class="p">,</span> <span class="s2">&quot;calls&quot;</span><span class="p">,</span> <span class="s2">&quot;bed&quot;</span><span class="p">}:</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: invalid output format&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">out_format</span><span class="p">))</span>
+
+        <span class="k">if</span> <span class="n">out_format</span> <span class="o">==</span> <span class="s2">&quot;bed&quot;</span><span class="p">:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">HAS_PYPLINK</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;missing optional module: pyplink&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">out_format</span> <span class="ow">in</span> <span class="p">{</span><span class="s2">&quot;bed&quot;</span><span class="p">,</span> <span class="s2">&quot;calls&quot;</span><span class="p">,</span> <span class="s2">&quot;dosage&quot;</span><span class="p">}:</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">f_prefix</span> <span class="o">+</span> <span class="s2">&quot;.sample&quot;</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: sample file missing&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">f_prefix</span> <span class="o">+</span> <span class="s2">&quot;.sample&quot;</span><span class="p">),</span>
+                <span class="p">)</span>
 
     <span class="k">return</span> <span class="bp">True</span></div>
 
@@ -675,7 +770,6 @@
         <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span>
         <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span>
         <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-        <span class="n">nargs</span><span class="o">=</span><span class="s2">&quot;+&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The output from IMPUTE2.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -707,7 +801,16 @@
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The output format. Can specify either &#39;impute2&#39; for &quot;</span>
              <span class="s2">&quot;probabilities (same as impute2 format, i.e. 3 values per &quot;</span>
              <span class="s2">&quot;sample), &#39;dosage&#39; for dosage values (one value between 0 and 2 &quot;</span>
-             <span class="s2">&quot;by sample), or &#39;calls&#39; for hard calls. </span><span class="si">%(default)s</span><span class="s2">&quot;</span><span class="p">,</span>
+             <span class="s2">&quot;by sample), &#39;calls&#39; for hard calls, or &#39;bed&#39; for Plink binary &quot;</span>
+             <span class="s2">&quot;format (with hard calls). </span><span class="si">%(default)s</span><span class="s2">&quot;</span><span class="p">,</span>
+    <span class="p">)</span>
+    <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
+        <span class="s2">&quot;--long&quot;</span><span class="p">,</span>
+        <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
+        <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;long_format&quot;</span><span class="p">,</span>
+        <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Write the output file in the long format (one line per sample &quot;</span>
+             <span class="s2">&quot;per marker). This option is only compatible with the &#39;calls&#39; &quot;</span>
+             <span class="s2">&quot;and &#39;dosage&#39; format (option &#39;--format&#39;).&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">&quot;--prob&quot;</span><span class="p">,</span>
@@ -783,14 +886,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
     </div>
   </body>
 </html>

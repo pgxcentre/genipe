@@ -1,0 +1,300 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Impute2 Extractor - Options and Parameters &mdash; genipe 1.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    '../',
+        VERSION:     '1.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="../_static/jquery.js"></script>
+    <script type="text/javascript" src="../_static/underscore.js"></script>
+    <script type="text/javascript" src="../_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="top" title="genipe 1.3.0 documentation" href="../index.html" />
+    <link rel="up" title="Options and Parameters" href="../parameters.html" />
+    <link rel="next" title="Input Files" href="../input_files.html" />
+    <link rel="prev" title="Impute2 Merger - Options and Parameters" href="impute2_merger.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../input_files.html" title="Input Files"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="impute2_merger.html" title="Impute2 Merger - Options and Parameters"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../parameters.html" accesskey="U">Options and Parameters</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Impute2 Extractor - Options and Parameters</a><ul>
+<li><a class="reference internal" href="#general-options">General options</a></li>
+<li><a class="reference internal" href="#input-files">Input files</a></li>
+<li><a class="reference internal" href="#indexation-options">Indexation options</a></li>
+<li><a class="reference internal" href="#output-options">Output options</a></li>
+<li><a class="reference internal" href="#extraction-options">Extraction options</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="impute2_merger.html"
+                        title="previous chapter">Impute2 Merger - Options and Parameters</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="../input_files.html"
+                        title="next chapter">Input Files</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/parameters/impute2_extractor.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="../search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="contents topic" id="quick-navigation">
+<p class="topic-title first">Quick navigation</p>
+<ul class="simple">
+<li><a class="reference internal" href="#impute2-extractor-options-and-parameters" id="id1">Impute2 Extractor - Options and Parameters</a><ul>
+<li><a class="reference internal" href="#general-options" id="id2">General options</a></li>
+<li><a class="reference internal" href="#input-files" id="id3">Input files</a></li>
+<li><a class="reference internal" href="#indexation-options" id="id4">Indexation options</a></li>
+<li><a class="reference internal" href="#output-options" id="id5">Output options</a></li>
+<li><a class="reference internal" href="#extraction-options" id="id6">Extraction options</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="impute2-extractor-options-and-parameters">
+<h1><a class="toc-backref" href="#id1">Impute2 Extractor - Options and Parameters</a><a class="headerlink" href="#impute2-extractor-options-and-parameters" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="general-options">
+<h2><a class="toc-backref" href="#id2">General options</a><a class="headerlink" href="#general-options" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="32%" />
+<col width="68%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">-h</span></code>, <code class="docutils literal"><span class="pre">--help</span></code></td>
+<td>Show this help message and exit.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">-v</span></code>, <code class="docutils literal"><span class="pre">--version</span></code></td>
+<td>Show program&#8217;s version number and exit.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--debug</span></code></td>
+<td>Set the logging level to debug.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="input-files">
+<h2><a class="toc-backref" href="#id3">Input files</a><a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="28%" />
+<col width="72%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--impute2</span> <span class="pre">FILE</span></code></td>
+<td>The output from IMPUTE2.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="indexation-options">
+<h2><a class="toc-backref" href="#id4">Indexation options</a><a class="headerlink" href="#indexation-options" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="18%" />
+<col width="82%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--index</span></code></td>
+<td>Only perform the indexation.</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="output-options">
+<h2><a class="toc-backref" href="#id5">Output options</a><a class="headerlink" href="#output-options" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="47%" />
+<col width="53%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--out</span> <span class="pre">PREFIX</span></code></td>
+<td>The prefix of the output files.
+[<code class="docutils literal"><span class="pre">impute2_extractor</span></code>]</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--format</span> <span class="pre">FORMAT</span> <span class="pre">[FORMAT</span> <span class="pre">...]</span></code></td>
+<td>The output format. Can specify either
+&#8216;impute2&#8217; for probabilities (same as
+impute2 format, i.e. 3 values per
+sample), &#8216;dosage&#8217; for dosage values
+(one value between 0 and 2 by
+sample), &#8216;calls&#8217; for hard calls, or
+&#8216;bed&#8217; for Plink binary format (with
+hard calls). [<code class="docutils literal"><span class="pre">impute2</span></code>]</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--long</span></code></td>
+<td>Write the output file in the long
+format (one line per sample per
+marker). This option is only
+compatible with the &#8216;calls&#8217; and
+&#8216;dosage&#8217; format (option &#8216;&#8211; format&#8217;).</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--prob</span> <span class="pre">FLOAT</span></code></td>
+<td>The probability threshold used when
+creating a file in the dosage or call
+format. [<code class="docutils literal"><span class="pre">0.9</span></code>]</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="section" id="extraction-options">
+<h2><a class="toc-backref" href="#id6">Extraction options</a><a class="headerlink" href="#extraction-options" title="Permalink to this headline">¶</a></h2>
+<table border="1" class="docutils">
+<colgroup>
+<col width="40%" />
+<col width="60%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head">Option</th>
+<th class="head">Description</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--extract</span> <span class="pre">FILE</span></code></td>
+<td>File containing marker names to extract.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--genomic</span> <span class="pre">CHR:START-END</span></code></td>
+<td>The range to extract (<em>e.g.</em> 22 1000000
+1500000). Can be use in combination with
+&#8216;<code class="docutils literal"><span class="pre">--rate</span></code>&#8216;, &#8216;<code class="docutils literal"><span class="pre">--maf</span></code>&#8216; and
+&#8216;<code class="docutils literal"><span class="pre">--info</span></code>&#8216;.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--maf</span> <span class="pre">FLOAT</span></code></td>
+<td>Extract markers with a minor allele
+frequency equal or higher than the
+specified threshold. Can be use in
+combination with &#8216;&#8211;rate&#8217;, &#8216;&#8211;info&#8217; and
+&#8216;&#8211;genomic&#8217;.</td>
+</tr>
+<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--rate</span> <span class="pre">FLOAT</span></code></td>
+<td>Extract markers with a completion rate
+equal or higher to the specified
+threshold. Can be use in combination with
+&#8216;<code class="docutils literal"><span class="pre">--maf</span></code>&#8216;, &#8216;<code class="docutils literal"><span class="pre">--info</span></code>&#8216; and
+&#8216;<code class="docutils literal"><span class="pre">--genomic</span></code>&#8216;.</td>
+</tr>
+<tr class="row-even"><td><code class="docutils literal"><span class="pre">--info</span> <span class="pre">FLOAT</span></code></td>
+<td>Extract markers with an information equal
+or higher to the specified threshold. Can
+be use in combination with &#8216;<code class="docutils literal"><span class="pre">--maf</span></code>&#8216;,
+&#8216;<code class="docutils literal"><span class="pre">--rate</span></code>&#8216; and &#8216;<code class="docutils literal"><span class="pre">--genomic</span></code>&#8216;.</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="../genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="../py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="../input_files.html" title="Input Files"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="impute2_merger.html" title="Impute2 Merger - Options and Parameters"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
+          <li class="nav-item nav-item-1"><a href="../parameters.html" >Options and Parameters</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

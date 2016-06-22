@@ -235,7 +235,7 @@ for the analysis described throughout this tutorial is the following:
         --pheno-name SystolicBP \
         --covar Age \
         --extract-sites data/genipe_is_great.good_sites \
-        --nb-process 2 \
+        --nb-process 4 \
         --out my_skat_analysis \
         --snp-sets carefully_crafted_snp_sets.txt \
         --outcome-type continuous \
@@ -334,7 +334,7 @@ the console:
                              {continuous,discrete} [--skat-o] --pheno-name NAME
 
    Uses the SKAT R package to analyze user defined gene sets. This script is part
-   of the 'genipe' package, version 1.2.3).
+   of the 'genipe' package, version 1.3.0.
 
    optional arguments:
      -h, --help            show this help message and exit

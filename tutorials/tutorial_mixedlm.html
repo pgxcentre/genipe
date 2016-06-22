@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Linear mixed effects model &mdash; genipe 1.2.3 documentation</title>
+    <title>Linear mixed effects model &mdash; genipe 1.3.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.2.3',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.2.3 documentation" href="../index.html" />
+    <link rel="top" title="genipe 1.3.0 documentation" href="../index.html" />
     <link rel="up" title="Short Tutorials" href="../tutorials.html" />
-    <link rel="next" title="Site extraction" href="tutorial_extract.html" />
-    <link rel="prev" title="Logistic regression" href="tutorial_logistic.html" />
+    <link rel="next" title="Survival analysis" href="tutorial_cox.html" />
+    <link rel="prev" title="Genome-wide imputation pipeline" href="tutorial_genipe.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -46,12 +46,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tutorial_extract.html" title="Site extraction"
+          <a href="tutorial_cox.html" title="Survival analysis"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="tutorial_logistic.html" title="Logistic regression"
+          <a href="tutorial_genipe.html" title="Genome-wide imputation pipeline"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>
@@ -73,18 +73,17 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#usage">Usage</a></li>
-<li><a class="reference internal" href="#execution-time">Execution time</a></li>
 <li><a class="reference internal" href="#results-comparison">Results comparison</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="tutorial_logistic.html"
-                        title="previous chapter">Logistic regression</a></p>
+  <p class="topless"><a href="tutorial_genipe.html"
+                        title="previous chapter">Genome-wide imputation pipeline</a></p>
   <h4>Next topic</h4>
-  <p class="topless"><a href="tutorial_extract.html"
-                        title="next chapter">Site extraction</a></p>
+  <p class="topless"><a href="tutorial_cox.html"
+                        title="next chapter">Survival analysis</a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -95,8 +94,8 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -118,8 +117,7 @@
 <li><a class="reference internal" href="#executing-the-analysis" id="id3">Executing the analysis</a></li>
 <li><a class="reference internal" href="#output-files" id="id4">Output files</a></li>
 <li><a class="reference internal" href="#usage" id="id5">Usage</a></li>
-<li><a class="reference internal" href="#execution-time" id="id6">Execution time</a></li>
-<li><a class="reference internal" href="#results-comparison" id="id7">Results comparison</a></li>
+<li><a class="reference internal" href="#results-comparison" id="id6">Results comparison</a></li>
 </ul>
 </li>
 </ul>
@@ -134,6 +132,21 @@ close to 0 means that a homozygous genotype of the most frequent allele is the
 most probable. A value close to 2 means that a homozygous genotype of the rare
 allele is the most probable. Finally, a value close to 1 means that a
 heterozygous genotype is the most probable.</p>
+<p>An optimization is made so that the analysis is less time consuming for large
+scale imputation data. The p-value of the SNP is estimated using the two-step
+linear mixed model (as describe by Sikorska <em>et al.</em>, 2015 [doi:
+<a class="reference external" href="http://www.nature.com/ejhg/journal/v23/n10/abs/ejhg20151a.html">10.1038/ejhg.2015.1</a>]). If the
+p-value is lower than a user specified threshold, the exact mixed linear model
+analysis is performed for this marker to gather all the important statistics
+(<em>e.g.</em> beta).</p>
+<p>The precision of the estimated p-value is quite high, as demonstrated by the
+following figure. The p-values were compared between the two-step approach (<em>y</em>
+axis) and the original one (<em>x</em> axis). The analysis was performed on 5,045
+samples imputed on chromosome 2 (528,932 high quality imputed markers with MAF
+higher than 1%).</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="../_images/MixedLM_TS_Diff.png"><img alt="Comparison of p-values between the two-step and original approaches." src="../_images/MixedLM_TS_Diff.png" style="width: 60%;" /></a>
+</div>
 <p>We suppose that you have followed the main <a class="reference internal" href="tutorial_genipe.html#genipe-tut-page"><span class="std std-ref">Genome-wide imputation pipeline</span></a>. The
 following command will create the working directory for this tutorial.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial/mixedlm
@@ -196,16 +209,16 @@ The file is <em>tab</em> separated and contains one row per sample, one column p
 phenotype/variable.</p>
 <p>The following is an example of a phenotype file (where there are three
 measurements per sample):</p>
-<div class="highlight-text"><div class="highlight"><pre><span></span>SampleID     Pheno3  Age     Var1    Gender
-NA06985      58.6923101992   53      48.01043142060001       2
-NA06985      79.18026839086532       53      48.01043142060001       2
-NA06985      97.6831921953767        53      48.01043142060001       2
-NA06993      64.8981628053   47      23.7615117523   1
-NA06993      81.26389783395985       47      23.7615117523   1
-NA06993      100.71531297841553      47      23.7615117523   1
-NA06994      129.562482664   48      20.2946857226   1
-NA06994      144.2513248255908       48      20.2946857226   1
-NA06994      161.94488318622535      48      20.2946857226   1
+<div class="highlight-text"><div class="highlight"><pre><span></span>SampleID        Pheno3  Visit   Age     Var1    Gender
+NA06985 58.6923101992   1       53      48.01043142060001       2
+NA06985 79.18026839086532       2       53      48.01043142060001       2
+NA06985 97.6831921953767        3       53      48.01043142060001       2
+NA06993 64.8981628053   1       47      23.7615117523   1
+NA06993 81.26389783395985       2       47      23.7615117523   1
+NA06993 100.71531297841551      3       47      23.7615117523   1
+NA06994 129.562482664   1       48      20.2946857226   1
+NA06994 144.2513248255908       2       48      20.2946857226   1
+NA06994 161.94488318622538      3       48      20.2946857226   1
 ...
 </pre></div>
 </div>
@@ -267,9 +280,8 @@ imputed-stats mixedlm <span class="se">\</span>
 </pre></div>
 </div>
 <p>For more information about the arguments and options, see the
-<a class="reference internal" href="tutorial_linear.html#lin-tut-usage"><span class="std std-ref">Usage</span></a> section. The number of process to use might differ
-according to the installation type and to the computer/server. See the
-<a class="reference internal" href="tutorial_linear.html#lin-tut-execution-time"><span class="std std-ref">Execution time</span></a> section for more information.</p>
+<a class="reference internal" href="#mixedlm-tut-usage"><span class="std std-ref">Usage</span></a> section. For an approximation of the execution time,
+refer to the <a class="reference internal" href="../execution_time.html#stats-exec-time"><span class="std std-ref">Statistical Analysis Execution Time</span></a> section.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p>Analysis will be performed only on samples whitout missing data (phenotype,
@@ -322,10 +334,12 @@ effects analysis in the console:</p>
 <span class="go">                             [--categorical NAME] [--missing-value NAME]</span>
 <span class="go">                             [--sample-column NAME] [--interaction NAME]</span>
 <span class="go">                             --pheno-name NAME [--use-ml]</span>
+<span class="go">                             [--p-threshold FLOAT]</span>
 
 <span class="go">Performs a linear mixed effects regression on imputed data using a random</span>
-<span class="go">intercept for each group. This script is part of the &#39;genipe&#39; package, version</span>
-<span class="go">1.2.3).</span>
+<span class="go">intercept for each group. A p-value approximation is performed so that</span>
+<span class="go">computation time is acceptable for imputed data. This script is part of the</span>
+<span class="go">&#39;genipe&#39; package, version 1.3.0.</span>
 
 <span class="go">optional arguments:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
@@ -378,24 +392,13 @@ effects analysis in the console:</p>
 <span class="go">  --pheno-name NAME     The phenotype.</span>
 <span class="go">  --use-ml              Fit the standard likelihood using maximum likelihood</span>
 <span class="go">                        (ML) estimation instead of REML (default is REML).</span>
+<span class="go">  --p-threshold FLOAT   The p-value threshold for which the real MixedLM</span>
+<span class="go">                        analysis will be performed. [&lt;0.0001]</span>
 </pre></div>
 </div>
 </div>
-<div class="section" id="execution-time">
-<span id="mixedlm-tut-execution-time"></span><h2><a class="toc-backref" href="#id6">Execution time</a><a class="headerlink" href="#execution-time" title="Permalink to this headline">¶</a></h2>
-<p>The following figure shows the approximate execution time for different number
-of processes (the <code class="docutils literal"><span class="pre">--nb-process</span></code> option) with different installation methods
-(<em>pyvenv</em> in blue, versus <em>miniconda</em> in orange). This analysis was performed
-on a computer with an <em>Intel(R) Core(TM) i7-3770 CPU &#64; 3.40GHz</em> (8 cores) and
-16Go of RAM. The analysis contained the 195,473 imputed markers and 90 samples
-from the previous command (where phenotypes were available for only 60 of the
-samples). Each test was performed only one time (no repetition).</p>
-<div class="figure align-center" id="mixedlm-exec-time">
-<a class="reference internal image-reference" href="../_images/MixedLM_Walltime.png"><img alt="Linear mixed effects execution time vs number of processes." src="../_images/MixedLM_Walltime.png" style="width: 60%;" /></a>
-</div>
-</div>
 <div class="section" id="results-comparison">
-<span id="mixedlm-tut-comparison"></span><h2><a class="toc-backref" href="#id7">Results comparison</a><a class="headerlink" href="#results-comparison" title="Permalink to this headline">¶</a></h2>
+<span id="mixedlm-tut-comparison"></span><h2><a class="toc-backref" href="#id6">Results comparison</a><a class="headerlink" href="#results-comparison" title="Permalink to this headline">¶</a></h2>
 <p>The linear mixed effects analysis results from <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> and <em>R</em> were
 compared for validity. The following figure shows the comparison for, from left
 to right, the coefficients, the standard errors and the <em>p</em>-values. The <em>x</em>
@@ -449,18 +452,18 @@ were compared.</p>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="tutorial_extract.html" title="Site extraction"
+          <a href="tutorial_cox.html" title="Survival analysis"
              >next</a> |</li>
         <li class="right" >
-          <a href="tutorial_logistic.html" title="Logistic regression"
+          <a href="tutorial_genipe.html" title="Genome-wide imputation pipeline"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
     </div>
   </body>
 </html>

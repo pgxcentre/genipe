@@ -1,0 +1,153 @@
+
+
+<!doctype html>
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>Statistical Analysis Execution Time &mdash; genipe 1.3.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.3.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="_static/bizstyle.js"></script>
+    <link rel="top" title="genipe 1.3.0 documentation" href="index.html" />
+    <link rel="next" title="Options and Parameters" href="parameters.html" />
+    <link rel="prev" title="Site extraction" href="tutorials/tutorial_extract.html" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--[if lt IE 9]>
+    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <![endif]-->
+  </head>
+  <body role="document">
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="parameters.html" title="Options and Parameters"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="tutorials/tutorial_extract.html" title="Site extraction"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">genipe 1.3.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="tutorials/tutorial_extract.html"
+                        title="previous chapter">Site extraction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="parameters.html"
+                        title="next chapter">Options and Parameters</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/execution_time.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="statistical-analysis-execution-time">
+<span id="stats-exec-time"></span><h1>Statistical Analysis Execution Time<a class="headerlink" href="#statistical-analysis-execution-time" title="Permalink to this headline">¶</a></h1>
+<p>GWAS analysis of imputed markers is computationally intensive. While it is
+feasible to run such analyses on some simple models like linear and logistic
+regression, more complex models like Cox regression and mixed linear models
+require more computing power or specialized implementations.</p>
+<p>We have optimized the mixed linear model analysis to significantly decrease
+computation time. Using a two-step approach (as described by Sikorska <em>et al.</em>,
+2015 [doi: <a class="reference external" href="http://www.nature.com/ejhg/journal/v23/n10/abs/ejhg20151a.html">10.1038/ejhg.2015.1</a>]), the
+execution time is comparable to a simple linear regression. Prior to
+optimization, the analysis of chromosome 2 was performed in 53 hours for 33
+sub-analysis with 6 threads each (which corresponds to 198 threads).</p>
+<p>The following figure shows the execution time for a typical imputation analysis
+of chromosome 2, imputed for 5,045 samples. Chromosome 2 was composed a total
+of 1,170,797 loci, where 961,019 were of sufficient quality, and 528,932 had a
+MAF higher than 1%. The black dashed line is the execution time for Plink.</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/execution_time.png"><img alt="Statistical analysis exection time." src="_images/execution_time.png" style="width: 70%;" /></a>
+</div>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p>On some installation, when executing the analysis with <em>n</em> threads,
+<em>OPENBLAS</em> automatically uses all the CPUs for each thread, such that the
+load quickly increases to <em>n</em> times the number of CPUs. Such high load slows
+down the analysis considerably.</p>
+<p>To avoid this, always export the following environment variable and specify
+the total number of threads using the <code class="docutils literal"><span class="pre">--nb-process</span></code> option.</p>
+<div class="last highlight-bash"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">OPENBLAS_NUM_THREADS</span><span class="o">=</span>1
+</pre></div>
+</div>
+</div>
+<p>We are planning to optimize the Cox&#8217;s proportional hazard regression in the
+near future.</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="py-modindex.html" title="Python Module Index"
+             >modules</a> |</li>
+        <li class="right" >
+          <a href="parameters.html" title="Options and Parameters"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="tutorials/tutorial_extract.html" title="Site extraction"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">genipe 1.3.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+    </div>
+  </body>
+</html>

@@ -152,7 +152,7 @@ execute the survival analysis.
        --sample ../genipe/chr22/final_impute2/chr22.imputed.sample \
        --pheno phenotypes_survival.txt \
        --extract-sites ../genipe/chr22/final_impute2/chr22.imputed.good_sites \
-       --nb-process 4 \
+       --nb-process 8 \
        --nb-lines 6000 \
        --gender-column Gender \
        --covar Age,Var1,Gender \
@@ -161,9 +161,8 @@ execute the survival analysis.
        --event Event
 
 For more information about the arguments and options, see the
-:ref:`survival-tut-usage` section. The number of process to use might differ
-according to the installation type and to the computer/server. See the
-:ref:`survival-tut-execution-time` section for more information.
+:ref:`survival-tut-usage` section. For an approximation of the execution time,
+refer to the :ref:`stats-exec-time` section.
 
 
 .. _survival-tut-output-files:
@@ -223,7 +222,7 @@ in the console:
                             NAME
 
    Performs a survival regression on imputed data using Cox's proportional hazard
-   model. This script is part of the 'genipe' package, version 1.2.3).
+   model. This script is part of the 'genipe' package, version 1.3.0.
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -275,27 +274,6 @@ in the console:
    Cox's Proportional Hazard Model Options:
      --time-to-event NAME  The time to event variable (in the pheno file).
      --event NAME          The event variable (1 if observed, 0 if not observed)
-
-
-.. _survival-tut-execution-time:
-
-Execution time
----------------
-
-The following figure shows the approximate execution time for different number
-of processes (the ``--nb-process`` option) with different installation methods
-(*pyvenv* in blue, versus *miniconda* in orange). This analysis was performed
-on a computer with an *Intel(R) Core(TM) i7-3770 CPU @ 3.40GHz* (8 cores) and
-16Go of RAM. The analysis contained the 195,473 imputed markers and 90 samples
-from the previous command (where phenotypes were available for only 60 of the
-samples). Each test was performed only one time (no repetition).
-
-.. _survival_exec_time:
-
-.. figure:: ../_static/images/Survival_Walltime.png
-    :align: center
-    :width: 60%
-    :alt: Survival analysis execution time vs number of processes.
 
 
 .. _survival-tut-comparison:

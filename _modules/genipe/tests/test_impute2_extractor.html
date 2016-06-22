@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tests.test_impute2_extractor &mdash; genipe 1.2.3 documentation</title>
+    <title>genipe.tests.test_impute2_extractor &mdash; genipe 1.3.0 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.2.3',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.2.3 documentation" href="../../../index.html" />
+    <link rel="top" title="genipe 1.3.0 documentation" href="../../../index.html" />
     <link rel="up" title="genipe" href="../../genipe.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -43,7 +43,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
       </ul>
@@ -53,8 +53,8 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../../../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -79,7 +79,6 @@
 
 
 <span class="kn">import</span> <span class="nn">os</span>
-<span class="kn">import</span> <span class="nn">shutil</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">unittest</span>
 <span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">TemporaryDirectory</span>
@@ -183,6 +182,16 @@
                 <span class="s2">&quot;1:4214570_1</span><span class="se">\t</span><span class="s2">3</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;genipe.sample&quot;</span><span class="p">)</span>
+        <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
+            <span class="n">o_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span>
+             <span class="s2">&quot;ID_1 ID_2 missing father mother sex plink_pheno</span><span class="se">\n</span><span class="s2">&quot;</span>
+             <span class="s2">&quot;0 0 0 D D D B</span><span class="se">\n</span><span class="s2">&quot;</span>
+             <span class="s2">&quot;f1 s1 0 0 0 0 -9</span><span class="se">\n</span><span class="s2">&quot;</span>
+             <span class="s2">&quot;f2 s2 0 0 0 0 -9</span><span class="se">\n</span><span class="s2">&quot;</span>
+             <span class="s2">&quot;f3 s3 0 0 0 0 -9</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
+
         <span class="bp">self</span><span class="o">.</span><span class="n">common_args</span> <span class="o">=</span> <span class="p">[</span>
             <span class="s2">&quot;--impute2&quot;</span><span class="p">,</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;genipe.impute2&quot;</span><span class="p">),</span>
             <span class="s2">&quot;--format&quot;</span><span class="p">,</span> <span class="s2">&quot;impute2&quot;</span><span class="p">,</span> <span class="s2">&quot;dosage&quot;</span><span class="p">,</span> <span class="s2">&quot;calls&quot;</span><span class="p">,</span>
@@ -227,7 +236,7 @@
 
         <span class="c1"># Checking the dosage file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">dosage</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">0.099</span><span class="se">\t</span><span class="s2">2.0</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214572</span><span class="se">\t</span><span class="s2">rs23457_2</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">1.0</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">4214570</span><span class="se">\t</span><span class="s2">1:4214570_1</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -239,6 +248,7 @@
 
         <span class="c1"># Checking the hard calls file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">cm</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T T</span><span class="se">\t</span><span class="s2">C C</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23457_2</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214572</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T TC</span><span class="se">\t</span><span class="s2">TC TC</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">1:4214570_1</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">4214570</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -320,7 +330,7 @@
 
         <span class="c1"># Checking the dosage file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">dosage</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214570</span><span class="se">\t</span><span class="s2">rs23457</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">1.0</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214571</span><span class="se">\t</span><span class="s2">rs23457_1</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">1.0</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214572</span><span class="se">\t</span><span class="s2">rs23457_2</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">1.0</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -333,6 +343,7 @@
 
         <span class="c1"># Checking the hard calls file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">cm</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23457</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214570</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T TC</span><span class="se">\t</span><span class="s2">TC TC</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23457_1</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214571</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T TC</span><span class="se">\t</span><span class="s2">TC TC</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23457_2</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214572</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T TC</span><span class="se">\t</span><span class="s2">TC TC</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -420,7 +431,7 @@
 
         <span class="c1"># Checking the dosage file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">dosage</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">0.099</span><span class="se">\t</span><span class="s2">2.0</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214570</span><span class="se">\t</span><span class="s2">rs23457</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">1.0</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214571</span><span class="se">\t</span><span class="s2">rs23457_1</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">1.0</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -434,6 +445,7 @@
 
         <span class="c1"># Checking the hard calls file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">cm</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T T</span><span class="se">\t</span><span class="s2">C C</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23457</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214570</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T TC</span><span class="se">\t</span><span class="s2">TC TC</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23457_1</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214571</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T TC</span><span class="se">\t</span><span class="s2">TC TC</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -528,7 +540,7 @@
 
         <span class="c1"># Checking the dosage file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">dosage</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">1231415</span><span class="se">\t</span><span class="s2">rs12345</span><span class="se">\t</span><span class="s2">G</span><span class="se">\t</span><span class="s2">A</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\t</span><span class="s2">0.002</span><span class="se">\t</span><span class="s2">1.003</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">0.099</span><span class="se">\t</span><span class="s2">2.0</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214570</span><span class="se">\t</span><span class="s2">rs23457</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">1.0</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -543,6 +555,7 @@
 
         <span class="c1"># Checking the hard calls file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">cm</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs12345</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">1231415</span><span class="se">\t</span><span class="s2">A A</span><span class="se">\t</span><span class="s2">A A</span><span class="se">\t</span><span class="s2">A G</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T T</span><span class="se">\t</span><span class="s2">C C</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23457</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214570</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T TC</span><span class="se">\t</span><span class="s2">TC TC</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -642,7 +655,7 @@
 
         <span class="c1"># Checking the dosage file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">dosage</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">1231415</span><span class="se">\t</span><span class="s2">rs12345</span><span class="se">\t</span><span class="s2">G</span><span class="se">\t</span><span class="s2">A</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\t</span><span class="s2">0.002</span><span class="se">\t</span><span class="s2">1.003</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">0.099</span><span class="se">\t</span><span class="s2">2.0</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214571</span><span class="se">\t</span><span class="s2">rs23457_1</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">1.0</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -656,6 +669,7 @@
 
         <span class="c1"># Checking the hard calls file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">cm</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs12345</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">1231415</span><span class="se">\t</span><span class="s2">A A</span><span class="se">\t</span><span class="s2">A A</span><span class="se">\t</span><span class="s2">A G</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T T</span><span class="se">\t</span><span class="s2">C C</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23457_1</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214571</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T TC</span><span class="se">\t</span><span class="s2">TC TC</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -746,7 +760,7 @@
 
         <span class="c1"># Checking the dosage file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">dosage</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">0.099</span><span class="se">\t</span><span class="s2">2.0</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
         <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
@@ -756,6 +770,7 @@
 
         <span class="c1"># Checking the hard calls file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">cm</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T T</span><span class="se">\t</span><span class="s2">C C</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
         <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
@@ -826,7 +841,7 @@
 
         <span class="c1"># Checking the dosage file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">dosage</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">1231415</span><span class="se">\t</span><span class="s2">rs12345</span><span class="se">\t</span><span class="s2">G</span><span class="se">\t</span><span class="s2">A</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\t</span><span class="s2">0.002</span><span class="se">\t</span><span class="s2">1.003</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
         <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
@@ -836,6 +851,7 @@
 
         <span class="c1"># Checking the hard calls file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">cm</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs12345</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">1231415</span><span class="se">\t</span><span class="s2">A A</span><span class="se">\t</span><span class="s2">A A</span><span class="se">\t</span><span class="s2">A G</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
         <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
@@ -910,7 +926,7 @@
 
         <span class="c1"># Checking the dosage file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">dosage</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">1231415</span><span class="se">\t</span><span class="s2">rs12345</span><span class="se">\t</span><span class="s2">G</span><span class="se">\t</span><span class="s2">A</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\t</span><span class="s2">0.002</span><span class="se">\t</span><span class="s2">1.003</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">0.099</span><span class="se">\t</span><span class="s2">2.0</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214570</span><span class="se">\t</span><span class="s2">rs23457</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">1.0</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -924,6 +940,7 @@
 
         <span class="c1"># Checking the hard calls file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">cm</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs12345</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">1231415</span><span class="se">\t</span><span class="s2">A A</span><span class="se">\t</span><span class="s2">A A</span><span class="se">\t</span><span class="s2">A G</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T T</span><span class="se">\t</span><span class="s2">C C</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23457</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214570</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T TC</span><span class="se">\t</span><span class="s2">TC TC</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -1018,7 +1035,7 @@
 
         <span class="c1"># Checking the dosage file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">dosage</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">0.099</span><span class="se">\t</span><span class="s2">2.0</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214570</span><span class="se">\t</span><span class="s2">rs23457</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">1.0</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214571</span><span class="se">\t</span><span class="s2">rs23457_1</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">1.0</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -1032,6 +1049,7 @@
 
         <span class="c1"># Checking the hard calls file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">cm</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T T</span><span class="se">\t</span><span class="s2">C C</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23457</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214570</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T TC</span><span class="se">\t</span><span class="s2">TC TC</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23457_1</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214571</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T TC</span><span class="se">\t</span><span class="s2">TC TC</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -1124,7 +1142,7 @@
 
         <span class="c1"># Checking the dosage file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">dosage</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">0.099</span><span class="se">\t</span><span class="s2">2.0</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214571</span><span class="se">\t</span><span class="s2">rs23457_1</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">1.0</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214573</span><span class="se">\t</span><span class="s2">1:3214573</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">1.0</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -1136,6 +1154,7 @@
 
         <span class="c1"># Checking the hard calls file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">cm</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T T</span><span class="se">\t</span><span class="s2">C C</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23457_1</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214571</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T TC</span><span class="se">\t</span><span class="s2">TC TC</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">1:3214573</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214573</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T TC</span><span class="se">\t</span><span class="s2">TC TC</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -1217,7 +1236,7 @@
 
         <span class="c1"># Checking the dosage file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">dosage</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">1231415</span><span class="se">\t</span><span class="s2">rs12345</span><span class="se">\t</span><span class="s2">G</span><span class="se">\t</span><span class="s2">A</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\t</span><span class="s2">0.002</span><span class="se">\t</span><span class="s2">1.003</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">0.099</span><span class="se">\t</span><span class="s2">2.0</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
@@ -1228,6 +1247,7 @@
 
         <span class="c1"># Checking the hard calls file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">cm</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs12345</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">1231415</span><span class="se">\t</span><span class="s2">A A</span><span class="se">\t</span><span class="s2">A A</span><span class="se">\t</span><span class="s2">A G</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T T</span><span class="se">\t</span><span class="s2">C C</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
@@ -1308,7 +1328,7 @@
 
         <span class="c1"># Checking the dosage file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">dosage</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">0.099</span><span class="se">\t</span><span class="s2">2.0</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214570</span><span class="se">\t</span><span class="s2">rs23457</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">1.0</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214571</span><span class="se">\t</span><span class="s2">rs23457_1</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">1.0</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -1322,6 +1342,7 @@
 
         <span class="c1"># Checking the hard calls file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">cm</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T T</span><span class="se">\t</span><span class="s2">C C</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23457</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214570</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T TC</span><span class="se">\t</span><span class="s2">TC TC</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23457_1</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214571</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T TC</span><span class="se">\t</span><span class="s2">TC TC</span><span class="se">\n</span><span class="s2">&quot;</span>
@@ -1413,7 +1434,7 @@
 
         <span class="c1"># Checking the dosage file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">dosage</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">0.099</span><span class="se">\t</span><span class="s2">2.0</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
         <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
@@ -1423,6 +1444,7 @@
 
         <span class="c1"># Checking the hard calls file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">cm</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T T</span><span class="se">\t</span><span class="s2">C C</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
         <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
@@ -1494,7 +1516,7 @@
 
         <span class="c1"># Checking the dosage file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">dosage</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">1231415</span><span class="se">\t</span><span class="s2">rs12345</span><span class="se">\t</span><span class="s2">G</span><span class="se">\t</span><span class="s2">A</span><span class="se">\t</span><span class="s2">0.0</span><span class="se">\t</span><span class="s2">0.002</span><span class="se">\t</span><span class="s2">1.003</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
         <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
@@ -1504,6 +1526,7 @@
 
         <span class="c1"># Checking the hard calls file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">cm</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs12345</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">1231415</span><span class="se">\t</span><span class="s2">A A</span><span class="se">\t</span><span class="s2">A A</span><span class="se">\t</span><span class="s2">A G</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
         <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
@@ -1576,7 +1599,7 @@
 
         <span class="c1"># Checking the dosage file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
-            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">dosage</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">nan</span><span class="se">\t</span><span class="s2">0.099</span><span class="se">\t</span><span class="s2">2.0</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
         <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
@@ -1586,6 +1609,7 @@
 
         <span class="c1"># Checking the hard calls file</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="s2">&quot;chrom</span><span class="se">\t</span><span class="s2">name</span><span class="se">\t</span><span class="s2">cm</span><span class="se">\t</span><span class="s2">pos</span><span class="se">\t</span><span class="s2">f1/s1</span><span class="se">\t</span><span class="s2">f2/s2</span><span class="se">\t</span><span class="s2">f3/s3</span><span class="se">\n</span><span class="s2">&quot;</span>
             <span class="s2">&quot;1</span><span class="se">\t</span><span class="s2">rs23456</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">3214569</span><span class="se">\t</span><span class="s2">0 0</span><span class="se">\t</span><span class="s2">T T</span><span class="se">\t</span><span class="s2">C C</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span>
         <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
@@ -1645,14 +1669,14 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.2.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
     </div>
   </body>
 </html>

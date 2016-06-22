@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Survival analysis &mdash; genipe 1.2.3 documentation</title>
+    <title>Survival analysis &mdash; genipe 1.3.0 documentation</title>
     
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.2.3',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,10 +26,10 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.2.3 documentation" href="../index.html" />
+    <link rel="top" title="genipe 1.3.0 documentation" href="../index.html" />
     <link rel="up" title="Short Tutorials" href="../tutorials.html" />
     <link rel="next" title="SKAT analysis" href="tutorial_SKAT.html" />
-    <link rel="prev" title="Genome-wide imputation pipeline" href="tutorial_genipe.html" />
+    <link rel="prev" title="Linear mixed effects model" href="tutorial_mixedlm.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -49,9 +49,9 @@
           <a href="tutorial_SKAT.html" title="SKAT analysis"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="tutorial_genipe.html" title="Genome-wide imputation pipeline"
+          <a href="tutorial_mixedlm.html" title="Linear mixed effects model"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>
@@ -73,15 +73,14 @@
 </ul>
 </li>
 <li><a class="reference internal" href="#usage">Usage</a></li>
-<li><a class="reference internal" href="#execution-time">Execution time</a></li>
 <li><a class="reference internal" href="#results-comparison">Results comparison</a></li>
 </ul>
 </li>
 </ul>
 
   <h4>Previous topic</h4>
-  <p class="topless"><a href="tutorial_genipe.html"
-                        title="previous chapter">Genome-wide imputation pipeline</a></p>
+  <p class="topless"><a href="tutorial_mixedlm.html"
+                        title="previous chapter">Linear mixed effects model</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="tutorial_SKAT.html"
                         title="next chapter">SKAT analysis</a></p>
@@ -95,8 +94,8 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -118,8 +117,7 @@
 <li><a class="reference internal" href="#executing-the-analysis" id="id3">Executing the analysis</a></li>
 <li><a class="reference internal" href="#output-files" id="id4">Output files</a></li>
 <li><a class="reference internal" href="#usage" id="id5">Usage</a></li>
-<li><a class="reference internal" href="#execution-time" id="id6">Execution time</a></li>
-<li><a class="reference internal" href="#results-comparison" id="id7">Results comparison</a></li>
+<li><a class="reference internal" href="#results-comparison" id="id6">Results comparison</a></li>
 </ul>
 </li>
 </ul>
@@ -244,7 +242,7 @@ imputed-stats cox <span class="se">\</span>
     --sample ../genipe/chr22/final_impute2/chr22.imputed.sample <span class="se">\</span>
     --pheno phenotypes_survival.txt <span class="se">\</span>
     --extract-sites ../genipe/chr22/final_impute2/chr22.imputed.good_sites <span class="se">\</span>
-    --nb-process <span class="m">4</span> <span class="se">\</span>
+    --nb-process <span class="m">8</span> <span class="se">\</span>
     --nb-lines <span class="m">6000</span> <span class="se">\</span>
     --gender-column Gender <span class="se">\</span>
     --covar Age,Var1,Gender <span class="se">\</span>
@@ -254,9 +252,8 @@ imputed-stats cox <span class="se">\</span>
 </pre></div>
 </div>
 <p>For more information about the arguments and options, see the
-<a class="reference internal" href="#survival-tut-usage"><span class="std std-ref">Usage</span></a> section. The number of process to use might differ
-according to the installation type and to the computer/server. See the
-<a class="reference internal" href="#survival-tut-execution-time"><span class="std std-ref">Execution time</span></a> section for more information.</p>
+<a class="reference internal" href="#survival-tut-usage"><span class="std std-ref">Usage</span></a> section. For an approximation of the execution time,
+refer to the <a class="reference internal" href="../execution_time.html#stats-exec-time"><span class="std std-ref">Statistical Analysis Execution Time</span></a> section.</p>
 </div>
 <div class="section" id="output-files">
 <span id="survival-tut-output-files"></span><h2><a class="toc-backref" href="#id4">Output files</a><a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
@@ -304,7 +301,7 @@ in the console:</p>
 <span class="go">                         NAME</span>
 
 <span class="go">Performs a survival regression on imputed data using Cox&#39;s proportional hazard</span>
-<span class="go">model. This script is part of the &#39;genipe&#39; package, version 1.2.3).</span>
+<span class="go">model. This script is part of the &#39;genipe&#39; package, version 1.3.0.</span>
 
 <span class="go">optional arguments:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
@@ -359,21 +356,8 @@ in the console:</p>
 </pre></div>
 </div>
 </div>
-<div class="section" id="execution-time">
-<span id="survival-tut-execution-time"></span><h2><a class="toc-backref" href="#id6">Execution time</a><a class="headerlink" href="#execution-time" title="Permalink to this headline">¶</a></h2>
-<p>The following figure shows the approximate execution time for different number
-of processes (the <code class="docutils literal"><span class="pre">--nb-process</span></code> option) with different installation methods
-(<em>pyvenv</em> in blue, versus <em>miniconda</em> in orange). This analysis was performed
-on a computer with an <em>Intel(R) Core(TM) i7-3770 CPU &#64; 3.40GHz</em> (8 cores) and
-16Go of RAM. The analysis contained the 195,473 imputed markers and 90 samples
-from the previous command (where phenotypes were available for only 60 of the
-samples). Each test was performed only one time (no repetition).</p>
-<div class="figure align-center" id="survival-exec-time">
-<a class="reference internal image-reference" href="../_images/Survival_Walltime.png"><img alt="Survival analysis execution time vs number of processes." src="../_images/Survival_Walltime.png" style="width: 60%;" /></a>
-</div>
-</div>
 <div class="section" id="results-comparison">
-<span id="survival-tut-comparison"></span><h2><a class="toc-backref" href="#id7">Results comparison</a><a class="headerlink" href="#results-comparison" title="Permalink to this headline">¶</a></h2>
+<span id="survival-tut-comparison"></span><h2><a class="toc-backref" href="#id6">Results comparison</a><a class="headerlink" href="#results-comparison" title="Permalink to this headline">¶</a></h2>
 <p>The survival analysis results from <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> and <em>JMP Genomics</em> were
 compared for validity. The following figure shows the comparison for, from left
 to right, the coefficients, the standard errors and the <em>p</em>-values. The <em>x</em>
@@ -439,15 +423,15 @@ threshold of 0.9 (excluding imputed genotypes with poor quality). Hence,
           <a href="tutorial_SKAT.html" title="SKAT analysis"
              >next</a> |</li>
         <li class="right" >
-          <a href="tutorial_genipe.html" title="Genome-wide imputation pipeline"
+          <a href="tutorial_mixedlm.html" title="Linear mixed effects model"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.2.3 documentation</a> &raquo;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.0 documentation</a> &raquo;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
     </div>
   </body>
 </html>

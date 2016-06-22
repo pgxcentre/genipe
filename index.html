@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>Genome-Wide Imputation Pipeline &mdash; genipe 1.2.3 documentation</title>
+    <title>Genome-Wide Imputation Pipeline &mdash; genipe 1.3.0 documentation</title>
     
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    './',
-        VERSION:     '1.2.3',
+        VERSION:     '1.3.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true
@@ -26,7 +26,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.2.3 documentation" href="#" />
+    <link rel="top" title="genipe 1.3.0 documentation" href="#" />
     <link rel="next" title="Installation" href="installation.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -46,7 +46,7 @@
         <li class="right" >
           <a href="installation.html" title="Installation"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">genipe 1.2.3 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">genipe 1.3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -74,8 +74,8 @@
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
     <form class="search" action="search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
@@ -94,18 +94,17 @@
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
 <p>The <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> (GENome-wide Imputation PipelinE) module provides an easy
-an efficient way of performing genome-wide imputation analysis using the three
-commonly used softwares <a class="reference external" href="http://pngu.mgh.harvard.edu/~purcell/plink/">PLINK</a>,
+and efficient way of performing genome-wide imputation analysis using the three
+commonly used tools <a class="reference external" href="http://pngu.mgh.harvard.edu/~purcell/plink/">PLINK</a>,
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html">SHAPEIT</a> and
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html">IMPUTE2</a>.</p>
-<p>A quality metrics report is automatically generated at the end of the
-imputation process to easily assess the quality of the analysis. The report is
-compiled into a PDF. For information on how to compile the report, refer to the
-<a class="reference internal" href="tutorials/tutorial_genipe.html#genipe-tut-compile-report"><span class="std std-ref">Compiling the report</span></a> section in the main <a class="reference internal" href="tutorials/tutorial_genipe.html#genipe-tut-page"><span class="std std-ref">Genome-wide imputation pipeline</span></a>.</p>
+<p>A report is automatically generated at the end of the imputation process to
+easily assess important quality metrics. This report can be rendered to PDF
+using LaTeX. For information on rendering, refer to <a class="reference internal" href="tutorials/tutorial_genipe.html#genipe-tut-compile-report"><span class="std std-ref">this section</span></a> of the main <a class="reference internal" href="tutorials/tutorial_genipe.html#genipe-tut-page"><span class="std std-ref">pipeline tutorial</span></a>.</p>
 <p>Finally, it also provides a useful standalone tool to perform statistical
-analysis on imputed (dosage) data (such as linear, logistic or survival
-regressions, or <a class="reference external" href="http://www.hsph.harvard.edu/skat/">SKAT</a> analysis of rare
-variants).</p>
+analysis on imputed (dosage) data (such as linear, logistic, repeated
+measurements, survival analysis, or <a class="reference external" href="http://www.hsph.harvard.edu/skat/">SKAT</a>). For more information about execution
+time, see the <a class="reference internal" href="execution_time.html#stats-exec-time"><span class="std std-ref">Statistical Analysis Execution Time</span></a> page.</p>
 <div class="toctree-wrapper compound">
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a><ul>
@@ -117,12 +116,20 @@ variants).</p>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="tutorials.html">Short Tutorials</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="tutorials.html#pipeline-tutorial">Pipeline tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="tutorials.html#linear-mixed-effects-tutorial">Linear mixed effects tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials.html#survival-tutorial">Survival tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials.html#skat-tutorial">SKAT tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials.html#linear-tutorial">Linear tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials.html#logistic-tutorial">Logistic tutorial</a></li>
-<li class="toctree-l2"><a class="reference internal" href="tutorials.html#linear-mixed-effects-tutorial">Linear mixed effects tutorial</a></li>
 <li class="toctree-l2"><a class="reference internal" href="tutorials.html#site-extraction-tutorial">Site extraction tutorial</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="execution_time.html">Statistical Analysis Execution Time</a></li>
+<li class="toctree-l1"><a class="reference internal" href="parameters.html">Options and Parameters</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="parameters/main_pipeline.html">Main Pipeline - Options and Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameters/imputed_stats.html">Imputed Stats - Options and Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameters/impute2_merger.html">Impute2 Merger - Options and Parameters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameters/impute2_extractor.html">Impute2 Extractor - Options and Parameters</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="input_files.html">Input Files</a></li>
@@ -138,20 +145,27 @@ variants).</p>
 <span id="genipe-usage"></span><h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> genipe-launcher --help
 <span class="go">usage: genipe-launcher [-h] [-v] [--debug] [--thread THREAD] --bfile PREFIX</span>
-<span class="go">                       [--reference FILE] [--output-dir DIR] [--bgzip]</span>
-<span class="go">                       [--use-drmaa] [--drmaa-config FILE] [--preamble FILE]</span>
+<span class="go">                       [--reference FILE] [--chrom CHROM [CHROM ...]]</span>
+<span class="go">                       [--output-dir DIR] [--bgzip] [--use-drmaa]</span>
+<span class="go">                       [--drmaa-config FILE] [--preamble FILE]</span>
 <span class="go">                       [--shapeit-bin BINARY] [--shapeit-thread INT]</span>
-<span class="go">                       [--plink-bin BINARY] [--impute2-bin BINARY]</span>
-<span class="go">                       [--segment-length BP] --hap-template TEMPLATE</span>
-<span class="go">                       --legend-template TEMPLATE --map-template TEMPLATE</span>
-<span class="go">                       --sample-file FILE [--filtering-rules RULE [RULE ...]]</span>
-<span class="go">                       [--probability FLOAT] [--completion FLOAT]</span>
-<span class="go">                       [--info FLOAT] [--report-number NB]</span>
-<span class="go">                       [--report-title TITLE] [--report-author AUTHOR]</span>
+<span class="go">                       [--shapeit-extra OPTIONS] [--plink-bin BINARY]</span>
+<span class="go">                       [--hap-template TEMPLATE] [--legend-template TEMPLATE]</span>
+<span class="go">                       [--map-template TEMPLATE] --sample-file FILE</span>
+<span class="go">                       [--hap-nonPAR FILE] [--hap-PAR1 FILE] [--hap-PAR2 FILE]</span>
+<span class="go">                       [--legend-nonPAR FILE] [--legend-PAR1 FILE]</span>
+<span class="go">                       [--legend-PAR2 FILE] [--map-nonPAR FILE]</span>
+<span class="go">                       [--map-PAR1 FILE] [--map-PAR2 FILE]</span>
+<span class="go">                       [--impute2-bin BINARY] [--segment-length BP]</span>
+<span class="go">                       [--filtering-rules RULE [RULE ...]]</span>
+<span class="go">                       [--impute2-extra OPTIONS] [--probability FLOAT]</span>
+<span class="go">                       [--completion FLOAT] [--info FLOAT]</span>
+<span class="go">                       [--report-number NB] [--report-title TITLE]</span>
+<span class="go">                       [--report-author AUTHOR]</span>
 <span class="go">                       [--report-background BACKGROUND]</span>
 
 <span class="go">Execute the genome-wide imputation pipeline. This script is part of the</span>
-<span class="go">&#39;genipe&#39; package, version 1.2.3.</span>
+<span class="go">&#39;genipe&#39; package, version 1.3.0.</span>
 
 <span class="go">optional arguments:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
@@ -166,6 +180,8 @@ variants).</p>
 <span class="go">                        reference files) (optional).</span>
 
 <span class="go">Output Options:</span>
+<span class="go">  --chrom CHROM [CHROM ...]</span>
+<span class="go">                        The chromosomes to process.</span>
 <span class="go">  --output-dir DIR      The name of the output directory. [genipe]</span>
 <span class="go">  --bgzip               Use bgzip to compress the impute2 files.</span>
 
@@ -183,13 +199,15 @@ variants).</p>
 <span class="go">SHAPEIT Options:</span>
 <span class="go">  --shapeit-bin BINARY  The SHAPEIT binary if it&#39;s not in the path.</span>
 <span class="go">  --shapeit-thread INT  The number of thread for phasing. [1]</span>
+<span class="go">  --shapeit-extra OPTIONS</span>
+<span class="go">                        SHAPEIT extra parameters. Put extra parameters between</span>
+<span class="go">                        single or normal quotes (e.g. --shapeit-extra &#39;--</span>
+<span class="go">                        states 100 --window 2&#39;).</span>
 
 <span class="go">Plink Options:</span>
 <span class="go">  --plink-bin BINARY    The Plink binary if it&#39;s not in the path.</span>
 
-<span class="go">IMPUTE2 Options:</span>
-<span class="go">  --impute2-bin BINARY  The IMPUTE2 binary if it&#39;s not in the path.</span>
-<span class="go">  --segment-length BP   The length of a single segment for imputation. [5e+06]</span>
+<span class="go">IMPUTE2 Autosomal Reference:</span>
 <span class="go">  --hap-template TEMPLATE</span>
 <span class="go">                        The template for IMPUTE2&#39;s haplotype files (replace</span>
 <span class="go">                        the chromosome number by &#39;{chrom}&#39;, e.g.</span>
@@ -203,8 +221,36 @@ variants).</p>
 <span class="go">                        chromosome number by &#39;{chrom}&#39;, e.g.</span>
 <span class="go">                        &#39;genetic_map_chr{chrom}_combined_b37.txt&#39;).</span>
 <span class="go">  --sample-file FILE    The name of IMPUTE2&#39;s sample file.</span>
+
+<span class="go">IMPUTE2 Chromosome X Reference:</span>
+<span class="go">  --hap-nonPAR FILE     The IMPUTE2&#39;s haplotype file for the non-</span>
+<span class="go">                        pseudoautosomal region of chromosome 23.</span>
+<span class="go">  --hap-PAR1 FILE       The IMPUTE2&#39;s haplotype file for the first</span>
+<span class="go">                        pseudoautosomal region of chromosome 23.</span>
+<span class="go">  --hap-PAR2 FILE       The IMPUTE2&#39;s haplotype file for the second</span>
+<span class="go">                        pseudoautosomal region of chromosome 23.</span>
+<span class="go">  --legend-nonPAR FILE  The IMPUTE2&#39;s legend file for the non-pseudoautosomal</span>
+<span class="go">                        region of chromosome 23.</span>
+<span class="go">  --legend-PAR1 FILE    The IMPUTE2&#39;s legend file for the first</span>
+<span class="go">                        pseudoautosomal region of chromosome 23.</span>
+<span class="go">  --legend-PAR2 FILE    The IMPUTE2&#39;s legend file for the second</span>
+<span class="go">                        pseudoautosomal region of chromosome 23.</span>
+<span class="go">  --map-nonPAR FILE     The IMPUTE2&#39;s map file for the non-pseudoautosomal</span>
+<span class="go">                        region of chromosome 23.</span>
+<span class="go">  --map-PAR1 FILE       The IMPUTE2&#39;s map file for the first pseudoautosomal</span>
+<span class="go">                        region of chromosome 23.</span>
+<span class="go">  --map-PAR2 FILE       The IMPUTE2&#39;s map file for the second pseudoautosomal</span>
+<span class="go">                        region of chromosome 23.</span>
+
+<span class="go">IMPUTE2 Options:</span>
+<span class="go">  --impute2-bin BINARY  The IMPUTE2 binary if it&#39;s not in the path.</span>
+<span class="go">  --segment-length BP   The length of a single segment for imputation. [5e+06]</span>
 <span class="go">  --filtering-rules RULE [RULE ...]</span>
 <span class="go">                        IMPUTE2 filtering rules (optional).</span>
+<span class="go">  --impute2-extra OPTIONS</span>
+<span class="go">                        IMPUTE2 extra parameters. Put the extra parameters</span>
+<span class="go">                        between single or normal quotes (e.g. --impute2-extra</span>
+<span class="go">                        &#39;-buffer 250 -Ne 20000&#39;).</span>
 
 <span class="go">IMPUTE2 Merger Options:</span>
 <span class="go">  --probability FLOAT   The probability threshold for no calls. [&lt;0.9]</span>
@@ -229,10 +275,11 @@ variants).</p>
 </div>
 <div class="section" id="about">
 <h2>About<a class="headerlink" href="#about" title="Permalink to this headline">¶</a></h2>
-<p>This project was initiated at the
+<p>This project was conducted at the
 <a class="reference external" href="http://www.pharmacogenomics.ca">Beaulieu-Saucier Pharmacogenomics Centre</a> of
 the <a class="reference external" href="https://www.icm-mhi.org">Montreal Heart Institute</a>. The aim was to speed
-up (and automatize) the imputation process for the whole genome.</p>
+up (and automatize) the imputation process of the whole genome and facilitate
+downstream data analysis.</p>
 <a class="reference internal image-reference" href="_images/logo_pgx.png"><img alt="_images/logo_pgx.png" class="align-center" src="_images/logo_pgx.png" style="width: 350px;" /></a>
 <a class="reference internal image-reference" href="_images/logo_statgen.png"><img alt="_images/logo_statgen.png" class="align-center" src="_images/logo_statgen.png" style="width: 200px;" /></a>
 <a class="reference internal image-reference" href="_images/logo_icm.jpg"><img alt="_images/logo_icm.jpg" class="align-center" src="_images/logo_icm.jpg" style="width: 350px;" /></a>
@@ -257,12 +304,12 @@ up (and automatize) the imputation process for the whole genome.</p>
         <li class="right" >
           <a href="installation.html" title="Installation"
              >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">genipe 1.2.3 documentation</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="#">genipe 1.3.0 documentation</a> &raquo;</li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
     </div>
   </body>
 </html>
