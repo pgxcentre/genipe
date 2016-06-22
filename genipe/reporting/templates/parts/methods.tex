@@ -27,7 +27,27 @@ chromosome. The following quality steps were then performed on each chromosome:
 
 \VAR{ steps_data }
 
-\textbf{In total, \VAR{ nb_phasing_markers } were used for phasing using
-SHAPEIT.} IMPUTE2 was then used to impute markers genome-wide using its
-reference file\VAR{ filtering_rules }.
+\BLOCK{ if no_marker_left|length > 0 }
+After exclusion, chromosome\BLOCK{ if no_marker_left|length > 1}s\BLOCK{ endif }
+ \VAR{ no_marker_left[:-1]|join(", ") }\BLOCK{ if no_marker_left|length > 1 }
+ and \BLOCK{ endif }\VAR{ no_marker_left[-1] } did not have enough markers and
+\BLOCK{ if no_marker_left|length > 1 }were \BLOCK{ else }was \BLOCK{ endif }
+skipped for downstream analysis.\\
+\BLOCK{ endif }
+
+\textbf{In total, \VAR{ nb_phasing_markers } markers were used for phasing
+using SHAPEIT.} IMPUTE2 was then used to impute markers genome-wide using its
+reference file\VAR{ filtering_rules }.\BLOCK{ if nb_samples_no_gender != "0" } \textbf{A
+total of \VAR{ nb_samples_no_gender }
+sample\VAR{ "" if nb_samples_no_gender == "1" else "s" } did not have gender
+information, and were skip for chromosome X
+imputation.}\BLOCK{ endif }\BLOCK{ if no_imputed_sites|length > 0 }\\
+
+Chromosome\BLOCK{ if no_imputed_sites|length > 1}s\BLOCK{ endif }
+ \VAR{ no_imputed_sites[:-1]|join(", ") }\BLOCK{ if no_imputed_sites|length > 1 }
+ and \BLOCK{ endif }\VAR{ no_imputed_sites[-1] } did not have sufficient
+markers to perform imputation. Hence,
+\BLOCK{ if no_imputed_sites|length > 1 }they were \BLOCK{ else }it was \BLOCK{ endif }
+skipped for downstream analysis.\\
+\BLOCK{ endif }
 

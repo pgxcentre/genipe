@@ -230,14 +230,14 @@ analysis in the console:
 .. code-block:: console
 
    $ impute2-extractor --help
-   usage: impute2-extractor [-h] [-v] [--debug] --impute2 FILE [FILE ...]
-                            [--index] [--out PREFIX]
-                            [--format FORMAT [FORMAT ...]] [--prob FLOAT]
-                            [--extract FILE] [--genomic CHR:START-END]
-                            [--maf FLOAT] [--rate FLOAT] [--info FLOAT]
+   usage: impute2-extractor [-h] [-v] [--debug] --impute2 FILE [--index]
+                            [--out PREFIX] [--format FORMAT [FORMAT ...]]
+                            [--long] [--prob FLOAT] [--extract FILE]
+                            [--genomic CHR:START-END] [--maf FLOAT]
+                            [--rate FLOAT] [--info FLOAT]
 
    Extract imputed markers located in a specific genomic region. This script is
-   part of the 'genipe' package, version 1.2.3).
+   part of the 'genipe' package, version 1.3.0.
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -245,8 +245,7 @@ analysis in the console:
      --debug               set the logging level to debug
 
    Input Files:
-     --impute2 FILE [FILE ...]
-                           The output from IMPUTE2.
+     --impute2 FILE        The output from IMPUTE2.
 
    Indexation Options:
      --index               Only perform the indexation.
@@ -257,8 +256,13 @@ analysis in the console:
                            The output format. Can specify either 'impute2' for
                            probabilities (same as impute2 format, i.e. 3 values
                            per sample), 'dosage' for dosage values (one value
-                           between 0 and 2 by sample), or 'calls' for hard calls.
+                           between 0 and 2 by sample), 'calls' for hard calls, or
+                           'bed' for Plink binary format (with hard calls).
                            ['impute2']
+     --long                Write the output file in the long format (one line per
+                           sample per marker). This option is only compatible
+                           with the 'calls' and 'dosage' format (option '--
+                           format').
      --prob FLOAT          The probability threshold used when creating a file in
                            the dosage or call format. [0.9]
 

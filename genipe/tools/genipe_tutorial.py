@@ -22,7 +22,7 @@ from urllib.error import HTTPError, URLError
 from subprocess import check_call, CalledProcessError
 
 from .. import __version__
-from ..error import ProgramError
+from ..error import GenipeError
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -182,8 +182,8 @@ def main(args=None):
         logger.info("Cancelled by user")
         sys.exit(0)
 
-    # Catching the ProgramError
-    except ProgramError as e:
+    # Catching the GenipeError
+    except GenipeError as e:
         logger.error(e)
         parser.error(e.message)
 
@@ -253,12 +253,12 @@ def get_os_info():
     # Getting the OS name
     os_name = platform.system()
     if os_name == "Windows":
-        raise ProgramError("Windows OS it not compatible with tutorial")
+        raise GenipeError("Windows OS it not compatible with tutorial")
 
     # Getting the system's architecture
     architecture = platform.architecture()[0][:2]
     if architecture != "64":
-        raise ProgramError("{}: unknown architecture".format(architecture))
+        raise GenipeError("{}: unknown architecture".format(architecture))
 
     return os_name, architecture
 
@@ -290,7 +290,7 @@ def get_impute2_ref(path):
 
     # Checking the directory exists
     if not os.path.isdir(os.path.join(path, "1000GP_Phase3")):
-        raise ProgramError("Problem extracting the impute2 reference files")
+        raise GenipeError("Problem extracting the impute2 reference files")
 
     # Creating an empty file to say that the download and extraction was
     # completed
@@ -326,10 +326,10 @@ def get_genotypes(path):
         os.remove(os.path.join(tmpdir, filename))
         genotypes_files = glob(os.path.join(tmpdir, "hapmap_CEU_r23a_hg19.*"))
         if len(genotypes_files) != 3:
-            raise ProgramError("Unable to locate genotypes")
+            raise GenipeError("Unable to locate genotypes")
         for filename in genotypes_files:
             if not os.path.isfile(filename):
-                raise ProgramError("Unable to locate genotypes")
+                raise GenipeError("Unable to locate genotypes")
 
         # Moving the files
         for filename in genotypes_files:
@@ -363,10 +363,10 @@ def get_hg19(path):
         # Finding the hg19 file
         hg19_files = glob(os.path.join(tmpdir, "hg19.fasta*"))
         if len(hg19_files) != 2:
-            raise ProgramError("Unable to locate hg19")
+            raise GenipeError("Unable to locate hg19")
         for filename in hg19_files:
             if not os.path.isfile(filename):
-                raise ProgramError("Unable to locate hg19")
+                raise GenipeError("Unable to locate hg19")
 
         # Moving the files
         for filename in hg19_files:
@@ -392,8 +392,8 @@ def get_plink(os_name, arch, path):
     elif os_name == "Linux":
         filename = "plink-1.07-x86_64.zip"
     if filename == "":
-        raise ProgramError("Problem choosing a file to download for "
-                           "{} {} bits".format(os_name, arch))
+        raise GenipeError("Problem choosing a file to download for "
+                          "{} {} bits".format(os_name, arch))
 
     # Downloading Plink in a temporary directory
     logger.info("  - " + filename)
@@ -409,7 +409,7 @@ def get_plink(os_name, arch, path):
         # Finding the plink file
         plink_file = glob(os.path.join(tmpdir, "*", "plink"))
         if len(plink_file) != 1 or not os.path.isfile(plink_file[0]):
-            raise ProgramError("Unable to locate Plink")
+            raise GenipeError("Unable to locate Plink")
         plink_file = plink_file[0]
 
         # Moving the file
@@ -439,8 +439,8 @@ def get_impute2(os_name, arch, path):
     elif os_name == "Linux":
         filename = "impute_v2.3.2_x86_64_static.tgz"
     if filename == "":
-        raise ProgramError("Problem choosing a file to download for "
-                           "{} {} bits".format(os_name, arch))
+        raise GenipeError("Problem choosing a file to download for "
+                          "{} {} bits".format(os_name, arch))
 
     # Downloading Impute2 in a temporary directory
     logger.info("  - " + filename)
@@ -455,7 +455,7 @@ def get_impute2(os_name, arch, path):
         # Finding the impute2 file
         impute2_file = glob(os.path.join(tmpdir, "*", "impute2"))
         if len(impute2_file) != 1 or not os.path.isfile(impute2_file[0]):
-            raise ProgramError("Unable to locate impute2")
+            raise GenipeError("Unable to locate impute2")
         impute2_file = impute2_file[0]
 
         # Moving the file
@@ -485,8 +485,8 @@ def get_shapeit(os_name, arch, path):
     elif os_name == "Linux":
         filename = "shapeit.v2.r837.GLIBCv2.12.Linux.static.tgz"
     if filename == "":
-        raise ProgramError("Problem choosing a file to download for "
-                           "{} {} bits".format(os_name, arch))
+        raise GenipeError("Problem choosing a file to download for "
+                          "{} {} bits".format(os_name, arch))
 
     # Downloading shapeit in a temporary directory
     logger.info("  - " + filename)
@@ -501,7 +501,7 @@ def get_shapeit(os_name, arch, path):
         # Finding the shapeit file
         shapeit_file = glob(os.path.join(tmpdir, "*", "shapeit"))
         if len(shapeit_file) != 1 or not os.path.isfile(shapeit_file[0]):
-            raise ProgramError("Unable to locate shapeit")
+            raise GenipeError("Unable to locate shapeit")
         shapeit_file = shapeit_file[0]
 
         # Moving the file
@@ -523,7 +523,7 @@ def download_file(url, path):
     try:
         urlretrieve(url, path)
     except (HTTPError, URLError):
-        raise ProgramError("URL not available: " + url)
+        raise GenipeError("URL not available: " + url)
 
 
 def untar_file(path, fn):
@@ -537,7 +537,7 @@ def untar_file(path, fn):
     try:
         check_call(["tar", "-C", path, "-xf", fn])
     except CalledProcessError:
-        raise ProgramError("Could not extract {}".format(fn))
+        raise GenipeError("Could not extract {}".format(fn))
 
 
 def parse_args(parser, args=None):
@@ -560,7 +560,7 @@ def parse_args(parser, args=None):
     parser.add_argument(
         "--version",
         action="version",
-        version="%(prog)s (part of genipe version {})".format(__version__),
+        version="%(prog)s, part of genipe version {}".format(__version__),
     )
 
     parser.add_argument(

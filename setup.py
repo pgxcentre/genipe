@@ -7,9 +7,7 @@
 #   - python setup.py bdist_wheel
 
 # How to build for conda
-#   - python setup.py bdist_conda
-#   - conda convert -p all /PATH/TO/FILE -o conda_dist
-#   - cd conda_dist && rm -r win-* && conda index osx-64 linux-*
+#   - bash conda_build.sh
 
 
 import os
@@ -18,17 +16,17 @@ from setuptools import setup
 
 
 MAJOR = 1
-MINOR = 2
-MICRO = 3
+MINOR = 3
+MICRO = 0
 VERSION = "{0}.{1}.{2}".format(MAJOR, MINOR, MICRO)
 
 
 def check_python_version():
-    """Checks the python version, exits if < 3.3."""
+    """Checks the python version, exits if < 3.4."""
     python_major, python_minor = sys.version_info[:2]
 
-    if python_major != 3 or python_minor < 3:
-        sys.stderr.write("genipe requires python 3 (version 3.3 or higher)\n")
+    if python_major != 3 or python_minor < 4:
+        sys.stderr.write("genipe requires python 3 (version 3.4 or higher)\n")
         sys.exit(1)
 
 
@@ -73,7 +71,7 @@ def setup_package():
         license="CC BY-NC 4.0",
         entry_points={
             "console_scripts": [
-                "genipe-launcher=genipe.pipeline:main",
+                "genipe-launcher=genipe.pipeline.cli:main",
                 "impute2-merger=genipe.tools.impute2_merger:main",
                 "impute2-extractor=genipe.tools.impute2_extractor:main",
                 "imputed-stats=genipe.tools.imputed_stats:main",
@@ -81,10 +79,10 @@ def setup_package():
             ],
         },
         install_requires=["numpy >= 1.9.2", "Jinja2 >= 2.7.3",
-                          "pandas >= 0.15.2", "setuptools >= 12.0.5"],
-        packages=["genipe", "genipe.task", "genipe.db", "genipe.tools",
-                  "genipe.formats", "genipe.reporting", "genipe.config",
-                  "genipe.tests"],
+                          "pandas >= 0.17.0", "setuptools >= 12.0.5"],
+        packages=["genipe", "genipe.pipeline", "genipe.task", "genipe.db",
+                  "genipe.tools", "genipe.formats", "genipe.reporting",
+                  "genipe.config", "genipe.tests"],
         package_data={"genipe.reporting": ["templates/*.tex",
                                            "templates/biblio/*",
                                            "templates/utils/*",
@@ -102,6 +100,7 @@ def setup_package():
                      "Programming Language :: Python",
                      "Programming Language :: Python :: 3.3",
                      "Programming Language :: Python :: 3.4",
+                     "Programming Language :: Python :: 3.5",
                      "Topic :: Scientific/Engineering :: Bio-Informatics"],
         keywords="bioinformatics imputation pipeline analysis",
     )

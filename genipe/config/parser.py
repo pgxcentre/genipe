@@ -141,8 +141,8 @@ def _generate_default_values(task_name, config, walltime="00:15:00", nodes="1",
     if template is None:
         template = task_name + "_chr{chrom}"
 
-    # Getting the final values for each chromosomes
-    for chrom in chromosomes:
+    # Getting the final values for each autosomes
+    for chrom in chromosomes + ("25_1", "25_2"):
         # Getting the chromosome specif walltime
         chrom_walltime = task_config.pop("chr{}_walltime".format(chrom),
                                          walltime)

@@ -10,6 +10,7 @@
 import os
 import re
 import sys
+import shlex
 import logging
 import argparse
 from collections import defaultdict
@@ -17,8 +18,8 @@ from collections import defaultdict
 import numpy as np
 
 from .. import __version__
-from ..formats.impute2 import *
-from ..error import ProgramError
+from ..formats import impute2
+from ..error import GenipeError
 
 
 __author__ = "Louis-Philippe Lemieux Perreault"
@@ -48,9 +49,6 @@ def main(args=None):
         # Parsing the options
         args = parse_args(parser, args)
 
-        # Getting the output directory (dirname of the output prefix
-        out_dir = os.path.dirname(args.prefix)
-
         # Adding the logging capability
         log_file = args.prefix + ".log"
         logging_fh = logging.FileHandler(log_file, mode="w")
@@ -61,7 +59,9 @@ def main(args=None):
             handlers=[logging.StreamHandler(), logging_fh]
         )
         logging.info("Logging everything into '{}'".format(log_file))
-        logging.info("Program arguments: '{}'".format(" ".join(sys.argv[1:])))
+        logging.info("Program arguments: {}".format(
+            " ".join(shlex.quote(part) for part in sys.argv[1:])
+        ))
 
         # Checking the options
         check_args(args)
@@ -74,8 +74,8 @@ def main(args=None):
         logging.info("Cancelled by user")
         sys.exit(0)
 
-    # Catching the ProgramError
-    except ProgramError as e:
+    # Catching the GenipeError
+    except GenipeError as e:
         logging.error(e)
         parser.error(e.message)
 
@@ -170,8 +170,8 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
                       r"\n --\d+ type 2 SNPs\n --\d+ type 3 SNPs\n"
                       r" --(\d+) total SNPs", summary)
         if r is None:
-            raise ProgramError("{}: unknown "
-                               "format".format(i_filename + "_summary"))
+            raise GenipeError("{}: unknown "
+                              "format".format(i_filename + "_summary"))
         nb_expected = int(r.group(1))
         logging.info("  - expecting {:,d} lines".format(nb_expected))
 
@@ -199,12 +199,12 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
             row = line.rstrip("\r\n").split(" ")
 
             # Gathering genotypes
-            (chrom, name, pos, a1, a2), geno = matrix_from_line(row)
+            (chrom, name, pos, a1, a2), geno = impute2.matrix_from_line(row)
 
             # Splitting the info line
             info_row = i_info_file.readline()
             if info_row == "":
-                raise ProgramError("{}: missing information for '{}'".format(
+                raise GenipeError("{}: missing information for '{}'".format(
                     i_filename + "_info",
                     name,
                 ))
@@ -213,7 +213,7 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
             # Checking that the two names and position are the same
             if ((name != info_row[info_header["rs_id"]]) or
                     (pos != info_row[info_header["position"]])):
-                raise ProgramError("{} and {}: not same order".format(
+                raise GenipeError("{} and {}: not same order".format(
                     i_filename,
                     i_filename + "_info",
                 ))
@@ -251,14 +251,14 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
 
                 else:
                     # This is a problem, so we quit
-                    raise ProgramError("{} != {}: not same "
-                                       "chromosome".format(chrom, real_chrom))
+                    raise GenipeError("{} != {}: not same "
+                                      "chromosome".format(chrom, real_chrom))
 
             # Adding the information to the coding file
             print(name, a1, a2, sep="\t", file=alleles_o_file)
 
             # Checking the completion rate and saving it
-            good_calls = get_good_probs(geno, options.probability)
+            good_calls = impute2.get_good_probs(geno, options.probability)
             nb = np.sum(good_calls)
             comp = 0
             if geno.shape[0] != 0:
@@ -267,7 +267,11 @@ def concatenate_files(i_filenames, out_prefix, real_chrom, options):
                   file=completion_o_file)
 
             # Computing the MAF and saving it
-            maf, minor, major = maf_from_probs(geno[good_calls], a1, a2)
+            maf, minor, major = impute2.maf_from_probs(
+                prob_matrix=geno[good_calls],
+                a1=a1,
+                a2=a2,
+            )
             print(name, major, minor, maf, sep="\t", file=maf_o_file)
 
             # Checking the information value
@@ -315,29 +319,29 @@ def check_args(args):
 
     Note
     ----
-        If there is a problem, a :py:class:`genipe.error.ProgramError` is
+        If there is a problem, a :py:class:`genipe.error.GenipeError` is
         raised.
 
     """
     # Checking the input files
     for filename in args.impute2:
         if not os.path.isfile(filename):
-            raise ProgramError("{}: no such file".format(filename))
+            raise GenipeError("{}: no such file".format(filename))
 
         summary_file = filename + "_summary"
         if not os.path.isfile(summary_file):
-            raise ProgramError("{}: no such file".format(summary_file))
+            raise GenipeError("{}: no such file".format(summary_file))
 
         info_file = filename + "_info"
         if not os.path.isfile(info_file):
-            raise ProgramError("{}: no such file".format(info_file))
+            raise GenipeError("{}: no such file".format(info_file))
 
         # Checking the header of the info file
         with open(info_file, "r") as i_file:
             header = set(i_file.readline().rstrip("\r\n").split(" "))
             for name in ("rs_id", "position", "info"):
                 if name not in header:
-                    raise ProgramError("{}: missing column '{}'".format(
+                    raise GenipeError("{}: missing column '{}'".format(
                         info_file,
                         name,
                     ))
@@ -346,18 +350,18 @@ def check_args(args):
     valid_chromosome = [str(i) for i in range(1, 24)]
     valid_chromosome.append("25")
     if args.chrom not in valid_chromosome:
-        raise ProgramError("{}: invalid chromosome".format(args.chrom))
+        raise GenipeError("{}: invalid chromosome".format(args.chrom))
     if args.chrom == "23":
         logging.warning("MAF computation is wrong for chromosome 23 (males "
                         "have 2 alleles in the computation, instead of 1)...")
 
     # Checking that probability, completion and info are between 0 and 1
     if args.probability < 0 or args.probability > 1:
-        raise ProgramError("{}: invalid probability".format(args.probability))
+        raise GenipeError("{}: invalid probability".format(args.probability))
     if args.completion < 0 or args.completion > 1:
-        raise ProgramError("{}: invalid completion".format(args.completion))
+        raise GenipeError("{}: invalid completion".format(args.completion))
     if args.info < 0 or args.info > 1:
-        raise ProgramError("{}: invalid info".format(args.info))
+        raise GenipeError("{}: invalid info".format(args.info))
 
     return True
 
@@ -382,7 +386,7 @@ def parse_args(parser, args=None):
     parser.add_argument(
         "--version",
         action="version",
-        version="%(prog)s (part of genipe version {})".format(__version__),
+        version="%(prog)s, part of genipe version {}".format(__version__),
     )
     parser.add_argument(
         "--debug",
@@ -396,7 +400,7 @@ def parse_args(parser, args=None):
         "-i",
         "--impute2",
         type=str,
-        metavar="GEN",
+        metavar="FILE",
         required=True,
         nargs="+",
         help="IMPUTE2 file(s) to merge.",

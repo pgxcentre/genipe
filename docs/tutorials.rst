@@ -7,11 +7,11 @@ pipeline itself. The other tutorials describe provided tools to perform
 statistical analysis or data management.
 
 1. :ref:`genipe-tut`
-2. :ref:`cox-tut`
-3. :ref:`skat-tut`
-4. :ref:`linear-tut`
-5. :ref:`logistic-tut`
-6. :ref:`mixedlm-tut`
+2. :ref:`mixedlm-tut`
+3. :ref:`cox-tut`
+4. :ref:`skat-tut`
+5. :ref:`linear-tut`
+6. :ref:`logistic-tut`
 7. :ref:`extraction-tut`
 
 
@@ -20,7 +20,7 @@ statistical analysis or data management.
 Pipeline tutorial
 ------------------
 
-This tutorial walks through the main objective of this module, which is the
+This tutorial is a walk-through the main objective of this module, which is the
 genome-wide imputation of genotypes. It describes in detail the expected input
 and output files.
 
@@ -30,13 +30,27 @@ and output files.
    tutorials/tutorial_genipe
 
 
+.. _mixedlm-tut:
+
+Linear mixed effects tutorial
+------------------------------
+
+This tutorial is a walk-through of a linear mixed effects analysis for repeated
+measurements. It describes in detail the expected input and output files.
+
+.. toctree::
+   :maxdepth: 2
+
+   tutorials/tutorial_mixedlm
+
+
 .. _cox-tut:
 
 Survival tutorial
 ------------------
 
-This tutorial walks through a full example of a survival regression (using
-Cox's proportional hazard model). It describes in detail the expected input and
+This tutorial is a walk-through of a typical survival analysis (using Cox's
+proportional hazard model). It describes in detail the expected input and
 output files.
 
 .. toctree::
@@ -50,8 +64,8 @@ output files.
 SKAT tutorial
 --------------
 
-This tutorial walks through a full example of a typical SKAT analysis while
-describing the expected input and output files.
+This tutorial is a walk-through of a typical SKAT analysis and describes the
+expected input and output files.
 
 .. toctree::
    :maxdepth: 2
@@ -64,9 +78,9 @@ describing the expected input and output files.
 Linear tutorial
 ----------------
 
-This tutorial walks through a full example of a linear regression analysis
-(using ordinary least squares). It describes in detail the expected input and
-output files.
+This tutorial is a walk-through of a linear regression analysis (using
+ordinary least squares). It describes in detail the expected input and output
+files.
 
 .. toctree::
    :maxdepth: 2
@@ -79,9 +93,9 @@ output files.
 Logistic tutorial
 ------------------
 
-This tutorial walks through a full example of a logistic regression analysis
-(using a GLM with a binomial distribution and a logit link). It describes in
-detail the expected input and output file.
+This tutorial is a walk-through of a logistic regression analysis (using a GLM
+with a binomial distribution and a logit link). It describes in detail the
+expected input and output file.
 
 .. toctree::
    :maxdepth: 2
@@ -89,28 +103,13 @@ detail the expected input and output file.
    tutorials/tutorial_logistic
 
 
-.. _mixedlm-tut:
-
-Linear mixed effects tutorial
-------------------------------
-
-This tutorial walks through a full example of a linear mixed effects analysis.
-It describes in detail the expected input and output files.
-
-.. toctree::
-   :maxdepth: 2
-
-   tutorials/tutorial_mixedlm
-
-
 .. _extraction-tut:
 
 Site extraction tutorial
 -------------------------
 
-This tutorial walks through a full example of the tool used to extract sites
-from imputation files. It describes in detail the expected input and output
-file.
+This tutorial is a walk-through of the tool used to extract sites from
+imputation files. It describes in detail the expected input and output file.
 
 .. toctree::
    :maxdepth: 2

@@ -6,10 +6,15 @@ study data and imputes the masked genotypes by using the remaining study and
 reference data. The imputed genotypes are then compared with the original
 genotypes to produce the concordance statistics."\\
 
-Tables~\ref{tab:cross_validation_chr_1} to \ref{tab:cross_validation_chr_22}
-show the cross-validation results for the autosomes (chromosomes 1 to 22).
-Table~\ref{tab:cross_validation} shows the cross-validation results across the
-autosomes.
+\BLOCK{ if single_chromosome }
+Table~\ref{tab:cross_validation_chr_\VAR{ first_chrom }} shows the
+cross-validation results for chromosomes \VAR{ first_chrom }.
+\BLOCK{ else }
+Tables~\ref{tab:cross_validation_chr_\VAR{ first_chrom }} to
+\ref{tab:cross_validation_chr_\VAR{ last_chrom }} show the cross-validation
+results for the analyzed chromosomes. Table~\ref{tab:cross_validation} shows
+the cross-validation results across the autosomes.
+\BLOCK{ endif }
 
 \VAR{ tables }
 

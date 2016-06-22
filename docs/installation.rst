@@ -9,11 +9,12 @@ Installation
 Requirements
 -------------
 
-The tools require a standard Python 3 installation with the following modules:
+`genipe` requires a standard Python 3.4 (or latest) installation with the
+following modules:
 
 * ``numpy`` version 1.8.2 or latest
 * ``jinja2`` version 2.7.3 or latest
-* ``pandas`` version 0.15.2 or latest
+* ``pandas`` version 0.17.0 or latest
 * ``setuptools`` version 12.0.5 or latest
 
 The following modules are optional (required for statistical analysis and data
@@ -21,6 +22,7 @@ management):
 
 * ``matplotlib`` version 1.4.2
 * ``scipy`` version 0.15.1 or latest (required by ``statsmodels``)
+* ``patsy`` version 0.4.1 or latest
 * ``statsmodels`` version 0.6.1 or latest
 * ``lifelines`` version 0.7.0 or latest
 * ``biopython`` version 1.65 or latest
@@ -29,7 +31,7 @@ management):
 
 .. note::
 
-   Only Python versions 3.3 and higher are supported for now.
+   Only Python version 3.4 and higher are supported.
 
 
 .. _install-virt:
@@ -37,14 +39,14 @@ management):
 Installing in a virtual environment
 ------------------------------------
 
-
 .. _install-pyvenv:
 
 Using python's pyvenv
 ^^^^^^^^^^^^^^^^^^^^^^
 
 The following commands should successfully create a virtual environment and
-activate it, as long as Python 3 was previously installed on the machine.
+activate it, as long as Python 3.4 (or latest) was previously installed on the
+machine.
 
 .. code-block:: bash
 
@@ -67,6 +69,7 @@ command:
 .. code-block:: bash
 
    pip install scipy
+   pip install patsy
    pip install statsmodels
    pip install lifelines
    pip install biopython
@@ -82,7 +85,7 @@ Using Miniconda
 
 The following commands should successfully download and install Miniconda,
 create and activate a new python virtual environment. This installation method
-doesn't required a previous Python 3 installation.
+doesn't require a previous Python 3 installation.
 
 .. code-block:: bash
 
@@ -91,7 +94,7 @@ doesn't required a previous Python 3 installation.
    bash miniconda.sh -b -p $HOME/miniconda
 
    # Creating the environment
-   $HOME/miniconda/bin/conda create -q -n genipe_pyvenv python=3.4
+   $HOME/miniconda/bin/conda create -q -n genipe_pyvenv python=3
 
    # Activating the environment
    source $HOME/miniconda/bin/activate genipe_pyvenv
@@ -106,7 +109,7 @@ following command:
 .. note::
 
    It is possible to add the channel to conda's configuration (so that you
-   won't need to use the ``-c`` option for installing or updatign). To do so,
+   won't need to use the ``-c`` option for installing or updating). To do so,
    perform the following command:
 
    .. code-block:: bash
@@ -118,11 +121,12 @@ following command:
    updating).
 
 If required, the optional dependencies can be installed using the following
-command:
+commands:
 
 .. code-block:: bash
 
    conda install -y scipy
+   conda install -y patsy
    conda install -y statsmodels
    conda install -y biopython
    conda install -y matplotlib
@@ -168,8 +172,10 @@ following command to activate it.
 Testing the installation
 -------------------------
 
-To test the installation, make sure that the virtual environment is activated.
-Then, launch Python and use the following python commands:
+The :py:mod:`genipe` module has been tested with the most recent versions of
+the requirements. To test the installation, make sure that the virtual
+environment is activated. Then, launch Python and use the following python
+commands:
 
 .. code-block:: python
 
@@ -183,7 +189,7 @@ Updating the package
 ---------------------
 
 If there is a new :py:mod:`genipe` release, perform one of the following
-command (depending of the installation method). Don't forget to first activate
+commands (depending of the installation method). Don't forget to first activate
 the python virtual environment.
 
 

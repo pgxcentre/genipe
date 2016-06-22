@@ -9,13 +9,14 @@
 
 import os
 import unittest
+from random import randint
 from tempfile import TemporaryDirectory
 
-from ..pipeline import *
-from .. import chromosomes
-from ..error import ProgramError
+from .. import autosomes
+from ..pipeline import cli
+from ..error import GenipeError
 
-if HAS_PYFAIDX:
+if cli.HAS_PYFAIDX:
     import pyfaidx
 
 
@@ -41,67 +42,184 @@ class TestMainPipeline(unittest.TestCase):
 
     def test_file_sorter(self):
         """Tests the 'file_sorter' function."""
-        filenames = ["chr1.1000_100000.impute2", "chr2.10000_1002300.impute2",
-                     "chr1.1_100.impute2", "/some/path/chr1.1_10.impute2",
-                     "chr1.100000_2000000.impute2.some_extension"]
-        expected_filenames = ["/some/path/chr1.1_10.impute2",
-                              "chr1.1_100.impute2", "chr1.1000_100000.impute2",
-                              "chr1.100000_2000000.impute2.some_extension",
-                              "chr2.10000_1002300.impute2"]
+        filenames = [
+            "chr1.1000_100000.impute2",
+            "chr2.10000_1002300.impute2",
+            "chr1.1_100.impute2",
+            "/some/path/chr1.1_10.impute2",
+            "chr25_1.3_40.impute2",
+            "chr23.100_400.impute2",
+            "some/path/to_file/chr25_2.1000_1500.impute2.gz",
+            "chr25_2.1600_1650.impute2.gz",
+            "chr1.100000_2000000.impute2.some_extension",
+        ]
+        expected_filenames = [
+            "/some/path/chr1.1_10.impute2",
+            "chr1.1_100.impute2",
+            "chr1.1000_100000.impute2",
+            "chr1.100000_2000000.impute2.some_extension",
+            "chr2.10000_1002300.impute2",
+            "chr23.100_400.impute2",
+            "chr25_1.3_40.impute2",
+            "some/path/to_file/chr25_2.1000_1500.impute2.gz",
+            "chr25_2.1600_1650.impute2.gz",
+        ]
         expected_results = [(1, 1000, 100000), (2, 10000, 1002300),
-                            (1, 1, 100), (1, 1, 10), (1, 100000, 2000000)]
+                            (1, 1, 100), (1, 1, 10), (25, 3, 40),
+                            (23, 100, 400), (25, 1000, 1500),
+                            (25, 1600, 1650),
+                            (1, 100000, 2000000)]
 
         # Trying the function
         for filename, expected in zip(filenames, expected_results):
-            self.assertEqual(expected, file_sorter(filename))
+            self.assertEqual(expected, cli.file_sorter(filename))
 
         # Trying the sort function
-        filenames.sort(key=file_sorter)
+        filenames.sort(key=cli.file_sorter)
         self.assertEqual(filenames, expected_filenames)
 
     def test_get_chromosome_length(self):
         """Tests the 'get_chromosome_length' function."""
-        # Tests that all chromosome are there
-        expected_chrom = {str(i) for i in range(1, 23)} | {"X"}
-        chrom_length = get_chromosome_length(self.output_dir.name)
-        self.assertTrue(len(expected_chrom - set(chrom_length.keys())) == 0)
+        # The expected chromosome
+        expected_chrom = {3, 6, 9, 23, 25}
+        expected_length = {}
+
+        # Writing some legend file for different chromosome
+        legend_template = os.path.join(self.output_dir.name,
+                                       "chr{chrom}.legend")
+        legend_chr23 = os.path.join(self.output_dir.name,
+                                    "chr23_nonPAR.legend")
+        legend_par1 = os.path.join(self.output_dir.name, "chr23_PAR1.legend")
+        legend_par2 = os.path.join(self.output_dir.name, "chr23_PAR2.legend")
+        for chrom in expected_chrom:
+            if chrom == 23:
+                # Getting the positions and expected length
+                positions = sorted([randint(5000, 100000) for i in range(100)])
+                expected_length[chrom] = (min(positions), max(positions))
+
+                # Writing the positions to file
+                with open(legend_chr23, "w") as o_file:
+                    print("id", "position", file=o_file)
+                    for i, position in enumerate(positions):
+                        print("marker_{}".format(i+1), position, file=o_file)
+
+                # Continuing to next chromosome
+                continue
+
+            if chrom == 25:
+                # Getting the positions and expected length
+                positions = sorted([randint(1, 4999) for i in range(100)])
+                expected_length[chrom] = [max(positions)]
+
+                # Writing the positions to file
+                with open(legend_par1, "w") as o_file:
+                    print("id", "position", file=o_file)
+                    for i, position in enumerate(positions):
+                        print("marker_{}".format(i+1), position, file=o_file)
+
+                # Getting the positions and expected length
+                positions = sorted([
+                    randint(100000, 200000) for i in range(100)
+                ])
+                expected_length[chrom].extend([min(positions), max(positions)])
+                expected_length[chrom] = tuple(expected_length[chrom])
+
+                # Writing the positions to file
+                with open(legend_par2, "w") as o_file:
+                    print("id", "position", file=o_file)
+                    for i, position in enumerate(positions):
+                        print("marker_{}".format(i+1), position, file=o_file)
+
+                # Continuing to next chromosome
+                continue
+
+            # Getting the position and saving the expected length
+            positions = sorted([randint(1, 2000000) for i in range(1000)])
+            expected_length[chrom] = max(positions)
+
+            # Saving the file
+            with open(legend_template.format(chrom=chrom), "w") as o_file:
+                print("id", "position", file=o_file)
+                for i, position in enumerate(positions):
+                    print("marker_{}".format(i+1), position, file=o_file)
+
+        # Getting the chromosome length
+        chrom_length = cli.get_chromosome_length(
+            required_chrom=expected_chrom,
+            legend=legend_template,
+            legend_chr23=legend_chr23,
+            legend_par1=legend_par1,
+            legend_par2=legend_par2,
+            out_dir=self.output_dir.name,
+        )
+
+        # Checking the expected length
+        self.assertEqual(expected_length, chrom_length)
+
+        # Checking the file was created
         self.assertTrue(os.path.isfile(os.path.join(self.output_dir.name,
                                                     "chromosome_lengths.txt")))
 
         # Tests that we correctly read the file
-        expected_chrom = {"1": 249250621, "10": 135534747, "11": 135006516,
-                          "12": 133851895, "13": 115169878, "14": 107349540,
-                          "15": 102531392, "16": 90354753, "17": 81195210,
-                          "18": 78077248, "19": 59128983, "2": 243199373,
-                          "20": 63025520, "21": 48129895, "22": 51304566,
-                          "3": 198022430, "4": 191154276, "5": 180915260,
-                          "6": 171115067, "7": 159138663, "8": 146364022,
-                          "9": 141213431}
+        expected_chrom = {6: expected_length[6], 9: expected_length[9],
+                          23: expected_length[23], 25: expected_length[25]}
 
         # Writing the file
         chrom_filename = os.path.join(self.output_dir.name,
                                       "chromosome_lengths.txt")
         with open(chrom_filename, "w") as o_file:
-            for k, v in expected_chrom.items():
-                print(k, v, sep="\t", file=o_file)
+            for chrom, length in expected_chrom.items():
+                if (chrom == 23) or (chrom == 25):
+                    print(chrom, *length, sep="\t", file=o_file)
+                else:
+                    print(chrom, length, sep="\t", file=o_file)
 
         # Comparing what we got
-        chrom_length = get_chromosome_length(self.output_dir.name)
+        chrom_length = cli.get_chromosome_length(
+            required_chrom=expected_chrom.keys(),
+            legend=legend_template,
+            legend_chr23=legend_chr23,
+            legend_par1=legend_par1,
+            legend_par2=legend_par2,
+            out_dir=self.output_dir.name,
+        )
         self.assertEqual(expected_chrom, chrom_length)
 
-        # Removing some chromosomes from the file
-        del expected_chrom["9"]
-        del expected_chrom["12"]
+        # Removing some autosomes from the file
+        del expected_chrom[9]
+        del expected_chrom[23]
+        del expected_chrom[25]
         with open(chrom_filename, "w") as o_file:
-            for k, v in expected_chrom.items():
-                print(k, v, sep="\t", file=o_file)
+            for chrom, length in expected_chrom.items():
+                if (chrom == 23) or (chrom == 25):
+                    print(chrom, *length, sep="\t", file=o_file)
+                else:
+                    print(chrom, length, sep="\t", file=o_file)
+        expected_chrom[9] = expected_length[9]
+        expected_chrom[23] = expected_length[23]
+        expected_chrom[25] = expected_length[25]
 
-        # Tests that an exception is raised if there is a missing chromosome
-        with self.assertRaises(ProgramError) as e:
-            get_chromosome_length(self.output_dir.name)
-        self.assertEqual("missing chromosomes: 12, 9", e.exception.message)
+        # Tests that a warning is logged if there is a missing chromosome
+        with self._my_compatibility_assertLogs(level="WARNING") as cm:
+            chrom_length = cli.get_chromosome_length(
+                required_chrom=sorted(expected_chrom.keys()),
+                legend=legend_template,
+                legend_chr23=legend_chr23,
+                legend_par1=legend_par1,
+                legend_par2=legend_par2,
+                out_dir=self.output_dir.name,
+            )
+        log_m = [
+            "WARNING:root:missing length for chromosome 9",
+            "WARNING:root:missing length for chromosome 23",
+            "WARNING:root:missing length for chromosome 25",
+        ]
+        self.assertEqual(log_m, cm.output)
 
-    @unittest.skipIf(not HAS_PYFAIDX,
+        # Testing the content
+        self.assertEqual(expected_chrom, chrom_length)
+
+    @unittest.skipIf(not cli.HAS_PYFAIDX,
                      "optional requirement (pyfaidx) not satisfied")
     def test_get_chrom_encoding(self):
         """Tests the 'get_chrom_encoding' function."""
@@ -153,7 +271,7 @@ class TestMainPipeline(unittest.TestCase):
         expected["26"] = "26"
 
         # The observed result
-        observed = get_chrom_encoding(reference)
+        observed = cli.get_chrom_encoding(reference)
         self.assertEqual(expected, observed)
         reference.close()
 
@@ -179,7 +297,7 @@ class TestMainPipeline(unittest.TestCase):
         expected["24"] = "Y"
 
         # The observed result
-        observed = get_chrom_encoding(reference)
+        observed = cli.get_chrom_encoding(reference)
         self.assertEqual(expected, observed)
         reference.close()
 
@@ -206,7 +324,7 @@ class TestMainPipeline(unittest.TestCase):
         expected["26"] = "chr26"
 
         # The observed result
-        observed = get_chrom_encoding(reference)
+        observed = cli.get_chrom_encoding(reference)
         self.assertEqual(expected, observed)
         reference.close()
 
@@ -232,7 +350,7 @@ class TestMainPipeline(unittest.TestCase):
         expected["24"] = "chr24"
 
         # The observed result
-        observed = get_chrom_encoding(reference)
+        observed = cli.get_chrom_encoding(reference)
         self.assertEqual(expected, observed)
         reference.close()
 
@@ -253,7 +371,7 @@ class TestMainPipeline(unittest.TestCase):
 
         # The observed result
         with self._my_compatibility_assertLogs(level="WARNING") as cm:
-            get_chrom_encoding(reference)
+            cli.get_chrom_encoding(reference)
         log_m = [
             "WARNING:root:{}: chromosome not in reference".format(i)
             for i in range(19, 27) if i != 25
@@ -261,7 +379,7 @@ class TestMainPipeline(unittest.TestCase):
         self.assertEqual(log_m, cm.output)
         reference.close()
 
-    @unittest.skipIf(not HAS_PYFAIDX,
+    @unittest.skipIf(not cli.HAS_PYFAIDX,
                      "optional requirement (pyfaidx) not satisfied")
     def test_is_reversed(self):
         """Tests the 'is_reversed' function."""
@@ -292,26 +410,42 @@ class TestMainPipeline(unittest.TestCase):
         encoding = {"1": "1", "2": "2", "3": "3"}
 
         # Testing invalid allele (should return False)
-        self.assertFalse(is_reversed("1", 1, "I", "D", reference, encoding))
-        self.assertFalse(is_reversed("1", 1, "Z", "A", reference, encoding))
-        self.assertFalse(is_reversed("1", 1, "A", "K", reference, encoding))
+        self.assertFalse(cli.is_reversed(
+            "1", 1, "I", "D", reference, encoding),
+        )
+        self.assertFalse(cli.is_reversed(
+            "1", 1, "Z", "A", reference, encoding),
+        )
+        self.assertFalse(cli.is_reversed(
+            "1", 1, "A", "K", reference, encoding),
+        )
 
         # Testing invalid chromosome (should return False)
-        self.assertFalse(is_reversed("23", 1, "A", "C", reference, encoding))
+        self.assertFalse(cli.is_reversed(
+            "23", 1, "A", "C", reference, encoding),
+        )
 
         # Testing invalid position (should return False)
-        self.assertFalse(is_reversed("1", 100, "A", "C", reference, encoding))
+        self.assertFalse(cli.is_reversed(
+            "1", 100, "A", "C", reference, encoding),
+        )
 
         # Testing valid input, without strand problem (should return False)
-        self.assertFalse(is_reversed("1", 3, "G", "T", reference, encoding))
-        self.assertFalse(is_reversed("2", 4, "G", "T", reference, encoding))
-        self.assertFalse(is_reversed("3", 2, "g", "c", reference, encoding))
+        self.assertFalse(cli.is_reversed(
+            "1", 3, "G", "T", reference, encoding),
+        )
+        self.assertFalse(cli.is_reversed(
+            "2", 4, "G", "T", reference, encoding),
+        )
+        self.assertFalse(cli.is_reversed(
+            "3", 2, "g", "c", reference, encoding),
+        )
 
         # Testing valid input, but strand problem (should return True)
-        self.assertTrue(is_reversed("1", 1, "T", "G", reference, encoding))
-        self.assertTrue(is_reversed("2", 2, "t", "g", reference, encoding))
-        self.assertTrue(is_reversed("3", 3, "T", "C", reference, encoding))
-        self.assertTrue(is_reversed("1", 4, "A", "C", reference, encoding))
+        self.assertTrue(cli.is_reversed("1", 1, "T", "G", reference, encoding))
+        self.assertTrue(cli.is_reversed("2", 2, "t", "g", reference, encoding))
+        self.assertTrue(cli.is_reversed("3", 3, "T", "C", reference, encoding))
+        self.assertTrue(cli.is_reversed("1", 4, "A", "C", reference, encoding))
 
         # Closing the reference
         reference.close()
@@ -394,7 +528,7 @@ class TestMainPipeline(unittest.TestCase):
 
         # The PDF generated
         frequency_barh = ""
-        if HAS_MATPLOTLIB:
+        if cli.HAS_MATPLOTLIB:
             frequency_barh = os.path.join(self.output_dir.name,
                                           "frequency_barh.pdf")
         # The expected results
@@ -419,7 +553,7 @@ class TestMainPipeline(unittest.TestCase):
         filename_template = os.path.join(self.output_dir.name, "chr{chrom}",
                                          "final_impute2",
                                          "chr{chrom}.imputed.{suffix}")
-        for chrom in chromosomes:
+        for chrom in autosomes:
             # Getting the name of the file
             maf_filename = filename_template.format(chrom=chrom, suffix="maf")
             good_sites_filename = filename_template.format(chrom=chrom,
@@ -449,7 +583,10 @@ class TestMainPipeline(unittest.TestCase):
         self.assertEqual(0, len(content))
 
         # Executing the command (getting the observed data)
-        observed = gather_maf_stats(self.output_dir.name)
+        observed = cli.gather_maf_stats(
+            required_chrom=autosomes,
+            o_dir=self.output_dir.name,
+        )
 
         # Checking the observed results
         self.assertEqual(len(expected_results), len(observed))
@@ -459,7 +596,7 @@ class TestMainPipeline(unittest.TestCase):
 
         # If matplotlib is installed, checking we have a figure (and not
         # otherwise)
-        if HAS_MATPLOTLIB:
+        if cli.HAS_MATPLOTLIB:
             self.assertTrue(os.path.isfile(frequency_barh))
         else:
             self.assertFalse(os.path.isfile(frequency_barh))
@@ -471,8 +608,11 @@ class TestMainPipeline(unittest.TestCase):
             print("marker_1", "0.6", sep="\t", file=o_file)
 
         # This should raise an exception
-        with self.assertRaises(ProgramError) as cm:
-            gather_maf_stats(self.output_dir.name)
+        with self.assertRaises(GenipeError) as cm:
+            cli.gather_maf_stats(
+                required_chrom=autosomes,
+                o_dir=self.output_dir.name,
+            )
         self.assertEqual("{}: {}: invalid MAF".format("marker_1",
                                                       round(0.6, 3)),
                          str(cm.exception))
@@ -484,8 +624,11 @@ class TestMainPipeline(unittest.TestCase):
             print("marker_1", "-0.01", sep="\t", file=o_file)
 
         # This should raise an exception
-        with self.assertRaises(ProgramError) as cm:
-            gather_maf_stats(self.output_dir.name)
+        with self.assertRaises(GenipeError) as cm:
+            cli.gather_maf_stats(
+                required_chrom=autosomes,
+                o_dir=self.output_dir.name,
+            )
         self.assertEqual("{}: {}: invalid MAF".format("marker_1",
                                                       round(-0.01, 3)),
                          str(cm.exception))
@@ -498,13 +641,16 @@ class TestMainPipeline(unittest.TestCase):
 
         # This should issue a warning
         with self._my_compatibility_assertLogs(level="WARNING") as cm:
-            gather_maf_stats(self.output_dir.name)
+            cli.gather_maf_stats(
+                required_chrom=autosomes,
+                o_dir=self.output_dir.name,
+            )
         log_m = "WARNING:root:chr1: good sites with invalid MAF (NaN)"
         self.assertEqual(1, len(cm.output))
         self.assertEqual(log_m, cm.output[0])
 
         # Clearing the good sites file to see if we have a warning
-        for chrom in chromosomes:
+        for chrom in autosomes:
             filename = filename_template.format(chrom=chrom,
                                                 suffix="good_sites")
             with open(filename, "w") as o_file:
@@ -512,7 +658,10 @@ class TestMainPipeline(unittest.TestCase):
 
         # This should issue a warning
         with self._my_compatibility_assertLogs(level="WARNING") as cm:
-            gather_maf_stats(self.output_dir.name)
+            cli.gather_maf_stats(
+                required_chrom=autosomes,
+                o_dir=self.output_dir.name,
+            )
         log_m = ("WARNING:root:There were no marker with MAF (something went "
                  "wrong)")
         self.assertEqual(1, len(cm.output))
@@ -525,8 +674,11 @@ class TestMainPipeline(unittest.TestCase):
         self.assertFalse(os.path.isfile(removed_filename))
 
         # This should raise an exception
-        with self.assertRaises(ProgramError) as cm:
-            gather_maf_stats(self.output_dir.name)
+        with self.assertRaises(GenipeError) as cm:
+            cli.gather_maf_stats(
+                required_chrom=autosomes,
+                o_dir=self.output_dir.name,
+            )
         self.assertEqual("{}: no such file".format(removed_filename),
                          str(cm.exception))
 
@@ -536,8 +688,11 @@ class TestMainPipeline(unittest.TestCase):
         self.assertFalse(os.path.isfile(removed_filename))
 
         # This should raise an exception
-        with self.assertRaises(ProgramError) as cm:
-            gather_maf_stats(self.output_dir.name)
+        with self.assertRaises(GenipeError) as cm:
+            cli.gather_maf_stats(
+                required_chrom=autosomes,
+                o_dir=self.output_dir.name,
+            )
         self.assertEqual("{}: no such file".format(removed_filename),
                          str(cm.exception))
 
@@ -545,321 +700,6 @@ class TestMainPipeline(unittest.TestCase):
     def test_gather_execution_time(self):
         """Tests the 'gather_execution_time' function."""
         self.fail("Test not implemented")
-
-    def test_check_args(self):
-        """Tests the 'check_args' function."""
-        # Creating a dummy object that 'check_args' can work with
-        class Dummy(object):
-            pass
-        args = Dummy()
-
-        # Setting all the attributes (and creating the files if required)
-        # bfile
-        bfile = os.path.join(self.output_dir.name, "input_file")
-        for extension in [".bed", ".bim", ".fam"]:
-            with open(bfile + extension, "w") as o_file:
-                pass
-        args.bfile = bfile
-
-        # thread
-        args.thread = 1
-
-        # shapeit_thread
-        args.shapeit_thread = 1
-
-        # hap_template, legend_template and map_template
-        hap_template = os.path.join(self.output_dir.name, "chr{chrom}.hap.gz")
-        leg_template = os.path.join(self.output_dir.name, "chr{chrom}.leg.gz")
-        map_template = os.path.join(self.output_dir.name, "chr{chrom}.map")
-        for filename in [hap_template, leg_template, map_template]:
-            for chrom in chromosomes:
-                with open(filename.format(chrom=chrom), "w") as o_file:
-                    pass
-        args.hap_template = hap_template
-        args.legend_template = leg_template
-        args.map_template = map_template
-
-        # sample_file
-        sample_file = os.path.join(self.output_dir.name, "sample.txt")
-        with open(sample_file, "w") as o_file:
-            pass
-        args.sample_file = sample_file
-
-        # shapeit_bin
-        shapeit_bin = os.path.join(self.output_dir.name, "shapeit")
-        with open(shapeit_bin, "w") as o_file:
-            pass
-        args.shapeit_bin = shapeit_bin
-
-        # impute2_bin
-        impute2_bin = os.path.join(self.output_dir.name, "impute2")
-        with open(impute2_bin, "w") as o_file:
-            pass
-        args.impute2_bin = impute2_bin
-
-        # plink_bin
-        plink_bin = os.path.join(self.output_dir.name, "plink")
-        with open(plink_bin, "w") as o_file:
-            pass
-        args.plink_bin = plink_bin
-
-        # segment_length
-        args.segment_length = 5e6
-
-        # preamble
-        preamble = os.path.join(self.output_dir.name, "preamble.txt")
-        with open(preamble, "w") as o_file:
-            pass
-        args.preamble = preamble
-
-        # use_drmaa
-        args.use_drmaa = True
-
-        # drmaa_config
-        drmaa_config = os.path.join(self.output_dir.name, "drmaa_config.txt")
-        with open(drmaa_config, "w") as o_file:
-            pass
-        args.drmaa_config = drmaa_config
-
-        # reference
-        reference = os.path.join(self.output_dir.name, "h_ref.fasta")
-        for filename in [reference, reference + ".fai"]:
-            with open(filename, "w") as o_file:
-                pass
-        args.reference = reference
-
-        # bgzip
-        args.bgzip = False
-
-        # Testing begins
-        # Everything should work
-        self.assertTrue(check_args(args))
-
-        # Now, setting an invalid thread number (negative or 0)
-        for i in range(-1, 1):
-            args.thread = i
-            with self.assertRaises(ProgramError) as cm:
-                check_args(args)
-            self.assertEqual("thread should be one or more", str(cm.exception))
-        args.thread = 2
-
-        # Now, setting an invalid shapeit_thread number (negative or 0)
-        original_value = args.shapeit_thread
-        for i in range(-1, 1):
-            args.shapeit_thread = i
-            with self.assertRaises(ProgramError) as cm:
-                check_args(args)
-            self.assertEqual("thread should be one or more", str(cm.exception))
-        args.shapeit_thread = 2
-
-        # Deleting each of the required plink file
-        for extension in [".bed", ".bim", ".fam"]:
-            os.remove(args.bfile + extension)
-            self.assertFalse(os.path.isfile(args.bfile + extension))
-            with self.assertRaises(ProgramError) as cm:
-                check_args(args)
-            self.assertEqual("{}: no such file".format(args.bfile + extension),
-                             str(cm.exception))
-            with open(args.bfile + extension, "w") as o_file:
-                pass
-
-        # Deleting each of the template, legend or map file
-        for template in [args.hap_template, args.legend_template,
-                         args.map_template]:
-            for chrom in chromosomes:
-                filename = template.format(chrom=chrom)
-                os.remove(filename)
-                self.assertFalse(os.path.isfile(filename))
-                with self.assertRaises(ProgramError) as cm:
-                    check_args(args)
-                self.assertEqual("{}: no such file".format(filename),
-                                 str(cm.exception))
-                with open(filename, "w") as o_file:
-                    pass
-
-        # Deleting the sample file
-        os.remove(args.sample_file)
-        self.assertFalse(os.path.isfile(args.sample_file))
-        with self.assertRaises(ProgramError) as cm:
-            check_args(args)
-        self.assertEqual("{}: no such file".format(args.sample_file),
-                         str(cm.exception))
-        with open(args.sample_file, "w") as o_file:
-            pass
-
-        # Deleting the shapeit dummy binary
-        os.remove(args.shapeit_bin)
-        self.assertFalse(os.path.isfile(args.shapeit_bin))
-        with self.assertRaises(ProgramError) as cm:
-            check_args(args)
-        self.assertEqual("{}: no such file".format(args.shapeit_bin),
-                         str(cm.exception))
-        with open(args.shapeit_bin, "w") as o_file:
-            pass
-
-        # Setting the shapeit binary to None (if not in the path)
-        original_value = args.shapeit_bin
-        args.shapeit_bin = None
-        if which("shapeit") is None:
-            with self.assertRaises(ProgramError) as cm:
-                check_args(args)
-            self.assertEqual("shapeit: not in the path (use --shapeit-bin)",
-                             str(cm.exception))
-        else:
-            self.assertTrue(check_args(args))
-        args.shapeit_bin = original_value
-
-        # Deleting the impute2 dummy binary
-        os.remove(args.impute2_bin)
-        self.assertFalse(os.path.isfile(args.impute2_bin))
-        with self.assertRaises(ProgramError) as cm:
-            check_args(args)
-        self.assertEqual("{}: no such file".format(args.impute2_bin),
-                         str(cm.exception))
-        with open(args.impute2_bin, "w") as o_file:
-            pass
-
-        # Setting the impute2 binary to None (if not in the path)
-        original_value = args.impute2_bin
-        args.impute2_bin = None
-        if which("impute2") is None:
-            with self.assertRaises(ProgramError) as cm:
-                check_args(args)
-            self.assertEqual("impute2: not in the path (use --impute2-bin)",
-                             str(cm.exception))
-        else:
-            self.assertTrue(check_args(args))
-        args.impute2_bin = original_value
-
-        # Deleting the plink dummy binary
-        os.remove(args.plink_bin)
-        self.assertFalse(os.path.isfile(args.plink_bin))
-        with self.assertRaises(ProgramError) as cm:
-            check_args(args)
-        self.assertEqual("{}: no such file".format(args.plink_bin),
-                         str(cm.exception))
-        with open(args.plink_bin, "w") as o_file:
-            pass
-
-        # Setting the plink binary to None (if not in the path)
-        original_value = args.plink_bin
-        args.plink_bin = None
-        if which("plink") is None:
-            with self.assertRaises(ProgramError) as cm:
-                check_args(args)
-            self.assertEqual("plink: not in the path (use --plink-bin)",
-                             str(cm.exception))
-        else:
-            self.assertTrue(check_args(args))
-        args.plink_bin = original_value
-
-        # If bgzip is not in the path, it should raise an error
-        args.bgzip = True
-        if which("bgzip") is None:
-            with self.assertRaises(ProgramError) as cm:
-                check_args(args)
-            self.assertEqual("bgzip: no installed", str(cm.exception))
-        else:
-            self.assertTrue(check_args(args))
-        args.bgzip = False
-
-        # Modifying the segment length
-        original_value = args.segment_length
-        for value in [-1, 0, 1e3 - 1, 5e6 + 1]:
-            args.segment_length = value
-            if value == 5e6 + 1:
-                # Too big
-                with self._my_compatibility_assertLogs(level="WARNING") as cm:
-                    check_args(args)
-                log_m = ("WARNING:root:segment length ({:g} bp) is more "
-                         "than 5Mb")
-                self.assertEqual(1, len(cm.output))
-                self.assertEqual(log_m.format(value), cm.output[0])
-
-            elif value == 1e3 - 1:
-                # Too small
-                with self._my_compatibility_assertLogs(level="WARNING") as cm:
-                    check_args(args)
-                log_m = "WARNING:root:segment length ({:g} bp) is too small"
-                self.assertEqual(1, len(cm.output))
-                self.assertEqual(log_m.format(value), cm.output[0])
-
-            else:
-                # Invalid
-                with self.assertRaises(ProgramError) as cm:
-                    check_args(args)
-                error_m = "{}: invalid segment length"
-                self.assertEqual(error_m.format(value), str(cm.exception))
-        args.segment_length = original_value
-
-        # Deleting the preamble file
-        os.remove(args.preamble)
-        self.assertFalse(os.path.isfile(args.preamble))
-        with self.assertRaises(ProgramError) as cm:
-            check_args(args)
-        self.assertEqual("{}: no such file".format(args.preamble),
-                         str(cm.exception))
-
-        # Setting the preamble to None should do the trick
-        args.preamble = None
-        self.assertTrue(check_args(args))
-
-        # Deleting the drmaa config file
-        os.remove(args.drmaa_config)
-        self.assertFalse(os.path.isfile(args.drmaa_config))
-        with self.assertRaises(ProgramError) as cm:
-            check_args(args)
-        self.assertEqual("{}: no such file".format(args.drmaa_config),
-                         str(cm.exception))
-
-        # Setting to None should raise another exception
-        original_value = args.drmaa_config
-        args.drmaa_config = None
-        self.assertFalse(os.path.isfile(original_value))
-        with self.assertRaises(ProgramError) as cm:
-            check_args(args)
-        self.assertEqual(
-            "DRMAA configuration file was not provided (--drmaa-config), but "
-            "DRMAA is used (--use-drmaa)",
-            str(cm.exception)
-        )
-        args.drmaa_config = original_value
-
-        # Setting use_drmaa to false should do the trick
-        args.use_drmaa = False
-        self.assertTrue(
-            check_args(args) and not os.path.isfile(args.drmaa_config)
-        )
-        with open(args.drmaa_config, "w") as o_file:
-            pass
-
-        # Removing the reference index file should raise an exception
-        if HAS_PYFAIDX:
-            os.remove(args.reference + ".fai")
-            self.assertFalse(os.path.isfile(args.reference + ".fai"))
-            with self.assertRaises(ProgramError) as cm:
-                check_args(args)
-            self.assertEqual(
-                "{}: should be indexed using FAIDX".format(args.reference),
-                str(cm.exception),
-            )
-
-            # Removing the reference file should raise an exception
-            os.remove(args.reference)
-            self.assertFalse(os.path.isfile(args.reference))
-            with self.assertRaises(ProgramError) as cm:
-                check_args(args)
-            self.assertEqual("{}: no such file".format(args.reference),
-                             str(cm.exception))
-
-            # Setting the reference to None should fix everything
-            args.reference = None
-
-        else:
-            self.assertTrue(args.reference is None)
-
-        # Final check
-        self.assertTrue(check_args(args))
 
     def _my_compatibility_assertLogs(self, logger=None, level=None):
         """Compatibility 'assertLogs' function for Python 3.3."""

@@ -1,9 +1,9 @@
 language: python
 python:
-  - "3.3"
   - "3.4"
+  - "3.5"
 before_install:
-  - "wget http://repo.continuum.io/miniconda/Miniconda3-3.4.2-Linux-x86_64.sh -O miniconda.sh"
+  - "wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh"
   - "bash miniconda.sh -b -p $HOME/miniconda"
   - "export PATH=$HOME/miniconda/bin:$PATH"
   - "hash -r"
@@ -15,10 +15,12 @@ before_install:
   - "conda info -a"
   - "python --version"
 install:
+  - "conda install -q nomkl"
   - "conda install -q jinja2"
   - "conda install -q numpy"
   - "conda install -q pandas"
   - "conda install -q scipy"
+  - "conda install -q patsy"
   - "conda install -q statsmodels"
   - "pip install --no-deps pyfaidx"
   - "pip install --no-deps lifelines"
