@@ -144,6 +144,8 @@ IMPUTE2 autosomal reference
     +--------------------------------+----------------------------------------+
 
 
+.. _params-chrom-x:
+
 IMPUTE2 chromosome X reference
 -------------------------------
 
