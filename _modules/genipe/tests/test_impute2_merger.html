@@ -81,9 +81,9 @@
 <span class="kn">import</span> <span class="nn">os</span>
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">unittest</span>
-<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">TemporaryDirectory</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">TemporaryDirectory</span>
 
-<span class="kn">from</span> <span class="nn">..tools</span> <span class="kn">import</span> <span class="n">impute2_merger</span>
+<span class="kn">from</span> <span class="nn">..tools</span> <span class="k">import</span> <span class="n">impute2_merger</span>
 
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
@@ -155,14 +155,14 @@
                      <span class="n">info_content</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">filename</span><span class="p">,</span> <span class="n">content</span><span class="p">,</span> <span class="n">s_content</span><span class="p">,</span> <span class="n">i_content</span> <span class="ow">in</span> <span class="n">zipped</span><span class="p">:</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
-                <span class="k">print</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">content</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;_summary&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
-                <span class="k">print</span><span class="p">(</span><span class="n">s_content</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">s_content</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span> <span class="o">+</span> <span class="s2">&quot;_info&quot;</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
-                <span class="k">print</span><span class="p">(</span><span class="s2">&quot;snp_id&quot;</span><span class="p">,</span> <span class="s2">&quot;rs_id&quot;</span><span class="p">,</span> <span class="s2">&quot;position&quot;</span><span class="p">,</span> <span class="s2">&quot;a0&quot;</span><span class="p">,</span> <span class="s2">&quot;a1&quot;</span><span class="p">,</span> <span class="s2">&quot;exp_freq_a1&quot;</span><span class="p">,</span>
+                <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;snp_id&quot;</span><span class="p">,</span> <span class="s2">&quot;rs_id&quot;</span><span class="p">,</span> <span class="s2">&quot;position&quot;</span><span class="p">,</span> <span class="s2">&quot;a0&quot;</span><span class="p">,</span> <span class="s2">&quot;a1&quot;</span><span class="p">,</span> <span class="s2">&quot;exp_freq_a1&quot;</span><span class="p">,</span>
                       <span class="s2">&quot;info&quot;</span><span class="p">,</span> <span class="s2">&quot;certainty&quot;</span><span class="p">,</span> <span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="s2">&quot;info_type0&quot;</span><span class="p">,</span>
-                      <span class="s2">&quot;concord_type0&quot;</span><span class="p">,</span> <span class="s2">&quot;r2_type0&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
-                <span class="k">print</span><span class="p">(</span><span class="n">i_content</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+                      <span class="s2">&quot;concord_type0&quot;</span><span class="p">,</span> <span class="s2">&quot;r2_type0&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">i_content</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
 
         <span class="c1"># Executing the script for the first time</span>
         <span class="n">prefix1</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;genipe_results_1&quot;</span><span class="p">)</span>
@@ -242,7 +242,7 @@
 
         <span class="c1"># Checking the files</span>
         <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">:</span>
-            <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.alleles&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
                 <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span></div>
@@ -252,33 +252,33 @@
         <span class="n">all_expected</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">all_expected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span>
             <span class="s2">&quot;name</span><span class="se">\t</span><span class="s2">nb_missing</span><span class="se">\t</span><span class="s2">completion_rate</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs12345</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23456</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457_1</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457_2</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1:3214570</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1:3214570_1</span><span class="se">\t</span><span class="s2">3</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs12345</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23456</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457_1</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457_2</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;1:3214570</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;1:3214570_1</span><span class="se">\t</span><span class="s2">3</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="n">all_expected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span>
             <span class="s2">&quot;name</span><span class="se">\t</span><span class="s2">nb_missing</span><span class="se">\t</span><span class="s2">completion_rate</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs12345</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23456</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457_1</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457_2</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1:3214570</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1:3214570_1</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs12345</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23456</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457_1</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457_2</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;1:3214570</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;1:3214570_1</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
         <span class="n">all_expected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span>
             <span class="s2">&quot;name</span><span class="se">\t</span><span class="s2">nb_missing</span><span class="se">\t</span><span class="s2">completion_rate</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs12345</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23456</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457_1</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457_2</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1:3214570</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1:3214570_1</span><span class="se">\t</span><span class="s2">3</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs12345</span><span class="se">\t</span><span class="s2">0</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23456</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457_1</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457_2</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;1:3214570</span><span class="se">\t</span><span class="s2">1</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;1:3214570_1</span><span class="se">\t</span><span class="s2">3</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">3</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
 
         <span class="c1"># There should be enough expected values</span>
@@ -287,7 +287,7 @@
 
         <span class="c1"># Checking the files</span>
         <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">expected</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">,</span> <span class="n">all_expected</span><span class="p">):</span>
-            <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.completion_rates&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
                 <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
@@ -348,7 +348,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Wrong number of expected values...&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">expected</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">,</span> <span class="n">all_expected</span><span class="p">):</span>
-            <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.good_sites&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
                 <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span></div>
@@ -368,7 +368,7 @@
 
         <span class="c1"># Checking the files</span>
         <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">:</span>
-            <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.impute2&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
                 <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span></div>
@@ -393,7 +393,7 @@
 
         <span class="c1"># Checking the files</span>
         <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">:</span>
-            <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.impute2_info&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
                 <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span></div>
@@ -411,7 +411,7 @@
 
         <span class="c1"># Checking the files</span>
         <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">:</span>
-            <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.imputed_sites&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
                 <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span></div>
@@ -421,33 +421,33 @@
         <span class="n">all_expected</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="n">all_expected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span>
             <span class="s2">&quot;name</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">maf</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs12345</span><span class="se">\t</span><span class="s2">A</span><span class="se">\t</span><span class="s2">G</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23456</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457_1</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457_2</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1:3214570</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1:3214570_1</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs12345</span><span class="se">\t</span><span class="s2">A</span><span class="se">\t</span><span class="s2">G</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23456</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457_1</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457_2</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;1:3214570</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;1:3214570_1</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;NA&quot;</span><span class="p">))</span>
         <span class="n">all_expected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span>
             <span class="s2">&quot;name</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">maf</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs12345</span><span class="se">\t</span><span class="s2">A</span><span class="se">\t</span><span class="s2">G</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23456</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457_1</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457_2</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1:3214570</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1:3214570_1</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs12345</span><span class="se">\t</span><span class="s2">A</span><span class="se">\t</span><span class="s2">G</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23456</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457_1</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457_2</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;1:3214570</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;1:3214570_1</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mi">2</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
         <span class="n">all_expected</span><span class="o">.</span><span class="n">append</span><span class="p">((</span>
             <span class="s2">&quot;name</span><span class="se">\t</span><span class="s2">major</span><span class="se">\t</span><span class="s2">minor</span><span class="se">\t</span><span class="s2">maf</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs12345</span><span class="se">\t</span><span class="s2">A</span><span class="se">\t</span><span class="s2">G</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23456</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457_1</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;rs23457_2</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1:3214570</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
-            <span class="s2">&quot;1:3214570_1</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs12345</span><span class="se">\t</span><span class="s2">A</span><span class="se">\t</span><span class="s2">G</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23456</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">C</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457_1</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;rs23457_2</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;1:3214570</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="s2">&quot;1:3214570_1</span><span class="se">\t</span><span class="s2">T</span><span class="se">\t</span><span class="s2">TC</span><span class="se">\t</span><span class="si">{}</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="mi">1</span><span class="o">/</span><span class="mi">6</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="o">/</span><span class="mi">4</span><span class="p">,</span> <span class="s2">&quot;NA&quot;</span><span class="p">))</span>
 
         <span class="c1"># There should be enough expected values</span>
@@ -455,7 +455,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Wrong number of expected values...&quot;</span><span class="p">)</span>
 
         <span class="k">for</span> <span class="n">prefix</span><span class="p">,</span> <span class="n">expected</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">,</span> <span class="n">all_expected</span><span class="p">):</span>
-            <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.maf&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
                 <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
 
@@ -507,7 +507,7 @@
 
         <span class="c1"># Checking the files</span>
         <span class="k">for</span> <span class="n">prefix</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">prefixes</span><span class="p">:</span>
-            <span class="n">observed</span> <span class="o">=</span> <span class="bp">None</span>
+            <span class="n">observed</span> <span class="o">=</span> <span class="kc">None</span>
             <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">prefix</span> <span class="o">+</span> <span class="s2">&quot;.map&quot;</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
                 <span class="n">observed</span> <span class="o">=</span> <span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span></div></div>
@@ -532,9 +532,24 @@
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>
     </div>
+
+
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
     </div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-81009922-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
   </body>
 </html>

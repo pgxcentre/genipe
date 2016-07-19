@@ -80,9 +80,9 @@
 
 <span class="kn">import</span> <span class="nn">logging</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 
-<span class="kn">from</span> <span class="nn">..error</span> <span class="kn">import</span> <span class="n">GenipeError</span>
+<span class="kn">from</span> <span class="nn">..error</span> <span class="k">import</span> <span class="n">GenipeError</span>
 
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s2">&quot;Louis-Philippe Lemieux Perreault&quot;</span>
@@ -136,7 +136,7 @@
     <span class="k">return</span> <span class="n">np</span><span class="o">.</span><span class="n">amax</span><span class="p">(</span><span class="n">prob_matrix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">min_prob</span></div>
 
 
-<div class="viewcode-block" id="maf_from_probs"><a class="viewcode-back" href="../../../module_content/genipe.formats.html#genipe.formats.impute2.maf_from_probs">[docs]</a><span class="k">def</span> <span class="nf">maf_from_probs</span><span class="p">(</span><span class="n">prob_matrix</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">site_name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="maf_from_probs"><a class="viewcode-back" href="../../../module_content/genipe.formats.html#genipe.formats.impute2.maf_from_probs">[docs]</a><span class="k">def</span> <span class="nf">maf_from_probs</span><span class="p">(</span><span class="n">prob_matrix</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">site_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Computes MAF from a probability matrix (and gender if chromosome X).</span>
 
 <span class="sd">    Args:</span>
@@ -163,7 +163,7 @@
     <span class="k">if</span> <span class="n">prob_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">maf</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">major</span>
 
-    <span class="k">if</span> <span class="n">gender</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">gender</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Not checking gender (this isn&#39;t chromosome X)</span>
         <span class="n">nb_geno</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">prob_matrix</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">minlength</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
         <span class="n">maf</span> <span class="o">=</span> <span class="p">((</span><span class="n">nb_geno</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">nb_geno</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">/</span> <span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">nb_geno</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
@@ -191,7 +191,7 @@
 
         <span class="c1"># There shouldn&#39;t be heterozygous genotypes for males</span>
         <span class="k">if</span> <span class="n">males_nb_geno</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: heterozygous male &quot;</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: heterozygous male &quot;</span>
                               <span class="s2">&quot;present&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">site_name</span><span class="p">))</span>
 
         <span class="c1"># Computing the frequencies</span>
@@ -206,8 +206,8 @@
     <span class="k">return</span> <span class="n">maf</span><span class="p">,</span> <span class="n">minor</span><span class="p">,</span> <span class="n">major</span></div>
 
 
-<div class="viewcode-block" id="maf_dosage_from_probs"><a class="viewcode-back" href="../../../module_content/genipe.formats.html#genipe.formats.impute2.maf_dosage_from_probs">[docs]</a><span class="k">def</span> <span class="nf">maf_dosage_from_probs</span><span class="p">(</span><span class="n">prob_matrix</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                          <span class="n">site_name</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="maf_dosage_from_probs"><a class="viewcode-back" href="../../../module_content/genipe.formats.html#genipe.formats.impute2.maf_dosage_from_probs">[docs]</a><span class="k">def</span> <span class="nf">maf_dosage_from_probs</span><span class="p">(</span><span class="n">prob_matrix</span><span class="p">,</span> <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                          <span class="n">site_name</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Computes MAF and dosage vector from probs matrix.</span>
 
 <span class="sd">    Args:</span>
@@ -242,8 +242,8 @@
         <span class="n">scale</span><span class="o">=</span><span class="n">scale</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="n">set_no_maf</span> <span class="o">=</span> <span class="bp">False</span>
-    <span class="k">if</span> <span class="n">gender</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="n">set_no_maf</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="k">if</span> <span class="n">gender</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># Not checking gender (this isn&#39;t chromosome X)</span>
         <span class="n">maf</span> <span class="o">=</span> <span class="n">dosage</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dosage</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
 
@@ -256,7 +256,7 @@
         <span class="n">males_nb_geno</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">bincount</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">prob_matrix</span><span class="p">[</span><span class="n">m</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span>
                                     <span class="n">minlength</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">males_nb_geno</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: heterozygous male &quot;</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: heterozygous male &quot;</span>
                               <span class="s2">&quot;present&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">site_name</span><span class="p">))</span>
 
         <span class="c1"># The number of alleles</span>
@@ -266,7 +266,7 @@
             <span class="c1"># dosage value, then we set the MAF to NA afterwards</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;All samples have unknown gender, MAF will be NA&quot;</span><span class="p">)</span>
             <span class="n">maf</span> <span class="o">=</span> <span class="n">dosage</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">dosage</span><span class="p">)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">)</span>
-            <span class="n">set_no_maf</span> <span class="o">=</span> <span class="bp">True</span>
+            <span class="n">set_no_maf</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="c1"># Computing frequencies</span>
@@ -366,9 +366,24 @@
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>
     </div>
+
+
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
     </div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-81009922-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
   </body>
 </html>

@@ -83,14 +83,14 @@
 <span class="kn">import</span> <span class="nn">logging</span>
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">unittest</span>
-<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">TemporaryDirectory</span>
-<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">zip_longest</span> <span class="k">as</span> <span class="nb">zip</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">TemporaryDirectory</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="k">import</span> <span class="n">zip_longest</span> <span class="k">as</span> <span class="nb">zip</span>
 
-<span class="kn">import</span> <span class="nn">numpy</span> <span class="kn">as</span> <span class="nn">np</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="kn">import</span> <span class="n">resource_filename</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">pkg_resources</span> <span class="k">import</span> <span class="n">resource_filename</span>
 
-<span class="kn">from</span> <span class="nn">..tools</span> <span class="kn">import</span> <span class="n">imputed_stats</span>
+<span class="kn">from</span> <span class="nn">..tools</span> <span class="k">import</span> <span class="n">imputed_stats</span>
 
 <span class="k">if</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">HAS_STATSMODELS</span><span class="p">:</span>
     <span class="c1"># patsy is installed only if statsmodels is</span>
@@ -151,72 +151,72 @@
 
 <span class="k">def</span> <span class="nf">create_input_files</span><span class="p">(</span><span class="n">i_filename</span><span class="p">,</span> <span class="n">output_dirname</span><span class="p">,</span> <span class="n">analysis_type</span><span class="p">,</span>
                        <span class="n">pheno_name</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">tte</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span> <span class="n">event</span><span class="o">=</span><span class="s2">&quot;y_d&quot;</span><span class="p">,</span>
-                       <span class="n">interaction</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">nb_process</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">sample_col</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-                       <span class="n">use_ml</span><span class="o">=</span><span class="bp">False</span><span class="p">):</span>
+                       <span class="n">interaction</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">nb_process</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">sample_col</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+                       <span class="n">use_ml</span><span class="o">=</span><span class="kc">False</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Creates input files for the imputed_stats script.&quot;&quot;&quot;</span>
     <span class="c1"># Reading the data</span>
     <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">i_filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;bz2&quot;</span><span class="p">)</span>
 
     <span class="c1"># Adding a sample column</span>
-    <span class="k">if</span> <span class="n">sample_col</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
-        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;sample_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sample_{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))]</span>
+    <span class="k">if</span> <span class="n">sample_col</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">data</span><span class="p">[</span><span class="s2">&quot;sample_id&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sample_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">))]</span>
         <span class="n">sample_col</span> <span class="o">=</span> <span class="s2">&quot;sample_id&quot;</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">assert</span> <span class="n">sample_col</span> <span class="ow">in</span> <span class="n">data</span><span class="o">.</span><span class="n">columns</span>
 
     <span class="c1"># Saving the phenotypes to file</span>
     <span class="n">pheno_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dirname</span><span class="p">,</span> <span class="s2">&quot;phenotypes.txt&quot;</span><span class="p">)</span>
-    <span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">pheno_filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">na_rep</span><span class="o">=</span><span class="s2">&quot;999999&quot;</span><span class="p">)</span>
+    <span class="n">data</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">pheno_filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">na_rep</span><span class="o">=</span><span class="s2">&quot;999999&quot;</span><span class="p">)</span>
 
     <span class="c1"># Creating the sample file (watch out for duplicated data)</span>
     <span class="n">seen_samples</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">sample_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dirname</span><span class="p">,</span> <span class="s2">&quot;samples.txt&quot;</span><span class="p">)</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sample_filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;ID_1 ID_2 missing father mother sex plink_pheno&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;0 0 0 D D D B&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ID_1 ID_2 missing father mother sex plink_pheno&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;0 0 0 D D D B&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">sample</span><span class="p">,</span> <span class="n">gender</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[[</span><span class="n">sample_col</span><span class="p">,</span> <span class="s2">&quot;gender&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">seen_samples</span><span class="p">:</span>
                 <span class="k">assert</span> <span class="n">gender</span> <span class="o">==</span> <span class="n">seen_samples</span><span class="p">[</span><span class="n">sample</span><span class="p">]</span>
                 <span class="k">continue</span>
 
-            <span class="k">print</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="p">,</span> <span class="s2">&quot;-9&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="n">gender</span><span class="p">,</span> <span class="s2">&quot;-9&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
             <span class="n">seen_samples</span><span class="p">[</span><span class="n">sample</span><span class="p">]</span> <span class="o">=</span> <span class="n">gender</span>
 
     <span class="c1"># Creating the IMPUTE2 file (watch out for duplicated data)</span>
     <span class="n">impute2_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dirname</span><span class="p">,</span> <span class="s2">&quot;impute2.txt&quot;</span><span class="p">)</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">impute2_filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
         <span class="n">seen_samples</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;22 marker_1 1 T C&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;22 marker_1 1 T C&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">sample</span><span class="p">,</span> <span class="n">dosage</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[[</span><span class="n">sample_col</span><span class="p">,</span> <span class="s2">&quot;snp1&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">seen_samples</span><span class="p">:</span>
                 <span class="k">continue</span>
 
             <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">,</span> <span class="n">d3</span> <span class="o">=</span> <span class="n">reverse_dosage</span><span class="p">(</span><span class="n">dosage</span><span class="p">)</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">,</span> <span class="n">d3</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">,</span> <span class="n">d3</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
             <span class="n">seen_samples</span><span class="p">[</span><span class="n">sample</span><span class="p">]</span> <span class="o">=</span> <span class="n">dosage</span>
-        <span class="k">print</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
 
         <span class="n">seen_samples</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;22 marker_2 2 G A&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;22 marker_2 2 G A&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">sample</span><span class="p">,</span> <span class="n">dosage</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[[</span><span class="n">sample_col</span><span class="p">,</span> <span class="s2">&quot;snp2&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">seen_samples</span><span class="p">:</span>
                 <span class="k">continue</span>
 
             <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">,</span> <span class="n">d3</span> <span class="o">=</span> <span class="n">reverse_dosage</span><span class="p">(</span><span class="n">dosage</span><span class="p">)</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">,</span> <span class="n">d3</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">,</span> <span class="n">d3</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
             <span class="n">seen_samples</span><span class="p">[</span><span class="n">sample</span><span class="p">]</span> <span class="o">=</span> <span class="n">dosage</span>
-        <span class="k">print</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
 
         <span class="n">seen_samples</span> <span class="o">=</span> <span class="p">{}</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;22 marker_3 3 AT A&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;22 marker_3 3 AT A&quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">sample</span><span class="p">,</span> <span class="n">dosage</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[[</span><span class="n">sample_col</span><span class="p">,</span> <span class="s2">&quot;snp3&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">values</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">seen_samples</span><span class="p">:</span>
                 <span class="k">continue</span>
 
             <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">,</span> <span class="n">d3</span> <span class="o">=</span> <span class="n">reverse_dosage</span><span class="p">(</span><span class="n">dosage</span><span class="p">)</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">,</span> <span class="n">d3</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">d1</span><span class="p">,</span> <span class="n">d2</span><span class="p">,</span> <span class="n">d3</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
             <span class="n">seen_samples</span><span class="p">[</span><span class="n">sample</span><span class="p">]</span> <span class="o">=</span> <span class="n">dosage</span>
-        <span class="k">print</span><span class="p">(</span><span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
 
     <span class="c1"># The prefix of the output files</span>
     <span class="n">o_prefix</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">output_dirname</span><span class="p">,</span> <span class="s2">&quot;test_imputed_stats&quot;</span><span class="p">)</span>
@@ -249,11 +249,11 @@
         <span class="n">options</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;--covar&quot;</span><span class="p">,</span> <span class="s2">&quot;C1,C2,C3,age,gender&quot;</span><span class="p">])</span>
 
     <span class="c1"># Is there interaction?</span>
-    <span class="k">if</span> <span class="n">interaction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">interaction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">options</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;--interaction&quot;</span><span class="p">,</span> <span class="n">interaction</span><span class="p">])</span>
 
     <span class="c1"># Multi processes are required?</span>
-    <span class="k">if</span> <span class="n">nb_process</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">nb_process</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">options</span><span class="o">.</span><span class="n">extend</span><span class="p">([</span><span class="s2">&quot;--nb-process&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">nb_process</span><span class="p">)])</span>
 
     <span class="k">return</span> <span class="n">o_prefix</span><span class="p">,</span> <span class="n">options</span>
@@ -291,14 +291,14 @@
 
         <span class="c1"># Need an object for the function&#39;s option</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">Dummy</span><span class="p">()</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">missing_value</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">missing_value</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">args</span><span class="o">.</span><span class="n">sample_column</span> <span class="o">=</span> <span class="s2">&quot;sample_id&quot;</span>
         <span class="n">args</span><span class="o">.</span><span class="n">covar</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C1&quot;</span><span class="p">,</span> <span class="s2">&quot;C2&quot;</span><span class="p">,</span> <span class="s2">&quot;C3&quot;</span><span class="p">,</span> <span class="s2">&quot;Gender&quot;</span><span class="p">]</span>
         <span class="n">args</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">=</span> <span class="s2">&quot;cox&quot;</span>
         <span class="n">args</span><span class="o">.</span><span class="n">tte</span> <span class="o">=</span> <span class="s2">&quot;Time_To_Event&quot;</span>
         <span class="n">args</span><span class="o">.</span><span class="n">event</span> <span class="o">=</span> <span class="s2">&quot;Event&quot;</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">interaction</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">chrx</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">interaction</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">chrx</span> <span class="o">=</span> <span class="kc">False</span>
         <span class="n">args</span><span class="o">.</span><span class="n">gender_column</span> <span class="o">=</span> <span class="s2">&quot;Gender&quot;</span>
 
         <span class="c1"># The expected value</span>
@@ -312,7 +312,7 @@
         <span class="n">expected_gender</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">expected_tte</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">10</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">8</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
         <span class="n">expected_event</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">int</span><span class="p">)</span>
-        <span class="n">expected_remove_g</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">expected_remove_g</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># The observed values</span>
         <span class="n">observed_p</span><span class="p">,</span> <span class="n">observed_remove_g</span> <span class="o">=</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">read_phenotype</span><span class="p">(</span>
@@ -361,7 +361,7 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_remove_g</span><span class="p">,</span> <span class="n">observed_remove_g</span><span class="p">)</span>
 
         <span class="c1"># Changing from Cox to linear should remove a column</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">missing_value</span> <span class="o">=</span> <span class="bp">None</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">missing_value</span> <span class="o">=</span> <span class="kc">None</span>
         <span class="n">args</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">=</span> <span class="s2">&quot;linear&quot;</span>
         <span class="k">del</span> <span class="n">args</span><span class="o">.</span><span class="n">tte</span>
         <span class="k">del</span> <span class="n">args</span><span class="o">.</span><span class="n">event</span>
@@ -440,10 +440,10 @@
 
         <span class="c1"># Removing the gender in the covars, but setting chrx to true</span>
         <span class="n">args</span><span class="o">.</span><span class="n">covar</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;C1&quot;</span><span class="p">,</span> <span class="s2">&quot;C2&quot;</span><span class="p">,</span> <span class="s2">&quot;C3&quot;</span><span class="p">]</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">chrx</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">chrx</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="c1"># The expected results</span>
-        <span class="n">expected_remove_g</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">expected_remove_g</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="c1"># The observed values</span>
         <span class="n">observed_p</span><span class="p">,</span> <span class="n">observed_remove_g</span> <span class="o">=</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">read_phenotype</span><span class="p">(</span>
@@ -501,11 +501,11 @@
 
         <span class="c1"># Sample shouldn&#39;t be included if chrx is False, but Gender in covars</span>
         <span class="n">args</span><span class="o">.</span><span class="n">covar</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s2">&quot;Gender&quot;</span><span class="p">)</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">chrx</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">chrx</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># The expected values</span>
         <span class="n">expected_shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
-        <span class="n">expected_remove_g</span> <span class="o">=</span> <span class="bp">False</span>
+        <span class="n">expected_remove_g</span> <span class="o">=</span> <span class="kc">False</span>
 
         <span class="c1"># The observed values</span>
         <span class="n">observed_p</span><span class="p">,</span> <span class="n">observed_remove_g</span> <span class="o">=</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">read_phenotype</span><span class="p">(</span>
@@ -554,12 +554,12 @@
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected_remove_g</span><span class="p">,</span> <span class="n">observed_remove_g</span><span class="p">)</span>
 
         <span class="c1"># Setting chromosome to X should also include the sample</span>
-        <span class="n">args</span><span class="o">.</span><span class="n">chrx</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">args</span><span class="o">.</span><span class="n">chrx</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="c1"># The expected values</span>
         <span class="n">expected_shape</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span>
         <span class="n">expected_columns</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="s2">&quot;Gender&quot;</span><span class="p">)</span>
-        <span class="n">expected_remove_g</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">expected_remove_g</span> <span class="o">=</span> <span class="kc">True</span>
 
         <span class="c1"># The observed values</span>
         <span class="n">observed_p</span><span class="p">,</span> <span class="n">observed_remove_g</span> <span class="o">=</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">read_phenotype</span><span class="p">(</span>
@@ -626,13 +626,13 @@
 
 <div class="viewcode-block" id="TestImputedStats.test_read_sites_to_extract"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStats.test_read_sites_to_extract">[docs]</a>    <span class="k">def</span> <span class="nf">test_read_sites_to_extract</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Tests the &#39;test_read_sites_to_extract&#39; function.&quot;&quot;&quot;</span>
-        <span class="n">file_content</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;marker_{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">2</span>
+        <span class="n">file_content</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;marker_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)]</span> <span class="o">*</span> <span class="mi">2</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">output_dir</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;markers.txt&quot;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">o_file</span><span class="p">:</span>
             <span class="n">o_file</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">file_content</span><span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
 
         <span class="c1"># The expected values</span>
-        <span class="n">expected</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;marker_{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)}</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;marker_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">100</span><span class="p">)}</span>
 
         <span class="c1"># The observed values</span>
         <span class="n">observed</span> <span class="o">=</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">read_sites_to_extract</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>
@@ -640,12 +640,12 @@
         <span class="c1"># Checking</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span></div>
 
-    <span class="nd">@unittest.skip</span><span class="p">(</span><span class="s2">&quot;Test not implemented&quot;</span><span class="p">)</span>
+    <span class="nd">@unittest</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="s2">&quot;Test not implemented&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="TestImputedStats.test_compute_statistics"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStats.test_compute_statistics">[docs]</a>    <span class="k">def</span> <span class="nf">test_compute_statistics</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
         <span class="sd">&quot;&quot;&quot;Tests the &#39;compute_statistics&#39; function.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Test not implemented&quot;</span><span class="p">)</span></div>
 
-    <span class="nd">@unittest.skip</span><span class="p">(</span><span class="s2">&quot;Test not implemented&quot;</span><span class="p">)</span>
+    <span class="nd">@unittest</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="s2">&quot;Test not implemented&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="TestImputedStats.test_process_impute2_site"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStats.test_process_impute2_site">[docs]</a>    <span class="k">def</span> <span class="nf">test_process_impute2_site</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
         <span class="sd">&quot;&quot;&quot;Tests the &#39;process_impute2_site&#39; function.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Test not implemented&quot;</span><span class="p">)</span></div>
@@ -664,7 +664,7 @@
             <span class="p">(</span><span class="s2">&quot;sample_9&quot;</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">),</span>
         <span class="p">]</span>
         <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;sample_id&quot;</span><span class="p">,</span> <span class="s2">&quot;D1&quot;</span><span class="p">,</span> <span class="s2">&quot;D2&quot;</span><span class="p">,</span> <span class="s2">&quot;D3&quot;</span><span class="p">])</span>
-        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;sample_id&quot;</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;sample_id&quot;</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># The expected results</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sample_2&quot;</span><span class="p">,</span> <span class="s2">&quot;sample_5&quot;</span><span class="p">,</span> <span class="s2">&quot;sample_7&quot;</span><span class="p">,</span> <span class="s2">&quot;sample_9&quot;</span><span class="p">]</span>
@@ -680,27 +680,27 @@
         <span class="sd">&quot;&quot;&quot;Tests the &#39;get_formula&#39; function.&quot;&quot;&quot;</span>
         <span class="c1"># Testing with only one phenotype (no covars, no interaction)</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="s2">&quot;pheno ~ _GenoD&quot;</span>
-        <span class="n">observed</span> <span class="o">=</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">get_formula</span><span class="p">(</span><span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
+        <span class="n">observed</span> <span class="o">=</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">get_formula</span><span class="p">(</span><span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="p">[],</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">())</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
 
         <span class="c1"># Testing with one covar, no interaction</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="s2">&quot;pheno ~ _GenoD + C1&quot;</span>
         <span class="n">observed</span> <span class="o">=</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">get_formula</span><span class="p">(</span>
-            <span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;C1&quot;</span><span class="p">],</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">(),</span>
+            <span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;C1&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">(),</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
 
         <span class="c1"># Testing with more than one covar, no interaction</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="s2">&quot;pheno ~ _GenoD + C1 + C2 + C3&quot;</span>
         <span class="n">observed</span> <span class="o">=</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">get_formula</span><span class="p">(</span>
-            <span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;C1&quot;</span><span class="p">,</span> <span class="s2">&quot;C2&quot;</span><span class="p">,</span> <span class="s2">&quot;C3&quot;</span><span class="p">],</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">(),</span>
+            <span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;C1&quot;</span><span class="p">,</span> <span class="s2">&quot;C2&quot;</span><span class="p">,</span> <span class="s2">&quot;C3&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;None&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">(),</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
 
         <span class="c1"># Testing with more than one covar (with gender), no interaction</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="s2">&quot;pheno ~ _GenoD + C1 + C2 + C3 + C(Gender)&quot;</span>
         <span class="n">observed</span> <span class="o">=</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">get_formula</span><span class="p">(</span>
-            <span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;C1&quot;</span><span class="p">,</span> <span class="s2">&quot;C2&quot;</span><span class="p">,</span> <span class="s2">&quot;C3&quot;</span><span class="p">,</span> <span class="s2">&quot;Gender&quot;</span><span class="p">],</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;Gender&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">(),</span>
+            <span class="s2">&quot;pheno&quot;</span><span class="p">,</span> <span class="p">[</span><span class="s2">&quot;C1&quot;</span><span class="p">,</span> <span class="s2">&quot;C2&quot;</span><span class="p">,</span> <span class="s2">&quot;C3&quot;</span><span class="p">,</span> <span class="s2">&quot;Gender&quot;</span><span class="p">],</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;Gender&quot;</span><span class="p">,</span> <span class="nb">set</span><span class="p">(),</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span>
 
@@ -745,13 +745,13 @@
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="p">)</span></div>
 
-    <span class="nd">@unittest.skip</span><span class="p">(</span><span class="s2">&quot;Test not implemented&quot;</span><span class="p">)</span>
+    <span class="nd">@unittest</span><span class="o">.</span><span class="n">skip</span><span class="p">(</span><span class="s2">&quot;Test not implemented&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="TestImputedStats.test_check_args"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStats.test_check_args">[docs]</a>    <span class="k">def</span> <span class="nf">test_check_args</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># pragma: no cover</span>
         <span class="sd">&quot;&quot;&quot;Tests the &#39;check_args&#39; function.&quot;&quot;&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">fail</span><span class="p">(</span><span class="s2">&quot;Test not implemented&quot;</span><span class="p">)</span></div></div>
 
 
-<span class="nd">@unittest.skipIf</span><span class="p">(</span><span class="ow">not</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">HAS_LIFELINES</span><span class="p">,</span>
+<span class="nd">@unittest</span><span class="o">.</span><span class="n">skipIf</span><span class="p">(</span><span class="ow">not</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">HAS_LIFELINES</span><span class="p">,</span>
                  <span class="s2">&quot;optional requirement (lifelines) not satisfied&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="TestImputedStatsCox"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStatsCox">[docs]</a><span class="k">class</span> <span class="nc">TestImputedStatsCox</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 
@@ -1035,7 +1035,7 @@
             <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">expected</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">observed</span><span class="o">.</span><span class="n">p</span><span class="p">),</span> <span class="mi">4</span><span class="p">,</span>
         <span class="p">)</span></div>
 
-    <span class="nd">@unittest.skipIf</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">,</span>
+    <span class="nd">@unittest</span><span class="o">.</span><span class="n">skipIf</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">,</span>
                      <span class="s2">&quot;multiprocessing not supported with Mac OS&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="TestImputedStatsCox.test_full_fit_cox_multiprocess"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStatsCox.test_full_fit_cox_multiprocess">[docs]</a>    <span class="k">def</span> <span class="nf">test_full_fit_cox_multiprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Tests the full pipeline for Cox&#39;s regression with &gt;1 processes.&quot;&quot;&quot;</span>
@@ -1214,7 +1214,7 @@
         <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_array_almost_equal</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">p</span><span class="p">,</span> <span class="mi">6</span><span class="p">)</span></div></div>
 
 
-<span class="nd">@unittest.skipIf</span><span class="p">(</span><span class="ow">not</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">HAS_STATSMODELS</span><span class="p">,</span>
+<span class="nd">@unittest</span><span class="o">.</span><span class="n">skipIf</span><span class="p">(</span><span class="ow">not</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">HAS_STATSMODELS</span><span class="p">,</span>
                  <span class="s2">&quot;optional requirement (statsmodels) not satisfied&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="TestImputedStatsLinear"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStatsLinear">[docs]</a><span class="k">class</span> <span class="nc">TestImputedStatsLinear</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 
@@ -1512,7 +1512,7 @@
                                           <span class="n">observed</span><span class="p">[</span><span class="s2">&quot;adj.r-squared&quot;</span><span class="p">]):</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_r</span><span class="p">,</span> <span class="n">observed_r</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span></div>
 
-    <span class="nd">@unittest.skipIf</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">,</span>
+    <span class="nd">@unittest</span><span class="o">.</span><span class="n">skipIf</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">,</span>
                      <span class="s2">&quot;multiprocessing not supported with Mac OS&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="TestImputedStatsLinear.test_full_fit_linear_multiprocess"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStatsLinear.test_full_fit_linear_multiprocess">[docs]</a>    <span class="k">def</span> <span class="nf">test_full_fit_linear_multiprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Tests the full pipeline for linear regression with &gt;1 processes.&quot;&quot;&quot;</span>
@@ -1715,7 +1715,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">expected_r</span><span class="p">,</span> <span class="n">observed_r</span><span class="p">,</span> <span class="n">places</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span></div></div>
 
 
-<span class="nd">@unittest.skipIf</span><span class="p">(</span><span class="ow">not</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">HAS_STATSMODELS</span><span class="p">,</span>
+<span class="nd">@unittest</span><span class="o">.</span><span class="n">skipIf</span><span class="p">(</span><span class="ow">not</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">HAS_STATSMODELS</span><span class="p">,</span>
                  <span class="s2">&quot;optional requirement (statsmodels) not satisfied&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="TestImputedStatsLogistic"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStatsLogistic">[docs]</a><span class="k">class</span> <span class="nc">TestImputedStatsLogistic</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 
@@ -2008,7 +2008,7 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">assertAlmostEqual</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">expected_p</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">log10</span><span class="p">(</span><span class="n">observed_p</span><span class="p">),</span>
                                    <span class="n">places</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span></div>
 
-    <span class="nd">@unittest.skipIf</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">,</span>
+    <span class="nd">@unittest</span><span class="o">.</span><span class="n">skipIf</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">,</span>
                      <span class="s2">&quot;multiprocessing not supported with Mac OS&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="TestImputedStatsLogistic.test_full_fit_logistic_multiprocess"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStatsLogistic.test_full_fit_logistic_multiprocess">[docs]</a>    <span class="k">def</span> <span class="nf">test_full_fit_logistic_multiprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Tests the full pipeline, logistic regression with &gt;1 processes.&quot;&quot;&quot;</span>
@@ -2222,7 +2222,7 @@
                                    <span class="n">places</span><span class="o">=</span><span class="n">place</span><span class="p">)</span></div></div>
 
 
-<span class="nd">@unittest.skipIf</span><span class="p">(</span><span class="ow">not</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">HAS_STATSMODELS</span><span class="p">,</span>
+<span class="nd">@unittest</span><span class="o">.</span><span class="n">skipIf</span><span class="p">(</span><span class="ow">not</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">HAS_STATSMODELS</span><span class="p">,</span>
                  <span class="s2">&quot;optional requirement (statsmodels) not satisfied&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="TestImputedStatsMixedLM"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM">[docs]</a><span class="k">class</span> <span class="nc">TestImputedStatsMixedLM</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 
@@ -2247,7 +2247,7 @@
             <span class="n">formula</span><span class="o">=</span><span class="s2">&quot;y ~ C1 + C2 + C3 + age + C(gender) + C(visit)&quot;</span><span class="p">,</span>
             <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
             <span class="n">groups</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">reml</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span><span class="o">.</span><span class="n">random_effects</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">reml</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span><span class="o">.</span><span class="n">random_effects</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
             <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Intercept&quot;</span><span class="p">:</span> <span class="s2">&quot;RE&quot;</span><span class="p">},</span>
         <span class="p">)</span>
 
@@ -2256,7 +2256,7 @@
             <span class="n">formula</span><span class="o">=</span><span class="s2">&quot;y ~ C1 + C2 + C3 + age + C(gender) + C(visit)&quot;</span><span class="p">,</span>
             <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span>
             <span class="n">groups</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
-        <span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">reml</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span><span class="o">.</span><span class="n">random_effects</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">reml</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">random_effects</span><span class="o">.</span><span class="n">rename</span><span class="p">(</span>
             <span class="n">columns</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;Intercept&quot;</span><span class="p">:</span> <span class="s2">&quot;RE&quot;</span><span class="p">},</span>
         <span class="p">)</span></div>
 
@@ -2294,10 +2294,10 @@
             <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">,</span>
             <span class="n">groups</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
             <span class="n">result_col</span><span class="o">=</span><span class="s2">&quot;_GenoD&quot;</span><span class="p">,</span>
-            <span class="n">use_ml</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">use_ml</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">random_effects</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_effects</span><span class="p">,</span>
-            <span class="n">mixedlm_p</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
-            <span class="n">interaction</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">mixedlm_p</span><span class="o">=</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">interaction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed</span><span class="p">))</span>
         <span class="n">observed_coef</span><span class="p">,</span> <span class="n">observed_se</span><span class="p">,</span> <span class="n">observed_min_ci</span><span class="p">,</span> <span class="n">observed_max_ci</span><span class="p">,</span> \
@@ -2337,10 +2337,10 @@
             <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">,</span>
             <span class="n">groups</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
             <span class="n">result_col</span><span class="o">=</span><span class="s2">&quot;_GenoD&quot;</span><span class="p">,</span>
-            <span class="n">use_ml</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">use_ml</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">random_effects</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_effects</span><span class="p">,</span>
-            <span class="n">mixedlm_p</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
-            <span class="n">interaction</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">mixedlm_p</span><span class="o">=</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">interaction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed</span><span class="p">))</span>
         <span class="n">observed_coef</span><span class="p">,</span> <span class="n">observed_se</span><span class="p">,</span> <span class="n">observed_min_ci</span><span class="p">,</span> <span class="n">observed_max_ci</span><span class="p">,</span> \
@@ -2379,10 +2379,10 @@
             <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">,</span>
             <span class="n">groups</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
             <span class="n">result_col</span><span class="o">=</span><span class="s2">&quot;_GenoD&quot;</span><span class="p">,</span>
-            <span class="n">use_ml</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">use_ml</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="n">random_effects</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_effects</span><span class="p">,</span>
-            <span class="n">mixedlm_p</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
-            <span class="n">interaction</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">mixedlm_p</span><span class="o">=</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">interaction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed</span><span class="p">))</span>
         <span class="n">observed_coef</span><span class="p">,</span> <span class="n">observed_se</span><span class="p">,</span> <span class="n">observed_min_ci</span><span class="p">,</span> <span class="n">observed_max_ci</span><span class="p">,</span> \
@@ -2414,10 +2414,10 @@
                 <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">,</span>
                 <span class="n">groups</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
                 <span class="n">result_col</span><span class="o">=</span><span class="s2">&quot;unknown&quot;</span><span class="p">,</span>
-                <span class="n">use_ml</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                <span class="n">use_ml</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">random_effects</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_effects</span><span class="p">,</span>
-                <span class="n">mixedlm_p</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
-                <span class="n">interaction</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                <span class="n">mixedlm_p</span><span class="o">=</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+                <span class="n">interaction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="p">)</span>
 
         <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="n">patsy</span><span class="o">.</span><span class="n">PatsyError</span><span class="p">):</span>
@@ -2426,10 +2426,10 @@
                 <span class="n">formula</span><span class="o">=</span><span class="n">formula</span> <span class="o">+</span> <span class="s2">&quot; + unknown&quot;</span><span class="p">,</span>
                 <span class="n">groups</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
                 <span class="n">result_col</span><span class="o">=</span><span class="s2">&quot;_GenoD&quot;</span><span class="p">,</span>
-                <span class="n">use_ml</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                <span class="n">use_ml</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
                 <span class="n">random_effects</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_effects</span><span class="p">,</span>
-                <span class="n">mixedlm_p</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
-                <span class="n">interaction</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+                <span class="n">mixedlm_p</span><span class="o">=</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+                <span class="n">interaction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
             <span class="p">)</span></div>
 
 <div class="viewcode-block" id="TestImputedStatsMixedLM.test_fit_mixedlm_snp1_use_ml"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_fit_mixedlm_snp1_use_ml">[docs]</a>    <span class="k">def</span> <span class="nf">test_fit_mixedlm_snp1_use_ml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -2456,10 +2456,10 @@
             <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">,</span>
             <span class="n">groups</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
             <span class="n">result_col</span><span class="o">=</span><span class="s2">&quot;_GenoD&quot;</span><span class="p">,</span>
-            <span class="n">use_ml</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">use_ml</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">random_effects</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_effects_ml</span><span class="p">,</span>
-            <span class="n">mixedlm_p</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
-            <span class="n">interaction</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">mixedlm_p</span><span class="o">=</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">interaction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed</span><span class="p">))</span>
         <span class="n">observed_coef</span><span class="p">,</span> <span class="n">observed_se</span><span class="p">,</span> <span class="n">observed_min_ci</span><span class="p">,</span> <span class="n">observed_max_ci</span><span class="p">,</span> \
@@ -2499,10 +2499,10 @@
             <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">,</span>
             <span class="n">groups</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
             <span class="n">result_col</span><span class="o">=</span><span class="s2">&quot;_GenoD&quot;</span><span class="p">,</span>
-            <span class="n">use_ml</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">use_ml</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">random_effects</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_effects_ml</span><span class="p">,</span>
-            <span class="n">mixedlm_p</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
-            <span class="n">interaction</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">mixedlm_p</span><span class="o">=</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">interaction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed</span><span class="p">))</span>
         <span class="n">observed_coef</span><span class="p">,</span> <span class="n">observed_se</span><span class="p">,</span> <span class="n">observed_min_ci</span><span class="p">,</span> <span class="n">observed_max_ci</span><span class="p">,</span> \
@@ -2541,10 +2541,10 @@
             <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">,</span>
             <span class="n">groups</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
             <span class="n">result_col</span><span class="o">=</span><span class="s2">&quot;_GenoD&quot;</span><span class="p">,</span>
-            <span class="n">use_ml</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">use_ml</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
             <span class="n">random_effects</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">random_effects_ml</span><span class="p">,</span>
-            <span class="n">mixedlm_p</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
-            <span class="n">interaction</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
+            <span class="n">mixedlm_p</span><span class="o">=</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span>
+            <span class="n">interaction</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed</span><span class="p">))</span>
         <span class="n">observed_coef</span><span class="p">,</span> <span class="n">observed_se</span><span class="p">,</span> <span class="n">observed_min_ci</span><span class="p">,</span> <span class="n">observed_max_ci</span><span class="p">,</span> \
@@ -2585,10 +2585,10 @@
             <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">,</span>
             <span class="n">groups</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
             <span class="n">result_col</span><span class="o">=</span><span class="s2">&quot;_GenoD:C(visit)[T.3]&quot;</span><span class="p">,</span>
-            <span class="n">use_ml</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span>
-            <span class="n">random_effects</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-            <span class="n">mixedlm_p</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-            <span class="n">interaction</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">use_ml</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
+            <span class="n">random_effects</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">mixedlm_p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">interaction</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed</span><span class="p">))</span>
         <span class="n">observed_coef</span><span class="p">,</span> <span class="n">observed_se</span><span class="p">,</span> <span class="n">observed_min_ci</span><span class="p">,</span> <span class="n">observed_max_ci</span><span class="p">,</span> \
@@ -2629,10 +2629,10 @@
             <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">,</span>
             <span class="n">groups</span><span class="o">=</span><span class="n">data</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
             <span class="n">result_col</span><span class="o">=</span><span class="s2">&quot;_GenoD:C(visit)[T.3]&quot;</span><span class="p">,</span>
-            <span class="n">use_ml</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-            <span class="n">random_effects</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-            <span class="n">mixedlm_p</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
-            <span class="n">interaction</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">use_ml</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+            <span class="n">random_effects</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">mixedlm_p</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
+            <span class="n">interaction</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">observed</span><span class="p">))</span>
         <span class="n">observed_coef</span><span class="p">,</span> <span class="n">observed_se</span><span class="p">,</span> <span class="n">observed_min_ci</span><span class="p">,</span> <span class="n">observed_max_ci</span><span class="p">,</span> \
@@ -2748,7 +2748,7 @@
             <span class="n">analysis_type</span><span class="o">=</span><span class="s2">&quot;mixedlm&quot;</span><span class="p">,</span>
             <span class="n">pheno_name</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span>
             <span class="n">sample_col</span><span class="o">=</span><span class="s2">&quot;SampleID&quot;</span><span class="p">,</span>
-            <span class="n">use_ml</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">use_ml</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="c1"># Executing the tool</span>
@@ -2831,7 +2831,7 @@
         <span class="n">expected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;MixedLM&quot;</span><span class="p">,</span> <span class="s2">&quot;TS-MixedLM&quot;</span><span class="p">,</span> <span class="s2">&quot;MixedLM&quot;</span><span class="p">])</span>
         <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_array_equal</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">type</span><span class="p">)</span></div>
 
-    <span class="nd">@unittest.skipIf</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">,</span>
+    <span class="nd">@unittest</span><span class="o">.</span><span class="n">skipIf</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">,</span>
                      <span class="s2">&quot;multiprocessing not supported with Mac OS&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="TestImputedStatsMixedLM.test_full_fit_mixedlm_multiprocess"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_full_fit_mixedlm_multiprocess">[docs]</a>    <span class="k">def</span> <span class="nf">test_full_fit_mixedlm_multiprocess</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Tests the full pipeline, mixed linear model with &gt;1 processes.&quot;&quot;&quot;</span>
@@ -2925,7 +2925,7 @@
         <span class="n">expected</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="s2">&quot;MixedLM&quot;</span><span class="p">,</span> <span class="s2">&quot;TS-MixedLM&quot;</span><span class="p">,</span> <span class="s2">&quot;MixedLM&quot;</span><span class="p">])</span>
         <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_array_equal</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">type</span><span class="p">)</span></div>
 
-    <span class="nd">@unittest.skipIf</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">,</span>
+    <span class="nd">@unittest</span><span class="o">.</span><span class="n">skipIf</span><span class="p">(</span><span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">,</span>
                      <span class="s2">&quot;multiprocessing not supported with Mac OS&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="TestImputedStatsMixedLM.test_full_fit_mixedlm_multiprocess_use_ml"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStatsMixedLM.test_full_fit_mixedlm_multiprocess_use_ml">[docs]</a>    <span class="k">def</span> <span class="nf">test_full_fit_mixedlm_multiprocess_use_ml</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Tests the full pipeline, mixed linear with &gt;1 processes (ML).&quot;&quot;&quot;</span>
@@ -2937,7 +2937,7 @@
             <span class="n">pheno_name</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span>
             <span class="n">sample_col</span><span class="o">=</span><span class="s2">&quot;SampleID&quot;</span><span class="p">,</span>
             <span class="n">nb_process</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
-            <span class="n">use_ml</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">use_ml</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="c1"># Executing the tool</span>
@@ -3124,7 +3124,7 @@
             <span class="n">pheno_name</span><span class="o">=</span><span class="s2">&quot;y&quot;</span><span class="p">,</span>
             <span class="n">sample_col</span><span class="o">=</span><span class="s2">&quot;SampleID&quot;</span><span class="p">,</span>
             <span class="n">interaction</span><span class="o">=</span><span class="s2">&quot;visit&quot;</span><span class="p">,</span>
-            <span class="n">use_ml</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+            <span class="n">use_ml</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="c1"># Executing the tool</span>
@@ -3210,11 +3210,11 @@
         <span class="n">np</span><span class="o">.</span><span class="n">testing</span><span class="o">.</span><span class="n">assert_array_equal</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">observed</span><span class="o">.</span><span class="n">type</span><span class="p">)</span></div></div>
 
 
-<span class="nd">@unittest.skipIf</span><span class="p">(</span><span class="ow">not</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">HAS_SKAT</span><span class="p">,</span> <span class="s2">&quot;SKAT is not installed&quot;</span><span class="p">)</span>
+<span class="nd">@unittest</span><span class="o">.</span><span class="n">skipIf</span><span class="p">(</span><span class="ow">not</span> <span class="n">imputed_stats</span><span class="o">.</span><span class="n">HAS_SKAT</span><span class="p">,</span> <span class="s2">&quot;SKAT is not installed&quot;</span><span class="p">)</span>
 <div class="viewcode-block" id="TestImputedStatsSkat"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStatsSkat">[docs]</a><span class="k">class</span> <span class="nc">TestImputedStatsSkat</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
 
-    <span class="n">tmp_dir</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">args</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">tmp_dir</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">args</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="nd">@classmethod</span>
 <div class="viewcode-block" id="TestImputedStatsSkat.setUpClass"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_imputed_stats.TestImputedStatsSkat.setUpClass">[docs]</a>    <span class="k">def</span> <span class="nf">setUpClass</span><span class="p">(</span><span class="n">cls</span><span class="p">):</span>
@@ -3377,7 +3377,7 @@
             <span class="p">),</span>
             <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
             <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;bz2&quot;</span><span class="p">,</span>
-            <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;covar_discrete&quot;</span><span class="p">,</span> <span class="s2">&quot;covar_continuous&quot;</span><span class="p">),</span>
         <span class="p">)</span>
 
@@ -3388,7 +3388,7 @@
             <span class="p">),</span>
             <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
             <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;bz2&quot;</span><span class="p">,</span>
-            <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
 
         <span class="n">skat_y_continuous</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span>  <span class="c1"># Outcome, continuous</span>
@@ -3398,7 +3398,7 @@
             <span class="p">),</span>
             <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
             <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;bz2&quot;</span><span class="p">,</span>
-            <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;outcome_continuous&quot;</span><span class="p">,</span> <span class="p">),</span>
         <span class="p">)</span>
 
@@ -3409,7 +3409,7 @@
             <span class="p">),</span>
             <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span>
             <span class="n">compression</span><span class="o">=</span><span class="s2">&quot;bz2&quot;</span><span class="p">,</span>
-            <span class="n">header</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span>
+            <span class="n">header</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span>
             <span class="n">names</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;outcome_discrete&quot;</span><span class="p">,</span> <span class="p">),</span>
         <span class="p">)</span>
 
@@ -3423,12 +3423,12 @@
                 <span class="n">pos</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">randint</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span> <span class="mi">90000000</span><span class="p">)</span>
                 <span class="n">a1</span><span class="p">,</span> <span class="n">a2</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="s2">&quot;ATGC&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
 
-                <span class="n">variant_name</span> <span class="o">=</span> <span class="s2">&quot;{chrom}:{pos}:{a2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">variant_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{chrom}</span><span class="s2">:</span><span class="si">{pos}</span><span class="s2">:</span><span class="si">{a2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">chrom</span><span class="o">=</span><span class="n">chrom</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">a2</span><span class="o">=</span><span class="n">a2</span>
                 <span class="p">)</span>
                 <span class="n">variants</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">variant_name</span><span class="p">)</span>
 
-                <span class="n">row</span> <span class="o">=</span> <span class="s2">&quot;{chrom} {name} {pos} {a1} {a2}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">row</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{chrom}</span><span class="s2"> </span><span class="si">{name}</span><span class="s2"> </span><span class="si">{pos}</span><span class="s2"> </span><span class="si">{a1}</span><span class="s2"> </span><span class="si">{a2}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">chrom</span><span class="o">=</span><span class="n">chrom</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="n">variant_name</span><span class="p">,</span> <span class="n">pos</span><span class="o">=</span><span class="n">pos</span><span class="p">,</span> <span class="n">a1</span><span class="o">=</span><span class="n">a1</span><span class="p">,</span> <span class="n">a2</span><span class="o">=</span><span class="n">a2</span><span class="p">,</span>
                 <span class="p">)</span>
 
@@ -3447,27 +3447,27 @@
                     <span class="k">elif</span> <span class="n">proba</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="n">dosage_list</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
 
-                <span class="k">print</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="o">*</span><span class="n">dosage_list</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">output_file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">row</span><span class="p">,</span> <span class="o">*</span><span class="n">dosage_list</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">output_file</span><span class="p">)</span>
 
         <span class="c1"># Create the snp set file.</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_directory</span><span class="p">,</span> <span class="s2">&quot;snp_sets.txt&quot;</span><span class="p">)</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">output_file</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;variant&quot;</span><span class="p">,</span> <span class="s2">&quot;snp_set&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">output_file</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;variant&quot;</span><span class="p">,</span> <span class="s2">&quot;snp_set&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">output_file</span><span class="p">)</span>
             <span class="c1"># The first SNP set</span>
             <span class="k">for</span> <span class="n">variant</span> <span class="ow">in</span> <span class="n">variants</span><span class="p">:</span>
-                <span class="k">print</span><span class="p">(</span><span class="n">variant</span><span class="p">,</span> <span class="s2">&quot;set1&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">output_file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">variant</span><span class="p">,</span> <span class="s2">&quot;set1&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">output_file</span><span class="p">)</span>
 
             <span class="c1"># The second SNP set (which contains only the first 10 markers, and</span>
             <span class="c1"># the last 10)</span>
             <span class="k">for</span> <span class="n">variant</span> <span class="ow">in</span> <span class="n">variants</span><span class="p">[:</span><span class="mi">10</span><span class="p">]</span> <span class="o">+</span> <span class="p">[</span><span class="n">variants</span><span class="p">[</span><span class="mi">30</span><span class="p">]]</span> <span class="o">+</span> <span class="n">variants</span><span class="p">[</span><span class="o">-</span><span class="mi">10</span><span class="p">:]:</span>
-                <span class="k">print</span><span class="p">(</span><span class="n">variant</span><span class="p">,</span> <span class="s2">&quot;set2&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">output_file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">variant</span><span class="p">,</span> <span class="s2">&quot;set2&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">output_file</span><span class="p">)</span>
 
             <span class="c1"># The last SNP set (which is the same as the first one)</span>
             <span class="k">for</span> <span class="n">variant</span> <span class="ow">in</span> <span class="n">variants</span><span class="p">:</span>
-                <span class="k">print</span><span class="p">(</span><span class="n">variant</span><span class="p">,</span> <span class="s2">&quot;set3&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">output_file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">variant</span><span class="p">,</span> <span class="s2">&quot;set3&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">output_file</span><span class="p">)</span>
 
         <span class="c1"># Create a list of samples.</span>
-        <span class="n">samples</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sample_{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">skat_z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;sample_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">skat_z</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">])]</span>
 
         <span class="c1"># Get the filename for the phenotype file.</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_directory</span><span class="p">,</span> <span class="s2">&quot;phenotypes.txt&quot;</span><span class="p">)</span>
@@ -3482,18 +3482,18 @@
         <span class="n">skat_x</span><span class="p">[</span><span class="s2">&quot;outcome_discrete&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">skat_y_discrete</span><span class="o">.</span><span class="n">values</span>
 
         <span class="c1"># Write the phenotype file.</span>
-        <span class="n">skat_x</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">skat_x</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
         <span class="c1"># Get the filename for the samples file.</span>
         <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">out_directory</span><span class="p">,</span> <span class="s2">&quot;samples.txt&quot;</span><span class="p">)</span>
 
         <span class="c1"># Now we write the samples file by imitating the Impute2 format.</span>
         <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;ID_1 ID_2 missing father mother sex phenotype&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;0 0 0 D D D B&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;ID_1 ID_2 missing father mother sex phenotype&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;0 0 0 D D D B&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">sample</span> <span class="ow">in</span> <span class="n">samples</span><span class="p">:</span>
-                <span class="k">print</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span>
-                      <span class="s2">&quot;-9&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">sample</span><span class="p">,</span> <span class="n">sample</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="s2">&quot;0&quot;</span><span class="p">,</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">([</span><span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">]),</span>
+                      <span class="s2">&quot;-9&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">)</span>
 
         <span class="c1"># Finally, prepare the arguments for the script.</span>
         <span class="n">args</span> <span class="o">=</span> <span class="p">[</span>
@@ -3529,9 +3529,24 @@
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>
     </div>
+
+
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
     </div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-81009922-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
   </body>
 </html>

@@ -87,18 +87,18 @@
 <span class="kn">import</span> <span class="nn">argparse</span>
 <span class="kn">import</span> <span class="nn">platform</span>
 <span class="kn">import</span> <span class="nn">traceback</span>
-<span class="kn">from</span> <span class="nn">shutil</span> <span class="kn">import</span> <span class="n">which</span>
-<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="kn">import</span> <span class="n">Pool</span>
-<span class="kn">from</span> <span class="nn">subprocess</span> <span class="kn">import</span> <span class="n">Popen</span><span class="p">,</span> <span class="n">PIPE</span>
-<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">namedtuple</span>
+<span class="kn">from</span> <span class="nn">shutil</span> <span class="k">import</span> <span class="n">which</span>
+<span class="kn">from</span> <span class="nn">multiprocessing</span> <span class="k">import</span> <span class="n">Pool</span>
+<span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">Popen</span><span class="p">,</span> <span class="n">PIPE</span>
+<span class="kn">from</span> <span class="nn">collections</span> <span class="k">import</span> <span class="n">namedtuple</span>
 
 <span class="kn">import</span> <span class="nn">jinja2</span>
-<span class="kn">import</span> <span class="nn">pandas</span> <span class="kn">as</span> <span class="nn">pd</span>
-<span class="kn">from</span> <span class="nn">numpy.linalg.linalg</span> <span class="kn">import</span> <span class="n">LinAlgError</span>
+<span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
+<span class="kn">from</span> <span class="nn">numpy.linalg.linalg</span> <span class="k">import</span> <span class="n">LinAlgError</span>
 
-<span class="kn">from</span> <span class="nn">..</span> <span class="kn">import</span> <span class="n">__version__</span>
-<span class="kn">from</span> <span class="nn">..formats</span> <span class="kn">import</span> <span class="n">impute2</span>
-<span class="kn">from</span> <span class="nn">..error</span> <span class="kn">import</span> <span class="n">GenipeError</span>
+<span class="kn">from</span> <span class="nn">..</span> <span class="k">import</span> <span class="n">__version__</span>
+<span class="kn">from</span> <span class="nn">..formats</span> <span class="k">import</span> <span class="n">impute2</span>
+<span class="kn">from</span> <span class="nn">..error</span> <span class="k">import</span> <span class="n">GenipeError</span>
 
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Louis-Philippe Lemieux Perreault&quot;</span><span class="p">,</span> <span class="s2">&quot;Marc-Andre Legault&quot;</span><span class="p">]</span>
@@ -108,19 +108,19 @@
 
 <span class="c1"># Check if lifelines is installed</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">lifelines</span> <span class="kn">import</span> <span class="n">CoxPHFitter</span>
-    <span class="n">HAS_LIFELINES</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="kn">from</span> <span class="nn">lifelines</span> <span class="k">import</span> <span class="n">CoxPHFitter</span>
+    <span class="n">HAS_LIFELINES</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">HAS_LIFELINES</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">HAS_LIFELINES</span> <span class="o">=</span> <span class="kc">False</span>
 
 <span class="c1"># Check if statsmodels is installed</span>
 <span class="k">try</span><span class="p">:</span>
-    <span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="kn">as</span> <span class="nn">sm</span>
-    <span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="kn">as</span> <span class="nn">smf</span>
-    <span class="kn">from</span> <span class="nn">patsy</span> <span class="kn">import</span> <span class="n">dmatrices</span>
-    <span class="n">HAS_STATSMODELS</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="kn">import</span> <span class="nn">statsmodels.api</span> <span class="k">as</span> <span class="nn">sm</span>
+    <span class="kn">import</span> <span class="nn">statsmodels.formula.api</span> <span class="k">as</span> <span class="nn">smf</span>
+    <span class="kn">from</span> <span class="nn">patsy</span> <span class="k">import</span> <span class="n">dmatrices</span>
+    <span class="n">HAS_STATSMODELS</span> <span class="o">=</span> <span class="kc">True</span>
 <span class="k">except</span> <span class="ne">ImportError</span><span class="p">:</span>
-    <span class="n">HAS_STATSMODELS</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">HAS_STATSMODELS</span> <span class="o">=</span> <span class="kc">False</span>
 
 
 <span class="k">def</span> <span class="nf">_has_skat</span><span class="p">():</span>
@@ -140,8 +140,8 @@
 
 
 <span class="c1"># Check if R and SKAT is installed</span>
-<span class="n">HAS_R</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s2">&quot;Rscript&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span>
-<span class="n">HAS_SKAT</span> <span class="o">=</span> <span class="n">_has_skat</span><span class="p">()</span> <span class="k">if</span> <span class="n">HAS_R</span> <span class="k">else</span> <span class="bp">False</span>
+<span class="n">HAS_R</span> <span class="o">=</span> <span class="n">which</span><span class="p">(</span><span class="s2">&quot;Rscript&quot;</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="n">HAS_SKAT</span> <span class="o">=</span> <span class="n">_has_skat</span><span class="p">()</span> <span class="k">if</span> <span class="n">HAS_R</span> <span class="k">else</span> <span class="kc">False</span>
 
 
 <span class="c1"># An IMPUTE2 row to process</span>
@@ -155,7 +155,7 @@
 <span class="n">_COX_REQ_COLS</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;coef&quot;</span><span class="p">,</span> <span class="s2">&quot;se(coef)&quot;</span><span class="p">,</span> <span class="s2">&quot;lower 0.95&quot;</span><span class="p">,</span> <span class="s2">&quot;upper 0.95&quot;</span><span class="p">,</span> <span class="s2">&quot;z&quot;</span><span class="p">,</span> <span class="s2">&quot;p&quot;</span><span class="p">]</span>
 
 
-<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.imputed_stats.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="main"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.imputed_stats.main">[docs]</a><span class="k">def</span> <span class="nf">main</span><span class="p">(</span><span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;The main function.</span>
 
 <span class="sd">    Args:</span>
@@ -168,11 +168,11 @@
     <span class="n">desc</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Performs statistical analysis on imputed data (either SKAT &quot;</span>
             <span class="s2">&quot;analysis, or linear, logistic or survival regression). This &quot;</span>
             <span class="s2">&quot;script is part of the &#39;genipe&#39; package, version &quot;</span>
-            <span class="s2">&quot;{}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">))</span>
+            <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">))</span>
     <span class="n">parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">description</span><span class="o">=</span><span class="n">desc</span><span class="p">)</span>
 
     <span class="c1"># Files that need closing</span>
-    <span class="n">logging_fh</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">logging_fh</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="k">try</span><span class="p">:</span>
         <span class="c1"># Parsing the options</span>
@@ -182,13 +182,13 @@
         <span class="n">log_file</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">out</span> <span class="o">+</span> <span class="s2">&quot;.log&quot;</span>
         <span class="n">logging_fh</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">FileHandler</span><span class="p">(</span><span class="n">log_file</span><span class="p">,</span> <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">)</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span>
-            <span class="n">format</span><span class="o">=</span><span class="s2">&quot;[</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname)s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
+            <span class="nb">format</span><span class="o">=</span><span class="s2">&quot;[</span><span class="si">%(asctime)s</span><span class="s2"> </span><span class="si">%(levelname)s</span><span class="s2">] </span><span class="si">%(message)s</span><span class="s2">&quot;</span><span class="p">,</span>
             <span class="n">datefmt</span><span class="o">=</span><span class="s2">&quot;%Y-%m-</span><span class="si">%d</span><span class="s2"> %H:%M:%S&quot;</span><span class="p">,</span>
             <span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">DEBUG</span> <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">debug</span> <span class="k">else</span> <span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">,</span>
             <span class="n">handlers</span><span class="o">=</span><span class="p">[</span><span class="n">logging</span><span class="o">.</span><span class="n">StreamHandler</span><span class="p">(),</span> <span class="n">logging_fh</span><span class="p">]</span>
         <span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Logging everything into &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">log_file</span><span class="p">))</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Program arguments: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Logging everything into &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">log_file</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Program arguments: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">shlex</span><span class="o">.</span><span class="n">quote</span><span class="p">(</span><span class="n">part</span><span class="p">)</span> <span class="k">for</span> <span class="n">part</span> <span class="ow">in</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">:])</span>
         <span class="p">))</span>
 
@@ -202,23 +202,23 @@
             <span class="n">args</span><span class="p">,</span>
             <span class="n">check_duplicated</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">!=</span> <span class="s2">&quot;mixedlm&quot;</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - {:,d} samples with phenotype&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - </span><span class="si">{:,d}</span><span class="s2"> samples with phenotype&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="nb">len</span><span class="p">(</span><span class="n">phenotypes</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">unique</span><span class="p">()),</span>
         <span class="p">))</span>
 
         <span class="c1"># Reading the sample file</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading the sample file&quot;</span><span class="p">)</span>
         <span class="n">samples</span> <span class="o">=</span> <span class="n">read_samples</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">sample</span><span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - {:,d} samples with imputation data&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - </span><span class="si">{:,d}</span><span class="s2"> samples with imputation data&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="nb">len</span><span class="p">(</span><span class="n">samples</span><span class="p">),</span>
         <span class="p">))</span>
 
         <span class="c1"># Reading the sites to extract (if required)</span>
-        <span class="n">sites_to_extract</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">extract_sites</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">sites_to_extract</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">extract_sites</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Reading the sites to extract for analysis&quot;</span><span class="p">)</span>
             <span class="n">sites_to_extract</span> <span class="o">=</span> <span class="n">read_sites_to_extract</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">extract_sites</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - {:,d} sites to extract&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - </span><span class="si">{:,d}</span><span class="s2"> sites to extract&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="nb">len</span><span class="p">(</span><span class="n">sites_to_extract</span><span class="p">),</span>
             <span class="p">))</span>
 
@@ -261,11 +261,11 @@
         <span class="k">raise</span>
 
     <span class="k">finally</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">logging_fh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">logging_fh</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">logging_fh</span><span class="o">.</span><span class="n">close</span><span class="p">()</span></div>
 
 
-<div class="viewcode-block" id="read_phenotype"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.imputed_stats.read_phenotype">[docs]</a><span class="k">def</span> <span class="nf">read_phenotype</span><span class="p">(</span><span class="n">i_filename</span><span class="p">,</span> <span class="n">opts</span><span class="p">,</span> <span class="n">check_duplicated</span><span class="o">=</span><span class="bp">True</span><span class="p">):</span>
+<div class="viewcode-block" id="read_phenotype"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.imputed_stats.read_phenotype">[docs]</a><span class="k">def</span> <span class="nf">read_phenotype</span><span class="p">(</span><span class="n">i_filename</span><span class="p">,</span> <span class="n">opts</span><span class="p">,</span> <span class="n">check_duplicated</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Reads the phenotype file.</span>
 
 <span class="sd">    Args:</span>
@@ -299,23 +299,23 @@
         <span class="n">required_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">opts</span><span class="o">.</span><span class="n">pheno_name</span><span class="p">)</span>
 
     <span class="c1"># Interaction?</span>
-    <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">interaction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">interaction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">interaction</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">required_columns</span><span class="p">:</span>
             <span class="n">required_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">opts</span><span class="o">.</span><span class="n">interaction</span><span class="p">)</span>
 
     <span class="c1"># Do we need the gender column?</span>
-    <span class="n">remove_gender_column</span> <span class="o">=</span> <span class="bp">False</span>
+    <span class="n">remove_gender_column</span> <span class="o">=</span> <span class="kc">False</span>
     <span class="k">if</span> <span class="n">opts</span><span class="o">.</span><span class="n">chrx</span> <span class="ow">and</span> <span class="p">(</span><span class="n">opts</span><span class="o">.</span><span class="n">gender_column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">required_columns</span><span class="p">):</span>
         <span class="c1"># It&#39;s not already in the gender column, so we keep it, but we need to</span>
         <span class="c1"># remove it later on...</span>
         <span class="n">required_columns</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">opts</span><span class="o">.</span><span class="n">gender_column</span><span class="p">)</span>
-        <span class="n">remove_gender_column</span> <span class="o">=</span> <span class="bp">True</span>
+        <span class="n">remove_gender_column</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="c1"># We need to exclude unknown gender only if gender was required</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">opts</span><span class="o">.</span><span class="n">gender_column</span> <span class="ow">in</span> <span class="n">required_columns</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="ow">not</span> <span class="n">remove_gender_column</span><span class="p">):</span>
         <span class="c1"># Log the number of male/female/missing.</span>
         <span class="n">sex_counts</span> <span class="o">=</span> <span class="n">pheno</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">opts</span><span class="o">.</span><span class="n">gender_column</span><span class="p">)</span><span class="o">.</span><span class="n">size</span><span class="p">()</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - {:,d} males / {:,d} females ({:,d} unknown)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - </span><span class="si">{:,d}</span><span class="s2"> males / </span><span class="si">{:,d}</span><span class="s2"> females (</span><span class="si">{:,d}</span><span class="s2"> unknown)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">sex_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="n">sex_counts</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span>
             <span class="n">sex_counts</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="o">~</span><span class="p">((</span><span class="n">sex_counts</span><span class="o">.</span><span class="n">index</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span>
@@ -360,7 +360,7 @@
     <span class="n">samples</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="n">i_filename</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot; &quot;</span><span class="p">,</span> <span class="n">usecols</span><span class="o">=</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">])</span>
     <span class="n">samples</span> <span class="o">=</span> <span class="n">samples</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">samples</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
     <span class="n">samples</span><span class="p">[</span><span class="s2">&quot;ID_2&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">samples</span><span class="p">[</span><span class="s2">&quot;ID_2&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">str</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">samples</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;ID_2&quot;</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">samples</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;ID_2&quot;</span><span class="p">,</span> <span class="n">verify_integrity</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="skat_read_snp_set"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.imputed_stats.skat_read_snp_set">[docs]</a><span class="k">def</span> <span class="nf">skat_read_snp_set</span><span class="p">(</span><span class="n">i_filename</span><span class="p">):</span>
@@ -416,7 +416,7 @@
 <span class="sd">    &#39;merge_impute2&#39; step.</span>
 
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="n">markers_to_extract</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">markers_to_extract</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">i_filename</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
         <span class="n">markers_to_extract</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">i_file</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">splitlines</span><span class="p">())</span>
     <span class="k">return</span> <span class="n">markers_to_extract</span></div>
@@ -444,14 +444,14 @@
 
     <span class="c1"># We keep track of the files that are generated because we will need the</span>
     <span class="c1"># paths to generate the R script correctly.</span>
-    <span class="n">r_files</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;snp_sets&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;covariates&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span> <span class="s2">&quot;outcome&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">,</span>
-               <span class="s2">&quot;weights&quot;</span><span class="p">:</span> <span class="bp">None</span><span class="p">}</span>
+    <span class="n">r_files</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;snp_sets&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;covariates&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span> <span class="s2">&quot;outcome&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
+               <span class="s2">&quot;weights&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}</span>
 
     <span class="c1"># Read the SNP set and create the output files.</span>
     <span class="n">snp_set</span> <span class="o">=</span> <span class="n">skat_read_snp_set</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">snp_sets</span><span class="p">)</span>
 
     <span class="c1"># We will use a temporary directory for our analysis.</span>
-    <span class="n">dir_name</span> <span class="o">=</span> <span class="s2">&quot;{}.{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">dir_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
         <span class="n">args</span><span class="o">.</span><span class="n">out</span><span class="p">,</span>
         <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">today</span><span class="p">()</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s2">&quot;skat.%Y.%m.</span><span class="si">%d</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="p">)</span>
@@ -462,7 +462,7 @@
         <span class="n">os</span><span class="o">.</span><span class="n">makedirs</span><span class="p">(</span><span class="n">dir_name</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># This should not happen because the folder name contains a timestamp</span>
-        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;A folder named &#39;{}&#39; already exists.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;A folder named &#39;</span><span class="si">{}</span><span class="s2">&#39; already exists.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">dir_name</span>
         <span class="p">))</span>
 
@@ -471,7 +471,7 @@
         <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;SKAT will use the provided weights (from the SNP set &quot;</span>
                      <span class="s2">&quot;file).&quot;</span><span class="p">)</span>
         <span class="n">weight_filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="s2">&quot;weights.csv&quot;</span><span class="p">)</span>
-        <span class="n">snp_set</span><span class="p">[[</span><span class="s2">&quot;weight&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">weight_filename</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="bp">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+        <span class="n">snp_set</span><span class="p">[[</span><span class="s2">&quot;weight&quot;</span><span class="p">]]</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span><span class="n">weight_filename</span><span class="p">,</span> <span class="n">index</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">header</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
         <span class="n">r_files</span><span class="p">[</span><span class="s2">&quot;weights&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">weight_filename</span>
 
     <span class="c1"># Open genotype CSV files for every SNP set. Those CSV files will be</span>
@@ -479,11 +479,11 @@
     <span class="n">genotype_files</span> <span class="o">=</span> <span class="p">{}</span>
     <span class="n">snp_sets</span> <span class="o">=</span> <span class="n">snp_set</span><span class="p">[</span><span class="s2">&quot;snp_set&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">set_id</span> <span class="ow">in</span> <span class="n">snp_sets</span><span class="p">:</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="s2">&quot;{}.genotypes.csv&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">set_id</span><span class="p">))</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">dir_name</span><span class="p">,</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.genotypes.csv&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">set_id</span><span class="p">))</span>
         <span class="n">r_files</span><span class="p">[</span><span class="s2">&quot;snp_sets&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">filename</span><span class="p">)</span>  <span class="c1"># Track the filenames.</span>
         <span class="n">genotype_files</span><span class="p">[</span><span class="n">set_id</span><span class="p">]</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
         <span class="c1"># We write the column headers for every file.</span>
-        <span class="k">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">samples</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">genotype_files</span><span class="p">[</span><span class="n">set_id</span><span class="p">])</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="o">*</span><span class="n">samples</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">genotype_files</span><span class="p">[</span><span class="n">set_id</span><span class="p">])</span>
 
     <span class="c1"># The markers of interest are the markers we want to include in the</span>
     <span class="c1"># analysis. Concretely, they are the markers that were included in the snp</span>
@@ -494,7 +494,7 @@
     <span class="c1"># were written to file.</span>
     <span class="n">markers_of_interest</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">snp_set</span><span class="p">[</span><span class="s2">&quot;variant&quot;</span><span class="p">])</span>
     <span class="n">written_markers</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-    <span class="k">if</span> <span class="n">markers_to_extract</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">markers_to_extract</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="n">markers_of_interest</span> <span class="o">=</span> <span class="n">markers_of_interest</span> <span class="o">&amp;</span> <span class="n">markers_to_extract</span>
 
     <span class="c1"># Open the file. We use subprocess if it&#39;s gunzipped because it&#39;s faster.</span>
@@ -518,7 +518,7 @@
 
         <span class="c1"># TODO: Add the gender and do QC (men with hetero on chrX).</span>
         <span class="n">line</span> <span class="o">=</span> <span class="n">_skat_parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">markers_of_interest</span><span class="p">,</span> <span class="n">samples</span><span class="p">)</span>
-        <span class="k">if</span> <span class="n">line</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">line</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">name</span><span class="p">,</span> <span class="n">dosage</span> <span class="o">=</span> <span class="n">line</span>
             <span class="n">written_markers</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
             <span class="n">_skat_write_marker</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">dosage</span><span class="p">,</span> <span class="n">snp_set</span><span class="p">,</span> <span class="n">genotype_files</span><span class="p">)</span>
@@ -527,7 +527,7 @@
     <span class="n">number_missing</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">markers_of_interest</span><span class="p">)</span> <span class="o">-</span> <span class="nb">len</span><span class="p">(</span><span class="n">written_markers</span><span class="p">)</span>
 
     <span class="k">if</span> <span class="n">number_missing</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;{} markers of interest were not found in the Impute2 &quot;</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> markers of interest were not found in the Impute2 &quot;</span>
                         <span class="s2">&quot;file.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">number_missing</span><span class="p">))</span>
 
     <span class="n">i_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
@@ -553,7 +553,7 @@
     <span class="c1"># Write the phenotype file.</span>
     <span class="n">filename</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span>
         <span class="n">dir_name</span><span class="p">,</span>
-        <span class="s2">&quot;{}.{}.csv&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pheno_name</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">outcome_type</span><span class="p">)</span>
+        <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.</span><span class="si">{}</span><span class="s2">.csv&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pheno_name</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">outcome_type</span><span class="p">)</span>
     <span class="p">)</span>
     <span class="n">phenotype_df</span><span class="p">[[</span><span class="n">args</span><span class="o">.</span><span class="n">pheno_name</span><span class="p">]]</span><span class="o">.</span><span class="n">to_csv</span><span class="p">(</span>
         <span class="n">filename</span><span class="p">,</span>
@@ -565,7 +565,7 @@
 
     <span class="c1"># Run the SKAT analysis by calling Rscript either in different subprocesses</span>
     <span class="c1"># or linearly.</span>
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Launching SKAT using {} processes on {} SNP sets.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Launching SKAT using </span><span class="si">{}</span><span class="s2"> processes on </span><span class="si">{}</span><span class="s2"> SNP sets.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
         <span class="n">args</span><span class="o">.</span><span class="n">nb_process</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">snp_sets</span><span class="p">)</span>
     <span class="p">))</span>
 
@@ -580,16 +580,16 @@
     <span class="c1"># Finally, write the SKAT output to disk.</span>
     <span class="n">output_filename</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">out</span> <span class="o">+</span> <span class="s2">&quot;.skat.dosage&quot;</span>
 
-    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;SKAT completed, writing the results to disk ({}).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;SKAT completed, writing the results to disk (</span><span class="si">{}</span><span class="s2">).&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
         <span class="n">output_filename</span>
     <span class="p">))</span>
 
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">output_filename</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
         <span class="c1"># Write the header.</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">skat_o</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;snp_set_id&quot;</span><span class="p">,</span> <span class="s2">&quot;p_value&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;snp_set_id&quot;</span><span class="p">,</span> <span class="s2">&quot;p_value&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="k">print</span><span class="p">(</span><span class="s2">&quot;snp_set_id&quot;</span><span class="p">,</span> <span class="s2">&quot;p_value&quot;</span><span class="p">,</span> <span class="s2">&quot;q_value&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;snp_set_id&quot;</span><span class="p">,</span> <span class="s2">&quot;p_value&quot;</span><span class="p">,</span> <span class="s2">&quot;q_value&quot;</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
 
         <span class="c1"># The order in the snp_sets list should have been consistent</span>
         <span class="c1"># across the whole analysis. We just want to make sure that we</span>
@@ -600,9 +600,9 @@
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">p_value</span><span class="p">,</span> <span class="n">q_value</span><span class="p">)</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">results</span><span class="p">):</span>
             <span class="n">set_id</span> <span class="o">=</span> <span class="n">snp_sets</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">skat_o</span><span class="p">:</span>
-                <span class="k">print</span><span class="p">(</span><span class="n">set_id</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="n">set_id</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">print</span><span class="p">(</span><span class="n">set_id</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">q_value</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span></div>
+                <span class="nb">print</span><span class="p">(</span><span class="n">set_id</span><span class="p">,</span> <span class="n">p_value</span><span class="p">,</span> <span class="n">q_value</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">f</span><span class="p">)</span></div>
 
 
 <span class="k">def</span> <span class="nf">_skat_run_job</span><span class="p">(</span><span class="n">script_filename</span><span class="p">):</span>
@@ -643,19 +643,19 @@
 
     <span class="c1"># Getting the p value</span>
     <span class="n">p_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">r&quot;_PYTHON_HOOK_PVAL:\[(.+)\]&quot;</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">p_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">p_match</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;SKAT did not return properly. See script &quot;</span>
-                          <span class="s2">&quot;&#39;{}&#39; for details.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">script_filename</span><span class="p">))</span>
+                          <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39; for details.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">script_filename</span><span class="p">))</span>
 
     <span class="c1"># Getting the Q value</span>
     <span class="n">q_match</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">r&quot;_PYTHON_HOOK_QVAL:\[(.+)\]&quot;</span><span class="p">,</span> <span class="n">out</span><span class="p">)</span>
-    <span class="k">if</span> <span class="n">q_match</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">q_match</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;SKAT did not return properly. See script &quot;</span>
-                          <span class="s2">&quot;&#39;{}&#39; for details.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">script_filename</span><span class="p">))</span>
+                          <span class="s2">&quot;&#39;</span><span class="si">{}</span><span class="s2">&#39; for details.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">script_filename</span><span class="p">))</span>
 
     <span class="k">if</span> <span class="n">q_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="o">==</span> <span class="s2">&quot;NA&quot;</span><span class="p">:</span>
         <span class="c1"># For SKAT-O, the Q will be set to NA.</span>
-        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">p_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">p_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span> <span class="kc">None</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">p_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">)),</span> <span class="nb">float</span><span class="p">(</span><span class="n">q_match</span><span class="o">.</span><span class="n">group</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 
@@ -694,7 +694,7 @@
             <span class="n">skat_o</span><span class="o">=</span><span class="n">args</span><span class="o">.</span><span class="n">skat_o</span><span class="p">,</span>
         <span class="p">)</span>
         <span class="c1"># Write the rendered script to disk.</span>
-        <span class="n">script_filename</span> <span class="o">=</span> <span class="s2">&quot;run_skat_{}R&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="n">script_filename</span> <span class="o">=</span> <span class="s2">&quot;run_skat_</span><span class="si">{}</span><span class="s2">R&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="c1"># We parse the set id name.</span>
             <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="n">snp_set_file</span><span class="p">)[:</span><span class="o">-</span><span class="nb">len</span><span class="p">(</span><span class="s2">&quot;.genotype.csv&quot;</span><span class="p">)]</span>
         <span class="p">)</span>
@@ -708,7 +708,7 @@
     <span class="k">return</span> <span class="n">scripts</span>
 
 
-<span class="k">def</span> <span class="nf">_skat_parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">markers_of_interest</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<span class="k">def</span> <span class="nf">_skat_parse_line</span><span class="p">(</span><span class="n">line</span><span class="p">,</span> <span class="n">markers_of_interest</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">gender</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Parses a single line of the Impute2 file.</span>
 
 <span class="sd">    Args:</span>
@@ -736,7 +736,7 @@
 
     <span class="c1"># If this marker is not of interest, we don&#39;t bother continuing.</span>
     <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">markers_of_interest</span><span class="p">:</span>
-        <span class="k">return</span> <span class="bp">None</span>
+        <span class="k">return</span> <span class="kc">None</span>
 
     <span class="c1"># We need to compute the dosage vector.</span>
     <span class="c1"># This is given wrt to the minor and major alleles, so we need to get the</span>
@@ -774,7 +774,7 @@
     <span class="n">this_snp_set</span> <span class="o">=</span> <span class="n">snp_set</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">snp_set</span><span class="p">[</span><span class="s2">&quot;variant&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">name</span><span class="p">,</span> <span class="s2">&quot;snp_set&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">set_id</span> <span class="ow">in</span> <span class="n">this_snp_set</span><span class="p">:</span>
         <span class="n">file_object</span> <span class="o">=</span> <span class="n">genotype_files</span><span class="p">[</span><span class="n">set_id</span><span class="p">]</span>
-        <span class="k">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">dosage</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">file_object</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="o">*</span><span class="n">dosage</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;,&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">file_object</span><span class="p">)</span>
 
 
 <div class="viewcode-block" id="compute_statistics"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.imputed_stats.compute_statistics">[docs]</a><span class="k">def</span> <span class="nf">compute_statistics</span><span class="p">(</span><span class="n">impute2_filename</span><span class="p">,</span> <span class="n">samples</span><span class="p">,</span> <span class="n">markers_to_extract</span><span class="p">,</span>
@@ -798,10 +798,10 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># The name of the output file</span>
-    <span class="n">o_name</span> <span class="o">=</span> <span class="s2">&quot;{}.{}.dosage&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">out_prefix</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">analysis_type</span><span class="p">)</span>
+    <span class="n">o_name</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">.</span><span class="si">{}</span><span class="s2">.dosage&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">out_prefix</span><span class="p">,</span> <span class="n">options</span><span class="o">.</span><span class="n">analysis_type</span><span class="p">)</span>
 
     <span class="c1"># Do we need to create a formula?</span>
-    <span class="n">formula</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">formula</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">!=</span> <span class="s2">&quot;cox&quot;</span><span class="p">:</span>
         <span class="n">formula</span> <span class="o">=</span> <span class="n">get_formula</span><span class="p">(</span>
             <span class="n">phenotype</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">pheno_name</span><span class="p">,</span>
@@ -810,7 +810,7 @@
             <span class="n">gender_c</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">gender_column</span><span class="p">,</span>
             <span class="n">categorical</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">categorical</span><span class="p">,</span>
         <span class="p">)</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;{}: &#39;{}&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">analysis_type</span><span class="p">,</span> <span class="n">formula</span><span class="p">))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: &#39;</span><span class="si">{}</span><span class="s2">&#39;&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">analysis_type</span><span class="p">,</span> <span class="n">formula</span><span class="p">))</span>
         <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">==</span> <span class="s2">&quot;mixedlm&quot;</span> <span class="ow">and</span> <span class="n">options</span><span class="o">.</span><span class="n">use_ml</span><span class="p">:</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - using ML&quot;</span><span class="p">)</span>
 
@@ -826,10 +826,10 @@
 
     <span class="c1"># Reading the IMPUTE2 file one line (site) at a time, creating a subprocess</span>
     <span class="c1"># if required</span>
-    <span class="n">proc</span> <span class="o">=</span> <span class="bp">None</span>
-    <span class="n">i_file</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">proc</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">i_file</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">o_file</span> <span class="o">=</span> <span class="nb">open</span><span class="p">(</span><span class="n">o_name</span><span class="p">,</span> <span class="s2">&quot;w&quot;</span><span class="p">)</span>
-    <span class="n">pool</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">pool</span> <span class="o">=</span> <span class="kc">None</span>
 
     <span class="c1"># Multiprocessing?</span>
     <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">nb_process</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
@@ -852,14 +852,14 @@
         <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">==</span> <span class="s2">&quot;mixedlm&quot;</span><span class="p">:</span>
             <span class="n">header</span> <span class="o">=</span> <span class="n">header</span> <span class="o">+</span> <span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="p">)</span>
 
-        <span class="k">print</span><span class="p">(</span><span class="o">*</span><span class="n">header</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">header</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
 
         <span class="c1"># The sites to process (if multiprocessing)</span>
         <span class="n">sites_to_process</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="c1"># We need to compute the random effects if it&#39;s a MixedLM analysis</span>
-        <span class="n">random_effects</span> <span class="o">=</span> <span class="bp">None</span>
-        <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">==</span> <span class="s2">&quot;mixedlm&quot;</span> <span class="ow">and</span> <span class="n">options</span><span class="o">.</span><span class="n">interaction</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">random_effects</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="k">if</span> <span class="n">options</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">==</span> <span class="s2">&quot;mixedlm&quot;</span> <span class="ow">and</span> <span class="n">options</span><span class="o">.</span><span class="n">interaction</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">random_effects</span> <span class="o">=</span> <span class="n">smf</span><span class="o">.</span><span class="n">mixedlm</span><span class="p">(</span>
                 <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;_GenoD + &quot;</span><span class="p">,</span> <span class="s2">&quot;&quot;</span><span class="p">),</span>
                 <span class="n">data</span><span class="o">=</span><span class="n">phenotypes</span><span class="p">,</span>
@@ -882,11 +882,11 @@
                 <span class="n">row</span><span class="o">=</span><span class="n">row</span><span class="p">,</span>
                 <span class="n">samples</span><span class="o">=</span><span class="n">samples</span><span class="p">,</span>
                 <span class="n">pheno</span><span class="o">=</span><span class="n">phenotypes</span><span class="p">,</span>
-                <span class="n">use_ml</span><span class="o">=</span><span class="nb">vars</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;use_ml&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-                <span class="n">pheno_name</span><span class="o">=</span><span class="nb">vars</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pheno_name&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+                <span class="n">use_ml</span><span class="o">=</span><span class="nb">vars</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;use_ml&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                <span class="n">pheno_name</span><span class="o">=</span><span class="nb">vars</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;pheno_name&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                 <span class="n">formula</span><span class="o">=</span><span class="n">formula</span><span class="p">,</span>
-                <span class="n">time_to_event</span><span class="o">=</span><span class="nb">vars</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tte&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
-                <span class="n">event</span><span class="o">=</span><span class="nb">vars</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+                <span class="n">time_to_event</span><span class="o">=</span><span class="nb">vars</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;tte&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
+                <span class="n">event</span><span class="o">=</span><span class="nb">vars</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;event&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
                 <span class="n">inter_c</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">interaction</span><span class="p">,</span>
                 <span class="n">is_chrx</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">chrx</span><span class="p">,</span>
                 <span class="n">gender_c</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">gender_column</span><span class="p">,</span>
@@ -898,7 +898,7 @@
                 <span class="n">number_to_print</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">header</span><span class="p">),</span>
                 <span class="n">categorical</span><span class="o">=</span><span class="n">options</span><span class="o">.</span><span class="n">categorical</span><span class="p">,</span>
                 <span class="n">random_effects</span><span class="o">=</span><span class="n">random_effects</span><span class="p">,</span>
-                <span class="n">mixedlm_p</span><span class="o">=</span><span class="nb">vars</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;p_threshold&quot;</span><span class="p">,</span> <span class="bp">None</span><span class="p">),</span>
+                <span class="n">mixedlm_p</span><span class="o">=</span><span class="nb">vars</span><span class="p">(</span><span class="n">options</span><span class="p">)</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;p_threshold&quot;</span><span class="p">,</span> <span class="kc">None</span><span class="p">),</span>
             <span class="p">)</span>
 
             <span class="c1"># Is there more than one process</span>
@@ -910,29 +910,29 @@
                 <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sites_to_process</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="n">options</span><span class="o">.</span><span class="n">nb_lines</span><span class="p">:</span>
                     <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">process_impute2_site</span><span class="p">,</span>
                                            <span class="n">sites_to_process</span><span class="p">):</span>
-                        <span class="k">print</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+                        <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
 
                     <span class="c1"># Logging</span>
                     <span class="n">nb_processed</span> <span class="o">+=</span> <span class="n">options</span><span class="o">.</span><span class="n">nb_lines</span>
-                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Processed {:,d} lines&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_processed</span><span class="p">))</span>
+                    <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Processed </span><span class="si">{:,d}</span><span class="s2"> lines&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_processed</span><span class="p">))</span>
 
                     <span class="c1"># Resetting the sites to process</span>
                     <span class="n">sites_to_process</span> <span class="o">=</span> <span class="p">[]</span>
 
             <span class="k">else</span><span class="p">:</span>
                 <span class="c1"># Processing this row</span>
-                <span class="k">print</span><span class="p">(</span><span class="o">*</span><span class="n">process_impute2_site</span><span class="p">(</span><span class="n">site</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">process_impute2_site</span><span class="p">(</span><span class="n">site</span><span class="p">),</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
 
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sites_to_process</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
             <span class="k">for</span> <span class="n">result</span> <span class="ow">in</span> <span class="n">pool</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="n">process_impute2_site</span><span class="p">,</span> <span class="n">sites_to_process</span><span class="p">):</span>
-                <span class="k">print</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
+                <span class="nb">print</span><span class="p">(</span><span class="o">*</span><span class="n">result</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">file</span><span class="o">=</span><span class="n">o_file</span><span class="p">)</span>
 
             <span class="c1"># Logging</span>
             <span class="n">nb_processed</span> <span class="o">+=</span> <span class="nb">len</span><span class="p">(</span><span class="n">sites_to_process</span><span class="p">)</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Processed {:,d} lines&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_processed</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Processed </span><span class="si">{:,d}</span><span class="s2"> lines&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">nb_processed</span><span class="p">))</span>
 
     <span class="k">except</span> <span class="ne">Exception</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">pool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">pool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">terminate</span><span class="p">()</span>
         <span class="n">logging</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="n">traceback</span><span class="o">.</span><span class="n">format_exc</span><span class="p">())</span>
         <span class="k">raise</span>
@@ -942,16 +942,16 @@
         <span class="n">i_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
         <span class="c1"># Finishing the rows if required</span>
-        <span class="k">if</span> <span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">nb_process</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">pool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">):</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">options</span><span class="o">.</span><span class="n">nb_process</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="n">pool</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">):</span>
             <span class="n">pool</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
         <span class="c1"># Closing the output file</span>
         <span class="n">o_file</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 
         <span class="c1"># Closing the proc</span>
-        <span class="k">if</span> <span class="n">proc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">proc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">proc</span><span class="o">.</span><span class="n">wait</span><span class="p">()</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: problem while reading the GZ &quot;</span>
+                <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: problem while reading the GZ &quot;</span>
                                   <span class="s2">&quot;file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">impute2_filename</span><span class="p">))</span></div>
 
 
@@ -984,8 +984,8 @@
         <span class="n">site_info</span><span class="o">.</span><span class="n">pheno</span><span class="p">,</span>
         <span class="n">samples</span><span class="p">,</span>
         <span class="n">how</span><span class="o">=</span><span class="s2">&quot;inner&quot;</span><span class="p">,</span>
-        <span class="n">left_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-        <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span>
+        <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span>
     <span class="p">)</span><span class="o">.</span><span class="n">dropna</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)[</span><span class="nb">list</span><span class="p">(</span><span class="n">site_info</span><span class="o">.</span><span class="n">pheno</span><span class="o">.</span><span class="n">columns</span><span class="p">)</span> <span class="o">+</span> <span class="n">dosage_columns</span><span class="p">]</span>
 
     <span class="c1"># Keeping only good quality markers</span>
@@ -1003,7 +1003,7 @@
         <span class="n">t_data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">first</span><span class="p">()</span>
 
     <span class="c1"># Checking gender if required</span>
-    <span class="n">gender</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">gender</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">site_info</span><span class="o">.</span><span class="n">is_chrx</span><span class="p">:</span>
         <span class="c1"># We want to exclude males with heterozygous calls for the rest of the</span>
         <span class="c1"># analysis</span>
@@ -1012,8 +1012,8 @@
             <span class="n">dosage_columns</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">invalid_rows</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
-            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;There were {:,d} males with heterozygous &quot;</span>
-                            <span class="s2">&quot;calls for {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">invalid_rows</span><span class="p">),</span> <span class="n">name</span><span class="p">))</span>
+            <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;There were </span><span class="si">{:,d}</span><span class="s2"> males with heterozygous &quot;</span>
+                            <span class="s2">&quot;calls for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">invalid_rows</span><span class="p">),</span> <span class="n">name</span><span class="p">))</span>
             <span class="n">logging</span><span class="o">.</span><span class="n">debug</span><span class="p">(</span><span class="n">t_data</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span>
             <span class="n">data</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">invalid_rows</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
             <span class="n">t_data</span> <span class="o">=</span> <span class="n">t_data</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">invalid_rows</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
@@ -1055,10 +1055,10 @@
 
     <span class="c1"># The column to get the result from</span>
     <span class="n">result_from_column</span> <span class="o">=</span> <span class="s2">&quot;_GenoD&quot;</span>
-    <span class="k">if</span> <span class="n">site_info</span><span class="o">.</span><span class="n">inter_c</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">site_info</span><span class="o">.</span><span class="n">inter_c</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">((</span><span class="n">site_info</span><span class="o">.</span><span class="n">inter_c</span> <span class="o">==</span> <span class="n">site_info</span><span class="o">.</span><span class="n">gender_c</span><span class="p">)</span> <span class="ow">or</span>
                 <span class="p">(</span><span class="n">site_info</span><span class="o">.</span><span class="n">inter_c</span> <span class="ow">in</span> <span class="n">site_info</span><span class="o">.</span><span class="n">categorical</span><span class="p">)):</span>
-            <span class="n">result_from_column</span> <span class="o">=</span> <span class="s2">&quot;_GenoD:C({})[T.{}]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="n">result_from_column</span> <span class="o">=</span> <span class="s2">&quot;_GenoD:C(</span><span class="si">{}</span><span class="s2">)[T.</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">site_info</span><span class="o">.</span><span class="n">inter_c</span><span class="p">,</span>
                 <span class="nb">sorted</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">site_info</span><span class="o">.</span><span class="n">inter_c</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">())[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span>
             <span class="p">)</span>
@@ -1078,11 +1078,11 @@
             <span class="n">use_ml</span><span class="o">=</span><span class="n">site_info</span><span class="o">.</span><span class="n">use_ml</span><span class="p">,</span>
             <span class="n">random_effects</span><span class="o">=</span><span class="n">site_info</span><span class="o">.</span><span class="n">random_effects</span><span class="p">,</span>
             <span class="n">mixedlm_p</span><span class="o">=</span><span class="n">site_info</span><span class="o">.</span><span class="n">mixedlm_p</span><span class="p">,</span>
-            <span class="n">interaction</span><span class="o">=</span><span class="n">site_info</span><span class="o">.</span><span class="n">inter_c</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">,</span>
+            <span class="n">interaction</span><span class="o">=</span><span class="n">site_info</span><span class="o">.</span><span class="n">inter_c</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">,</span>
         <span class="p">)</span>
     <span class="k">except</span> <span class="n">LinAlgError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
         <span class="c1"># Something strange happened...</span>
-        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;{}: numpy LinAlgError: {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
+        <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: numpy LinAlgError: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)))</span>
 
     <span class="c1"># Extending the list to return</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">results</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
@@ -1136,19 +1136,19 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># The phenotype and genetics</span>
-    <span class="n">formula</span> <span class="o">=</span> <span class="s2">&quot;{} ~ _GenoD&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">phenotype</span><span class="p">)</span>
+    <span class="n">formula</span> <span class="o">=</span> <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> ~ _GenoD&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">phenotype</span><span class="p">)</span>
 
     <span class="c1"># Are there any covars?</span>
     <span class="k">for</span> <span class="n">covar</span> <span class="ow">in</span> <span class="n">covars</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">covar</span> <span class="o">==</span> <span class="n">gender_c</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">covar</span> <span class="ow">in</span> <span class="n">categorical</span><span class="p">):</span>
-            <span class="n">covar</span> <span class="o">=</span> <span class="s2">&quot;C({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">covar</span><span class="p">)</span>
+            <span class="n">covar</span> <span class="o">=</span> <span class="s2">&quot;C(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">covar</span><span class="p">)</span>
         <span class="n">formula</span> <span class="o">+=</span> <span class="s2">&quot; + &quot;</span> <span class="o">+</span> <span class="n">covar</span>
 
     <span class="c1"># Is there an interaction term?</span>
-    <span class="k">if</span> <span class="n">interaction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">interaction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="p">(</span><span class="n">interaction</span> <span class="o">==</span> <span class="n">gender_c</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="n">interaction</span> <span class="ow">in</span> <span class="n">categorical</span><span class="p">):</span>
-            <span class="n">interaction</span> <span class="o">=</span> <span class="s2">&quot;C({})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">interaction</span><span class="p">)</span>
-        <span class="n">formula</span> <span class="o">+=</span> <span class="s2">&quot; + _GenoD*{}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">interaction</span><span class="p">)</span>
+            <span class="n">interaction</span> <span class="o">=</span> <span class="s2">&quot;C(</span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">interaction</span><span class="p">)</span>
+        <span class="n">formula</span> <span class="o">+=</span> <span class="s2">&quot; + _GenoD*</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">interaction</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">formula</span></div>
 
@@ -1173,11 +1173,11 @@
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Preparing the data using Patsy</span>
     <span class="n">y</span><span class="p">,</span> <span class="n">X</span> <span class="o">=</span> <span class="n">dmatrices</span><span class="p">(</span><span class="n">formula</span><span class="p">,</span> <span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">return_type</span><span class="o">=</span><span class="s2">&quot;dataframe&quot;</span><span class="p">)</span>
-    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;Intercept&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">left_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
-                    <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">X</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="s2">&quot;Intercept&quot;</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">),</span> <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+                    <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
     <span class="c1"># Fitting</span>
-    <span class="n">cf</span> <span class="o">=</span> <span class="n">CoxPHFitter</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">tie_method</span><span class="o">=</span><span class="s2">&quot;Efron&quot;</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">cf</span> <span class="o">=</span> <span class="n">CoxPHFitter</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.95</span><span class="p">,</span> <span class="n">tie_method</span><span class="o">=</span><span class="s2">&quot;Efron&quot;</span><span class="p">,</span> <span class="n">normalize</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
     <span class="n">cf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">duration_col</span><span class="o">=</span><span class="n">time_to_event</span><span class="p">,</span> <span class="n">event_col</span><span class="o">=</span><span class="n">event</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">cf</span><span class="o">.</span><span class="n">summary</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="n">result_col</span><span class="p">,</span> <span class="n">_COX_REQ_COLS</span><span class="p">]</span><span class="o">.</span><span class="n">values</span></div>
 
@@ -1247,7 +1247,7 @@
 
         <span class="c1"># Merging with the random effects</span>
         <span class="n">t_data</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">random_effects</span><span class="p">,</span> <span class="n">geno</span><span class="o">.</span><span class="n">set_index</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">),</span>
-                          <span class="n">left_index</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+                          <span class="n">left_index</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">right_index</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
         <span class="c1"># Approximating the results</span>
         <span class="n">approximate_r</span> <span class="o">=</span> <span class="n">_get_result_from_linear</span><span class="p">(</span>
@@ -1372,18 +1372,18 @@
     <span class="c1"># Checking the required input files</span>
     <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">impute2</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">sample</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">pheno</span><span class="p">]:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: no such file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: no such file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
 
     <span class="c1"># Checking the optional input files</span>
     <span class="k">for</span> <span class="n">filename</span> <span class="ow">in</span> <span class="p">[</span><span class="n">args</span><span class="o">.</span><span class="n">extract_sites</span><span class="p">]:</span>
-        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">is_file_like</span><span class="p">(</span><span class="n">filename</span><span class="p">):</span>
-                <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: no such file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
+                <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: no such file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="p">))</span>
 
     <span class="c1"># Checking the number of process</span>
     <span class="n">on_mac_os</span> <span class="o">=</span> <span class="n">platform</span><span class="o">.</span><span class="n">system</span><span class="p">()</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">nb_process</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: invalid number of &quot;</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: invalid number of &quot;</span>
                           <span class="s2">&quot;processes&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">nb_process</span><span class="p">))</span>
     <span class="k">if</span> <span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">nb_process</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="ow">and</span> <span class="n">on_mac_os</span> <span class="ow">and</span> <span class="n">args</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">!=</span> <span class="s2">&quot;skat&quot;</span><span class="p">):</span>
         <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;multiprocessing is not supported on Mac OS when &quot;</span>
@@ -1392,40 +1392,40 @@
 
     <span class="c1"># Checking the number of lines to read</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">nb_lines</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: invalid number of lines to &quot;</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: invalid number of lines to &quot;</span>
                           <span class="s2">&quot;read&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">nb_lines</span><span class="p">))</span>
 
     <span class="c1"># Checking the MAF threshold</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">maf</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">maf</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: invalid MAF&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">maf</span><span class="p">))</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: invalid MAF&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">maf</span><span class="p">))</span>
 
     <span class="c1"># Checking the probability threshold</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">prob</span> <span class="o">&lt;</span> <span class="mi">0</span> <span class="ow">or</span> <span class="n">args</span><span class="o">.</span><span class="n">prob</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: invalid probability &quot;</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: invalid probability &quot;</span>
                           <span class="s2">&quot;threshold&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">prob</span><span class="p">))</span>
 
     <span class="c1"># Reading all the variables in the phenotype file</span>
-    <span class="n">header</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">header</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pheno</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">i_file</span><span class="p">:</span>
         <span class="n">header</span> <span class="o">=</span> <span class="p">{</span><span class="n">name</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">i_file</span><span class="o">.</span><span class="n">readline</span><span class="p">()</span><span class="o">.</span><span class="n">rstrip</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\t</span><span class="s2">&quot;</span><span class="p">)}</span>
 
     <span class="c1"># Checking the restricted columns</span>
     <span class="n">restricted_columns</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;_D1&quot;</span><span class="p">,</span> <span class="s2">&quot;_D2&quot;</span><span class="p">,</span> <span class="s2">&quot;_D3&quot;</span><span class="p">,</span> <span class="s2">&quot;_MaxD&quot;</span><span class="p">,</span> <span class="s2">&quot;_GenoD&quot;</span><span class="p">,</span> <span class="s2">&quot;_Inter&quot;</span><span class="p">}</span>
     <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">restricted_columns</span> <span class="o">&amp;</span> <span class="n">header</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: {}: restricted variables&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">: restricted variables&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">args</span><span class="o">.</span><span class="n">pheno</span><span class="p">,</span>
             <span class="n">restricted_columns</span> <span class="o">&amp;</span> <span class="n">header</span><span class="p">,</span>
         <span class="p">))</span>
 
     <span class="c1"># Checking the required columns</span>
-    <span class="n">variables_to_check</span> <span class="o">=</span> <span class="bp">None</span>
+    <span class="n">variables_to_check</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">==</span> <span class="s2">&quot;cox&quot;</span><span class="p">:</span>
         <span class="n">variables_to_check</span> <span class="o">=</span> <span class="p">{</span><span class="n">args</span><span class="o">.</span><span class="n">tte</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">event</span><span class="p">}</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="n">variables_to_check</span> <span class="o">=</span> <span class="p">{</span><span class="n">args</span><span class="o">.</span><span class="n">pheno_name</span><span class="p">}</span>
     <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">variables_to_check</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">variable</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: {}: missing variable for {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">: missing variable for </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">args</span><span class="o">.</span><span class="n">pheno</span><span class="p">,</span>
                 <span class="n">variable</span><span class="p">,</span>
                 <span class="n">args</span><span class="o">.</span><span class="n">analysis_type</span><span class="p">,</span>
@@ -1437,13 +1437,13 @@
         <span class="n">categorical_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">categorical</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">))</span>
     <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">categorical_set</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: {}: missing categorical value&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">: missing categorical value&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">args</span><span class="o">.</span><span class="n">pheno</span><span class="p">,</span>
                 <span class="n">name</span><span class="p">,</span>
             <span class="p">))</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">analysis_type</span> <span class="o">!=</span> <span class="s2">&quot;cox&quot;</span><span class="p">:</span>
             <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">pheno_name</span> <span class="ow">in</span> <span class="n">categorical_set</span><span class="p">:</span>
-                <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: {}: should not be in categorical &quot;</span>
+                <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">: should not be in categorical &quot;</span>
                                   <span class="s2">&quot;list&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">pheno</span><span class="p">,</span> <span class="n">args</span><span class="o">.</span><span class="n">pheno_name</span><span class="p">))</span>
     <span class="n">args</span><span class="o">.</span><span class="n">categorical</span> <span class="o">=</span> <span class="n">categorical_set</span>
 
@@ -1453,7 +1453,7 @@
         <span class="n">covar_list</span> <span class="o">=</span> <span class="n">args</span><span class="o">.</span><span class="n">covar</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;,&quot;</span><span class="p">)</span>
     <span class="k">for</span> <span class="n">covar</span> <span class="ow">in</span> <span class="n">covar_list</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">covar</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
-            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: {}: missing co-variable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">: missing co-variable&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                 <span class="n">args</span><span class="o">.</span><span class="n">pheno</span><span class="p">,</span>
                 <span class="n">covar</span><span class="p">,</span>
             <span class="p">))</span>
@@ -1461,7 +1461,7 @@
 
     <span class="c1"># Checking the sample column</span>
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">sample_column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;{}: {}: no such column (--sample-column)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">: no such column (--sample-column)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
             <span class="n">args</span><span class="o">.</span><span class="n">pheno</span><span class="p">,</span>
             <span class="n">args</span><span class="o">.</span><span class="n">sample_column</span><span class="p">,</span>
         <span class="p">))</span>
@@ -1470,17 +1470,17 @@
     <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">gender_column</span> <span class="o">!=</span> <span class="s2">&quot;None&quot;</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">gender_column</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span>
-                <span class="s2">&quot;{}: {}: no such column (--gender-column)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">: no such column (--gender-column)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">args</span><span class="o">.</span><span class="n">pheno</span><span class="p">,</span>
                     <span class="n">args</span><span class="o">.</span><span class="n">gender_column</span><span class="p">,</span>
                 <span class="p">)</span>
             <span class="p">)</span>
 
     <span class="c1"># Checking the interaction column (if required)</span>
-    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">interaction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">interaction</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">if</span> <span class="n">args</span><span class="o">.</span><span class="n">interaction</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">header</span><span class="p">:</span>
             <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span>
-                <span class="s2">&quot;{}: {}: no such column (--interaction)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: </span><span class="si">{}</span><span class="s2">: no such column (--interaction)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
                     <span class="n">args</span><span class="o">.</span><span class="n">pheno</span><span class="p">,</span>
                     <span class="n">args</span><span class="o">.</span><span class="n">interaction</span><span class="p">,</span>
                 <span class="p">)</span>
@@ -1493,10 +1493,10 @@
             <span class="n">logging</span><span class="o">.</span><span class="n">warning</span><span class="p">(</span><span class="s2">&quot;when using interaction, mixedlm optimization &quot;</span>
                             <span class="s2">&quot;cannot be performed, analysis will be slow&quot;</span><span class="p">)</span>
 
-    <span class="k">return</span> <span class="bp">True</span></div>
+    <span class="k">return</span> <span class="kc">True</span></div>
 
 
-<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.imputed_stats.parse_args">[docs]</a><span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+<div class="viewcode-block" id="parse_args"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.imputed_stats.parse_args">[docs]</a><span class="k">def</span> <span class="nf">parse_args</span><span class="p">(</span><span class="n">parser</span><span class="p">,</span> <span class="n">args</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;Parses the command line options and arguments.</span>
 
 <span class="sd">    Args:</span>
@@ -1517,16 +1517,16 @@
         <span class="s2">&quot;-v&quot;</span><span class="p">,</span>
         <span class="s2">&quot;--version&quot;</span><span class="p">,</span>
         <span class="n">action</span><span class="o">=</span><span class="s2">&quot;version&quot;</span><span class="p">,</span>
-        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(prog)s</span><span class="s2">, part of genipe version {}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(prog)s</span><span class="s2">, part of genipe version </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
     <span class="p">)</span>
 
     <span class="c1"># Creating a parent parser (for common options between analysis type)</span>
-    <span class="n">p_parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">add_help</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="n">p_parser</span> <span class="o">=</span> <span class="n">argparse</span><span class="o">.</span><span class="n">ArgumentParser</span><span class="p">(</span><span class="n">add_help</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="c1"># The parser object</span>
     <span class="n">p_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">&quot;-v&quot;</span><span class="p">,</span> <span class="s2">&quot;--version&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;version&quot;</span><span class="p">,</span>
-        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(prog)s</span><span class="s2"> (part of genipe version {})&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
+        <span class="n">version</span><span class="o">=</span><span class="s2">&quot;</span><span class="si">%(prog)s</span><span class="s2"> (part of genipe version </span><span class="si">{}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
     <span class="p">)</span>
     <span class="n">p_parser</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">&quot;--debug&quot;</span><span class="p">,</span> <span class="n">action</span><span class="o">=</span><span class="s2">&quot;store_true&quot;</span><span class="p">,</span>
@@ -1536,16 +1536,16 @@
     <span class="c1"># The input files</span>
     <span class="n">group</span> <span class="o">=</span> <span class="n">p_parser</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s2">&quot;Input Files&quot;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--impute2&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="s2">&quot;--impute2&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The output from IMPUTE2.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--sample&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="s2">&quot;--sample&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The sample file (the order should be the same as in the IMPUTE2 &quot;</span>
              <span class="s2">&quot;files).&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--pheno&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="s2">&quot;--pheno&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The file containing phenotypes and co variables.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
@@ -1637,7 +1637,7 @@
         <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;analysis_type&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="n">subparsers</span><span class="o">.</span><span class="n">required</span> <span class="o">=</span> <span class="bp">True</span>
+    <span class="n">subparsers</span><span class="o">.</span><span class="n">required</span> <span class="o">=</span> <span class="kc">True</span>
 
     <span class="c1"># The Cox parser</span>
     <span class="n">cox_parser</span> <span class="o">=</span> <span class="n">subparsers</span><span class="o">.</span><span class="n">add_parser</span><span class="p">(</span>
@@ -1645,18 +1645,18 @@
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Cox&#39;s proportional hazard model (survival regression).&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Performs a survival regression on imputed data using &quot;</span>
                     <span class="s2">&quot;Cox&#39;s proportional hazard model. This script is part of &quot;</span>
-                    <span class="s2">&quot;the &#39;genipe&#39; package, version {}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
+                    <span class="s2">&quot;the &#39;genipe&#39; package, version </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
         <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">p_parser</span><span class="p">],</span>
     <span class="p">)</span>
 
     <span class="n">group</span> <span class="o">=</span> <span class="n">cox_parser</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s2">&quot;Cox&#39;s Proportional Hazard Model &quot;</span>
                                           <span class="s2">&quot;Options&quot;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--time-to-event&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;tte&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;--time-to-event&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">dest</span><span class="o">=</span><span class="s2">&quot;tte&quot;</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The time to event variable (in the pheno file).&quot;</span><span class="p">,</span>
     <span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--event&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="s2">&quot;--event&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The event variable (1 if observed, 0 if not observed)&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -1666,14 +1666,14 @@
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Linear regression (ordinary least squares).&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Performs a linear regression (ordinary least squares) on &quot;</span>
                     <span class="s2">&quot;imputed data. This script is part of the &#39;genipe&#39; &quot;</span>
-                    <span class="s2">&quot;package, version {}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
+                    <span class="s2">&quot;package, version </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
         <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">p_parser</span><span class="p">],</span>
     <span class="p">)</span>
 
     <span class="c1"># The phenotype options for linear regression</span>
     <span class="n">group</span> <span class="o">=</span> <span class="n">lin_parser</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s2">&quot;Linear Regression Options&quot;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--pheno-name&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="s2">&quot;--pheno-name&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The phenotype.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -1683,14 +1683,14 @@
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;Logistic regression (GLM with binomial distribution).&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Performs a logistic regression on imputed data using a &quot;</span>
                     <span class="s2">&quot;GLM with a binomial distribution. This script is part of &quot;</span>
-                    <span class="s2">&quot;the &#39;genipe&#39; package, version {}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
+                    <span class="s2">&quot;the &#39;genipe&#39; package, version </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
         <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">p_parser</span><span class="p">],</span>
     <span class="p">)</span>
 
     <span class="c1"># The phenotype options for logistic regression</span>
     <span class="n">group</span> <span class="o">=</span> <span class="n">logit_parser</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s2">&quot;Logistic Regression Options&quot;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--pheno-name&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="s2">&quot;--pheno-name&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The phenotype.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -1702,14 +1702,14 @@
                     <span class="s2">&quot;data using a random intercept for each group. A p-value &quot;</span>
                     <span class="s2">&quot;approximation is performed so that computation time is &quot;</span>
                     <span class="s2">&quot;acceptable for imputed data. This script is part of the &quot;</span>
-                    <span class="s2">&quot;&#39;genipe&#39; package, version {}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
+                    <span class="s2">&quot;&#39;genipe&#39; package, version </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
         <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">p_parser</span><span class="p">],</span>
     <span class="p">)</span>
 
     <span class="c1"># The phenotype options for the mixed effect model</span>
     <span class="n">group</span> <span class="o">=</span> <span class="n">mixedlm_parser</span><span class="o">.</span><span class="n">add_argument_group</span><span class="p">(</span><span class="s2">&quot;Linear Mixed Effects Options&quot;</span><span class="p">)</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--pheno-name&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="s2">&quot;--pheno-name&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The phenotype.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
@@ -1720,7 +1720,7 @@
     <span class="p">)</span>
 
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--p-threshold&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FLOAT&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mf">1e-4</span><span class="p">,</span>
+        <span class="s2">&quot;--p-threshold&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">float</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FLOAT&quot;</span><span class="p">,</span> <span class="n">default</span><span class="o">=</span><span class="mi">1</span><span class="n">e</span><span class="o">-</span><span class="mi">4</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The p-value threshold for which the real MixedLM analysis will &quot;</span>
              <span class="s2">&quot;be performed. [&lt;</span><span class="si">%(default).4f</span><span class="s2">]&quot;</span><span class="p">,</span>
     <span class="p">)</span>
@@ -1731,7 +1731,7 @@
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;SKAT analysis.&quot;</span><span class="p">,</span>
         <span class="n">description</span><span class="o">=</span><span class="s2">&quot;Uses the SKAT R package to analyze user defined gene &quot;</span>
                     <span class="s2">&quot;sets. This script is part of the &#39;genipe&#39; package, &quot;</span>
-                    <span class="s2">&quot;version {}.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
+                    <span class="s2">&quot;version </span><span class="si">{}</span><span class="s2">.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
         <span class="n">parents</span><span class="o">=</span><span class="p">[</span><span class="n">p_parser</span><span class="p">],</span>
     <span class="p">)</span>
 
@@ -1740,7 +1740,7 @@
 
     <span class="c1"># The SNP set file.</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--snp-sets&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="s2">&quot;--snp-sets&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;FILE&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;A file indicating a snp_set and an optional weight for every &quot;</span>
              <span class="s2">&quot;variant.&quot;</span>
     <span class="p">)</span>
@@ -1748,7 +1748,7 @@
     <span class="c1"># The outcome type: discrete or continuous.</span>
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
         <span class="s2">&quot;--outcome-type&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">choices</span><span class="o">=</span><span class="p">(</span><span class="s2">&quot;continuous&quot;</span><span class="p">,</span> <span class="s2">&quot;discrete&quot;</span><span class="p">),</span>
-        <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The variable type for the outcome. This will be passed to SKAT.&quot;</span>
     <span class="p">)</span>
 
@@ -1760,11 +1760,11 @@
     <span class="p">)</span>
 
     <span class="n">group</span><span class="o">.</span><span class="n">add_argument</span><span class="p">(</span>
-        <span class="s2">&quot;--pheno-name&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span>
+        <span class="s2">&quot;--pheno-name&quot;</span><span class="p">,</span> <span class="nb">type</span><span class="o">=</span><span class="nb">str</span><span class="p">,</span> <span class="n">metavar</span><span class="o">=</span><span class="s2">&quot;NAME&quot;</span><span class="p">,</span> <span class="n">required</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">help</span><span class="o">=</span><span class="s2">&quot;The phenotype.&quot;</span><span class="p">,</span>
     <span class="p">)</span>
 
-    <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="bp">None</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">args</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
     <span class="k">return</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse_args</span><span class="p">()</span></div>
@@ -1794,9 +1794,24 @@
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
       </ul>
     </div>
+
+
     <div class="footer" role="contentinfo">
         &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.4.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
     </div>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-81009922-1', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+
   </body>
 </html>
