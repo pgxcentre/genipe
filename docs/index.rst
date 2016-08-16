@@ -178,6 +178,19 @@ Usage
                            background]
 
 
+Citing genipe
+--------------
+
+If you use :py:mod:`genipe` in any published work, please cite the paper
+describing the tool.
+
+   Lemieux Perreault LP, Legault MA, Asselin G, Dubé MP:
+   **genipe: an automated genome-wide imputation pipeline with automatic
+   reporting and statistical tools.**
+   *Bioinformatics* 2016, Epub ahead of print.
+   [DOI:`10.1093/bioinformatics/btw487 <http://dx.doi.org/10.1093/bioinformatics/btw487>`_].
+
+
 About
 ------
 

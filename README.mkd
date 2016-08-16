@@ -9,6 +9,15 @@ The `genipe` module (standing for **GEN**ome-wide **I**mputation
 automatically runs a genome-wide imputation pipeline using *Plink*, *shapeit*
 and *impute2*.
 
+If you use `genipe` in any published work, please cite the paper describing the
+tool:
+
+> Lemieux Perreault LP, Legault MA, Asselin G, Dubé MP (2016)
+> genipe: an automated genome-wide imputation pipeline with automatic reporting
+> and statistical tools.
+> *Bioinformatics*, Epub ahead of print.
+> [DOI:[10.1093/bioinformatics/btw487](http://dx.doi.org/10.1093/bioinformatics/btw487)].
+
 
 ## Documentation
 
