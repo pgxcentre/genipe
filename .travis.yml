@@ -2,6 +2,7 @@ language: python
 python:
   - "3.4"
   - "3.5"
+  - "3.6"
 before_install:
   - "wget http://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh -O miniconda.sh"
   - "bash miniconda.sh -b -p $HOME/miniconda"
@@ -17,7 +18,7 @@ before_install:
 install:
   - "conda install -q nomkl"
   - "conda install -q jinja2"
-  - "conda install -q numpy"
+  - "conda install -q 'numpy<1.12'"
   - "conda install -q pandas"
   - "conda install -q scipy"
   - "conda install -q patsy"

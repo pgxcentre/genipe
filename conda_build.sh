@@ -26,7 +26,7 @@ then
 fi
 
 # The different python versions and platforms
-python_versions="3.4 3.5"
+python_versions="3.4 3.5 3.6"
 platforms="linux-32 linux-64 osx-64"
 
 # Building

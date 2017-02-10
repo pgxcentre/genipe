@@ -706,6 +706,32 @@ def _skat_write_marker(name, dosage, snp_set, genotype_files):
         print(name, *dosage, sep=",", file=file_object)
 
 
+def _extract_mixedlm_random_effect(fitted):
+    """Extracts the random effects from a MixedLM fit object.
+
+    Args:
+        fitted (MixedLMResultsWrapper): The fitted object.
+
+    Returns:
+        pandas.DataFrame: The random effects as a DataFrame (with a column
+                          named "RE").
+
+    Note
+    ====
+        Depending of the version of StatsModels, the object might be a pandas
+        DataFrame or a dictionary...
+
+    """
+    # Getting the random effects
+    random_effects = fitted.random_effects
+
+    # If it's a dictionary, we need to create a DataFrame
+    if isinstance(random_effects, dict):
+        return pd.DataFrame(random_effects).T.rename(columns={"groups": "RE"})
+
+    return random_effects.rename(columns={"Intercept": "RE"})
+
+
 def compute_statistics(impute2_filename, samples, markers_to_extract,
                        phenotypes, remove_gender, out_prefix, options):
     """Parses IMPUTE2 file while computing statistics.
@@ -789,13 +815,11 @@ def compute_statistics(impute2_filename, samples, markers_to_extract,
         # We need to compute the random effects if it's a MixedLM analysis
         random_effects = None
         if options.analysis_type == "mixedlm" and options.interaction is None:
-            random_effects = smf.mixedlm(
+            random_effects = _extract_mixedlm_random_effect(smf.mixedlm(
                 formula=formula.replace("_GenoD + ", ""),
                 data=phenotypes,
                 groups=phenotypes.index,
-            ).fit(reml=not options.use_ml).random_effects.rename(
-                columns={"Intercept": "RE"},
-            )
+            ).fit(reml=not options.use_ml))
 
         # Reading the file
         nb_processed = 0

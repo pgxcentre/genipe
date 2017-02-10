@@ -51,10 +51,8 @@ class TestFormats(unittest.TestCase):
         self.assertTrue(np.allclose(expected_geno, observed_geno))
 
         # An invalid line should raise an exception
-        with self.assertRaises(ValueError) as cm:
+        with self.assertRaises(ValueError):
             impute2.matrix_from_line(input_line.split(" ")[:-1])
-        error_m = "total size of new array must be unchanged"
-        self.assertEqual(error_m, str(cm.exception))
 
     def test_get_good_probs(self):
         """Tests the 'get_good_probs' function."""

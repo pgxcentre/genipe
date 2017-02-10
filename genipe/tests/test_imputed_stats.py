@@ -2172,21 +2172,21 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # Computing the random effect for REML
         data = data.drop(["snp1", "snp2", "snp3"], axis=1).dropna()
-        cls.random_effects = imputed_stats.smf.mixedlm(
-            formula="y ~ C1 + C2 + C3 + age + C(gender) + C(visit)",
-            data=data,
-            groups=data.index,
-        ).fit(reml=True).random_effects.rename(
-            columns={"Intercept": "RE"},
+        cls.random_effects = imputed_stats._extract_mixedlm_random_effect(
+            imputed_stats.smf.mixedlm(
+                formula="y ~ C1 + C2 + C3 + age + C(gender) + C(visit)",
+                data=data,
+                groups=data.index,
+            ).fit(reml=True),
         )
 
         # Computing the random effect for ML
-        cls.random_effects_ml = imputed_stats.smf.mixedlm(
-            formula="y ~ C1 + C2 + C3 + age + C(gender) + C(visit)",
-            data=data,
-            groups=data.index,
-        ).fit(reml=False).random_effects.rename(
-            columns={"Intercept": "RE"},
+        cls.random_effects_ml = imputed_stats._extract_mixedlm_random_effect(
+            imputed_stats.smf.mixedlm(
+                formula="y ~ C1 + C2 + C3 + age + C(gender) + C(visit)",
+                data=data,
+                groups=data.index,
+            ).fit(reml=False),
         )
 
     def setUp(self):
@@ -2234,10 +2234,10 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # Comparing the results
         self.assertAlmostEqual(expected_coef, observed_coef, places=10)
-        self.assertAlmostEqual(expected_se, observed_se, places=7)
-        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=7)
-        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=7)
-        self.assertAlmostEqual(expected_z, observed_z, places=5)
+        self.assertAlmostEqual(expected_se, observed_se, places=6)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=6)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=6)
+        self.assertAlmostEqual(expected_z, observed_z, places=4)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=4)
         self.assertEqual(expected_type, observed_type)
@@ -2319,12 +2319,12 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # Comparing the results
         self.assertAlmostEqual(expected_coef, observed_coef, places=10)
-        self.assertAlmostEqual(expected_se, observed_se, places=8)
-        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=7)
-        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=7)
-        self.assertAlmostEqual(expected_z, observed_z, places=6)
+        self.assertAlmostEqual(expected_se, observed_se, places=6)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=6)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=6)
+        self.assertAlmostEqual(expected_z, observed_z, places=4)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=6)
+                               places=4)
         self.assertEqual(expected_type, observed_type)
 
     def test_fit_mixedlm_invalid_column(self):
@@ -2396,10 +2396,10 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # Comparing the results
         self.assertAlmostEqual(expected_coef, observed_coef, places=10)
-        self.assertAlmostEqual(expected_se, observed_se, places=7)
-        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=7)
-        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=7)
-        self.assertAlmostEqual(expected_z, observed_z, places=5)
+        self.assertAlmostEqual(expected_se, observed_se, places=6)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=6)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=6)
+        self.assertAlmostEqual(expected_z, observed_z, places=4)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
                                places=4)
         self.assertEqual(expected_type, observed_type)
@@ -2481,12 +2481,12 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # Comparing the results
         self.assertAlmostEqual(expected_coef, observed_coef, places=10)
-        self.assertAlmostEqual(expected_se, observed_se, places=9)
-        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=9)
-        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=9)
-        self.assertAlmostEqual(expected_z, observed_z, places=7)
+        self.assertAlmostEqual(expected_se, observed_se, places=6)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=6)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=6)
+        self.assertAlmostEqual(expected_z, observed_z, places=4)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=7)
+                               places=4)
         self.assertEqual(expected_type, observed_type)
 
     def test_fit_mixedlm_interaction(self):
@@ -2525,12 +2525,12 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # Comparing the results
         self.assertAlmostEqual(expected_coef, observed_coef, places=10)
-        self.assertAlmostEqual(expected_se, observed_se, places=8)
-        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=8)
-        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=8)
-        self.assertAlmostEqual(expected_z, observed_z, places=7)
+        self.assertAlmostEqual(expected_se, observed_se, places=6)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=6)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=6)
+        self.assertAlmostEqual(expected_z, observed_z, places=5)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=7)
+                               places=5)
         self.assertEqual(expected_type, observed_type)
 
     def test_fit_mixedlm_interaction_use_ml(self):
@@ -2569,12 +2569,12 @@ class TestImputedStatsMixedLM(unittest.TestCase):
 
         # Comparing the results
         self.assertAlmostEqual(expected_coef, observed_coef, places=10)
-        self.assertAlmostEqual(expected_se, observed_se, places=9)
-        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=9)
-        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=9)
-        self.assertAlmostEqual(expected_z, observed_z, places=8)
+        self.assertAlmostEqual(expected_se, observed_se, places=6)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=6)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=6)
+        self.assertAlmostEqual(expected_z, observed_z, places=5)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=9)
+                               places=5)
         self.assertEqual(expected_type, observed_type)
 
     def test_full_fit_mixedlm(self):
@@ -2642,26 +2642,26 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The standard error
         expected = np.array([0.026125844399462177, np.nan,
                              0.028692891145471563])
-        np.testing.assert_array_almost_equal(expected, observed.se, 8)
+        np.testing.assert_array_almost_equal(expected, observed.se, 7)
 
         # The lower CI
         expected = np.array([0.07144597572112760, np.nan,
                              -0.21073684365058973])
-        np.testing.assert_array_almost_equal(expected, observed.lower, 8)
+        np.testing.assert_array_almost_equal(expected, observed.lower, 7)
 
         # The upper CI
         expected = np.array([0.1738574038984143, np.nan, -0.09826277713568479])
-        np.testing.assert_array_almost_equal(expected, observed.upper, 8)
+        np.testing.assert_array_almost_equal(expected, observed.upper, 7)
 
         # The Z statistics
         expected = np.array([4.6946497856465763, np.nan, -5.3846023954097459])
-        np.testing.assert_array_almost_equal(expected, observed.z, 6)
+        np.testing.assert_array_almost_equal(expected, observed.z, 5)
 
         # The p values
         expected = np.array([2.670638639346024e-06, 0.6780830649776308,
                              7.260496248662207e-08])
         np.testing.assert_array_almost_equal(
-            np.log10(expected), np.log10(observed.p), 6,
+            np.log10(expected), np.log10(observed.p), 4,
         )
 
         # The analysis type
@@ -2734,26 +2734,26 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The standard error
         expected = np.array([0.026109971717277716, np.nan,
                              0.02867546407987996])
-        np.testing.assert_array_almost_equal(expected, observed.se, 9)
+        np.testing.assert_array_almost_equal(expected, observed.se, 7)
 
         # The lower CI
         expected = np.array([0.07147708560653579, np.nan,
                              -0.21070268722968036])
-        np.testing.assert_array_almost_equal(expected, observed.lower, 8)
+        np.testing.assert_array_almost_equal(expected, observed.lower, 7)
 
         # The upper CI
         expected = np.array([0.1738262940129832, np.nan, -0.09829693355660693])
-        np.testing.assert_array_almost_equal(expected, observed.upper, 8)
+        np.testing.assert_array_almost_equal(expected, observed.upper, 7)
 
         # The Z statistics
         expected = np.array([4.6975037406339810, np.nan, -5.3878748034473105])
-        np.testing.assert_array_almost_equal(expected, observed.z, 6)
+        np.testing.assert_array_almost_equal(expected, observed.z, 5)
 
         # The p values
         expected = np.array([2.633603631840842e-06, 0.6780830649776319,
                              7.129568602159964e-08])
         np.testing.assert_array_almost_equal(
-            np.log10(expected), np.log10(observed.p), 6,
+            np.log10(expected), np.log10(observed.p), 4,
         )
 
         # The type
@@ -2828,26 +2828,26 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The standard error
         expected = np.array([0.026125844399462177, np.nan,
                              0.028692891145471563])
-        np.testing.assert_array_almost_equal(expected, observed.se, 8)
+        np.testing.assert_array_almost_equal(expected, observed.se, 7)
 
         # The lower CI
         expected = np.array([0.07144597572112760, np.nan,
                              -0.21073684365058973])
-        np.testing.assert_array_almost_equal(expected, observed.lower, 8)
+        np.testing.assert_array_almost_equal(expected, observed.lower, 7)
 
         # The upper CI
         expected = np.array([0.1738574038984143, np.nan, -0.09826277713568479])
-        np.testing.assert_array_almost_equal(expected, observed.upper, 8)
+        np.testing.assert_array_almost_equal(expected, observed.upper, 7)
 
         # The Z statistics
         expected = np.array([4.6946497856465763, np.nan, -5.3846023954097459])
-        np.testing.assert_array_almost_equal(expected, observed.z, 6)
+        np.testing.assert_array_almost_equal(expected, observed.z, 5)
 
         # The p values
         expected = np.array([2.670638639346024e-06, 0.6780830649776308,
                              7.260496248662207e-08])
         np.testing.assert_array_almost_equal(
-            np.log10(expected), np.log10(observed.p), 6,
+            np.log10(expected), np.log10(observed.p), 4,
         )
 
         # The type
@@ -2923,26 +2923,26 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The standard error
         expected = np.array([0.026109971717277716, np.nan,
                              0.02867546407987996])
-        np.testing.assert_array_almost_equal(expected, observed.se, 9)
+        np.testing.assert_array_almost_equal(expected, observed.se, 7)
 
         # The lower CI
         expected = np.array([0.07147708560653579, np.nan,
                              -0.21070268722968036])
-        np.testing.assert_array_almost_equal(expected, observed.lower, 8)
+        np.testing.assert_array_almost_equal(expected, observed.lower, 7)
 
         # The upper CI
         expected = np.array([0.1738262940129832, np.nan, -0.09829693355660693])
-        np.testing.assert_array_almost_equal(expected, observed.upper, 8)
+        np.testing.assert_array_almost_equal(expected, observed.upper, 7)
 
         # The Z statistics
         expected = np.array([4.6975037406339810, np.nan, -5.3878748034473105])
-        np.testing.assert_array_almost_equal(expected, observed.z, 6)
+        np.testing.assert_array_almost_equal(expected, observed.z, 5)
 
         # The p values
         expected = np.array([2.633603631840842e-06, 0.6780830649776319,
                              7.129568602159964e-08])
         np.testing.assert_array_almost_equal(
-            np.log10(expected), np.log10(observed.p), 6,
+            np.log10(expected), np.log10(observed.p), 4,
         )
 
         # The type
@@ -3015,28 +3015,28 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The standard error
         expected = np.array([0.06049308027425798, 0.044179901027834402,
                              0.066498803156555431])
-        np.testing.assert_array_almost_equal(expected, observed.se, 9)
+        np.testing.assert_array_almost_equal(expected, observed.se, 7)
 
         # The lower CI
         expected = np.array([-0.06700243069143892, -0.07256251047675560,
                              -0.23149945885188331])
-        np.testing.assert_array_almost_equal(expected, observed.lower, 8)
+        np.testing.assert_array_almost_equal(expected, observed.lower, 6)
 
         # The upper CI
         expected = np.array([0.1701260866114330, 0.10061951923344345,
                              0.02917105955185087])
-        np.testing.assert_array_almost_equal(expected, observed.upper, 8)
+        np.testing.assert_array_almost_equal(expected, observed.upper, 6)
 
         # The Z statistics
         expected = np.array([0.8523591082852910, 0.3175313672501355,
                              -1.5212935398528820])
-        np.testing.assert_array_almost_equal(expected, observed.z, 7)
+        np.testing.assert_array_almost_equal(expected, observed.z, 5)
 
         # The p values
         expected = np.array([3.940148087160935e-01, 7.508404423440460e-01,
                              1.281861906944759e-01])
         np.testing.assert_array_almost_equal(
-            np.log10(expected), np.log10(observed.p), 7,
+            np.log10(expected), np.log10(observed.p), 5,
         )
 
         # The analysis type
@@ -3110,28 +3110,28 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # The standard error
         expected = np.array([0.060482583773306557, 0.044172234988136105,
                              0.06648726468681930])
-        np.testing.assert_array_almost_equal(expected, observed.se, 9)
+        np.testing.assert_array_almost_equal(expected, observed.se, 7)
 
         # The lower CI
         expected = np.array([-0.06698185792762956, -0.07254748531507074,
                              -0.23147684386674616])
-        np.testing.assert_array_almost_equal(expected, observed.lower, 8)
+        np.testing.assert_array_almost_equal(expected, observed.lower, 6)
 
         # The upper CI
         expected = np.array([0.1701055138475855, 0.10060449407170288,
                              0.02914844456674892])
-        np.testing.assert_array_almost_equal(expected, observed.upper, 8)
+        np.testing.assert_array_almost_equal(expected, observed.upper, 6)
 
         # The Z statistics
         expected = np.array([0.8525070316644490, 0.3175864744467622,
                              -1.5215575513073230])
-        np.testing.assert_array_almost_equal(expected, observed.z, 7)
+        np.testing.assert_array_almost_equal(expected, observed.z, 5)
 
         # The p values
         expected = np.array([3.939327379391016e-01, 7.507986352043505e-01,
                              1.281199805761517e-01])
         np.testing.assert_array_almost_equal(
-            np.log10(expected), np.log10(observed.p), 8,
+            np.log10(expected), np.log10(observed.p), 5,
         )
 
         # The analysis type
