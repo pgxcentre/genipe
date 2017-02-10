@@ -16,7 +16,7 @@ tool:
 > **genipe: an automated genome-wide imputation pipeline with automatic reporting
 > and statistical tools.**
 > *Bioinformatics* 2016, Epub ahead of print.
-> [DOI:[10.1093/bioinformatics/btw487](http://dx.doi.org/10.1093/bioinformatics/btw487)].
+> (DOI:[10.1093/bioinformatics/btw487](http://dx.doi.org/10.1093/bioinformatics/btw487)).
 
 
 ## Documentation
@@ -77,6 +77,9 @@ and Cox's regressions), `genipe` requires the following Python modules:
 * `Biopython` version 1.65 or latest
 * `pyfaidx` version 0.3.7 or latest
 * `drmaa` version 0.7.6 or latest
+
+Note that `statsmodels` (specifically MixedLM analysis) version 0.6 **is not
+compatible** with `numpy` version 1.12 and latest.
 
 Finally, the tool requires a LaTeX installation to compile the automatically
 generated report in PDF format.
