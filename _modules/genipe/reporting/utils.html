@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.reporting.utils &mdash; genipe 1.3.1 documentation</title>
+    <title>genipe.reporting.utils &#8212; genipe 1.3.2 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,10 +15,11 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.3.1',
+        VERSION:     '1.3.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
@@ -26,8 +27,8 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.3.1 documentation" href="../../../index.html" />
-    <link rel="up" title="genipe" href="../../genipe.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -43,9 +44,9 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.1 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &#187;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -95,7 +96,7 @@
 
 
 <span class="n">_char_mod</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="s2">&quot;~&quot;</span><span class="p">:</span> <span class="s2">r&quot;$\sim$&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;~&quot;</span><span class="p">:</span> <span class="sa">r</span><span class="s2">&quot;$\sim$&quot;</span><span class="p">,</span>
 <span class="p">}</span>
 <span class="n">_escaped_char</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;$&quot;</span><span class="p">,</span> <span class="s2">&quot;%&quot;</span><span class="p">,</span> <span class="s2">&quot;_&quot;</span><span class="p">,</span> <span class="s2">&quot;}&quot;</span><span class="p">,</span> <span class="s2">&quot;{&quot;</span><span class="p">,</span> <span class="s2">&quot;&amp;&quot;</span><span class="p">,</span> <span class="s2">&quot;#&quot;</span><span class="p">]</span>
 <span class="n">_valid_tex_formats</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;texttt&quot;</span><span class="p">,</span> <span class="s2">&quot;emph&quot;</span><span class="p">,</span> <span class="s2">&quot;textbf&quot;</span><span class="p">,</span> <span class="s2">&quot;textit&quot;</span><span class="p">}</span>
@@ -122,7 +123,7 @@
         <span class="n">line_comment_prefix</span><span class="o">=</span><span class="s1">&#39;%#&#39;</span><span class="p">,</span>
         <span class="n">trim_blocks</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
         <span class="n">autoescape</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-        <span class="n">loader</span><span class="o">=</span><span class="n">jinja2</span><span class="o">.</span><span class="n">PackageLoader</span><span class="p">(</span><span class="n">__name__</span><span class="p">,</span> <span class="s2">&quot;templates&quot;</span><span class="p">),</span>
+        <span class="n">loader</span><span class="o">=</span><span class="n">jinja2</span><span class="o">.</span><span class="n">PackageLoader</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;templates&quot;</span><span class="p">),</span>
     <span class="p">)</span></div>
 
 
@@ -142,11 +143,11 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># The backslashes</span>
-    <span class="n">sanitized_tex</span> <span class="o">=</span> <span class="n">original_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="s2">r&quot;\textbackslash &quot;</span><span class="p">)</span>
+    <span class="n">sanitized_tex</span> <span class="o">=</span> <span class="n">original_text</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\textbackslash &quot;</span><span class="p">)</span>
 
     <span class="c1"># Escaping</span>
-    <span class="n">sanitized_tex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="s2">r&quot;([</span><span class="si">{}</span><span class="s2">])&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_escaped_char</span><span class="p">)),</span>
-                           <span class="s2">r&quot;</span><span class="se">\\</span><span class="s2">\g&lt;1&gt;&quot;</span><span class="p">,</span> <span class="n">sanitized_tex</span><span class="p">)</span>
+    <span class="n">sanitized_tex</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;([</span><span class="si">{}</span><span class="s2">])&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_escaped_char</span><span class="p">)),</span>
+                           <span class="sa">r</span><span class="s2">&quot;</span><span class="se">\\</span><span class="s2">\g&lt;1&gt;&quot;</span><span class="p">,</span> <span class="n">sanitized_tex</span><span class="p">)</span>
 
     <span class="c1"># Replacing</span>
     <span class="k">for</span> <span class="n">character</span><span class="p">,</span> <span class="n">mod</span> <span class="ow">in</span> <span class="n">_char_mod</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
@@ -198,7 +199,7 @@
     <span class="k">assert</span> <span class="n">tex_format</span> <span class="ow">in</span> <span class="n">_valid_tex_formats</span><span class="p">,</span> <span class="s2">&quot;invalid format&quot;</span>
     <span class="k">assert</span> <span class="n">_is_sanitized</span><span class="p">(</span><span class="n">text</span><span class="p">),</span> <span class="s2">&quot;text not sanitized&quot;</span>
 
-    <span class="k">return</span> <span class="s2">r&quot;\</span><span class="si">%s</span><span class="s2">{</span><span class="si">%s</span><span class="s2">}&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tex_format</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="sa">r</span><span class="s2">&quot;\</span><span class="si">%s</span><span class="s2">{</span><span class="si">%s</span><span class="s2">}&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">tex_format</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="tex_inline_math"><a class="viewcode-back" href="../../../module_content/genipe.reporting.html#genipe.reporting.utils.tex_inline_math">[docs]</a><span class="k">def</span> <span class="nf">tex_inline_math</span><span class="p">(</span><span class="n">content</span><span class="p">):</span>
@@ -228,7 +229,7 @@
 
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="c1"># Checking the escaped characters</span>
-    <span class="n">sanitized</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="s2">r&quot;[^</span><span class="se">\\</span><span class="s2">][</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_escaped_char</span><span class="p">)),</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">sanitized</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">search</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;[^</span><span class="se">\\</span><span class="s2">][</span><span class="si">{}</span><span class="s2">]&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">_escaped_char</span><span class="p">)),</span> <span class="n">text</span><span class="p">)</span>
     <span class="n">sanitized</span> <span class="o">=</span> <span class="n">sanitized</span> <span class="ow">is</span> <span class="kc">None</span>
 
     <span class="c1"># Checking the characters to replace</span>
@@ -389,7 +390,7 @@
     <span class="n">colored_time</span> <span class="o">=</span> <span class="n">formatted_time</span>
     <span class="n">to_color</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">match</span><span class="p">(</span><span class="s2">&quot;([0:]+)&quot;</span><span class="p">,</span> <span class="n">formatted_time</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">to_color</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="n">colored_time</span> <span class="o">=</span> <span class="s2">r&quot;{\color</span><span class="si">{light_gray}</span><span class="s2">&quot;</span>
+        <span class="n">colored_time</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;{\color</span><span class="si">{light_gray}</span><span class="s2">&quot;</span>
         <span class="n">colored_time</span> <span class="o">+=</span> <span class="n">formatted_time</span><span class="p">[:</span><span class="n">to_color</span><span class="o">.</span><span class="n">end</span><span class="p">()]</span>
         <span class="n">colored_time</span> <span class="o">+=</span> <span class="s2">&quot;}&quot;</span> <span class="o">+</span> <span class="n">formatted_time</span><span class="p">[</span><span class="n">to_color</span><span class="o">.</span><span class="n">end</span><span class="p">():]</span>
 
@@ -411,16 +412,16 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.1 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &#187;</li> 
       </ul>
     </div>
 
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+        &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.2.
     </div>
 
 <script>

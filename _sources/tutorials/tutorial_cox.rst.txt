@@ -3,47 +3,26 @@
    :depth: 2
 
 
-Linear mixed effects model
-===========================
+Survival analysis
+==================
 
-Linear mixed effects models are commonly used for regression analyses involving
-repeated measurements made on each subject (*i.e* dependent data). It is
-possible to perform such an analysis using imputation data (dosage format),
-where each imputed genotypes varies between 0 and 2 (inclusively). A value
-close to 0 means that a homozygous genotype of the most frequent allele is the
-most probable. A value close to 2 means that a homozygous genotype of the rare
-allele is the most probable. Finally, a value close to 1 means that a
+A popular technique to perform a survival analysis (regression) is the Cox's
+model. It is possible to perform such an analysis using imputation data (dosage
+format), where each imputed genotypes varies between 0 and 2 (inclusively). A
+value close to 0 means that a homozygous genotype of the most frequent allele
+is the most probable. A value close to 2 means that a homozygous genotype of
+the rare allele is the most probable. Finally, a value close to 1 means that a
 heterozygous genotype is the most probable.
-
-An optimization is made so that the analysis is less time consuming for large
-scale imputation data. The p-value of the SNP is estimated using the two-step
-linear mixed model (as describe by Sikorska *et al.*, 2015 [doi:
-`10.1038/ejhg.2015.1
-<http://www.nature.com/ejhg/journal/v23/n10/abs/ejhg20151a.html>`_]). If the
-p-value is lower than a user specified threshold, the exact mixed linear model
-analysis is performed for this marker to gather all the important statistics
-(*e.g.* beta).
-
-The precision of the estimated p-value is quite high, as demonstrated by the
-following figure. The p-values were compared between the two-step approach (*y*
-axis) and the original one (*x* axis). The analysis was performed on 5,045
-samples imputed on chromosome 2 (528,932 high quality imputed markers with MAF
-higher than 1%).
-
-.. figure:: ../_static/images/MixedLM_TS_Diff.png
-    :align: center
-    :width: 60%
-    :alt: Comparison of p-values between the two-step and original approaches.
 
 We suppose that you have followed the main :ref:`genipe-tut-page`. The
 following command will create the working directory for this tutorial.
 
 .. code-block:: bash
 
-   mkdir -p $HOME/genipe_tutorial/mixedlm
+   mkdir -p $HOME/genipe_tutorial/survival
 
 
-.. _mixedlm-tut-input-files:
+.. _survival-tut-input-files:
 
 Input files
 ------------
@@ -107,37 +86,30 @@ The first two rows are part of the format and should be as is.
 Phenotype file
 ^^^^^^^^^^^^^^^
 
-This file describes the phenotype and variables used to perform the analysis.
-The file is *tab* separated and contains one row per sample, one column per
-phenotype/variable.
+This file describes the variables used to perform the survival regression. The
+file is *tab* separated and contains one row per sample, one column per
+variable. Two variables are required: the time to event, and the event (``1``,
+the event **was observed**, and ``0``, the event **was not observed**
+(censored)).
 
-The following is an example of a phenotype file (where there are three
-measurements per sample):
+The following is an example of a phenotype file:
 
 .. code-block:: text
 
-   SampleID        Pheno3  Visit   Age     Var1    Gender
-   NA06985 58.6923101992   1       53      48.01043142060001       2
-   NA06985 79.18026839086532       2       53      48.01043142060001       2
-   NA06985 97.6831921953767        3       53      48.01043142060001       2
-   NA06993 64.8981628053   1       47      23.7615117523   1
-   NA06993 81.26389783395985       2       47      23.7615117523   1
-   NA06993 100.71531297841551      3       47      23.7615117523   1
-   NA06994 129.562482664   1       48      20.2946857226   1
-   NA06994 144.2513248255908       2       48      20.2946857226   1
-   NA06994 161.94488318622538      3       48      20.2946857226   1
-   ...
+   SampleID	TTE	Event	Age	Var1	Gender
+   NA06985	425.5006566841411	1	53	48.01043142060001	2
+   NA06993	553.6637748799277	1	47	23.7615117523	1
+   NA06994	569.4273004275149	0	48	20.2946857226	1
 
 We provide a *dummy* phenotype file (where values, except for ``Gender``, were
-randomly generated for 60 founders of the dataset). The following command
-should download the phenotype file.
+randomly generated). The following command should download the phenotype file.
 
 .. code-block:: bash
 
-   cd $HOME/genipe_tutorial/mixedlm
+   cd $HOME/genipe_tutorial/survival
 
-   wget http://pgxcentre.github.io/genipe/_static/tutorial/phenotypes_mixedlm.txt.bz2
-   bunzip2 phenotypes_mixedlm.txt.bz2
+   wget http://pgxcentre.github.io/genipe/_static/tutorial/phenotypes_survival.txt.bz2
+   bunzip2 phenotypes_survival.txt.bz2
 
 .. note::
 
@@ -145,16 +117,10 @@ should download the phenotype file.
    ``2``. Samples with missing gender (encoded as ``0``) will be excluded only
    if gender is in the covariable list.
 
-.. note::
-
-   Categorical variables should be specified using the ``--categorical``
-   option.
-
 .. warning::
 
    The sample identification numbers should match the ones in the sample file
-   (see above). Those numbers should be unique for each sample. There should be
-   multiple rows for each sample, one for each repeated measurement. Only the
+   (see above). Those numbers should be unique for each sample. Only the
    samples that are **both** in the sample and phenotype files will be kept for
    analysis. The order of the samples in the phenotype file is not important.
 
@@ -169,57 +135,50 @@ number per line) to keep for the analysis. This file might be the
 :ref:`genipe-tut-page`).
 
 
-.. _mixedlm-tut-execute:
+.. _survival-tut-execute:
 
 Executing the analysis
 -----------------------
 
 If you followed the :ref:`genipe-tut-page`, the following commands should
-execute the linear mixed effects analysis.
+execute the survival analysis.
 
 .. code-block:: bash
 
-   cd $HOME/genipe_tutorial/mixedlm
+   cd $HOME/genipe_tutorial/survival
 
-   imputed-stats mixedlm \
+   imputed-stats cox \
        --impute2 ../genipe/chr22/final_impute2/chr22.imputed.impute2.gz \
        --sample ../genipe/chr22/final_impute2/chr22.imputed.sample \
-       --pheno phenotypes_mixedlm.txt \
+       --pheno phenotypes_survival.txt \
        --extract-sites ../genipe/chr22/final_impute2/chr22.imputed.good_sites \
        --nb-process 8 \
        --nb-lines 6000 \
        --gender-column Gender \
        --covar Age,Var1,Gender \
        --sample-column SampleID \
-       --pheno-name Pheno3
+       --time-to-event TTE \
+       --event Event
 
 For more information about the arguments and options, see the
-:ref:`mixedlm-tut-usage` section. For an approximation of the execution time,
+:ref:`survival-tut-usage` section. For an approximation of the execution time,
 refer to the :ref:`stats-exec-time` section.
 
-.. note::
 
-   Analysis will be performed only on samples whitout missing data (phenotype,
-   gender, variables, etc).
-
-   By default, the analysis is performed by removing low quality genotypes
-   (using a probability threshold of 0.9, the ``--prob`` option).
-
-
-.. _mixedlm-tut-output-files:
+.. _survival-tut-output-files:
 
 Output files
 -------------
 
-There will be two output files: ``.mixedlm.dosage`` will contain the
-statistics, and ``.log`` will contain the execution log.
+There will be two output files: ``.cox.dosage`` will contain the statistics,
+and ``.log`` will contain the execution log.
 
 
-``.mixedlm.dosage`` file
-^^^^^^^^^^^^^^^^^^^^^^^^
+``.cox.dosage`` file
+^^^^^^^^^^^^^^^^^^^^^
 
-This file contains the results from the linear mixed effects analysis. It shows
-the following information:
+This file contains the results from the survival analysis. It shows the
+following information:
 
 * ``chr``: the chromosome.
 * ``pos``: the position on the chromosome.
@@ -242,31 +201,28 @@ the following information:
    To modify this behavior, use the ``--maf`` option.
 
 
-.. _mixedlm-tut-usage:
+.. _survival-tut-usage:
 
 Usage
 ------
 
-The following command will display the documentation for the linear mixed
-effects analysis in the console:
+The following command will display the documentation for the survival analysis
+in the console:
 
 .. code-block:: console
 
-   $ imputed-stats mixedlm --help
-   usage: imputed-stats mixedlm [-h] [-v] [--debug] --impute2 FILE --sample FILE
-                                --pheno FILE [--extract-sites FILE] [--out FILE]
-                                [--nb-process INT] [--nb-lines INT] [--chrx]
-                                [--gender-column NAME] [--scale INT]
-                                [--prob FLOAT] [--maf FLOAT] [--covar NAME]
-                                [--categorical NAME] [--missing-value NAME]
-                                [--sample-column NAME] [--interaction NAME]
-                                --pheno-name NAME [--use-ml]
-                                [--p-threshold FLOAT]
+   $ imputed-stats cox --help
+   usage: imputed-stats cox [-h] [-v] [--debug] --impute2 FILE --sample FILE
+                            --pheno FILE [--extract-sites FILE] [--out FILE]
+                            [--nb-process INT] [--nb-lines INT] [--chrx]
+                            [--gender-column NAME] [--scale INT] [--prob FLOAT]
+                            [--maf FLOAT] [--covar NAME] [--categorical NAME]
+                            [--missing-value NAME] [--sample-column NAME]
+                            [--interaction NAME] --time-to-event NAME --event
+                            NAME
 
-   Performs a linear mixed effects regression on imputed data using a random
-   intercept for each group. A p-value approximation is performed so that
-   computation time is acceptable for imputed data. This script is part of the
-   'genipe' package, version 1.3.1.
+   Performs a survival regression on imputed data using Cox's proportional hazard
+   model. This script is part of the 'genipe' package, version 1.3.2.
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -315,56 +271,62 @@ effects analysis in the console:
      --interaction NAME    Add an interaction between the genotype and this
                            variable.
 
-   Linear Mixed Effects Options:
-     --pheno-name NAME     The phenotype.
-     --use-ml              Fit the standard likelihood using maximum likelihood
-                           (ML) estimation instead of REML (default is REML).
-     --p-threshold FLOAT   The p-value threshold for which the real MixedLM
-                           analysis will be performed. [<0.0001]
+   Cox's Proportional Hazard Model Options:
+     --time-to-event NAME  The time to event variable (in the pheno file).
+     --event NAME          The event variable (1 if observed, 0 if not observed)
 
 
-.. _mixedlm-tut-comparison:
+.. _survival-tut-comparison:
 
 Results comparison
 -------------------
 
-The linear mixed effects analysis results from :py:mod:`genipe` and *R* were
+The survival analysis results from :py:mod:`genipe` and *JMP Genomics* were
 compared for validity. The following figure shows the comparison for, from left
 to right, the coefficients, the standard errors and the *p*-values. The *x*
 axis shows the results from :py:mod:`genipe`, and the *y* axis shows the
-results for *R*. This comparison includes 163,670 "good" imputed markers,
-analyzed for 60 samples (*i.e* results from this tutorial). Note that for this
-comparison, the **probability threshold** (``--prob``) **was changed from 0.9
-to 0** to *imitate* *R* analysis (see note below for more information).
+results for *JMP Genomics*. This comparison includes 48,127 "good" imputed
+markers with a MAF higher or equal to 15%, analyzed for 60 samples (*i.e*
+results from this tutorial). Note that for this comparison, the **probability
+threshold** (``--prob``) **was changed from 0.9 to 0** to *imitate* *JMP
+Genomics* analysis (see note below for more information).
 
-.. figure:: ../_static/images/MixedLM_Diff_Prob0.png
+.. note::
+
+   Only markers with minor allele frequency (MAF) higher or equal to 15% were
+   compared, since markers with lower MAF might have convergence issues (*e.g.*
+   all exposed samples are all cases *or* all controls). In that case, the
+   coefficient is large.
+
+.. figure:: ../_static/images/Survival_Diff_Prob0.png
    :align: center
    :width: 100%
-   :alt: Linear mixed effects comparison between genipe and R (probability of 0)
+   :alt: Survival analysis comparison between genipe and JMP Genomics
 
 .. note::
 
    The sign of the coefficients might be different when comparing
-   :py:mod:`genipe` to *R*, since :py:mod:`genipe` computes the statistics on
-   the rare allele, while *R* computes them on the second (alternative) allele.
-   The alternative allele might not always be the rarest.
+   :py:mod:`genipe` to *GMP Genomics*, since :py:mod:`genipe` computes the
+   statistics on the rare allele, while *JMP Genomics* computes them on the
+   second (alternative) allele. The alternative allele might not always be the
+   rarest.
 
 .. note::
 
    By default, :py:mod:`genipe` excludes samples with a maximum probability
-   lower than 0.9 (the ``--prob`` option), while *R* keeps all the samples for
-   the analysis. In order to get the same results as *R*, the analysis must be
-   done with a probability threshold of 0 (*i.e.* ``--prob 0``, keeping all
-   imputed genotypes including those with poor quality). This is what was done
-   for the previous figure.
+   lower than 0.9 (the ``--prob`` option), while *JMP Genomics* keeps all the
+   samples for the analysis. In order to get the same results as *JMP
+   Genomics*, the analysis must be done with a probability threshold of 0
+   (*i.e.* ``--prob 0``, keeping all imputed genotypes including those with
+   poor quality). This is what was done for the previous figure.
 
-   The following figure shows the comparison between *R* and :py:mod:`genipe`
-   for the same analysis, but using the default probability threshold of 0.9
-   (excluding imputed genotypes with poor quality). Hence, 163,670 markers
-   were compared.
+   The following figure shows the comparison between *JMP Genomics* and
+   :py:mod:`genipe` for the same analysis, but using the default probability
+   threshold of 0.9 (excluding imputed genotypes with poor quality). Hence,
+   48,045 markers were compared.
 
-   .. figure:: ../_static/images/MixedLM_Diff.png
+   .. figure:: ../_static/images/Survival_Diff.png
       :align: center
       :width: 100%
-      :alt: Linear mixed effects comparison between genipe and R
+      :alt: Survival analysis comparison between genipe and JMP Genomics
 

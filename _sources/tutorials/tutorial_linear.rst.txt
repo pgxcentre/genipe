@@ -235,7 +235,7 @@ analysis in the console:
                                --pheno-name NAME
 
    Performs a linear regression (ordinary least squares) on imputed data. This
-   script is part of the 'genipe' package, version 1.3.1.
+   script is part of the 'genipe' package, version 1.3.2.
 
    optional arguments:
      -h, --help            show this help message and exit

@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tools package &mdash; genipe 1.3.1 documentation</title>
+    <title>genipe.tools package &#8212; genipe 1.3.2 documentation</title>
     
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
@@ -15,10 +15,11 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.3.1',
+        VERSION:     '1.3.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
@@ -26,8 +27,8 @@
     <script type="text/javascript" src="../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.3.1 documentation" href="../index.html" />
-    <link rel="up" title="genipe package" href="genipe.html" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="genipe.tests package" href="genipe.tests.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
@@ -47,10 +48,10 @@
         <li class="right" >
           <a href="genipe.tests.html" title="genipe.tests package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.1 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &raquo;</li>
-          <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &#187;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -73,7 +74,7 @@
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
-      <li><a href="../_sources/module_content/genipe.tools.txt"
+      <li><a href="../_sources/module_content/genipe.tools.rst.txt"
             rel="nofollow">Show Source</a></li>
     </ul>
    </div>
@@ -234,7 +235,7 @@ prefix (<em>e.g.</em> <code class="docutils literal"><span class="pre">test.impu
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the sample information</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.1)">pandas.DataFrame</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -503,9 +504,9 @@ raised.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>impute2_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the input file</li>
-<li><strong>samples</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.1)"><em>pandas.DataFrame</em></a>) &#8211; the list of samples</li>
+<li><strong>samples</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; the list of samples</li>
 <li><strong>markers_to_extract</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#set" title="(in Python v3.4)"><em>set</em></a>) &#8211; the set of markers to extract</li>
-<li><strong>phenotypes</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.1)"><em>pandas.DataFrame</em></a>) &#8211; the phenotypes</li>
+<li><strong>phenotypes</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; the phenotypes</li>
 <li><strong>remove_gender</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) &#8211; whether or not to remove the gender column</li>
 <li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the output prefix</li>
 <li><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) &#8211; the options</li>
@@ -529,7 +530,7 @@ come.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.1)"><em>pandas.DataFrame</em></a>) &#8211; the data to analyse</li>
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; the data to analyse</li>
 <li><strong>time_to_event</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the time to event column for the survival analysis</li>
 <li><strong>event</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the event column for the survival analysis</li>
 <li><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the formula for the data preparation</li>
@@ -540,7 +541,7 @@ come.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the results from the survival analysis</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.11)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)">numpy.array</a></p>
 </td>
 </tr>
 </tbody>
@@ -560,7 +561,7 @@ come.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.1)"><em>pandas.DataFrame</em></a>) &#8211; the data to analyse</li>
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; the data to analyse</li>
 <li><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the formula for the linear regression</li>
 <li><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the column that will contain the results</li>
 </ul>
@@ -585,7 +586,7 @@ come.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.1)"><em>pandas.DataFrame</em></a>) &#8211; the data to analyse</li>
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; the data to analyse</li>
 <li><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the formula for the logistic regression</li>
 <li><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the column that will contain the results</li>
 </ul>
@@ -610,12 +611,12 @@ come.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.1)"><em>pandas.DataFrame</em></a>) &#8211; the data to analyse</li>
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; the data to analyse</li>
 <li><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the formula for the linear mixed effects model</li>
 <li><strong>use_ml</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) &#8211; whether to use ML instead of REML</li>
 <li><strong>groups</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the column containing the groups</li>
 <li><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the column that will contain the results</li>
-<li><strong>random_effects</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.18.1)"><em>pandas.Series</em></a>) &#8211; the random effects</li>
+<li><strong>random_effects</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.19.2)"><em>pandas.Series</em></a>) &#8211; the random effects</li>
 <li><strong>mixedlm_p</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) &#8211; the p-value threshold for which loci will be
 computed with the real MixedLM analysis</li>
 <li><strong>interaction</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) &#8211; Whether there is an interaction or not</li>
@@ -767,7 +768,7 @@ verified later by the <a class="reference internal" href="#genipe.tools.imputed_
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the phenotypes</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.1)">pandas.DataFrame</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)">pandas.DataFrame</a></p>
 </td>
 </tr>
 </tbody>
@@ -792,7 +793,7 @@ for.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the list of samples</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.1)">pandas.DataFrame</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -849,7 +850,7 @@ threshold. The <a class="reference internal" href="genipe.html#module-genipe" ti
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.1)"><em>pandas.DataFrame</em></a>) &#8211; the probability matrix</li>
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; the probability matrix</li>
 <li><strong>hetero_c</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the heterozygous column</li>
 </ul>
 </td>
@@ -857,7 +858,7 @@ threshold. The <a class="reference internal" href="genipe.html#module-genipe" ti
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">samples where call is heterozygous</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Index.html#pandas.Index" title="(in pandas v0.18.1)">pandas.Index</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Index.html#pandas.Index" title="(in pandas v0.19.2)">pandas.Index</a></p>
 </td>
 </tr>
 </tbody>
@@ -878,9 +879,9 @@ threshold. The <a class="reference internal" href="genipe.html#module-genipe" ti
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>impute2_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the input file</li>
-<li><strong>samples</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.1)"><em>pandas.DataFrame</em></a>) &#8211; the samples</li>
+<li><strong>samples</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; the samples</li>
 <li><strong>markers_to_extract</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#set" title="(in Python v3.4)"><em>set</em></a>) &#8211; the set of markers to analyse</li>
-<li><strong>phenotypes</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.1)"><em>pandas.DataFrame</em></a>) &#8211; the phenotypes</li>
+<li><strong>phenotypes</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)"><em>pandas.DataFrame</em></a>) &#8211; the phenotypes</li>
 <li><strong>remove_gender</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) &#8211; whether or not to remove the gender column</li>
 <li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the output prefix</li>
 <li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) &#8211; the options</li>
@@ -906,7 +907,7 @@ analysis and then writes the results to disk.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the SNP set for the SKAT analysis</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.18.1)">pandas.DataFrame</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -1178,17 +1179,17 @@ verified later by the <code class="xref py py-func docutils literal"><span class
         <li class="right" >
           <a href="genipe.tests.html" title="genipe.tests package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.1 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &raquo;</li>
-          <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
+          <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &#187;</li> 
       </ul>
     </div>
 
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+        &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.2.
     </div>
 
 <script>

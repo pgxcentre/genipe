@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tests.test_reporting_utils &mdash; genipe 1.3.1 documentation</title>
+    <title>genipe.tests.test_reporting_utils &#8212; genipe 1.3.2 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,10 +15,11 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.3.1',
+        VERSION:     '1.3.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
@@ -26,8 +27,8 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.3.1 documentation" href="../../../index.html" />
-    <link rel="up" title="genipe" href="../../genipe.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -43,9 +44,9 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.1 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &#187;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -97,19 +98,19 @@
         <span class="sd">&quot;&quot;&quot;Tests the &#39;sanitize_tex&#39; function.&quot;&quot;&quot;</span>
         <span class="c1"># Sanitize all required characters</span>
         <span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;$%_}{&amp;#~&quot;</span>
-        <span class="n">sanitized</span> <span class="o">=</span> <span class="s2">r&quot;\$\%\_\}\{\&amp;\#$\sim$&quot;</span>
+        <span class="n">sanitized</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\$\%\_\}\{\&amp;\#$\sim$&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">sanitized</span><span class="p">,</span> <span class="n">report_utils</span><span class="o">.</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="n">string</span><span class="p">))</span>
 
         <span class="c1"># Sanitize only required characters (and not others)</span>
         <span class="n">string</span> <span class="o">=</span> <span class="s2">&quot;ad$sf]35[fsdfs</span><span class="si">%f</span><span class="s2">_s3f}546t%?%$634{&amp;#dfs&amp;?</span><span class="si">%%</span><span class="s2">$/B~DF&quot;</span>
-        <span class="n">sanitized</span> <span class="o">=</span> <span class="p">(</span><span class="s2">r&quot;ad\$sf]35[fsdfs\</span><span class="si">%f</span><span class="s2">\_s3f\}546t\%?\%\$634\{\&amp;\#dfs&quot;</span>
-                     <span class="s2">r&quot;\&amp;?\%\%\$/B$\sim$DF&quot;</span><span class="p">)</span>
+        <span class="n">sanitized</span> <span class="o">=</span> <span class="p">(</span><span class="sa">r</span><span class="s2">&quot;ad\$sf]35[fsdfs\</span><span class="si">%f</span><span class="s2">\_s3f\}546t\%?\%\$634\{\&amp;\#dfs&quot;</span>
+                     <span class="sa">r</span><span class="s2">&quot;\&amp;?\%\%\$/B$\sim$DF&quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">sanitized</span><span class="p">,</span> <span class="n">report_utils</span><span class="o">.</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="n">string</span><span class="p">))</span>
 
         <span class="c1"># Sanitizing a LaTeX command</span>
-        <span class="n">string</span> <span class="o">=</span> <span class="s2">r&quot;\texttt</span><span class="si">{test}</span><span class="se">\\</span><span class="s2">&quot;</span>
-        <span class="n">sanitized</span> <span class="o">=</span> <span class="p">(</span><span class="s2">r&quot;\textbackslash texttt\{test\}\textbackslash &quot;</span>
-                     <span class="s2">r&quot;\textbackslash &quot;</span><span class="p">)</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\texttt</span><span class="si">{test}</span><span class="se">\\</span><span class="s2">&quot;</span>
+        <span class="n">sanitized</span> <span class="o">=</span> <span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\textbackslash texttt\{test\}\textbackslash &quot;</span>
+                     <span class="sa">r</span><span class="s2">&quot;\textbackslash &quot;</span><span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">sanitized</span><span class="p">,</span> <span class="n">report_utils</span><span class="o">.</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="n">string</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TestReportingUtils.test_wrap_tex"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_reporting_utils.TestReportingUtils.test_wrap_tex">[docs]</a>    <span class="k">def</span> <span class="nf">test_wrap_tex</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -141,7 +142,7 @@
 
 <div class="viewcode-block" id="TestReportingUtils.test_tex_inline_math"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_reporting_utils.TestReportingUtils.test_tex_inline_math">[docs]</a>    <span class="k">def</span> <span class="nf">test_tex_inline_math</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Tests the &#39;tex_inline_math&#39; function.&quot;&quot;&quot;</span>
-        <span class="n">string</span> <span class="o">=</span> <span class="s2">r&quot;\sum_{n=1}^</span><span class="si">{100}</span><span class="s2"> \frac</span><span class="si">{1}{n}</span><span class="s2">&quot;</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\sum_{n=1}^</span><span class="si">{100}</span><span class="s2"> \frac</span><span class="si">{1}{n}</span><span class="s2">&quot;</span>
         <span class="n">expected</span> <span class="o">=</span> <span class="s2">&quot;$&quot;</span> <span class="o">+</span> <span class="n">string</span> <span class="o">+</span> <span class="s2">&quot;$&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">expected</span><span class="p">,</span> <span class="n">report_utils</span><span class="o">.</span><span class="n">tex_inline_math</span><span class="p">(</span><span class="n">string</span><span class="p">))</span></div>
 
@@ -154,10 +155,10 @@
             <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">report_utils</span><span class="o">.</span><span class="n">_is_sanitized</span><span class="p">(</span>
                 <span class="n">padding</span> <span class="o">+</span> <span class="n">character</span> <span class="o">+</span> <span class="n">padding</span><span class="p">,</span>
             <span class="p">))</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">report_utils</span><span class="o">.</span><span class="n">_is_sanitized</span><span class="p">(</span><span class="s2">r&quot;\ %&quot;</span><span class="p">))</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertFalse</span><span class="p">(</span><span class="n">report_utils</span><span class="o">.</span><span class="n">_is_sanitized</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;\ %&quot;</span><span class="p">))</span>
 
         <span class="c1"># Sanitized</span>
-        <span class="n">string</span> <span class="o">=</span> <span class="s2">r&quot;ksj\$h\}f2\</span><span class="si">%o</span><span class="s2">39\_875n\{9nt\&amp;98\#34&quot;</span>
+        <span class="n">string</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;ksj\$h\}f2\</span><span class="si">%o</span><span class="s2">39\_875n\{9nt\&amp;98\#34&quot;</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">report_utils</span><span class="o">.</span><span class="n">_is_sanitized</span><span class="p">(</span><span class="n">string</span><span class="p">))</span></div>
 
 <div class="viewcode-block" id="TestReportingUtils.test_create_tabular"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_reporting_utils.TestReportingUtils.test_create_tabular">[docs]</a>    <span class="k">def</span> <span class="nf">test_create_tabular</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -274,23 +275,23 @@
 <div class="viewcode-block" id="TestReportingUtils.test_colorize_time"><a class="viewcode-back" href="../../../module_content/genipe.tests.html#genipe.tests.test_reporting_utils.TestReportingUtils.test_colorize_time">[docs]</a>    <span class="k">def</span> <span class="nf">test_colorize_time</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;Tests the &#39;colorize_time&#39; function.&quot;&quot;&quot;</span>
         <span class="c1"># Testing 1 second</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s2">r&quot;{\color</span><span class="si">{light_gray}</span><span class="s2">00:00:0}1&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;{\color</span><span class="si">{light_gray}</span><span class="s2">00:00:0}1&quot;</span><span class="p">,</span>
                          <span class="n">report_utils</span><span class="o">.</span><span class="n">colorize_time</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
 
         <span class="c1"># Testing 10 seconds</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s2">r&quot;{\color</span><span class="si">{light_gray}</span><span class="s2">00:00:}10&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;{\color</span><span class="si">{light_gray}</span><span class="s2">00:00:}10&quot;</span><span class="p">,</span>
                          <span class="n">report_utils</span><span class="o">.</span><span class="n">colorize_time</span><span class="p">(</span><span class="mi">10</span><span class="p">))</span>
 
         <span class="c1"># Testing 1 minute</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s2">r&quot;{\color</span><span class="si">{light_gray}</span><span class="s2">00:0}1:00&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;{\color</span><span class="si">{light_gray}</span><span class="s2">00:0}1:00&quot;</span><span class="p">,</span>
                          <span class="n">report_utils</span><span class="o">.</span><span class="n">colorize_time</span><span class="p">(</span><span class="mi">60</span><span class="p">))</span>
 
         <span class="c1"># Testing 10 minutes</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s2">r&quot;{\color</span><span class="si">{light_gray}</span><span class="s2">00:}10:00&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;{\color</span><span class="si">{light_gray}</span><span class="s2">00:}10:00&quot;</span><span class="p">,</span>
                          <span class="n">report_utils</span><span class="o">.</span><span class="n">colorize_time</span><span class="p">(</span><span class="mi">600</span><span class="p">))</span>
 
         <span class="c1"># Testing 1 hour</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="s2">r&quot;{\color</span><span class="si">{light_gray}</span><span class="s2">0}1:00:00&quot;</span><span class="p">,</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="sa">r</span><span class="s2">&quot;{\color</span><span class="si">{light_gray}</span><span class="s2">0}1:00:00&quot;</span><span class="p">,</span>
                          <span class="n">report_utils</span><span class="o">.</span><span class="n">colorize_time</span><span class="p">(</span><span class="mi">3600</span><span class="p">))</span>
 
         <span class="c1"># Testing 10 hours</span>
@@ -316,16 +317,16 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.1 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &#187;</li> 
       </ul>
     </div>
 
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+        &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.2.
     </div>
 
 <script>

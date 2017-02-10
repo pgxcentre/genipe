@@ -3,26 +3,47 @@
    :depth: 2
 
 
-Logistic regression
-====================
+Linear mixed effects model
+===========================
 
-Logistic regressions are commonly used to perform genome-wide association
-studies. It is possible to perform such an analysis using imputation data
-(dosage format), where each imputed genotypes varies between 0 and 2
-(inclusively). A value close to 0 means that a homozygous genotype of the most
-frequent allele is the most probable. A value close to 2 means that a
-homozygous genotype of the rare allele is the most probable. Finally, a value
-close to 1 means that a heterozygous genotype is the most probable.
+Linear mixed effects models are commonly used for regression analyses involving
+repeated measurements made on each subject (*i.e* dependent data). It is
+possible to perform such an analysis using imputation data (dosage format),
+where each imputed genotypes varies between 0 and 2 (inclusively). A value
+close to 0 means that a homozygous genotype of the most frequent allele is the
+most probable. A value close to 2 means that a homozygous genotype of the rare
+allele is the most probable. Finally, a value close to 1 means that a
+heterozygous genotype is the most probable.
+
+An optimization is made so that the analysis is less time consuming for large
+scale imputation data. The p-value of the SNP is estimated using the two-step
+linear mixed model (as describe by Sikorska *et al.*, 2015 [doi:
+`10.1038/ejhg.2015.1
+<http://www.nature.com/ejhg/journal/v23/n10/abs/ejhg20151a.html>`_]). If the
+p-value is lower than a user specified threshold, the exact mixed linear model
+analysis is performed for this marker to gather all the important statistics
+(*e.g.* beta).
+
+The precision of the estimated p-value is quite high, as demonstrated by the
+following figure. The p-values were compared between the two-step approach (*y*
+axis) and the original one (*x* axis). The analysis was performed on 5,045
+samples imputed on chromosome 2 (528,932 high quality imputed markers with MAF
+higher than 1%).
+
+.. figure:: ../_static/images/MixedLM_TS_Diff.png
+    :align: center
+    :width: 60%
+    :alt: Comparison of p-values between the two-step and original approaches.
 
 We suppose that you have followed the main :ref:`genipe-tut-page`. The
 following command will create the working directory for this tutorial.
 
 .. code-block:: bash
 
-   mkdir -p $HOME/genipe_tutorial/logistic
+   mkdir -p $HOME/genipe_tutorial/mixedlm
 
 
-.. _logit-tut-input-files:
+.. _mixedlm-tut-input-files:
 
 Input files
 ------------
@@ -86,29 +107,37 @@ The first two rows are part of the format and should be as is.
 Phenotype file
 ^^^^^^^^^^^^^^^
 
-This file describes the phenotype and variables used to perform the logistic
-regression. The file is *tab* separated and contains one row per sample, one
-column per phenotype/variable.
+This file describes the phenotype and variables used to perform the analysis.
+The file is *tab* separated and contains one row per sample, one column per
+phenotype/variable.
 
-The following is an example of a phenotype file:
+The following is an example of a phenotype file (where there are three
+measurements per sample):
 
 .. code-block:: text
 
-   SampleID	Pheno2	Age	Var1	Gender
-   NA06985	1	53	48.01043142060001	2
-   NA06993	1	47	23.7615117523	1
-   NA06994	0	48	20.2946857226	1
+   SampleID        Pheno3  Visit   Age     Var1    Gender
+   NA06985 58.6923101992   1       53      48.01043142060001       2
+   NA06985 79.18026839086532       2       53      48.01043142060001       2
+   NA06985 97.6831921953767        3       53      48.01043142060001       2
+   NA06993 64.8981628053   1       47      23.7615117523   1
+   NA06993 81.26389783395985       2       47      23.7615117523   1
+   NA06993 100.71531297841551      3       47      23.7615117523   1
+   NA06994 129.562482664   1       48      20.2946857226   1
+   NA06994 144.2513248255908       2       48      20.2946857226   1
+   NA06994 161.94488318622538      3       48      20.2946857226   1
    ...
 
 We provide a *dummy* phenotype file (where values, except for ``Gender``, were
-randomly generated). The following command should download the phenotype file.
+randomly generated for 60 founders of the dataset). The following command
+should download the phenotype file.
 
 .. code-block:: bash
 
-   cd $HOME/genipe_tutorial/logistic
+   cd $HOME/genipe_tutorial/mixedlm
 
-   wget http://pgxcentre.github.io/genipe/_static/tutorial/phenotypes_logistic.txt.bz2
-   bunzip2 phenotypes_logistic.txt.bz2
+   wget http://pgxcentre.github.io/genipe/_static/tutorial/phenotypes_mixedlm.txt.bz2
+   bunzip2 phenotypes_mixedlm.txt.bz2
 
 .. note::
 
@@ -124,7 +153,8 @@ randomly generated). The following command should download the phenotype file.
 .. warning::
 
    The sample identification numbers should match the ones in the sample file
-   (see above). Those numbers should be unique for each sample. Only the
+   (see above). Those numbers should be unique for each sample. There should be
+   multiple rows for each sample, one for each repeated measurement. Only the
    samples that are **both** in the sample and phenotype files will be kept for
    analysis. The order of the samples in the phenotype file is not important.
 
@@ -139,48 +169,57 @@ number per line) to keep for the analysis. This file might be the
 :ref:`genipe-tut-page`).
 
 
-.. _logit-tut-execute:
+.. _mixedlm-tut-execute:
 
 Executing the analysis
 -----------------------
 
 If you followed the :ref:`genipe-tut-page`, the following commands should
-execute the logistic regression analysis.
+execute the linear mixed effects analysis.
 
 .. code-block:: bash
 
-   cd $HOME/genipe_tutorial/logistic
+   cd $HOME/genipe_tutorial/mixedlm
 
-   imputed-stats logistic \
+   imputed-stats mixedlm \
        --impute2 ../genipe/chr22/final_impute2/chr22.imputed.impute2.gz \
        --sample ../genipe/chr22/final_impute2/chr22.imputed.sample \
-       --pheno phenotypes_logistic.txt \
+       --pheno phenotypes_mixedlm.txt \
        --extract-sites ../genipe/chr22/final_impute2/chr22.imputed.good_sites \
        --nb-process 8 \
        --nb-lines 6000 \
        --gender-column Gender \
        --covar Age,Var1,Gender \
        --sample-column SampleID \
-       --pheno-name Pheno2
+       --pheno-name Pheno3
 
 For more information about the arguments and options, see the
-:ref:`logit-tut-usage` section. For an approximation of the execution time,
+:ref:`mixedlm-tut-usage` section. For an approximation of the execution time,
 refer to the :ref:`stats-exec-time` section.
 
-.. _logit-tut-output-files:
+.. note::
+
+   Analysis will be performed only on samples whitout missing data (phenotype,
+   gender, variables, etc).
+
+   By default, the analysis is performed by removing low quality genotypes
+   (using a probability threshold of 0.9, the ``--prob`` option).
+
+
+.. _mixedlm-tut-output-files:
 
 Output files
 -------------
 
-There will be two output files: ``.logistic.dosage`` will contain the
+There will be two output files: ``.mixedlm.dosage`` will contain the
 statistics, and ``.log`` will contain the execution log.
 
 
-``.logistic.dosage`` file
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+``.mixedlm.dosage`` file
+^^^^^^^^^^^^^^^^^^^^^^^^
 
-This file contains the results from the logistic regression. It shows the
-following information:
+This file contains the results from the linear mixed effects analysis. It shows
+the following information:
 
 * ``chr``: the chromosome.
 * ``pos``: the position on the chromosome.
@@ -203,28 +242,31 @@ following information:
    To modify this behavior, use the ``--maf`` option.
 
 
-.. _logit-tut-usage:
+.. _mixedlm-tut-usage:
 
 Usage
 ------
 
-The following command will display the documentation for the logistic
-regression analysis in the console:
+The following command will display the documentation for the linear mixed
+effects analysis in the console:
 
 .. code-block:: console
 
-   $ imputed-stats logistic --help
-   usage: imputed-stats logistic [-h] [-v] [--debug] --impute2 FILE --sample FILE
-                                 --pheno FILE [--extract-sites FILE] [--out FILE]
-                                 [--nb-process INT] [--nb-lines INT] [--chrx]
-                                 [--gender-column NAME] [--scale INT]
-                                 [--prob FLOAT] [--maf FLOAT] [--covar NAME]
-                                 [--categorical NAME] [--missing-value NAME]
-                                 [--sample-column NAME] [--interaction NAME]
-                                 --pheno-name NAME
+   $ imputed-stats mixedlm --help
+   usage: imputed-stats mixedlm [-h] [-v] [--debug] --impute2 FILE --sample FILE
+                                --pheno FILE [--extract-sites FILE] [--out FILE]
+                                [--nb-process INT] [--nb-lines INT] [--chrx]
+                                [--gender-column NAME] [--scale INT]
+                                [--prob FLOAT] [--maf FLOAT] [--covar NAME]
+                                [--categorical NAME] [--missing-value NAME]
+                                [--sample-column NAME] [--interaction NAME]
+                                --pheno-name NAME [--use-ml]
+                                [--p-threshold FLOAT]
 
-   Performs a logistic regression on imputed data using a GLM with a binomial
-   distribution. This script is part of the 'genipe' package, version 1.3.1.
+   Performs a linear mixed effects regression on imputed data using a random
+   intercept for each group. A p-value approximation is performed so that
+   computation time is acceptable for imputed data. This script is part of the
+   'genipe' package, version 1.3.2.
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -273,61 +315,56 @@ regression analysis in the console:
      --interaction NAME    Add an interaction between the genotype and this
                            variable.
 
-   Logistic Regression Options:
+   Linear Mixed Effects Options:
      --pheno-name NAME     The phenotype.
+     --use-ml              Fit the standard likelihood using maximum likelihood
+                           (ML) estimation instead of REML (default is REML).
+     --p-threshold FLOAT   The p-value threshold for which the real MixedLM
+                           analysis will be performed. [<0.0001]
 
 
-.. _logit-tut-comparison:
+.. _mixedlm-tut-comparison:
 
 Results comparison
 -------------------
 
-The logistic regression results from :py:mod:`genipe` and *Plink* were compared
-for validity. The following figure shows the comparison for, from left to
-right, the coefficients, the standard errors and the *p*-values. The *x* axis
-shows the results from :py:mod:`genipe`, and the *y* axis shows the results for
-*Plink*. This comparison includes 58,871 "good" imputed markers with a MAF
-higher or equal to 10%, analyzed for 60 samples (*i.e* results from this
-tutorial). Note that for this comparison, the **probability threshold**
-(``--prob``) **was changed from 0.9 to 0** to *imitate* *Plink* analysis (see
-note below for more information).
+The linear mixed effects analysis results from :py:mod:`genipe` and *R* were
+compared for validity. The following figure shows the comparison for, from left
+to right, the coefficients, the standard errors and the *p*-values. The *x*
+axis shows the results from :py:mod:`genipe`, and the *y* axis shows the
+results for *R*. This comparison includes 163,670 "good" imputed markers,
+analyzed for 60 samples (*i.e* results from this tutorial). Note that for this
+comparison, the **probability threshold** (``--prob``) **was changed from 0.9
+to 0** to *imitate* *R* analysis (see note below for more information).
 
-.. note::
-
-   Only markers with minor allele frequency (MAF) higher or equal to 10% were
-   compared, since markers with lower MAF might have convergence issues (*e.g.*
-   all exposed samples are all cases *or* all controls). In that case, the
-   coefficient is large, and the odds ratio (:math:`e^{coef}`) gets too large.
-
-.. figure:: ../_static/images/Logistic_Diff_Prob0.png
+.. figure:: ../_static/images/MixedLM_Diff_Prob0.png
    :align: center
    :width: 100%
-   :alt: Logistic regression comparison between genipe and Plink (prob. of 0)
+   :alt: Linear mixed effects comparison between genipe and R (probability of 0)
 
 .. note::
 
    The sign of the coefficients might be different when comparing
-   :py:mod:`genipe` to *Plink*, since :py:mod:`genipe` computes the statistics on
-   the rare allele, while *Plink* computes them on the second (alternative)
-   allele. The alternative allele might not always be the rarest.
-
+   :py:mod:`genipe` to *R*, since :py:mod:`genipe` computes the statistics on
+   the rare allele, while *R* computes them on the second (alternative) allele.
+   The alternative allele might not always be the rarest.
 
 .. note::
 
    By default, :py:mod:`genipe` excludes samples with a maximum probability
-   lower than 0.9 (the ``--prob`` option), while *Plink* keeps all the samples
-   for the analysis. In order to get the same results as *Plink*, the analysis
-   must be done with a probability threshold of 0 (*i.e.* ``--prob 0``, keeping
-   all imputed genotypes including those with poor quality). This is what was
-   done for the previous figure.
+   lower than 0.9 (the ``--prob`` option), while *R* keeps all the samples for
+   the analysis. In order to get the same results as *R*, the analysis must be
+   done with a probability threshold of 0 (*i.e.* ``--prob 0``, keeping all
+   imputed genotypes including those with poor quality). This is what was done
+   for the previous figure.
 
-   The following figure shows the comparison between *Plink* and
-   :py:mod:`genipe` for the same analysis, but using the default probability
-   threshold of 0.9 (excluding imputed genotypes with poor quality). Hence,
-   58,769 markers were compared.
+   The following figure shows the comparison between *R* and :py:mod:`genipe`
+   for the same analysis, but using the default probability threshold of 0.9
+   (excluding imputed genotypes with poor quality). Hence, 163,670 markers
+   were compared.
 
-   .. figure:: ../_static/images/Logistic_Diff.png
+   .. figure:: ../_static/images/MixedLM_Diff.png
       :align: center
       :width: 100%
-      :alt: Logistic regression comparison between genipe and Plink
+      :alt: Linear mixed effects comparison between genipe and R
 

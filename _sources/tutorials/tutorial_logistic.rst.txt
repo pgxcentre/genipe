@@ -3,26 +3,26 @@
    :depth: 2
 
 
-Survival analysis
-==================
+Logistic regression
+====================
 
-A popular technique to perform a survival analysis (regression) is the Cox's
-model. It is possible to perform such an analysis using imputation data (dosage
-format), where each imputed genotypes varies between 0 and 2 (inclusively). A
-value close to 0 means that a homozygous genotype of the most frequent allele
-is the most probable. A value close to 2 means that a homozygous genotype of
-the rare allele is the most probable. Finally, a value close to 1 means that a
-heterozygous genotype is the most probable.
+Logistic regressions are commonly used to perform genome-wide association
+studies. It is possible to perform such an analysis using imputation data
+(dosage format), where each imputed genotypes varies between 0 and 2
+(inclusively). A value close to 0 means that a homozygous genotype of the most
+frequent allele is the most probable. A value close to 2 means that a
+homozygous genotype of the rare allele is the most probable. Finally, a value
+close to 1 means that a heterozygous genotype is the most probable.
 
 We suppose that you have followed the main :ref:`genipe-tut-page`. The
 following command will create the working directory for this tutorial.
 
 .. code-block:: bash
 
-   mkdir -p $HOME/genipe_tutorial/survival
+   mkdir -p $HOME/genipe_tutorial/logistic
 
 
-.. _survival-tut-input-files:
+.. _logit-tut-input-files:
 
 Input files
 ------------
@@ -86,36 +86,40 @@ The first two rows are part of the format and should be as is.
 Phenotype file
 ^^^^^^^^^^^^^^^
 
-This file describes the variables used to perform the survival regression. The
-file is *tab* separated and contains one row per sample, one column per
-variable. Two variables are required: the time to event, and the event (``1``,
-the event **was observed**, and ``0``, the event **was not observed**
-(censored)).
+This file describes the phenotype and variables used to perform the logistic
+regression. The file is *tab* separated and contains one row per sample, one
+column per phenotype/variable.
 
 The following is an example of a phenotype file:
 
 .. code-block:: text
 
-   SampleID	TTE	Event	Age	Var1	Gender
-   NA06985	425.5006566841411	1	53	48.01043142060001	2
-   NA06993	553.6637748799277	1	47	23.7615117523	1
-   NA06994	569.4273004275149	0	48	20.2946857226	1
+   SampleID	Pheno2	Age	Var1	Gender
+   NA06985	1	53	48.01043142060001	2
+   NA06993	1	47	23.7615117523	1
+   NA06994	0	48	20.2946857226	1
+   ...
 
 We provide a *dummy* phenotype file (where values, except for ``Gender``, were
 randomly generated). The following command should download the phenotype file.
 
 .. code-block:: bash
 
-   cd $HOME/genipe_tutorial/survival
+   cd $HOME/genipe_tutorial/logistic
 
-   wget http://pgxcentre.github.io/genipe/_static/tutorial/phenotypes_survival.txt.bz2
-   bunzip2 phenotypes_survival.txt.bz2
+   wget http://pgxcentre.github.io/genipe/_static/tutorial/phenotypes_logistic.txt.bz2
+   bunzip2 phenotypes_logistic.txt.bz2
 
 .. note::
 
    Note that the gender is encoded such that males are ``1`` and females are
    ``2``. Samples with missing gender (encoded as ``0``) will be excluded only
    if gender is in the covariable list.
+
+.. note::
+
+   Categorical variables should be specified using the ``--categorical``
+   option.
 
 .. warning::
 
@@ -135,49 +139,47 @@ number per line) to keep for the analysis. This file might be the
 :ref:`genipe-tut-page`).
 
 
-.. _survival-tut-execute:
+.. _logit-tut-execute:
 
 Executing the analysis
 -----------------------
 
 If you followed the :ref:`genipe-tut-page`, the following commands should
-execute the survival analysis.
+execute the logistic regression analysis.
 
 .. code-block:: bash
 
-   cd $HOME/genipe_tutorial/survival
+   cd $HOME/genipe_tutorial/logistic
 
-   imputed-stats cox \
+   imputed-stats logistic \
        --impute2 ../genipe/chr22/final_impute2/chr22.imputed.impute2.gz \
        --sample ../genipe/chr22/final_impute2/chr22.imputed.sample \
-       --pheno phenotypes_survival.txt \
+       --pheno phenotypes_logistic.txt \
        --extract-sites ../genipe/chr22/final_impute2/chr22.imputed.good_sites \
        --nb-process 8 \
        --nb-lines 6000 \
        --gender-column Gender \
        --covar Age,Var1,Gender \
        --sample-column SampleID \
-       --time-to-event TTE \
-       --event Event
+       --pheno-name Pheno2
 
 For more information about the arguments and options, see the
-:ref:`survival-tut-usage` section. For an approximation of the execution time,
+:ref:`logit-tut-usage` section. For an approximation of the execution time,
 refer to the :ref:`stats-exec-time` section.
 
-
-.. _survival-tut-output-files:
+.. _logit-tut-output-files:
 
 Output files
 -------------
 
-There will be two output files: ``.cox.dosage`` will contain the statistics,
-and ``.log`` will contain the execution log.
+There will be two output files: ``.logistic.dosage`` will contain the
+statistics, and ``.log`` will contain the execution log.
 
 
-``.cox.dosage`` file
-^^^^^^^^^^^^^^^^^^^^^
+``.logistic.dosage`` file
+^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-This file contains the results from the survival analysis. It shows the
+This file contains the results from the logistic regression. It shows the
 following information:
 
 * ``chr``: the chromosome.
@@ -201,28 +203,28 @@ following information:
    To modify this behavior, use the ``--maf`` option.
 
 
-.. _survival-tut-usage:
+.. _logit-tut-usage:
 
 Usage
 ------
 
-The following command will display the documentation for the survival analysis
-in the console:
+The following command will display the documentation for the logistic
+regression analysis in the console:
 
 .. code-block:: console
 
-   $ imputed-stats cox --help
-   usage: imputed-stats cox [-h] [-v] [--debug] --impute2 FILE --sample FILE
-                            --pheno FILE [--extract-sites FILE] [--out FILE]
-                            [--nb-process INT] [--nb-lines INT] [--chrx]
-                            [--gender-column NAME] [--scale INT] [--prob FLOAT]
-                            [--maf FLOAT] [--covar NAME] [--categorical NAME]
-                            [--missing-value NAME] [--sample-column NAME]
-                            [--interaction NAME] --time-to-event NAME --event
-                            NAME
+   $ imputed-stats logistic --help
+   usage: imputed-stats logistic [-h] [-v] [--debug] --impute2 FILE --sample FILE
+                                 --pheno FILE [--extract-sites FILE] [--out FILE]
+                                 [--nb-process INT] [--nb-lines INT] [--chrx]
+                                 [--gender-column NAME] [--scale INT]
+                                 [--prob FLOAT] [--maf FLOAT] [--covar NAME]
+                                 [--categorical NAME] [--missing-value NAME]
+                                 [--sample-column NAME] [--interaction NAME]
+                                 --pheno-name NAME
 
-   Performs a survival regression on imputed data using Cox's proportional hazard
-   model. This script is part of the 'genipe' package, version 1.3.1.
+   Performs a logistic regression on imputed data using a GLM with a binomial
+   distribution. This script is part of the 'genipe' package, version 1.3.2.
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -271,62 +273,61 @@ in the console:
      --interaction NAME    Add an interaction between the genotype and this
                            variable.
 
-   Cox's Proportional Hazard Model Options:
-     --time-to-event NAME  The time to event variable (in the pheno file).
-     --event NAME          The event variable (1 if observed, 0 if not observed)
+   Logistic Regression Options:
+     --pheno-name NAME     The phenotype.
 
 
-.. _survival-tut-comparison:
+.. _logit-tut-comparison:
 
 Results comparison
 -------------------
 
-The survival analysis results from :py:mod:`genipe` and *JMP Genomics* were
-compared for validity. The following figure shows the comparison for, from left
-to right, the coefficients, the standard errors and the *p*-values. The *x*
-axis shows the results from :py:mod:`genipe`, and the *y* axis shows the
-results for *JMP Genomics*. This comparison includes 48,127 "good" imputed
-markers with a MAF higher or equal to 15%, analyzed for 60 samples (*i.e*
-results from this tutorial). Note that for this comparison, the **probability
-threshold** (``--prob``) **was changed from 0.9 to 0** to *imitate* *JMP
-Genomics* analysis (see note below for more information).
+The logistic regression results from :py:mod:`genipe` and *Plink* were compared
+for validity. The following figure shows the comparison for, from left to
+right, the coefficients, the standard errors and the *p*-values. The *x* axis
+shows the results from :py:mod:`genipe`, and the *y* axis shows the results for
+*Plink*. This comparison includes 58,871 "good" imputed markers with a MAF
+higher or equal to 10%, analyzed for 60 samples (*i.e* results from this
+tutorial). Note that for this comparison, the **probability threshold**
+(``--prob``) **was changed from 0.9 to 0** to *imitate* *Plink* analysis (see
+note below for more information).
 
 .. note::
 
-   Only markers with minor allele frequency (MAF) higher or equal to 15% were
+   Only markers with minor allele frequency (MAF) higher or equal to 10% were
    compared, since markers with lower MAF might have convergence issues (*e.g.*
    all exposed samples are all cases *or* all controls). In that case, the
-   coefficient is large.
+   coefficient is large, and the odds ratio (:math:`e^{coef}`) gets too large.
 
-.. figure:: ../_static/images/Survival_Diff_Prob0.png
+.. figure:: ../_static/images/Logistic_Diff_Prob0.png
    :align: center
    :width: 100%
-   :alt: Survival analysis comparison between genipe and JMP Genomics
+   :alt: Logistic regression comparison between genipe and Plink (prob. of 0)
 
 .. note::
 
    The sign of the coefficients might be different when comparing
-   :py:mod:`genipe` to *GMP Genomics*, since :py:mod:`genipe` computes the
-   statistics on the rare allele, while *JMP Genomics* computes them on the
-   second (alternative) allele. The alternative allele might not always be the
-   rarest.
+   :py:mod:`genipe` to *Plink*, since :py:mod:`genipe` computes the statistics on
+   the rare allele, while *Plink* computes them on the second (alternative)
+   allele. The alternative allele might not always be the rarest.
+
 
 .. note::
 
    By default, :py:mod:`genipe` excludes samples with a maximum probability
-   lower than 0.9 (the ``--prob`` option), while *JMP Genomics* keeps all the
-   samples for the analysis. In order to get the same results as *JMP
-   Genomics*, the analysis must be done with a probability threshold of 0
-   (*i.e.* ``--prob 0``, keeping all imputed genotypes including those with
-   poor quality). This is what was done for the previous figure.
+   lower than 0.9 (the ``--prob`` option), while *Plink* keeps all the samples
+   for the analysis. In order to get the same results as *Plink*, the analysis
+   must be done with a probability threshold of 0 (*i.e.* ``--prob 0``, keeping
+   all imputed genotypes including those with poor quality). This is what was
+   done for the previous figure.
 
-   The following figure shows the comparison between *JMP Genomics* and
+   The following figure shows the comparison between *Plink* and
    :py:mod:`genipe` for the same analysis, but using the default probability
    threshold of 0.9 (excluding imputed genotypes with poor quality). Hence,
-   48,045 markers were compared.
+   58,769 markers were compared.
 
-   .. figure:: ../_static/images/Survival_Diff.png
+   .. figure:: ../_static/images/Logistic_Diff.png
       :align: center
       :width: 100%
-      :alt: Survival analysis comparison between genipe and JMP Genomics
+      :alt: Logistic regression comparison between genipe and Plink
 

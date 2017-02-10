@@ -31,6 +31,11 @@ management):
 
 .. note::
 
+   Note that ``statsmodels`` (specifically MixedLM analysis) version 0.6
+   **is not compatible** with ``numpy`` version 1.12 and latest.
+
+.. note::
+
    Only Python version 3.4 and higher are supported.
 
 

@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.reporting.autoreport &mdash; genipe 1.3.1 documentation</title>
+    <title>genipe.reporting.autoreport &#8212; genipe 1.3.2 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,10 +15,11 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.3.1',
+        VERSION:     '1.3.2',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
       };
     </script>
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
@@ -26,8 +27,8 @@
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
     <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
-    <link rel="top" title="genipe 1.3.1 documentation" href="../../../index.html" />
-    <link rel="up" title="genipe" href="../../genipe.html" />
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
@@ -43,9 +44,9 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.1 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &#187;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -118,7 +119,7 @@
         <span class="s2">&quot;month&quot;</span><span class="p">:</span>           <span class="n">utils</span><span class="o">.</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s2">&quot;{:%B}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">today</span><span class="p">)),</span>
         <span class="s2">&quot;day&quot;</span><span class="p">:</span>             <span class="n">utils</span><span class="o">.</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s2">&quot;{:</span><span class="si">%d</span><span class="s2">}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">today</span><span class="p">)),</span>
         <span class="s2">&quot;year&quot;</span><span class="p">:</span>            <span class="n">utils</span><span class="o">.</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s2">&quot;{:%Y}&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">today</span><span class="p">)),</span>
-        <span class="s2">&quot;package_name&quot;</span><span class="p">:</span>    <span class="n">utils</span><span class="o">.</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="n">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span>
+        <span class="s2">&quot;package_name&quot;</span><span class="p">:</span>    <span class="n">utils</span><span class="o">.</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="vm">__name__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[</span><span class="mi">0</span><span class="p">]),</span>
         <span class="s2">&quot;package_version&quot;</span><span class="p">:</span> <span class="n">utils</span><span class="o">.</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="n">__version__</span><span class="p">),</span>
     <span class="p">}</span>
 
@@ -155,15 +156,15 @@
         <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;</span><span class="si">{}</span><span class="s2">: cannot write file&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">report_filename</span><span class="p">))</span>
 
     <span class="c1"># Copying the bibliography file</span>
-    <span class="n">bib_file</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="n">__name__</span><span class="p">,</span> <span class="s2">&quot;templates/biblio/references.bib&quot;</span><span class="p">)</span>
+    <span class="n">bib_file</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;templates/biblio/references.bib&quot;</span><span class="p">)</span>
     <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">bib_file</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span>
 
     <span class="c1"># Copying the bibliography style</span>
-    <span class="n">bib_style</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="n">__name__</span><span class="p">,</span> <span class="s2">&quot;templates/biblio/references.bst&quot;</span><span class="p">)</span>
+    <span class="n">bib_style</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;templates/biblio/references.bst&quot;</span><span class="p">)</span>
     <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">bib_style</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span>
 
     <span class="c1"># Copying the Makefile (to help build the report)</span>
-    <span class="n">makefile</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="n">__name__</span><span class="p">,</span> <span class="s2">&quot;templates/utils/Makefile&quot;</span><span class="p">)</span>
+    <span class="n">makefile</span> <span class="o">=</span> <span class="n">resource_filename</span><span class="p">(</span><span class="vm">__name__</span><span class="p">,</span> <span class="s2">&quot;templates/utils/Makefile&quot;</span><span class="p">)</span>
     <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">makefile</span><span class="p">,</span> <span class="n">out_dir</span><span class="p">)</span></div>
 
 
@@ -420,7 +421,7 @@
         <span class="n">table_2</span> <span class="o">=</span> <span class="n">run_information</span><span class="p">[</span><span class="s2">&quot;cross_validation_table_2_chrom&quot;</span><span class="p">][</span><span class="n">chrom</span><span class="p">]</span>
         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table_2</span><span class="p">)):</span>
             <span class="n">table_2</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">tex_inline_math</span><span class="p">(</span>
-                <span class="n">table_2</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="s2">r&quot;\geq &quot;</span><span class="p">),</span>
+                <span class="n">table_2</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\geq &quot;</span><span class="p">),</span>
             <span class="p">)</span>
         <span class="n">table_2</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">create_tabular</span><span class="p">(</span>
             <span class="n">template</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span>
@@ -445,7 +446,7 @@
             <span class="p">)),</span>
             <span class="n">label</span><span class="o">=</span><span class="s2">&quot;tab:cross_validation_chr_</span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">chrom</span><span class="p">),</span>
             <span class="n">placement</span><span class="o">=</span><span class="s2">&quot;H&quot;</span><span class="p">,</span>
-            <span class="n">content</span><span class="o">=</span><span class="n">table_1</span> <span class="o">+</span> <span class="s2">r&quot;\hfill&quot;</span> <span class="o">+</span> <span class="n">table_2</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">table_1</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\hfill&quot;</span> <span class="o">+</span> <span class="n">table_2</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="c1"># Adding the table for all the chromosomes (Table 1)</span>
@@ -463,7 +464,7 @@
     <span class="n">table_2</span> <span class="o">=</span> <span class="n">run_information</span><span class="p">[</span><span class="s2">&quot;cross_validation_table_2&quot;</span><span class="p">]</span>
     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">table_2</span><span class="p">)):</span>
         <span class="n">table_2</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">tex_inline_math</span><span class="p">(</span>
-            <span class="n">table_2</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="s2">r&quot;\geq &quot;</span><span class="p">),</span>
+            <span class="n">table_2</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="s2">&quot;&gt;=&quot;</span><span class="p">,</span> <span class="sa">r</span><span class="s2">&quot;\geq &quot;</span><span class="p">),</span>
         <span class="p">)</span>
     <span class="n">table_2</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">create_tabular</span><span class="p">(</span>
         <span class="n">template</span><span class="o">=</span><span class="n">tabular_template</span><span class="p">,</span>
@@ -488,7 +489,7 @@
             <span class="p">)),</span>
             <span class="n">label</span><span class="o">=</span><span class="s2">&quot;tab:cross_validation&quot;</span><span class="p">,</span>
             <span class="n">placement</span><span class="o">=</span><span class="s2">&quot;H&quot;</span><span class="p">,</span>
-            <span class="n">content</span><span class="o">=</span><span class="n">table_1</span> <span class="o">+</span> <span class="s2">r&quot;\hfill&quot;</span> <span class="o">+</span> <span class="n">table_2</span><span class="p">,</span>
+            <span class="n">content</span><span class="o">=</span><span class="n">table_1</span> <span class="o">+</span> <span class="sa">r</span><span class="s2">&quot;\hfill&quot;</span> <span class="o">+</span> <span class="n">table_2</span><span class="p">,</span>
         <span class="p">)</span>
 
     <span class="c1"># Creating the cross-validation subsection</span>
@@ -528,7 +529,7 @@
             <span class="n">label</span><span class="o">=</span><span class="s2">&quot;fig:frequency_barh&quot;</span><span class="p">,</span>
             <span class="n">placement</span><span class="o">=</span><span class="s2">&quot;H&quot;</span><span class="p">,</span>
             <span class="n">content</span><span class="o">=</span><span class="n">graphics_template</span><span class="o">.</span><span class="n">render</span><span class="p">(</span>
-                <span class="n">width</span><span class="o">=</span><span class="s2">r&quot;0.9\textwidth&quot;</span><span class="p">,</span>
+                <span class="n">width</span><span class="o">=</span><span class="sa">r</span><span class="s2">&quot;0.9\textwidth&quot;</span><span class="p">,</span>
                 <span class="n">path</span><span class="o">=</span><span class="n">run_information</span><span class="p">[</span><span class="s2">&quot;frequency_barh&quot;</span><span class="p">],</span>
             <span class="p">),</span>
         <span class="p">)</span>
@@ -601,7 +602,7 @@
                                <span class="s2">&quot;rate for all site (using a probability &quot;</span>
                                <span class="s2">&quot;threshold &quot;</span><span class="p">)</span> <span class="o">+</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">tex_inline_math</span><span class="p">(</span>
-                <span class="s2">r&quot;\geq </span><span class="si">{}</span><span class="s2">\%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s2">&quot;prob_threshold&quot;</span><span class="p">])</span>
+                <span class="sa">r</span><span class="s2">&quot;\geq </span><span class="si">{}</span><span class="s2">\%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s2">&quot;prob_threshold&quot;</span><span class="p">])</span>
             <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;).&quot;</span>
         <span class="p">),</span>
         <span class="n">utils</span><span class="o">.</span><span class="n">wrap_tex</span><span class="p">(</span>
@@ -612,13 +613,13 @@
             <span class="n">utils</span><span class="o">.</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s2">&quot;: list of sites which pass the information &quot;</span>
                                <span class="s2">&quot;threshold (&quot;</span><span class="p">)</span> <span class="o">+</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">tex_inline_math</span><span class="p">(</span>
-                <span class="s2">r&quot;\geq </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s2">&quot;info_threshold&quot;</span><span class="p">])</span>
+                <span class="sa">r</span><span class="s2">&quot;\geq </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s2">&quot;info_threshold&quot;</span><span class="p">])</span>
             <span class="p">)</span> <span class="o">+</span> <span class="n">utils</span><span class="o">.</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s2">&quot;) and the completion rate threshold (&quot;</span><span class="p">)</span> <span class="o">+</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">tex_inline_math</span><span class="p">(</span>
-                <span class="s2">r&quot;\geq </span><span class="si">{}</span><span class="s2">\%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s2">&quot;rate_threshold&quot;</span><span class="p">])</span>
+                <span class="sa">r</span><span class="s2">&quot;\geq </span><span class="si">{}</span><span class="s2">\%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s2">&quot;rate_threshold&quot;</span><span class="p">])</span>
             <span class="p">)</span> <span class="o">+</span> <span class="n">utils</span><span class="o">.</span><span class="n">sanitize_tex</span><span class="p">(</span><span class="s2">&quot;) using the probability threshold &quot;</span><span class="p">)</span> <span class="o">+</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">tex_inline_math</span><span class="p">(</span>
-                <span class="s2">r&quot;\geq </span><span class="si">{}</span><span class="s2">\%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s2">&quot;prob_threshold&quot;</span><span class="p">])</span>
+                <span class="sa">r</span><span class="s2">&quot;\geq </span><span class="si">{}</span><span class="s2">\%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s2">&quot;prob_threshold&quot;</span><span class="p">])</span>
             <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span>
         <span class="p">),</span>
         <span class="n">utils</span><span class="o">.</span><span class="n">wrap_tex</span><span class="p">(</span>
@@ -662,7 +663,7 @@
                                <span class="s2">&quot;allele identification) for all sites using &quot;</span>
                                <span class="s2">&quot;the probability threshold &quot;</span><span class="p">)</span> <span class="o">+</span>
             <span class="n">utils</span><span class="o">.</span><span class="n">tex_inline_math</span><span class="p">(</span>
-                <span class="s2">r&quot;\geq </span><span class="si">{}</span><span class="s2">\%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s2">&quot;prob_threshold&quot;</span><span class="p">])</span>
+                <span class="sa">r</span><span class="s2">&quot;\geq </span><span class="si">{}</span><span class="s2">\%&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">run_information</span><span class="p">[</span><span class="s2">&quot;prob_threshold&quot;</span><span class="p">])</span>
             <span class="p">)</span> <span class="o">+</span> <span class="s2">&quot;.&quot;</span>
         <span class="p">),</span>
         <span class="n">utils</span><span class="o">.</span><span class="n">wrap_tex</span><span class="p">(</span>
@@ -876,7 +877,7 @@
     <span class="c1"># Adding the second table</span>
     <span class="n">table_2</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
     <span class="k">if</span> <span class="n">two_tables</span><span class="p">:</span>
-        <span class="n">table_2</span> <span class="o">=</span> <span class="s2">r&quot;\hspace</span><span class="si">{1cm}</span><span class="s2">&quot;</span>
+        <span class="n">table_2</span> <span class="o">=</span> <span class="sa">r</span><span class="s2">&quot;\hspace</span><span class="si">{1cm}</span><span class="s2">&quot;</span>
         <span class="n">table_2</span> <span class="o">+=</span> <span class="n">utils</span><span class="o">.</span><span class="n">create_tabular</span><span class="p">(</span>
             <span class="n">template</span><span class="o">=</span><span class="n">tabular_t</span><span class="p">,</span>
             <span class="n">header</span><span class="o">=</span><span class="n">header</span><span class="p">,</span>
@@ -931,16 +932,16 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.1 documentation</a> &raquo;</li>
-          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &raquo;</li>
-          <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &raquo;</li> 
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.2 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
+          <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &#187;</li> 
       </ul>
     </div>
 
 
     <div class="footer" role="contentinfo">
-        &copy; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.4.5.
+        &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.2.
     </div>
 
 <script>
