@@ -222,7 +222,7 @@ in the console:
                             NAME
 
    Performs a survival regression on imputed data using Cox's proportional hazard
-   model. This script is part of the 'genipe' package, version 1.3.1.
+   model. This script is part of the 'genipe' package, version 1.3.2.
 
    optional arguments:
      -h, --help            show this help message and exit
