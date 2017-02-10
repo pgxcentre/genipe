@@ -787,8 +787,8 @@ class TestArguments(unittest.TestCase):
         # Checking the warning is logged
         with self.assertLogs(level="WARNING") as cm:
             check_args(self.args)
-        log_m = ["WARNING:root:segment length (5e+06 bp) is more than 5Mb"]
-        self.assertEqual(log_m, cm.output)
+        log_m = "WARNING:root:segment length (5e+06 bp) is more than 5Mb"
+        self.assertTrue(log_m in cm.output)
 
     def test_segment_length_small(self):
         """Tests different invalid segment length (too small)."""
@@ -797,8 +797,8 @@ class TestArguments(unittest.TestCase):
         # Checking the warning is logged
         with self.assertLogs(level="WARNING") as cm:
             check_args(self.args)
-        log_m = ["WARNING:root:segment length (999 bp) is too small"]
-        self.assertEqual(log_m, cm.output)
+        log_m = "WARNING:root:segment length (999 bp) is too small"
+        self.assertTrue(log_m in cm.output)
 
     def test_segment_length_invalid(self):
         """Tests different invalid segment length."""
