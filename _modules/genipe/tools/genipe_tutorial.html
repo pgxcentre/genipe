@@ -7,7 +7,7 @@
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     
-    <title>genipe.tools.genipe_tutorial &#8212; genipe 1.3.2 documentation</title>
+    <title>genipe.tools.genipe_tutorial &#8212; genipe 1.3.3 documentation</title>
     
     <link rel="stylesheet" href="../../../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../../../_static/pygments.css" type="text/css" />
@@ -15,7 +15,7 @@
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../../../',
-        VERSION:     '1.3.2',
+        VERSION:     '1.3.3',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -25,7 +25,7 @@
     <script type="text/javascript" src="../../../_static/jquery.js"></script>
     <script type="text/javascript" src="../../../_static/underscore.js"></script>
     <script type="text/javascript" src="../../../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../../../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
@@ -44,7 +44,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" accesskey="U">genipe</a> &#187;</li> 
       </ul>
@@ -90,6 +90,7 @@
 <span class="kn">from</span> <span class="nn">glob</span> <span class="k">import</span> <span class="n">glob</span>
 <span class="kn">from</span> <span class="nn">urllib.request</span> <span class="k">import</span> <span class="n">urlretrieve</span>
 <span class="kn">from</span> <span class="nn">tempfile</span> <span class="k">import</span> <span class="n">TemporaryDirectory</span>
+<span class="kn">from</span> <span class="nn">distutils.spawn</span> <span class="k">import</span> <span class="n">find_executable</span>
 <span class="kn">from</span> <span class="nn">urllib.error</span> <span class="k">import</span> <span class="n">HTTPError</span><span class="p">,</span> <span class="n">URLError</span>
 <span class="kn">from</span> <span class="nn">subprocess</span> <span class="k">import</span> <span class="n">check_call</span><span class="p">,</span> <span class="n">CalledProcessError</span>
 
@@ -177,42 +178,42 @@
             <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">,</span> <span class="s2">&quot;plink&quot;</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">has_plink</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading Plink&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Getting Plink&quot;</span><span class="p">)</span>
             <span class="n">get_plink</span><span class="p">(</span>
                 <span class="n">os_name</span><span class="o">=</span><span class="n">os_name</span><span class="p">,</span>
                 <span class="n">arch</span><span class="o">=</span><span class="n">architecture</span><span class="p">,</span>
                 <span class="n">path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">),</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Plink already downloaded&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Plink already present&quot;</span><span class="p">)</span>
 
         <span class="c1"># Downloading impute2</span>
         <span class="n">has_impute2</span> <span class="o">=</span> <span class="n">check_files</span><span class="p">(</span>
             <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">,</span> <span class="s2">&quot;impute2&quot;</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">has_impute2</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading impute2&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Getting impute2&quot;</span><span class="p">)</span>
             <span class="n">get_impute2</span><span class="p">(</span>
                 <span class="n">os_name</span><span class="o">=</span><span class="n">os_name</span><span class="p">,</span>
                 <span class="n">arch</span><span class="o">=</span><span class="n">architecture</span><span class="p">,</span>
                 <span class="n">path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">),</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Impute2 already downloaded&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Impute2 already present&quot;</span><span class="p">)</span>
 
         <span class="c1"># Downloading shapeit</span>
         <span class="n">has_shapeit</span> <span class="o">=</span> <span class="n">check_files</span><span class="p">(</span>
             <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">,</span> <span class="s2">&quot;shapeit&quot;</span><span class="p">),</span>
         <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">has_shapeit</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Downloading shapeit&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Getting shapeit&quot;</span><span class="p">)</span>
             <span class="n">get_shapeit</span><span class="p">(</span>
                 <span class="n">os_name</span><span class="o">=</span><span class="n">os_name</span><span class="p">,</span>
                 <span class="n">arch</span><span class="o">=</span><span class="n">architecture</span><span class="p">,</span>
                 <span class="n">path</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">args</span><span class="o">.</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;bin&quot;</span><span class="p">),</span>
             <span class="p">)</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Shapeit already downloaded&quot;</span><span class="p">)</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;Shapeit already present&quot;</span><span class="p">)</span>
 
         <span class="c1"># Downloading the reference</span>
         <span class="n">has_hg19</span> <span class="o">=</span> <span class="n">check_files</span><span class="p">(</span>
@@ -454,43 +455,54 @@
 <span class="sd">        arch (str): the architecture of the system</span>
 <span class="sd">        path (str): the path where to put Plink</span>
 
+<span class="sd">    Note</span>
+<span class="sd">    ====</span>
+<span class="sd">        If the binary is in the system path, it is copied to the destination</span>
+<span class="sd">        path. Otherwise, we download it.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># The url for each platform</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://pngu.mgh.harvard.edu/~purcell/plink/dist/</span><span class="si">{filename}</span><span class="s2">&quot;</span>
+    <span class="n">system_plink</span> <span class="o">=</span> <span class="n">find_executable</span><span class="p">(</span><span class="s2">&quot;plink&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">system_plink</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - Copying Plink from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">system_plink</span><span class="p">))</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">system_plink</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">follow_symlinks</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="c1"># Getting the name of the file to download</span>
-    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">:</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;plink-1.07-mac-intel.zip&quot;</span>
-    <span class="k">elif</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Linux&quot;</span><span class="p">:</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;plink-1.07-x86_64.zip&quot;</span>
-    <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Problem choosing a file to download for &quot;</span>
-                          <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> bits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># The url for each platform</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;http://zzz.bwh.harvard.edu/plink/dist/</span><span class="si">{filename}</span><span class="s2">&quot;</span>
 
-    <span class="c1"># Downloading Plink in a temporary directory</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
-    <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
-        <span class="n">zip_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
-        <span class="n">download_file</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">),</span> <span class="n">zip_path</span><span class="p">)</span>
+        <span class="c1"># Getting the name of the file to download</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;plink-1.07-mac-intel.zip&quot;</span>
+        <span class="k">elif</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Linux&quot;</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;plink-1.07-x86_64.zip&quot;</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Problem choosing a file to download for &quot;</span>
+                              <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> bits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
 
-        <span class="c1"># Unzipping Plink</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - Extracting file&quot;</span><span class="p">)</span>
-        <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">zip_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">z</span><span class="p">:</span>
-            <span class="n">z</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span>
+        <span class="c1"># Downloading Plink in a temporary directory</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
+            <span class="n">zip_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="n">download_file</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">),</span> <span class="n">zip_path</span><span class="p">)</span>
 
-        <span class="c1"># Finding the plink file</span>
-        <span class="n">plink_file</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;plink&quot;</span><span class="p">))</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plink_file</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">plink_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Unable to locate Plink&quot;</span><span class="p">)</span>
-        <span class="n">plink_file</span> <span class="o">=</span> <span class="n">plink_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># Unzipping Plink</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - Extracting file&quot;</span><span class="p">)</span>
+            <span class="k">with</span> <span class="n">zipfile</span><span class="o">.</span><span class="n">ZipFile</span><span class="p">(</span><span class="n">zip_path</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">z</span><span class="p">:</span>
+                <span class="n">z</span><span class="o">.</span><span class="n">extractall</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">)</span>
 
-        <span class="c1"># Moving the file</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">plink_file</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-        <span class="n">plink_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;plink&quot;</span><span class="p">)</span>
+            <span class="c1"># Finding the plink file</span>
+            <span class="n">plink_file</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;plink&quot;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">plink_file</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">plink_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Unable to locate Plink&quot;</span><span class="p">)</span>
+            <span class="n">plink_file</span> <span class="o">=</span> <span class="n">plink_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="c1"># Making the script executable</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">plink_path</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRWXU</span><span class="p">)</span></div>
+            <span class="c1"># Moving the file</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">plink_file</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <span class="n">plink_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;plink&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Making the script executable</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">plink_path</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRWXU</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_impute2"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.get_impute2">[docs]</a><span class="k">def</span> <span class="nf">get_impute2</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
@@ -501,42 +513,53 @@
 <span class="sd">        arch (str): the architecture of the system</span>
 <span class="sd">        path (str): the path where to put impute2</span>
 
+<span class="sd">    Note</span>
+<span class="sd">    ====</span>
+<span class="sd">        If the binary is in the system path, it is copied to the destination</span>
+<span class="sd">        path. Otherwise, we download it.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># The url for each platform</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://mathgen.stats.ox.ac.uk/impute/</span><span class="si">{filename}</span><span class="s2">&quot;</span>
+    <span class="n">system_impute2</span> <span class="o">=</span> <span class="n">find_executable</span><span class="p">(</span><span class="s2">&quot;impute2&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">system_impute2</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - Copying impute2 from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">system_impute2</span><span class="p">))</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">system_impute2</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">follow_symlinks</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="c1"># Getting the name of the file to download</span>
-    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">:</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;impute_v2.3.2_MacOSX_Intel.tgz&quot;</span>
-    <span class="k">elif</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Linux&quot;</span><span class="p">:</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;impute_v2.3.2_x86_64_static.tgz&quot;</span>
-    <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Problem choosing a file to download for &quot;</span>
-                          <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> bits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># The url for each platform</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://mathgen.stats.ox.ac.uk/impute/</span><span class="si">{filename}</span><span class="s2">&quot;</span>
 
-    <span class="c1"># Downloading Impute2 in a temporary directory</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
-    <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
-        <span class="n">tar_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
-        <span class="n">download_file</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">),</span> <span class="n">tar_path</span><span class="p">)</span>
+        <span class="c1"># Getting the name of the file to download</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;impute_v2.3.2_MacOSX_Intel.tgz&quot;</span>
+        <span class="k">elif</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Linux&quot;</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;impute_v2.3.2_x86_64_static.tgz&quot;</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Problem choosing a file to download for &quot;</span>
+                              <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> bits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
 
-        <span class="c1"># Extracting impute2</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - Extracting file&quot;</span><span class="p">)</span>
-        <span class="n">untar_file</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">tar_path</span><span class="p">)</span>
+        <span class="c1"># Downloading Impute2 in a temporary directory</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
+            <span class="n">tar_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="n">download_file</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">),</span> <span class="n">tar_path</span><span class="p">)</span>
 
-        <span class="c1"># Finding the impute2 file</span>
-        <span class="n">impute2_file</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;impute2&quot;</span><span class="p">))</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">impute2_file</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">impute2_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Unable to locate impute2&quot;</span><span class="p">)</span>
-        <span class="n">impute2_file</span> <span class="o">=</span> <span class="n">impute2_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># Extracting impute2</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - Extracting file&quot;</span><span class="p">)</span>
+            <span class="n">untar_file</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">tar_path</span><span class="p">)</span>
 
-        <span class="c1"># Moving the file</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">impute2_file</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-        <span class="n">impute2_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;impute2&quot;</span><span class="p">)</span>
+            <span class="c1"># Finding the impute2 file</span>
+            <span class="n">impute2_file</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;impute2&quot;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">impute2_file</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">impute2_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Unable to locate impute2&quot;</span><span class="p">)</span>
+            <span class="n">impute2_file</span> <span class="o">=</span> <span class="n">impute2_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="c1"># Making the script executable</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">impute2_path</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRWXU</span><span class="p">)</span></div>
+            <span class="c1"># Moving the file</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">impute2_file</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <span class="n">impute2_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;impute2&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Making the script executable</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">impute2_path</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRWXU</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="get_shapeit"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.get_shapeit">[docs]</a><span class="k">def</span> <span class="nf">get_shapeit</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
@@ -547,42 +570,54 @@
 <span class="sd">        arch (str): the architecture of the system</span>
 <span class="sd">        path (str): the path where to put shapeit</span>
 
+<span class="sd">    Note</span>
+<span class="sd">    ====</span>
+<span class="sd">        If the binary is in the system path, it is copied to the destination</span>
+<span class="sd">        path. Otherwise, we download it.</span>
+
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="c1"># The url for each platform</span>
-    <span class="n">url</span> <span class="o">=</span> <span class="s2">&quot;https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/</span><span class="si">{filename}</span><span class="s2">&quot;</span>
+    <span class="n">system_shapeit</span> <span class="o">=</span> <span class="n">find_executable</span><span class="p">(</span><span class="s2">&quot;shapeit&quot;</span><span class="p">)</span>
+    <span class="k">if</span> <span class="n">system_shapeit</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - Copying shapeit from </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">system_shapeit</span><span class="p">))</span>
+        <span class="n">shutil</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">system_shapeit</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">follow_symlinks</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="c1"># Getting the name of the file to download</span>
-    <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
-    <span class="k">if</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">:</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;shapeit.v2.r837.MacOSX.tgz&quot;</span>
-    <span class="k">elif</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Linux&quot;</span><span class="p">:</span>
-        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;shapeit.v2.r837.GLIBCv2.12.Linux.static.tgz&quot;</span>
-    <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
-        <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Problem choosing a file to download for &quot;</span>
-                          <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> bits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># The url for each platform</span>
+        <span class="n">url</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;https://mathgen.stats.ox.ac.uk/genetics_software/&quot;</span>
+               <span class="s2">&quot;shapeit/</span><span class="si">{filename}</span><span class="s2">&quot;</span><span class="p">)</span>
 
-    <span class="c1"># Downloading shapeit in a temporary directory</span>
-    <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
-    <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
-        <span class="n">tar_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
-        <span class="n">download_file</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">),</span> <span class="n">tar_path</span><span class="p">)</span>
+        <span class="c1"># Getting the name of the file to download</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Darwin&quot;</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;shapeit.v2.r837.MacOSX.tgz&quot;</span>
+        <span class="k">elif</span> <span class="n">os_name</span> <span class="o">==</span> <span class="s2">&quot;Linux&quot;</span><span class="p">:</span>
+            <span class="n">filename</span> <span class="o">=</span> <span class="s2">&quot;shapeit.v2.r837.GLIBCv2.12.Linux.static.tgz&quot;</span>
+        <span class="k">if</span> <span class="n">filename</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Problem choosing a file to download for &quot;</span>
+                              <span class="s2">&quot;</span><span class="si">{}</span><span class="s2"> </span><span class="si">{}</span><span class="s2"> bits&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">os_name</span><span class="p">,</span> <span class="n">arch</span><span class="p">))</span>
 
-        <span class="c1"># Extracting shapeit</span>
-        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - Extracting file&quot;</span><span class="p">)</span>
-        <span class="n">untar_file</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">tar_path</span><span class="p">)</span>
+        <span class="c1"># Downloading shapeit in a temporary directory</span>
+        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - &quot;</span> <span class="o">+</span> <span class="n">filename</span><span class="p">)</span>
+        <span class="k">with</span> <span class="n">TemporaryDirectory</span><span class="p">()</span> <span class="k">as</span> <span class="n">tmpdir</span><span class="p">:</span>
+            <span class="n">tar_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">filename</span><span class="p">)</span>
+            <span class="n">download_file</span><span class="p">(</span><span class="n">url</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">filename</span><span class="o">=</span><span class="n">filename</span><span class="p">),</span> <span class="n">tar_path</span><span class="p">)</span>
 
-        <span class="c1"># Finding the shapeit file</span>
-        <span class="n">shapeit_file</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;shapeit&quot;</span><span class="p">))</span>
-        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shapeit_file</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">shapeit_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
-            <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Unable to locate shapeit&quot;</span><span class="p">)</span>
-        <span class="n">shapeit_file</span> <span class="o">=</span> <span class="n">shapeit_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="c1"># Extracting shapeit</span>
+            <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;  - Extracting file&quot;</span><span class="p">)</span>
+            <span class="n">untar_file</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="n">tar_path</span><span class="p">)</span>
 
-        <span class="c1"># Moving the file</span>
-        <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">shapeit_file</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
-        <span class="n">shapeit_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;shapeit&quot;</span><span class="p">)</span>
+            <span class="c1"># Finding the shapeit file</span>
+            <span class="n">shapeit_file</span> <span class="o">=</span> <span class="n">glob</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">tmpdir</span><span class="p">,</span> <span class="s2">&quot;*&quot;</span><span class="p">,</span> <span class="s2">&quot;shapeit&quot;</span><span class="p">))</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">shapeit_file</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">isfile</span><span class="p">(</span><span class="n">shapeit_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]):</span>
+                <span class="k">raise</span> <span class="n">GenipeError</span><span class="p">(</span><span class="s2">&quot;Unable to locate shapeit&quot;</span><span class="p">)</span>
+            <span class="n">shapeit_file</span> <span class="o">=</span> <span class="n">shapeit_file</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="c1"># Making the script executable</span>
-    <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">shapeit_path</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRWXU</span><span class="p">)</span></div>
+            <span class="c1"># Moving the file</span>
+            <span class="n">shutil</span><span class="o">.</span><span class="n">move</span><span class="p">(</span><span class="n">shapeit_file</span><span class="p">,</span> <span class="n">path</span><span class="p">)</span>
+            <span class="n">shapeit_path</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path</span><span class="p">,</span> <span class="s2">&quot;shapeit&quot;</span><span class="p">)</span>
+
+        <span class="c1"># Making the script executable</span>
+        <span class="n">os</span><span class="o">.</span><span class="n">chmod</span><span class="p">(</span><span class="n">shapeit_path</span><span class="p">,</span> <span class="n">stat</span><span class="o">.</span><span class="n">S_IRWXU</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="download_file"><a class="viewcode-back" href="../../../module_content/genipe.tools.html#genipe.tools.genipe_tutorial.download_file">[docs]</a><span class="k">def</span> <span class="nf">download_file</span><span class="p">(</span><span class="n">url</span><span class="p">,</span> <span class="n">path</span><span class="p">):</span>
@@ -670,7 +705,7 @@
         <li class="right" >
           <a href="../../../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../../../index.html">genipe 1.3.3 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../../index.html" >Module code</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="../../genipe.html" >genipe</a> &#187;</li> 
       </ul>
@@ -679,7 +714,7 @@
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.2.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
     </div>
 
 <script>
