@@ -266,7 +266,7 @@ effects analysis in the console:
    Performs a linear mixed effects regression on imputed data using a random
    intercept for each group. A p-value approximation is performed so that
    computation time is acceptable for imputed data. This script is part of the
-   'genipe' package, version 1.3.2.
+   'genipe' package, version 1.3.3.
 
    optional arguments:
      -h, --help            show this help message and exit
