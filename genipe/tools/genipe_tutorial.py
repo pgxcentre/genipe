@@ -18,6 +18,7 @@ import platform
 from glob import glob
 from urllib.request import urlretrieve
 from tempfile import TemporaryDirectory
+from distutils.spawn import find_executable
 from urllib.error import HTTPError, URLError
 from subprocess import check_call, CalledProcessError
 
@@ -105,42 +106,42 @@ def main(args=None):
             os.path.join(args.path, "bin", "plink"),
         )
         if not has_plink:
-            logger.info("Downloading Plink")
+            logger.info("Getting Plink")
             get_plink(
                 os_name=os_name,
                 arch=architecture,
                 path=os.path.join(args.path, "bin"),
             )
         else:
-            logger.info("Plink already downloaded")
+            logger.info("Plink already present")
 
         # Downloading impute2
         has_impute2 = check_files(
             os.path.join(args.path, "bin", "impute2"),
         )
         if not has_impute2:
-            logger.info("Downloading impute2")
+            logger.info("Getting impute2")
             get_impute2(
                 os_name=os_name,
                 arch=architecture,
                 path=os.path.join(args.path, "bin"),
             )
         else:
-            logger.info("Impute2 already downloaded")
+            logger.info("Impute2 already present")
 
         # Downloading shapeit
         has_shapeit = check_files(
             os.path.join(args.path, "bin", "shapeit"),
         )
         if not has_shapeit:
-            logger.info("Downloading shapeit")
+            logger.info("Getting shapeit")
             get_shapeit(
                 os_name=os_name,
                 arch=architecture,
                 path=os.path.join(args.path, "bin"),
             )
         else:
-            logger.info("Shapeit already downloaded")
+            logger.info("Shapeit already present")
 
         # Downloading the reference
         has_hg19 = check_files(
@@ -382,43 +383,54 @@ def get_plink(os_name, arch, path):
         arch (str): the architecture of the system
         path (str): the path where to put Plink
 
+    Note
+    ====
+        If the binary is in the system path, it is copied to the destination
+        path. Otherwise, we download it.
+
     """
-    # The url for each platform
-    url = "http://pngu.mgh.harvard.edu/~purcell/plink/dist/{filename}"
+    system_plink = find_executable("plink")
+    if system_plink is not None:
+        logger.info("  - Copying Plink from {}".format(system_plink))
+        shutil.copy(system_plink, path, follow_symlinks=True)
 
-    # Getting the name of the file to download
-    filename = ""
-    if os_name == "Darwin":
-        filename = "plink-1.07-mac-intel.zip"
-    elif os_name == "Linux":
-        filename = "plink-1.07-x86_64.zip"
-    if filename == "":
-        raise GenipeError("Problem choosing a file to download for "
-                          "{} {} bits".format(os_name, arch))
+    else:
+        # The url for each platform
+        url = "http://zzz.bwh.harvard.edu/plink/dist/{filename}"
 
-    # Downloading Plink in a temporary directory
-    logger.info("  - " + filename)
-    with TemporaryDirectory() as tmpdir:
-        zip_path = os.path.join(tmpdir, filename)
-        download_file(url.format(filename=filename), zip_path)
+        # Getting the name of the file to download
+        filename = ""
+        if os_name == "Darwin":
+            filename = "plink-1.07-mac-intel.zip"
+        elif os_name == "Linux":
+            filename = "plink-1.07-x86_64.zip"
+        if filename == "":
+            raise GenipeError("Problem choosing a file to download for "
+                              "{} {} bits".format(os_name, arch))
 
-        # Unzipping Plink
-        logger.info("  - Extracting file")
-        with zipfile.ZipFile(zip_path, "r") as z:
-            z.extractall(tmpdir)
+        # Downloading Plink in a temporary directory
+        logger.info("  - " + filename)
+        with TemporaryDirectory() as tmpdir:
+            zip_path = os.path.join(tmpdir, filename)
+            download_file(url.format(filename=filename), zip_path)
 
-        # Finding the plink file
-        plink_file = glob(os.path.join(tmpdir, "*", "plink"))
-        if len(plink_file) != 1 or not os.path.isfile(plink_file[0]):
-            raise GenipeError("Unable to locate Plink")
-        plink_file = plink_file[0]
+            # Unzipping Plink
+            logger.info("  - Extracting file")
+            with zipfile.ZipFile(zip_path, "r") as z:
+                z.extractall(tmpdir)
 
-        # Moving the file
-        shutil.move(plink_file, path)
-        plink_path = os.path.join(path, "plink")
+            # Finding the plink file
+            plink_file = glob(os.path.join(tmpdir, "*", "plink"))
+            if len(plink_file) != 1 or not os.path.isfile(plink_file[0]):
+                raise GenipeError("Unable to locate Plink")
+            plink_file = plink_file[0]
 
-    # Making the script executable
-    os.chmod(plink_path, stat.S_IRWXU)
+            # Moving the file
+            shutil.move(plink_file, path)
+            plink_path = os.path.join(path, "plink")
+
+        # Making the script executable
+        os.chmod(plink_path, stat.S_IRWXU)
 
 
 def get_impute2(os_name, arch, path):
@@ -429,42 +441,53 @@ def get_impute2(os_name, arch, path):
         arch (str): the architecture of the system
         path (str): the path where to put impute2
 
+    Note
+    ====
+        If the binary is in the system path, it is copied to the destination
+        path. Otherwise, we download it.
+
     """
-    # The url for each platform
-    url = "https://mathgen.stats.ox.ac.uk/impute/{filename}"
+    system_impute2 = find_executable("impute2")
+    if system_impute2 is not None:
+        logger.info("  - Copying impute2 from {}".format(system_impute2))
+        shutil.copy(system_impute2, path, follow_symlinks=True)
 
-    # Getting the name of the file to download
-    filename = ""
-    if os_name == "Darwin":
-        filename = "impute_v2.3.2_MacOSX_Intel.tgz"
-    elif os_name == "Linux":
-        filename = "impute_v2.3.2_x86_64_static.tgz"
-    if filename == "":
-        raise GenipeError("Problem choosing a file to download for "
-                          "{} {} bits".format(os_name, arch))
+    else:
+        # The url for each platform
+        url = "https://mathgen.stats.ox.ac.uk/impute/{filename}"
 
-    # Downloading Impute2 in a temporary directory
-    logger.info("  - " + filename)
-    with TemporaryDirectory() as tmpdir:
-        tar_path = os.path.join(tmpdir, filename)
-        download_file(url.format(filename=filename), tar_path)
+        # Getting the name of the file to download
+        filename = ""
+        if os_name == "Darwin":
+            filename = "impute_v2.3.2_MacOSX_Intel.tgz"
+        elif os_name == "Linux":
+            filename = "impute_v2.3.2_x86_64_static.tgz"
+        if filename == "":
+            raise GenipeError("Problem choosing a file to download for "
+                              "{} {} bits".format(os_name, arch))
 
-        # Extracting impute2
-        logger.info("  - Extracting file")
-        untar_file(tmpdir, tar_path)
+        # Downloading Impute2 in a temporary directory
+        logger.info("  - " + filename)
+        with TemporaryDirectory() as tmpdir:
+            tar_path = os.path.join(tmpdir, filename)
+            download_file(url.format(filename=filename), tar_path)
 
-        # Finding the impute2 file
-        impute2_file = glob(os.path.join(tmpdir, "*", "impute2"))
-        if len(impute2_file) != 1 or not os.path.isfile(impute2_file[0]):
-            raise GenipeError("Unable to locate impute2")
-        impute2_file = impute2_file[0]
+            # Extracting impute2
+            logger.info("  - Extracting file")
+            untar_file(tmpdir, tar_path)
 
-        # Moving the file
-        shutil.move(impute2_file, path)
-        impute2_path = os.path.join(path, "impute2")
+            # Finding the impute2 file
+            impute2_file = glob(os.path.join(tmpdir, "*", "impute2"))
+            if len(impute2_file) != 1 or not os.path.isfile(impute2_file[0]):
+                raise GenipeError("Unable to locate impute2")
+            impute2_file = impute2_file[0]
 
-    # Making the script executable
-    os.chmod(impute2_path, stat.S_IRWXU)
+            # Moving the file
+            shutil.move(impute2_file, path)
+            impute2_path = os.path.join(path, "impute2")
+
+        # Making the script executable
+        os.chmod(impute2_path, stat.S_IRWXU)
 
 
 def get_shapeit(os_name, arch, path):
@@ -475,42 +498,54 @@ def get_shapeit(os_name, arch, path):
         arch (str): the architecture of the system
         path (str): the path where to put shapeit
 
+    Note
+    ====
+        If the binary is in the system path, it is copied to the destination
+        path. Otherwise, we download it.
+
     """
-    # The url for each platform
-    url = "https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/{filename}"
+    system_shapeit = find_executable("shapeit")
+    if system_shapeit is not None:
+        logger.info("  - Copying shapeit from {}".format(system_shapeit))
+        shutil.copy(system_shapeit, path, follow_symlinks=True)
 
-    # Getting the name of the file to download
-    filename = ""
-    if os_name == "Darwin":
-        filename = "shapeit.v2.r837.MacOSX.tgz"
-    elif os_name == "Linux":
-        filename = "shapeit.v2.r837.GLIBCv2.12.Linux.static.tgz"
-    if filename == "":
-        raise GenipeError("Problem choosing a file to download for "
-                          "{} {} bits".format(os_name, arch))
+    else:
+        # The url for each platform
+        url = ("https://mathgen.stats.ox.ac.uk/genetics_software/"
+               "shapeit/{filename}")
 
-    # Downloading shapeit in a temporary directory
-    logger.info("  - " + filename)
-    with TemporaryDirectory() as tmpdir:
-        tar_path = os.path.join(tmpdir, filename)
-        download_file(url.format(filename=filename), tar_path)
+        # Getting the name of the file to download
+        filename = ""
+        if os_name == "Darwin":
+            filename = "shapeit.v2.r837.MacOSX.tgz"
+        elif os_name == "Linux":
+            filename = "shapeit.v2.r837.GLIBCv2.12.Linux.static.tgz"
+        if filename == "":
+            raise GenipeError("Problem choosing a file to download for "
+                              "{} {} bits".format(os_name, arch))
 
-        # Extracting shapeit
-        logger.info("  - Extracting file")
-        untar_file(tmpdir, tar_path)
+        # Downloading shapeit in a temporary directory
+        logger.info("  - " + filename)
+        with TemporaryDirectory() as tmpdir:
+            tar_path = os.path.join(tmpdir, filename)
+            download_file(url.format(filename=filename), tar_path)
 
-        # Finding the shapeit file
-        shapeit_file = glob(os.path.join(tmpdir, "*", "shapeit"))
-        if len(shapeit_file) != 1 or not os.path.isfile(shapeit_file[0]):
-            raise GenipeError("Unable to locate shapeit")
-        shapeit_file = shapeit_file[0]
+            # Extracting shapeit
+            logger.info("  - Extracting file")
+            untar_file(tmpdir, tar_path)
 
-        # Moving the file
-        shutil.move(shapeit_file, path)
-        shapeit_path = os.path.join(path, "shapeit")
+            # Finding the shapeit file
+            shapeit_file = glob(os.path.join(tmpdir, "*", "shapeit"))
+            if len(shapeit_file) != 1 or not os.path.isfile(shapeit_file[0]):
+                raise GenipeError("Unable to locate shapeit")
+            shapeit_file = shapeit_file[0]
 
-    # Making the script executable
-    os.chmod(shapeit_path, stat.S_IRWXU)
+            # Moving the file
+            shutil.move(shapeit_file, path)
+            shapeit_path = os.path.join(path, "shapeit")
+
+        # Making the script executable
+        os.chmod(shapeit_path, stat.S_IRWXU)
 
 
 def download_file(url, path):
