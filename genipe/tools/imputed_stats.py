@@ -1136,7 +1136,7 @@ def fit_cox(data, time_to_event, event, formula, result_col, **kwargs):
                     right_index=True)
 
     # Fitting
-    cf = CoxPHFitter(alpha=0.95, tie_method="Efron", normalize=False)
+    cf = CoxPHFitter(alpha=0.95, tie_method="Efron")
     cf.fit(data, duration_col=time_to_event, event_col=event)
     return cf.summary.loc[result_col, _COX_REQ_COLS].values
 
