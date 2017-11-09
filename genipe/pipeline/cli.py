@@ -2461,6 +2461,10 @@ def gather_maf_stats(required_chrom, o_dir):
             raise GenipeError("{}: {}: invalid MAF".format(str(bad["name"]),
                                                            round(bad.maf, 3)))
 
+        # If there are no more marker, we need to skip this chromosome
+        if maf.shape[0] == 0:
+            continue
+
         # Some of the true/false we need to keep (to not compute multiple time)
         maf_geq_01 = maf.maf >= 0.01
         maf_lt_05 = maf.maf < 0.05
