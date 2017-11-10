@@ -187,7 +187,7 @@ describing the tool.
    Lemieux Perreault LP, Legault MA, Asselin G, Dubé MP:
    **genipe: an automated genome-wide imputation pipeline with automatic
    reporting and statistical tools.**
-   *Bioinformatics* 2016, Epub ahead of print.
+   *Bioinformatics* 2016, **32** (23): 3661-3663
    [DOI:`10.1093/bioinformatics/btw487 <http://dx.doi.org/10.1093/bioinformatics/btw487>`_].
 
 
