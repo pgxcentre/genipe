@@ -45,7 +45,7 @@ do
     fi
 
     # Fetching the file name of the build
-    filename=$(egrep "^# [$] anaconda upload \S+$" log.txt | cut -d " " -f 5)
+    filename=$(grep -oP "anaconda upload \K(\S+)$" log.txt)
 
     # Checking the file exists
     if [ -z $filename ]||[ ! -e $filename ]
@@ -68,6 +68,9 @@ do
         fi
 
     done
+
+    # Purging
+    conda build purge
 done
 
 popd
