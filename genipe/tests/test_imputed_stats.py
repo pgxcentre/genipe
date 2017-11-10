@@ -691,8 +691,7 @@ class TestImputedStatsCox(unittest.TestCase):
 
         # The name of the file containing the phenotypes
         self.data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
+            __name__, os.path.join("data", "regression_sim.txt.bz2"),
         )
 
         # This dataset contains 3 markers + 5 covariables
@@ -1154,14 +1153,12 @@ class TestImputedStatsLinear(unittest.TestCase):
 
         # The name of the dataset
         self.data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
+            __name__, os.path.join("data", "regression_sim.txt.bz2"),
         )
 
         # The name of the dataset with interaction
         self.data_inter_filename = resource_filename(
-            __name__,
-            "data/regression_sim_inter.txt.bz2",
+            __name__, os.path.join("data", "regression_sim_inter.txt.bz2"),
         )
 
         # The dataset
@@ -1655,14 +1652,12 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
         # The name of the data
         self.data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
+            __name__, os.path.join("data", "regression_sim.txt.bz2"),
         )
 
         # The name of the data with interaction
         self.data_inter_filename = resource_filename(
-            __name__,
-            "data/regression_sim_inter.txt.bz2",
+            __name__, os.path.join("data", "regression_sim_inter.txt.bz2"),
         )
 
         # This dataset contains 3 markers + 5 covariables
@@ -2160,8 +2155,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         """Gets the data and compute random effects."""
         # Reading the data
         cls.data_filename = resource_filename(
-            __name__,
-            "data/regression_mixedlm.txt.bz2",
+            __name__, os.path.join("data", "regression_mixedlm.txt.bz2"),
         )
 
         # This dataset contains 3 markers + 6 covariables (including visit)
@@ -3301,8 +3295,7 @@ class TestImputedStatsSkat(unittest.TestCase):
         # Read the SKAT example files.
         skat_x = pd.read_csv(  # Covariates
             resource_filename(
-                __name__,
-                os.path.join("data", "skat_x_matrix.csv.bz2"),
+                __name__, os.path.join("data", "skat_x_matrix.csv.bz2"),
             ),
             sep=",",
             compression="bz2",
@@ -3312,8 +3305,7 @@ class TestImputedStatsSkat(unittest.TestCase):
 
         skat_z = pd.read_csv(  # Genotypes
             resource_filename(
-                __name__,
-                os.path.join("data", "skat_z_matrix.csv.bz2"),
+                __name__, os.path.join("data", "skat_z_matrix.csv.bz2"),
             ),
             sep=",",
             compression="bz2",
