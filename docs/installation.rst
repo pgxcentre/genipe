@@ -12,22 +12,23 @@ Requirements
 `genipe` requires a standard Python 3.4 (or latest) installation with the
 following modules:
 
-* ``numpy`` version 1.8.2 or latest
-* ``jinja2`` version 2.7.3 or latest
-* ``pandas`` version 0.17.0 or latest
+* ``numpy`` version 1.11.3 or latest
+* ``jinja2`` version 2.9 or latest
+* ``pandas`` version 0.19.2 or latest
 * ``setuptools`` version 12.0.5 or latest
 
 The following modules are optional (required for statistical analysis and data
 management):
 
-* ``matplotlib`` version 1.4.2
-* ``scipy`` version 0.15.1 or latest (required by ``statsmodels``)
-* ``patsy`` version 0.4.1 or latest
-* ``statsmodels`` version 0.6.1 or latest
-* ``lifelines`` version 0.7.0 or latest
-* ``biopython`` version 1.65 or latest
-* ``pyfaidx`` version 0.3.7 or latest
-* ``drmaa`` version 0.7.6 or latest
+* ``matplotlib``
+* ``scipy``
+* ``patsy``
+* ``statsmodels``
+* ``lifelines``
+* ``biopython``
+* ``pyfaidx``
+* ``drmaa``
+* ``pyplink``
 
 .. note::
 
