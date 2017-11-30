@@ -213,6 +213,7 @@ regression analysis in the console:
 
 .. code-block:: console
 
+
    $ imputed-stats logistic --help
    usage: imputed-stats logistic [-h] [-v] [--debug] --impute2 FILE --sample FILE
                                  --pheno FILE [--extract-sites FILE] [--out FILE]
@@ -224,7 +225,7 @@ regression analysis in the console:
                                  --pheno-name NAME
 
    Performs a logistic regression on imputed data using a GLM with a binomial
-   distribution. This script is part of the 'genipe' package, version 1.3.3.
+   distribution. This script is part of the 'genipe' package, version 1.4.0.
 
    optional arguments:
      -h, --help            show this help message and exit
