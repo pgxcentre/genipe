@@ -137,10 +137,10 @@ Output files
 -------------
 
 The output files will depend on the output format selected (the ``--format``
-option). You can specify either ``impute2``, ``dosage`` and/or ``calls``, for
-the *impute2* format (*i.e.* three probabilities per sample), the *dosage*
-format (*i.e.* one value between 0 and 2 per sample), and hard calls (*i.e.*
-genotypes).
+option). You can specify either ``impute2``, ``dosage``, ``calls`` and/or
+``bed``, for the *impute2* format (*i.e.* three probabilities per sample), the
+*dosage* format (*i.e.* one value between 0 and 2 per sample), hard calls and
+binary *Plink* file.
 
 ``.impute2`` file
 ^^^^^^^^^^^^^^^^^^
@@ -217,6 +217,13 @@ The following example shows two lines of the ``.calls`` file.
 
    Hard calls computed from probabilities that are below the quality threshold
    (specified by the ``--prob`` option) will have a missing value of ``0 0``.
+
+
+Binary *Plink* files
+^^^^^^^^^^^^^^^^^^^^^
+
+A set of three files are created (*i.e.* ``.bed``, ``.bim`` and ``.fam`` files.
+These represents binary *Plink* files containing hard calls.
 
 
 .. _extract-tut-usage:

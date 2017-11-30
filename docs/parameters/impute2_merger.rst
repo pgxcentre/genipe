@@ -3,8 +3,14 @@
    :depth: 2
 
 
-Impute2 Merger - Options and Parameters
-========================================
+Impute2 Merger - ``impute2-merger``
+====================================
+
+
+Concatenate *IMPUTE2* output files and retrieve some statistics. This tool is
+automatically called by the main :py:mod:`genipe` pipeline to merge *IMPUTE2*
+files generated for all the genomic segments (see
+:ref:`main-pipeline-merger-options`).
 
 
 General options

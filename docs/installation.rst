@@ -81,6 +81,7 @@ command:
    pip install pyfaidx
    pip install matplotlib
    pip install drmaa
+   pip install pyplink
 
 
 .. _install-miniconda:

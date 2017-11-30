@@ -3,8 +3,11 @@
    :depth: 2
 
 
-Impute2 Extractor - Options and Parameters
-===========================================
+Impute2 Extractor - ``impute2-extractor``
+==========================================
+
+
+Extract imputed markers located in a specific genomic region.
 
 
 General options
