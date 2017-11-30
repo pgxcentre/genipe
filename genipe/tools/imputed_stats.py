@@ -244,11 +244,17 @@ def read_phenotype(i_filename, opts, check_duplicated=True):
     if (opts.gender_column in required_columns) and (not remove_gender_column):
         # Log the number of male/female/missing.
         sex_counts = pheno.groupby(opts.gender_column).size()
+
+        # Computing the number of unknown sex
+        unknown = sex_counts.loc[
+            ~((sex_counts.index == 1) | (sex_counts.index == 2))
+        ]
+        nb_unknown = 0
+        if unknown.shape[0] > 0:
+            nb_unknown = unknown.sum()
+
         logging.info("  - {:,d} males / {:,d} females ({:,d} unknown)".format(
-            sex_counts.get(1, 0),
-            sex_counts.get(2, 0),
-            sex_counts.loc[~((sex_counts.index == 1) |
-                             (sex_counts.index == 2))].sum()
+            sex_counts.get(1, 0), sex_counts.get(2, 0), nb_unknown,
         ))
 
         pheno = pheno[(pheno[opts.gender_column] == 1) |
@@ -1130,7 +1136,7 @@ def fit_cox(data, time_to_event, event, formula, result_col, **kwargs):
                     right_index=True)
 
     # Fitting
-    cf = CoxPHFitter(alpha=0.95, tie_method="Efron", normalize=False)
+    cf = CoxPHFitter(alpha=0.95, tie_method="Efron")
     cf.fit(data, duration_col=time_to_event, event_col=event)
     return cf.summary.loc[result_col, _COX_REQ_COLS].values
 

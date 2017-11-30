@@ -16,6 +16,9 @@ commonly used tools `PLINK <http://pngu.mgh.harvard.edu/~purcell/plink/>`_,
 `SHAPEIT <https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html>`_ and
 `IMPUTE2 <https://mathgen.stats.ox.ac.uk/impute/impute_v2.html>`_.
 
+A database keeps track of all executed steps and enables post-failure relaunch
+of the pipeline where it last stopped, saving processing time and resources.
+
 A report is automatically generated at the end of the imputation process to
 easily assess important quality metrics. This report can be rendered to PDF
 using LaTeX. For information on rendering, refer to :ref:`this section
@@ -69,7 +72,7 @@ Usage
                           [--report-background BACKGROUND]
 
    Execute the genome-wide imputation pipeline. This script is part of the
-   'genipe' package, version 1.3.3.
+   'genipe' package, version 1.4.0.
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -187,7 +190,7 @@ describing the tool.
    Lemieux Perreault LP, Legault MA, Asselin G, Dubé MP:
    **genipe: an automated genome-wide imputation pipeline with automatic
    reporting and statistical tools.**
-   *Bioinformatics* 2016, Epub ahead of print.
+   *Bioinformatics* 2016, **32** (23): 3661-3663
    [DOI:`10.1093/bioinformatics/btw487 <http://dx.doi.org/10.1093/bioinformatics/btw487>`_].
 
 

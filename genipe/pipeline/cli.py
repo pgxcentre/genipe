@@ -2461,6 +2461,10 @@ def gather_maf_stats(required_chrom, o_dir):
             raise GenipeError("{}: {}: invalid MAF".format(str(bad["name"]),
                                                            round(bad.maf, 3)))
 
+        # If there are no more marker, we need to skip this chromosome
+        if maf.shape[0] == 0:
+            continue
+
         # Some of the true/false we need to keep (to not compute multiple time)
         maf_geq_01 = maf.maf >= 0.01
         maf_lt_05 = maf.maf < 0.05
@@ -2511,9 +2515,22 @@ def gather_maf_stats(required_chrom, o_dir):
         # The data
         sizes = [nb_maf_lt_01, nb_maf_geq_01_lt_05, nb_maf_geq_05]
 
+        # The barh arguments
+        barh_args = {
+            "width": sizes, "color": colors, "lw": 0, "align": "center",
+        }
+
+        # From matplotlib 2.1, bottom becomes y
+        version = re.search(r"(\d+)\.(\d+)(\.(\d+))?", mpl.__version__)
+        major = int(version.group(1))
+        minor = int(version.group(2))
+        if major < 2 or (major == 2 and minor < 1):
+            barh_args["bottom"] = range(len(sizes))
+        elif major > 2 or (major == 2 and minor >= 1):
+            barh_args["y"] = range(len(sizes))
+
         # Plotting the horizontal bar plot
-        axe.barh(bottom=range(len(sizes)), width=sizes, color=colors, lw=0,
-                 align="center")
+        axe.barh(**barh_args)
 
         # Formatting the x tick labels
         xticks = axe.get_xticks()

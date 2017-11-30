@@ -16,8 +16,8 @@ from setuptools import setup
 
 
 MAJOR = 1
-MINOR = 3
-MICRO = 3
+MINOR = 4
+MICRO = 0
 VERSION = "{0}.{1}.{2}".format(MAJOR, MINOR, MICRO)
 
 
@@ -78,8 +78,8 @@ def setup_package():
                 "genipe-tutorial=genipe.tools.genipe_tutorial:main",
             ],
         },
-        install_requires=["numpy >= 1.9.2", "Jinja2 >= 2.7.3",
-                          "pandas >= 0.17.0", "setuptools >= 12.0.5"],
+        install_requires=["numpy >= 1.11", "Jinja2 >= 2.9",
+                          "pandas >= 0.19", "setuptools >= 12.0.5"],
         packages=["genipe", "genipe.pipeline", "genipe.task", "genipe.db",
                   "genipe.tools", "genipe.formats", "genipe.reporting",
                   "genipe.config", "genipe.tests"],

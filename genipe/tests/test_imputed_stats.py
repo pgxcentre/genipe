@@ -691,8 +691,7 @@ class TestImputedStatsCox(unittest.TestCase):
 
         # The name of the file containing the phenotypes
         self.data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
+            __name__, os.path.join("data", "regression_sim.txt.bz2"),
         )
 
         # This dataset contains 3 markers + 5 covariables
@@ -734,13 +733,13 @@ class TestImputedStatsCox(unittest.TestCase):
             observed_z, observed_p = observed
 
         # Comparing the results (P is not that similar though...)
-        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_coef, observed_coef, places=4)
         self.assertAlmostEqual(expected_se, observed_se, places=6)
         self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
-        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
-        self.assertAlmostEqual(expected_z, observed_z, places=4)
+        self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=3)
+        self.assertAlmostEqual(expected_z, observed_z, places=3)
         self.assertAlmostEqual(
-            np.log10(expected_p), np.log10(observed_p), places=3,
+            np.log10(expected_p), np.log10(observed_p), places=2,
         )
 
     def test_fit_cox_snp2(self):
@@ -771,13 +770,13 @@ class TestImputedStatsCox(unittest.TestCase):
             observed_z, observed_p = observed
 
         # Comparing the results (P is not that similar though...)
-        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
-        self.assertAlmostEqual(expected_se, observed_se, places=9)
+        self.assertAlmostEqual(expected_coef, observed_coef, places=5)
+        self.assertAlmostEqual(expected_se, observed_se)
         self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
         self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
-        self.assertAlmostEqual(expected_z, observed_z, places=8)
+        self.assertAlmostEqual(expected_z, observed_z, places=4)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=8)
+                               places=4)
 
     def test_fit_cox_snp3(self):
         """Tests the 'fit_cox' function, third SNP."""
@@ -807,13 +806,13 @@ class TestImputedStatsCox(unittest.TestCase):
             observed_z, observed_p = observed
 
         # Comparing the results (P is not that similar though...)
-        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
-        self.assertAlmostEqual(expected_se, observed_se, places=7)
-        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=4)
+        self.assertAlmostEqual(expected_coef, observed_coef, places=4)
+        self.assertAlmostEqual(expected_se, observed_se, places=6)
+        self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=3)
         self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=4)
-        self.assertAlmostEqual(expected_z, observed_z, places=5)
+        self.assertAlmostEqual(expected_z, observed_z, places=3)
         self.assertAlmostEqual(np.log10(expected_p), np.log10(observed_p),
-                               places=4)
+                               places=2)
 
     def test_fit_cox_invalid(self):
         """Tests the 'fit_linear' function, third SNP."""
@@ -870,12 +869,12 @@ class TestImputedStatsCox(unittest.TestCase):
             observed_z, observed_p = observed
 
         # Comparing the results
-        self.assertAlmostEqual(expected_coef, observed_coef, places=10)
+        self.assertAlmostEqual(expected_coef, observed_coef, places=4)
         self.assertAlmostEqual(expected_se, observed_se, places=6)
         self.assertAlmostEqual(expected_min_ci, observed_min_ci, places=3)
         self.assertAlmostEqual(expected_max_ci, observed_max_ci, places=3)
-        self.assertAlmostEqual(expected_z, observed_z, places=6)
-        self.assertAlmostEqual(expected_p, observed_p, places=6)
+        self.assertAlmostEqual(expected_z, observed_z, places=3)
+        self.assertAlmostEqual(expected_p, observed_p, places=4)
 
     def test_full_fit_cox(self):
         """Tests the full pipeline for Cox's regression."""
@@ -935,12 +934,12 @@ class TestImputedStatsCox(unittest.TestCase):
         # The coefficients
         expected = np.array([-0.9892699611323815256, 0.0499084338021939383,
                              1.114732193640146418])
-        np.testing.assert_array_almost_equal(expected, observed.coef, 10)
+        np.testing.assert_array_almost_equal(expected, observed.coef, 4)
 
         # The standard error
         expected = np.array([0.0645633075569013448, 0.0401904025600694215,
                              0.0631205046371715733])
-        np.testing.assert_array_almost_equal(expected, observed.se, 7)
+        np.testing.assert_array_almost_equal(expected, observed.se, 6)
 
         # The lower CI
         expected = np.array([-1.11581171866669093, -0.0288633077397084936,
@@ -955,13 +954,13 @@ class TestImputedStatsCox(unittest.TestCase):
         # The Z statistics
         expected = np.array([-15.32247957186071652, 1.241799798536472599,
                              17.660381520202268035])
-        np.testing.assert_array_almost_equal(expected, observed.z, 4)
+        np.testing.assert_array_almost_equal(expected, observed.z, 3)
 
         # The p values
         expected = np.array([5.41131727236088009e-53, 0.21431043709814412423,
                              8.46654634146707403e-70])
         np.testing.assert_array_almost_equal(
-            np.log10(expected), np.log10(observed.p), 4,
+            np.log10(expected), np.log10(observed.p), 2,
         )
 
     @unittest.skipIf(platform.system() == "Darwin",
@@ -1025,12 +1024,12 @@ class TestImputedStatsCox(unittest.TestCase):
         # The coefficients
         expected = np.array([-0.9892699611323815256, 0.0499084338021939383,
                              1.114732193640146418])
-        np.testing.assert_array_almost_equal(expected, observed.coef, 10)
+        np.testing.assert_array_almost_equal(expected, observed.coef, 4)
 
         # The standard error
         expected = np.array([0.0645633075569013448, 0.0401904025600694215,
                              0.0631205046371715733])
-        np.testing.assert_array_almost_equal(expected, observed.se, 7)
+        np.testing.assert_array_almost_equal(expected, observed.se, 6)
 
         # The lower CI
         expected = np.array([-1.11581171866669093, -0.0288633077397084936,
@@ -1045,13 +1044,13 @@ class TestImputedStatsCox(unittest.TestCase):
         # The Z statistics
         expected = np.array([-15.32247957186071652, 1.241799798536472599,
                              17.660381520202268035])
-        np.testing.assert_array_almost_equal(expected, observed.z, 4)
+        np.testing.assert_array_almost_equal(expected, observed.z, 3)
 
         # The p values
         expected = np.array([5.41131727236088009e-53, 0.21431043709814412423,
                              8.46654634146707403e-70])
         np.testing.assert_array_almost_equal(
-            np.log10(expected), np.log10(observed.p), 4,
+            np.log10(expected), np.log10(observed.p), 2,
         )
 
     def test_full_fit_cox_interaction(self):
@@ -1115,7 +1114,7 @@ class TestImputedStatsCox(unittest.TestCase):
         # The coefficients
         expected = np.array([0.08002859476478209, 0.06043867499981825,
                              -0.1346941460446854])
-        np.testing.assert_array_almost_equal(expected, observed.coef, 10)
+        np.testing.assert_array_almost_equal(expected, observed.coef, 5)
 
         # The standard error
         expected = np.array([0.12198270334604862, 0.08096689170729621,
@@ -1135,12 +1134,12 @@ class TestImputedStatsCox(unittest.TestCase):
         # The Z statistics
         expected = np.array([0.6560651024248222, 0.7464615934413091,
                              -1.1085544689814419])
-        np.testing.assert_array_almost_equal(expected, observed.z, 6)
+        np.testing.assert_array_almost_equal(expected, observed.z, 4)
 
         # The p values
         expected = np.array([0.51178223698621716, 0.455388623883973054,
                              0.267622429183913102])
-        np.testing.assert_array_almost_equal(expected, observed.p, 6)
+        np.testing.assert_array_almost_equal(expected, observed.p, 4)
 
 
 @unittest.skipIf(not imputed_stats.HAS_STATSMODELS,
@@ -1154,14 +1153,12 @@ class TestImputedStatsLinear(unittest.TestCase):
 
         # The name of the dataset
         self.data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
+            __name__, os.path.join("data", "regression_sim.txt.bz2"),
         )
 
         # The name of the dataset with interaction
         self.data_inter_filename = resource_filename(
-            __name__,
-            "data/regression_sim_inter.txt.bz2",
+            __name__, os.path.join("data", "regression_sim_inter.txt.bz2"),
         )
 
         # The dataset
@@ -1655,14 +1652,12 @@ class TestImputedStatsLogistic(unittest.TestCase):
 
         # The name of the data
         self.data_filename = resource_filename(
-            __name__,
-            "data/regression_sim.txt.bz2",
+            __name__, os.path.join("data", "regression_sim.txt.bz2"),
         )
 
         # The name of the data with interaction
         self.data_inter_filename = resource_filename(
-            __name__,
-            "data/regression_sim_inter.txt.bz2",
+            __name__, os.path.join("data", "regression_sim_inter.txt.bz2"),
         )
 
         # This dataset contains 3 markers + 5 covariables
@@ -2160,8 +2155,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         """Gets the data and compute random effects."""
         # Reading the data
         cls.data_filename = resource_filename(
-            __name__,
-            "data/regression_mixedlm.txt.bz2",
+            __name__, os.path.join("data", "regression_mixedlm.txt.bz2"),
         )
 
         # This dataset contains 3 markers + 6 covariables (including visit)
@@ -3301,8 +3295,7 @@ class TestImputedStatsSkat(unittest.TestCase):
         # Read the SKAT example files.
         skat_x = pd.read_csv(  # Covariates
             resource_filename(
-                __name__,
-                os.path.join("data", "skat_x_matrix.csv.bz2"),
+                __name__, os.path.join("data", "skat_x_matrix.csv.bz2"),
             ),
             sep=",",
             compression="bz2",
@@ -3312,8 +3305,7 @@ class TestImputedStatsSkat(unittest.TestCase):
 
         skat_z = pd.read_csv(  # Genotypes
             resource_filename(
-                __name__,
-                os.path.join("data", "skat_z_matrix.csv.bz2"),
+                __name__, os.path.join("data", "skat_z_matrix.csv.bz2"),
             ),
             sep=",",
             compression="bz2",

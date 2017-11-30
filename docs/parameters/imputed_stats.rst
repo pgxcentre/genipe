@@ -3,8 +3,12 @@
    :depth: 3
 
 
-Imputed Stats - Options and Parameters
-=======================================
+Imputed Stats - ``imputed-stats``
+==================================
+
+
+Performs statistical analysis on imputed data (either SKAT analysis, or
+linear, logistic or survival regression).
 
 
 Available statistical models

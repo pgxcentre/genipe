@@ -266,7 +266,7 @@ effects analysis in the console:
    Performs a linear mixed effects regression on imputed data using a random
    intercept for each group. A p-value approximation is performed so that
    computation time is acceptable for imputed data. This script is part of the
-   'genipe' package, version 1.3.3.
+   'genipe' package, version 1.4.0.
 
    optional arguments:
      -h, --help            show this help message and exit
@@ -321,7 +321,6 @@ effects analysis in the console:
                            (ML) estimation instead of REML (default is REML).
      --p-threshold FLOAT   The p-value threshold for which the real MixedLM
                            analysis will be performed. [<0.0001]
-
 
 .. _mixedlm-tut-comparison:
 

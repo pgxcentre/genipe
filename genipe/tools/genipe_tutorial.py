@@ -202,6 +202,7 @@ def generate_bash(path):
 
     """
     fn = os.path.join(path, "execute.sh")
+    path = os.path.abspath(path)
     with open(fn, "w") as f:
         f.write(_SCRIPT.format(
             path=path,
