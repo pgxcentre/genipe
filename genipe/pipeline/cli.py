@@ -2325,6 +2325,8 @@ def gather_imputation_stats(required_chrom, prob_t, completion_t, info_t,
     now_nb_missing_geno = genotyped_sites[now_incomplete_sites]
     now_nb_missing_geno = now_nb_missing_geno.nb_missing.sum()
     nb_geno_now_complete = nb_missing_geno - now_nb_missing_geno
+    if pd.isnull(nb_geno_now_complete):
+        nb_geno_now_complete = 0
     pct_geno_now_complete = nb_geno_now_complete / nb_missing_geno * 100
 
     # Computing the rates
