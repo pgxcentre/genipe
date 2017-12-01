@@ -57,7 +57,7 @@ do
     # Converting to the different platforms
     for platform in $platforms
     do
-        conda convert -p $platform $filename -o ../conda_dist
+        conda convert -p $platform $filename -o ../conda_dist &> build_log.txt
 
         # Checking the conversion was completed
         if [ $? -ne 0 ]
@@ -65,6 +65,19 @@ do
             echo "Problem converting genipe $genipe_version (python" \
                  "$python_version) to $platform" 1>&2
             exit 1
+        fi
+
+        # Checking if a conversion was skipped due to same platform
+        if egrep --quiet Skipping build_log.txt; then
+            # Finding which platform was skipped
+            missing=$(
+                egrep Skipping build_log.txt |
+                egrep -o "'([[:alnum:]]+-[[:digit:]]+)'" |
+                uniq |
+                sed -e "s/'//g"
+            )
+            mkdir -p ../conda_dist/$missing
+            cp $filename ../conda_dist/$missing
         fi
 
     done
