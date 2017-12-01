@@ -2,20 +2,16 @@
 
 <!doctype html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Genome-wide imputation pipeline &#8212; genipe 1.3.3 documentation</title>
-    
+    <title>Genome-wide imputation pipeline &#8212; genipe 1.4.0 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.3.3',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -25,7 +21,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -36,7 +32,7 @@
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -52,7 +48,7 @@
         <li class="right" >
           <a href="../tutorials.html" title="Short Tutorials"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &#187;</li> 
       </ul>
     </div>
@@ -148,7 +144,7 @@ genome-wide imputation requires high computation power and multiple data
 processing steps.</p>
 <p>The <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> pipeline automates the different steps for pre-phasing and
 imputation for genome-wide data. The pipeline follows the guideline described
-by IMPUTE2&#8217;s best practices when analyzing genome-wide data (described
+by IMPUTE2’s best practices when analyzing genome-wide data (described
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#prephasing">by IMPUTE2</a>
 and <a class="reference external" href="http://www.shapeit.fr/pages/m03_phasing/imputation.html">by SHAPEIT</a>).</p>
 <div class="section" id="preparing-the-data">
@@ -156,7 +152,7 @@ and <a class="reference external" href="http://www.shapeit.fr/pages/m03_phasing/
 <p>The <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> module provides a script to prepare all the required files
 for this tutorial. It will download the appropriate binary files for Plink,
 IMPUTE2 and SHAPETIT, the genotypes of the study cohort to impute, the
-IMPUTE2&#8217;s reference panels, and the indexed human reference (in <em>fasta</em>
+IMPUTE2’s reference panels, and the indexed human reference (in <em>fasta</em>
 format).</p>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -263,7 +259,7 @@ might be removed.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">It is possible to compress IMPUTE2&#8217;s output files by adding the <code class="docutils literal"><span class="pre">--bgzip</span></code>
+<p class="last">It is possible to compress IMPUTE2’s output files by adding the <code class="docutils literal"><span class="pre">--bgzip</span></code>
 option (the <code class="docutils literal"><span class="pre">bgzip</span></code> software should be in the path).</p>
 </div>
 <div class="admonition note">
@@ -318,22 +314,22 @@ previous command</strong> (see the <a class="reference internal" href="../index.
 for initial strand verification (<em>optional</em>).</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--hap-template</span></code></td>
-<td>The template for <em>IMPUTE2</em>&#8216;s reference haplotype
+<td>The template for <em>IMPUTE2</em>’s reference haplotype
 files (<code class="docutils literal"><span class="pre">{chrom}</span></code> will be replaced by the
 chromosome number).</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">--legend-template</span></code></td>
-<td>The template for <em>IMPUTE2</em>&#8216;s reference legend
+<td>The template for <em>IMPUTE2</em>’s reference legend
 files (<code class="docutils literal"><span class="pre">{chrom}</span></code> will be replaced by the
 chromosome number).</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--map-template</span></code></td>
-<td>The template for <em>IMPUTE2</em>&#8216;s reference map
+<td>The template for <em>IMPUTE2</em>’s reference map
 files (<code class="docutils literal"><span class="pre">{chrom}</span></code> will be replaced by the
 chromosome number).</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">--sample-file</span></code></td>
-<td>The name of <em>IMPUTE2</em>&#8216;s reference sample file.</td>
+<td>The name of <em>IMPUTE2</em>’s reference sample file.</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--filtering-rules</span></code></td>
 <td>Rules used by <em>IMPUTE2</em> to exclude sites from
@@ -499,7 +495,7 @@ phasing.</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">tasks.db</span></code></td>
 <td>The <em>sqlite</em> database containing
-information of all tasks (if it&#8217;s
+information of all tasks (if it’s
 completed, execution time, etc).</td>
 </tr>
 </tbody>
@@ -658,7 +654,7 @@ processes.</p>
 </div>
 <p>Since imputation is performed on segments for each chromosome, it is possible
 to modify the parameters for a single segment. This is usefull when a segment
-doesn&#8217;t have time to finish and its imputation requires a rerun. For example,
+doesn’t have time to finish and its imputation requires a rerun. For example,
 the following parameters will increase the walltime from 15 minutes to 3.5
 hours for segment 10,000,001-15,000,000 on chromosome 1. Also, all segments
 located on chromosome 2 will have a walltime of 4 hours.</p>
@@ -684,7 +680,7 @@ including all possible section. Also, here is a list of all possible section
 <li><code class="docutils literal"><span class="pre">merge_impute2</span></code></li>
 <li><code class="docutils literal"><span class="pre">bgzip</span></code></li>
 </ul>
-<p>Some cluster doesn&#8217;t require any configuration at all. To skip configuration,
+<p>Some cluster doesn’t require any configuration at all. To skip configuration,
 use the <code class="docutils literal"><span class="pre">main</span></code> section of the <em>ini</em> file as such:</p>
 <div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[main]</span>
 <span class="na">skip_drmaa_config</span> <span class="o">=</span> <span class="s">yes</span>
@@ -768,7 +764,7 @@ copy it to the <code class="docutils literal"><span class="pre">bin</span></code
 <span id="genipe-tut-input-files"></span><h3>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h3>
 <div class="section" id="genotypes">
 <h4>Genotypes<a class="headerlink" href="#genotypes" title="Permalink to this headline">¶</a></h4>
-<p>The genotypes of the study cohort have to be in Plink&#8217;s binary pedfile format.
+<p>The genotypes of the study cohort have to be in Plink’s binary pedfile format.
 This format allows for time and disk space optimization. Each dataset is
 comprised of three files: the <code class="docutils literal"><span class="pre">.bed</span></code> (binary file, genotype information),
 <code class="docutils literal"><span class="pre">.fam</span></code> (text file, sample information) and <code class="docutils literal"><span class="pre">.bim</span></code> (text file, marker
@@ -792,7 +788,7 @@ rm hapmap_CEU_r23a_hg19.tar.bz2
 <div class="section" id="reference-panels">
 <h4>Reference panels<a class="headerlink" href="#reference-panels" title="Permalink to this headline">¶</a></h4>
 <p>IMPUTE2 can use publicly available reference datasets. They provide such
-dataset on their website. Go to IMPUTE2&#8217;s
+dataset on their website. Go to IMPUTE2’s
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference">reference page</a>,
 and download the most recent reference data (which is over 12Gb). Once the
 reference is downloaded, extract it in the working directory
@@ -813,10 +809,10 @@ rm 1000GP_Phase3.tgz
 <p>The pipeline include an optional step to check for strand alignment with the
 reference panel (using <em>SHAPEIT</em>). The drawback of this method is that it is
 impossible to verify the strand of markers which are absent from the
-<em>IMPUTE2</em>&#8216;s reference. We have introduce a way to check the strand using the
+<em>IMPUTE2</em>’s reference. We have introduce a way to check the strand using the
 reference genome (in <em>fasta</em> format, indexed using <em>faidx</em>).</p>
 <p>We have created such reference using the
-<a class="reference external" href="http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/">UCSC&#8217;s human reference</a>.</p>
+<a class="reference external" href="http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/">UCSC’s human reference</a>.</p>
 <div class="highlight-bash"><div class="highlight"><pre><span></span>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial/hg19
 <span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/hg19
 
@@ -851,7 +847,7 @@ rm hg19.tar.bz2
         <li class="right" >
           <a href="../tutorials.html" title="Short Tutorials"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &#187;</li> 
       </ul>
     </div>
@@ -859,7 +855,7 @@ rm hg19.tar.bz2
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
 
 <script>

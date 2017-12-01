@@ -36,6 +36,6 @@ $(window).resize(function(){
         $("li.nav-item-0 a").text("Top");
     }
     else {
-        $("li.nav-item-0 a").text("genipe 1.3.3 documentation");
+        $("li.nav-item-0 a").text("genipe 1.4.0 documentation");
     }
 });

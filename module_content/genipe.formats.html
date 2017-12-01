@@ -2,20 +2,16 @@
 
 <!doctype html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>genipe.formats package &#8212; genipe 1.3.3 documentation</title>
-    
+    <title>genipe.formats package &#8212; genipe 1.4.0 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.3.3',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -25,7 +21,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -36,7 +32,7 @@
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -52,7 +48,7 @@
         <li class="right" >
           <a href="genipe.db.html" title="genipe.db package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &#187;</li> 
@@ -120,11 +116,11 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>impute2_line</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; a single line from IMPUTE2&#8217;s result (split by
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>impute2_line</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – a single line from IMPUTE2’s result (split by
 space)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
-<dt>a tuple containing the marker&#8217;s information (first five values</dt>
+<dt>a tuple containing the marker’s information (first five values</dt>
 <dd>of the line) and the matrix probability (numpy array, float)</dd>
 </dl>
 </td>
@@ -138,7 +134,7 @@ The columns represent the probability for AA, AB and BB.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The <code class="docutils literal"><span class="pre">impute2_line</span></code> variable is a list of str, corresponding to a line
-from the IMPUTE2&#8217;s result, split by space.</p>
+from the IMPUTE2’s result, split by space.</p>
 </div>
 </dd></dl>
 
@@ -151,8 +147,8 @@ from the IMPUTE2&#8217;s result, split by space.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>prob_matrix</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><em>numpy.array</em></a>) &#8211; the probability matrix</li>
-<li><strong>min_prob</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) &#8211; the probability threshold</li>
+<li><strong>prob_matrix</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the probability matrix</li>
+<li><strong>min_prob</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#float" title="(in Jinja2 v2.11)"><em>float</em></a>) – the probability threshold</li>
 </ul>
 </td>
 </tr>
@@ -164,7 +160,7 @@ from the IMPUTE2&#8217;s result, split by space.</p>
 </p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)">numpy.array</a></p>
 </td>
 </tr>
 </tbody>
@@ -180,11 +176,11 @@ from the IMPUTE2&#8217;s result, split by space.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>prob_matrix</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><em>numpy.array</em></a>) &#8211; the probability matrix</li>
-<li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the first allele</li>
-<li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the second allele</li>
-<li><strong>gender</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><em>numpy.array</em></a>) &#8211; the gender of the samples</li>
-<li><strong>site_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name for this site</li>
+<li><strong>prob_matrix</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the probability matrix</li>
+<li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the first allele</li>
+<li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the second allele</li>
+<li><strong>gender</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the gender of the samples</li>
+<li><strong>site_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name for this site</li>
 </ul>
 </td>
 </tr>
@@ -201,7 +197,7 @@ from the IMPUTE2&#8217;s result, split by space.</p>
 </tr>
 </tbody>
 </table>
-<p>When &#8216;gender&#8217; is not None, we assume that the MAF on chromosome X is
+<p>When ‘gender’ is not None, we assume that the MAF on chromosome X is
 required (hence, males count as 1, and females as 2 alleles). There is also
 an Exception raised if there are any heterozygous males.</p>
 </dd></dl>
@@ -215,17 +211,17 @@ an Exception raised if there are any heterozygous males.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>homo_probs</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><em>numpy.array</em></a>) &#8211; the probabilities for the homozygous genotype</li>
-<li><strong>hetero_probs</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><em>numpy.array</em></a>) &#8211; the probabilities for the heterozygous
+<li><strong>homo_probs</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the probabilities for the homozygous genotype</li>
+<li><strong>hetero_probs</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the probabilities for the heterozygous
 genotype</li>
-<li><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a>) &#8211; the scale value</li>
+<li><strong>scale</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#int" title="(in Jinja2 v2.11)"><em>int</em></a>) – the scale value</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the dosage computed from the probabilities</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)">numpy.array</a></p>
 </td>
 </tr>
 </tbody>
@@ -241,16 +237,16 @@ genotype</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the first allele</li>
-<li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the second allele</li>
-<li><strong>probs</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><em>numpy.array</em></a>) &#8211; the probability matrix</li>
+<li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the first allele</li>
+<li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the second allele</li>
+<li><strong>probs</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the probability matrix</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the hard calls computed from the probabilities</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)">numpy.array</a></p>
 </td>
 </tr>
 </tbody>
@@ -266,12 +262,12 @@ genotype</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>prob_matrix</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><em>numpy.array</em></a>) &#8211; the probability matrix</li>
-<li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the first allele</li>
-<li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the second allele</li>
-<li><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a>) &#8211; the scale value</li>
-<li><strong>gender</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><em>numpy.array</em></a>) &#8211; the gender of the samples</li>
-<li><strong>site_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name for this site</li>
+<li><strong>prob_matrix</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the probability matrix</li>
+<li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the first allele</li>
+<li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the second allele</li>
+<li><strong>scale</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#int" title="(in Jinja2 v2.11)"><em>int</em></a>) – the scale value</li>
+<li><strong>gender</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the gender of the samples</li>
+<li><strong>site_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name for this site</li>
 </ul>
 </td>
 </tr>
@@ -288,7 +284,7 @@ genotype</li>
 </tr>
 </tbody>
 </table>
-<p>When &#8216;gender&#8217; is not None, we assume that the MAF on chromosome X is
+<p>When ‘gender’ is not None, we assume that the MAF on chromosome X is
 required (hence, males count as 1, and females as 2 alleles). There is also
 an Exception raised if there are any heterozygous males.</p>
 </dd></dl>
@@ -302,9 +298,9 @@ an Exception raised if there are any heterozygous males.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the a1 allele</li>
-<li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the a2 allele</li>
-<li><strong>probs</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.12)"><em>numpy.array</em></a>) &#8211; the probability matrix</li>
+<li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the a1 allele</li>
+<li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the a2 allele</li>
+<li><strong>probs</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the probability matrix</li>
 </ul>
 </td>
 </tr>
@@ -339,22 +335,22 @@ we think a2 is the minor allele, but flip if required.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the file</li>
-<li><strong>cols</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; a list containing column to keep (as int)</li>
-<li><strong>names</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) &#8211; the name corresponding to the column to keep (as str)</li>
-<li><strong>sep</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the field separator</li>
+<li><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the file</li>
+<li><strong>cols</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – a list containing column to keep (as int)</li>
+<li><strong>names</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – the name corresponding to the column to keep (as str)</li>
+<li><strong>sep</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the field separator</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the index</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.19.2)">pandas.DataFrame</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.21.0)">pandas.DataFrame</a></p>
 </td>
 </tr>
 </tbody>
 </table>
-<p>If the index doesn&#8217;t exist for the file, it is first created.</p>
+<p>If the index doesn’t exist for the file, it is first created.</p>
 </dd></dl>
 
 <dl class="function">
@@ -366,8 +362,8 @@ we think a2 is the minor allele, but flip if required.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) &#8211; the name of the file</li>
-<li><strong>return_fmt</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) &#8211; if the file format needs to be returned</li>
+<li><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the file</li>
+<li><strong>return_fmt</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – if the file format needs to be returned</li>
 </ul>
 </td>
 </tr>
@@ -410,7 +406,7 @@ we think a2 is the minor allele, but flip if required.</p>
         <li class="right" >
           <a href="genipe.db.html" title="genipe.db package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &#187;</li> 
@@ -420,7 +416,7 @@ we think a2 is the minor allele, but flip if required.</p>
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
 
 <script>

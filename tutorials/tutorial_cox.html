@@ -2,20 +2,16 @@
 
 <!doctype html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Survival analysis &#8212; genipe 1.3.3 documentation</title>
-    
+    <title>Survival analysis &#8212; genipe 1.4.0 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.3.3',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -25,7 +21,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -36,7 +32,7 @@
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -52,7 +48,7 @@
         <li class="right" >
           <a href="tutorial_mixedlm.html" title="Linear mixed effects model"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &#187;</li> 
       </ul>
     </div>
@@ -125,7 +121,7 @@
 </div>
 <div class="section" id="survival-analysis">
 <h1><a class="toc-backref" href="#id1">Survival analysis</a><a class="headerlink" href="#survival-analysis" title="Permalink to this headline">¶</a></h1>
-<p>A popular technique to perform a survival analysis (regression) is the Cox&#8217;s
+<p>A popular technique to perform a survival analysis (regression) is the Cox’s
 model. It is possible to perform such an analysis using imputation data (dosage
 format), where each imputed genotypes varies between 0 and 2 (inclusively). A
 value close to 0 means that a homozygous genotype of the most frequent allele
@@ -302,7 +298,7 @@ in the console:</p>
 <span class="go">                         NAME</span>
 
 <span class="go">Performs a survival regression on imputed data using Cox&#39;s proportional hazard</span>
-<span class="go">model. This script is part of the &#39;genipe&#39; package, version 1.3.3.</span>
+<span class="go">model. This script is part of the &#39;genipe&#39; package, version 1.4.0.</span>
 
 <span class="go">optional arguments:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
@@ -363,7 +359,7 @@ in the console:</p>
 compared for validity. The following figure shows the comparison for, from left
 to right, the coefficients, the standard errors and the <em>p</em>-values. The <em>x</em>
 axis shows the results from <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a>, and the <em>y</em> axis shows the
-results for <em>JMP Genomics</em>. This comparison includes 48,127 &#8220;good&#8221; imputed
+results for <em>JMP Genomics</em>. This comparison includes 48,127 “good” imputed
 markers with a MAF higher or equal to 15%, analyzed for 60 samples (<em>i.e</em>
 results from this tutorial). Note that for this comparison, the <strong>probability
 threshold</strong> (<code class="docutils literal"><span class="pre">--prob</span></code>) <strong>was changed from 0.9 to 0</strong> to <em>imitate</em> <em>JMP
@@ -426,7 +422,7 @@ threshold of 0.9 (excluding imputed genotypes with poor quality). Hence,
         <li class="right" >
           <a href="tutorial_mixedlm.html" title="Linear mixed effects model"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &#187;</li> 
       </ul>
     </div>
@@ -434,7 +430,7 @@ threshold of 0.9 (excluding imputed genotypes with poor quality). Hence,
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
 
 <script>

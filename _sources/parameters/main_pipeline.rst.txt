@@ -3,8 +3,11 @@
    :depth: 2
 
 
-Main Pipeline - Options and Parameters
-=======================================
+Main Pipeline - ``genipe-launcher``
+====================================
+
+
+Execute the genome-wide imputation pipeline.
 
 
 General options
@@ -207,6 +210,8 @@ IMPUTE2 options
     |                                       | -Ne 20000'``).                  |
     +---------------------------------------+---------------------------------+
 
+
+.. _main-pipeline-merger-options:
 
 IMPUTE2 merger options
 -----------------------

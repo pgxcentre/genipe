@@ -2,20 +2,16 @@
 
 <!doctype html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Main Pipeline - Options and Parameters &#8212; genipe 1.3.3 documentation</title>
-    
+    <title>Main Pipeline - genipe-launcher &#8212; genipe 1.4.0 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.3.3',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -25,18 +21,18 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Imputed Stats - Options and Parameters" href="imputed_stats.html" />
+    <link rel="next" title="Imputed Stats - imputed-stats" href="imputed_stats.html" />
     <link rel="prev" title="Options and Parameters" href="../parameters.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -47,12 +43,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="imputed_stats.html" title="Imputed Stats - Options and Parameters"
+          <a href="imputed_stats.html" title="Imputed Stats - imputed-stats"
              accesskey="N">next</a> |</li>
         <li class="right" >
           <a href="../parameters.html" title="Options and Parameters"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../parameters.html" accesskey="U">Options and Parameters</a> &#187;</li> 
       </ul>
     </div>
@@ -60,7 +56,7 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Main Pipeline - Options and Parameters</a><ul>
+<li><a class="reference internal" href="#">Main Pipeline - <code class="docutils literal"><span class="pre">genipe-launcher</span></code></a><ul>
 <li><a class="reference internal" href="#general-options">General options</a></li>
 <li><a class="reference internal" href="#input-options">Input options</a></li>
 <li><a class="reference internal" href="#output-options">Output options</a></li>
@@ -81,7 +77,7 @@
                         title="previous chapter">Options and Parameters</a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="imputed_stats.html"
-                        title="next chapter">Imputed Stats - Options and Parameters</a></p>
+                        title="next chapter">Imputed Stats - <code class="docutils literal"><span class="pre">imputed-stats</span></code></a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -110,7 +106,7 @@
   <div class="contents topic" id="quick-navigation">
 <p class="topic-title first">Quick navigation</p>
 <ul class="simple">
-<li><a class="reference internal" href="#main-pipeline-options-and-parameters" id="id1">Main Pipeline - Options and Parameters</a><ul>
+<li><a class="reference internal" href="#main-pipeline-genipe-launcher" id="id1">Main Pipeline - <code class="docutils literal"><span class="pre">genipe-launcher</span></code></a><ul>
 <li><a class="reference internal" href="#general-options" id="id2">General options</a></li>
 <li><a class="reference internal" href="#input-options" id="id3">Input options</a></li>
 <li><a class="reference internal" href="#output-options" id="id4">Output options</a></li>
@@ -126,8 +122,9 @@
 </li>
 </ul>
 </div>
-<div class="section" id="main-pipeline-options-and-parameters">
-<h1><a class="toc-backref" href="#id1">Main Pipeline - Options and Parameters</a><a class="headerlink" href="#main-pipeline-options-and-parameters" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="main-pipeline-genipe-launcher">
+<h1><a class="toc-backref" href="#id1">Main Pipeline - <code class="docutils literal"><span class="pre">genipe-launcher</span></code></a><a class="headerlink" href="#main-pipeline-genipe-launcher" title="Permalink to this headline">¶</a></h1>
+<p>Execute the genome-wide imputation pipeline.</p>
 <div class="section" id="general-options">
 <h2><a class="toc-backref" href="#id2">General options</a><a class="headerlink" href="#general-options" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
@@ -145,7 +142,7 @@
 <td>Show this help message and exit.</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">-v</span></code>, <code class="docutils literal"><span class="pre">--version</span></code></td>
-<td>Show program&#8217;s version number and exit.</td>
+<td>Show program’s version number and exit.</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--debug</span></code></td>
 <td>Set the logging level to debug.</td>
@@ -195,7 +192,7 @@ IMPUTE2 reference files) (optional).</td>
 <tbody valign="top">
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--chrom</span> <span class="pre">CHROM</span> <span class="pre">[CHROM</span> <span class="pre">...]</span></code></td>
 <td>The chromosomes to process. It is
-possible to write &#8216;autosomes&#8217; to process
+possible to write ‘autosomes’ to process
 all the autosomes (from chromosome 1 to
 22, inclusively).</td>
 </tr>
@@ -236,7 +233,7 @@ task.</td>
 <td>This option should be used when using DRMAA on
 a HPC to load required module and set
 environment variables. The content of the file
-will be added between the &#8216;shebang&#8217; line and
+will be added between the ‘shebang’ line and
 the tool command.</td>
 </tr>
 </tbody>
@@ -256,7 +253,7 @@ the tool command.</td>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--shapeit-bin</span> <span class="pre">BINARY</span></code></td>
-<td>The SHAPEIT binary if it&#8217;s not in the
+<td>The SHAPEIT binary if it’s not in the
 path.</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">--shapeit-thread</span> <span class="pre">INT</span></code></td>
@@ -285,7 +282,7 @@ parameters between single or normal quotes
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--plink-bin</span> <span class="pre">BINARY</span></code></td>
-<td>The Plink binary if it&#8217;s not in the path.</td>
+<td>The Plink binary if it’s not in the path.</td>
 </tr>
 </tbody>
 </table>
@@ -304,25 +301,25 @@ parameters between single or normal quotes
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--hap-template</span> <span class="pre">TEMPLATE</span></code></td>
-<td>The template for IMPUTE2&#8217;s haplotype
+<td>The template for IMPUTE2’s haplotype
 files (replace the chromosome number by
-&#8216;<code class="docutils literal"><span class="pre">{chrom}</span></code>&#8216;, <em>e.g.</em>
-&#8216;<code class="docutils literal"><span class="pre">1000GP_{chrom}.hap.gz</span></code>&#8216;).</td>
+‘<code class="docutils literal"><span class="pre">{chrom}</span></code>’, <em>e.g.</em>
+‘<code class="docutils literal"><span class="pre">1000GP_{chrom}.hap.gz</span></code>’).</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">--legend-template</span> <span class="pre">TEMPLATE</span></code></td>
-<td>The template for IMPUTE2&#8217;s legend files
+<td>The template for IMPUTE2’s legend files
 (replace the chromosome number by
-&#8216;<code class="docutils literal"><span class="pre">{chrom}</span></code>&#8216;, <em>e.g.</em>
-&#8216;<code class="docutils literal"><span class="pre">1000GP_{chrom}.legend.gz</span></code>&#8216;).</td>
+‘<code class="docutils literal"><span class="pre">{chrom}</span></code>’, <em>e.g.</em>
+‘<code class="docutils literal"><span class="pre">1000GP_{chrom}.legend.gz</span></code>’).</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--map-template</span> <span class="pre">TEMPLATE</span></code></td>
-<td>The template for IMPUTE2&#8217;s map files
+<td>The template for IMPUTE2’s map files
 (replace the chromosome number by
-&#8216;<code class="docutils literal"><span class="pre">{chrom}</span></code>&#8216;, <em>e.g.</em>
-&#8216;<code class="docutils literal"><span class="pre">genetic_map_chr{chrom}.txt</span></code>&#8216;).</td>
+‘<code class="docutils literal"><span class="pre">{chrom}</span></code>’, <em>e.g.</em>
+‘<code class="docutils literal"><span class="pre">genetic_map_chr{chrom}.txt</span></code>’).</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">--sample-file</span> <span class="pre">FILE</span></code></td>
-<td>The name of IMPUTE2&#8217;s sample file.</td>
+<td>The name of IMPUTE2’s sample file.</td>
 </tr>
 </tbody>
 </table>
@@ -341,39 +338,39 @@ files (replace the chromosome number by
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--hap-nonPAR</span> <span class="pre">FILE</span></code></td>
-<td>The IMPUTE2&#8217;s haplotype file for the
+<td>The IMPUTE2’s haplotype file for the
 non-pseudoautosomal region of chromosome 23.</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">--hap-PAR1</span> <span class="pre">FILE</span></code></td>
-<td>The IMPUTE2&#8217;s haplotype file for the first
+<td>The IMPUTE2’s haplotype file for the first
 pseudoautosomal region of chromosome 23.</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--hap-PAR2</span> <span class="pre">FILE</span></code></td>
-<td>The IMPUTE2&#8217;s haplotype file for the second
+<td>The IMPUTE2’s haplotype file for the second
 pseudoautosomal region of chromosome 23.</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">--legend-nonPAR</span> <span class="pre">FILE</span></code></td>
-<td>The IMPUTE2&#8217;s legend file for the
+<td>The IMPUTE2’s legend file for the
 non-pseudoautosomal region of chromosome 23.</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--legend-PAR1</span> <span class="pre">FILE</span></code></td>
-<td>The IMPUTE2&#8217;s legend file for the first
+<td>The IMPUTE2’s legend file for the first
 pseudoautosomal region of chromosome 23.</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">--legend-PAR2</span> <span class="pre">FILE</span></code></td>
-<td>The IMPUTE2&#8217;s legend file for the second
+<td>The IMPUTE2’s legend file for the second
 pseudoautosomal region of chromosome 23.</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--map-nonPAR</span> <span class="pre">FILE</span></code></td>
-<td>The IMPUTE2&#8217;s map file for the
+<td>The IMPUTE2’s map file for the
 non-pseudoautosomal region of chromosome 23.</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">--map-PAR1</span> <span class="pre">FILE</span></code></td>
-<td>The IMPUTE2&#8217;s map file for the first
+<td>The IMPUTE2’s map file for the first
 pseudoautosomal region of chromosome 23.</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--map-PAR2</span> <span class="pre">FILE</span></code></td>
-<td>The IMPUTE2&#8217;s map file for the second
+<td>The IMPUTE2’s map file for the second
 pseudoautosomal region of chromosome 23.</td>
 </tr>
 </tbody>
@@ -393,7 +390,7 @@ pseudoautosomal region of chromosome 23.</td>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--impute2-bin</span> <span class="pre">BINARY</span></code></td>
-<td>The IMPUTE2 binary if it&#8217;s not
+<td>The IMPUTE2 binary if it’s not
 in the path.</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">--segment-length</span> <span class="pre">BP</span></code></td>
@@ -415,7 +412,7 @@ single or normal quotes (<em>e.g.</em>
 </table>
 </div>
 <div class="section" id="impute2-merger-options">
-<h2><a class="toc-backref" href="#id11">IMPUTE2 merger options</a><a class="headerlink" href="#impute2-merger-options" title="Permalink to this headline">¶</a></h2>
+<span id="main-pipeline-merger-options"></span><h2><a class="toc-backref" href="#id11">IMPUTE2 merger options</a><a class="headerlink" href="#impute2-merger-options" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
 <col width="35%" />
@@ -496,12 +493,12 @@ containing the background.
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="imputed_stats.html" title="Imputed Stats - Options and Parameters"
+          <a href="imputed_stats.html" title="Imputed Stats - imputed-stats"
              >next</a> |</li>
         <li class="right" >
           <a href="../parameters.html" title="Options and Parameters"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../parameters.html" >Options and Parameters</a> &#187;</li> 
       </ul>
     </div>
@@ -509,7 +506,7 @@ containing the background.
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
 
 <script>

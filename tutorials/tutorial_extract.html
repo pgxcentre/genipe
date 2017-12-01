@@ -2,20 +2,16 @@
 
 <!doctype html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Site extraction &#8212; genipe 1.3.3 documentation</title>
-    
+    <title>Site extraction &#8212; genipe 1.4.0 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.3.3',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -25,7 +21,7 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
@@ -36,7 +32,7 @@
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -52,7 +48,7 @@
         <li class="right" >
           <a href="tutorial_logistic.html" title="Logistic regression"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &#187;</li> 
       </ul>
     </div>
@@ -71,6 +67,7 @@
 <li><a class="reference internal" href="#impute2-file"><code class="docutils literal"><span class="pre">.impute2</span></code> file</a></li>
 <li><a class="reference internal" href="#dosage-file"><code class="docutils literal"><span class="pre">.dosage</span></code> file</a></li>
 <li><a class="reference internal" href="#calls-file"><code class="docutils literal"><span class="pre">.calls</span></code> file</a></li>
+<li><a class="reference internal" href="#binary-plink-files">Binary <em>Plink</em> files</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#usage">Usage</a></li>
@@ -224,10 +221,10 @@ impute2-extractor <span class="se">\</span>
 <div class="section" id="output-files">
 <span id="extract-tut-output-files"></span><h2><a class="toc-backref" href="#id4">Output files</a><a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
 <p>The output files will depend on the output format selected (the <code class="docutils literal"><span class="pre">--format</span></code>
-option). You can specify either <code class="docutils literal"><span class="pre">impute2</span></code>, <code class="docutils literal"><span class="pre">dosage</span></code> and/or <code class="docutils literal"><span class="pre">calls</span></code>, for
-the <em>impute2</em> format (<em>i.e.</em> three probabilities per sample), the <em>dosage</em>
-format (<em>i.e.</em> one value between 0 and 2 per sample), and hard calls (<em>i.e.</em>
-genotypes).</p>
+option). You can specify either <code class="docutils literal"><span class="pre">impute2</span></code>, <code class="docutils literal"><span class="pre">dosage</span></code>, <code class="docutils literal"><span class="pre">calls</span></code> and/or
+<code class="docutils literal"><span class="pre">bed</span></code>, for the <em>impute2</em> format (<em>i.e.</em> three probabilities per sample), the
+<em>dosage</em> format (<em>i.e.</em> one value between 0 and 2 per sample), hard calls and
+binary <em>Plink</em> file.</p>
 <div class="section" id="impute2-file">
 <h3><code class="docutils literal"><span class="pre">.impute2</span></code> file<a class="headerlink" href="#impute2-file" title="Permalink to this headline">¶</a></h3>
 <p>This file is generated when the <code class="docutils literal"><span class="pre">impute2</span></code> format is used. It has the same
@@ -292,6 +289,11 @@ location, and the hard calls.</p>
 (specified by the <code class="docutils literal"><span class="pre">--prob</span></code> option) will have a missing value of <code class="docutils literal"><span class="pre">0</span> <span class="pre">0</span></code>.</p>
 </div>
 </div>
+<div class="section" id="binary-plink-files">
+<h3>Binary <em>Plink</em> files<a class="headerlink" href="#binary-plink-files" title="Permalink to this headline">¶</a></h3>
+<p>A set of three files are created (<em>i.e.</em> <code class="docutils literal"><span class="pre">.bed</span></code>, <code class="docutils literal"><span class="pre">.bim</span></code> and <code class="docutils literal"><span class="pre">.fam</span></code> files.
+These represents binary <em>Plink</em> files containing hard calls.</p>
+</div>
 </div>
 <div class="section" id="usage">
 <span id="extract-tut-usage"></span><h2><a class="toc-backref" href="#id5">Usage</a><a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
@@ -305,7 +307,7 @@ analysis in the console:</p>
 <span class="go">                         [--rate FLOAT] [--info FLOAT]</span>
 
 <span class="go">Extract imputed markers located in a specific genomic region. This script is</span>
-<span class="go">part of the &#39;genipe&#39; package, version 1.3.3.</span>
+<span class="go">part of the &#39;genipe&#39; package, version 1.4.0.</span>
 
 <span class="go">optional arguments:</span>
 <span class="go">  -h, --help            show this help message and exit</span>
@@ -380,7 +382,7 @@ index) will be performed.</p>
         <li class="right" >
           <a href="tutorial_logistic.html" title="Logistic regression"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &#187;</li> 
       </ul>
     </div>
@@ -388,7 +390,7 @@ index) will be performed.</p>
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
 
 <script>

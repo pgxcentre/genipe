@@ -2,20 +2,16 @@
 
 <!doctype html>
 
-
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    
-    <title>Imputed Stats - Options and Parameters &#8212; genipe 1.3.3 documentation</title>
-    
+    <title>Imputed Stats - imputed-stats &#8212; genipe 1.4.0 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    
     <script type="text/javascript">
       var DOCUMENTATION_OPTIONS = {
         URL_ROOT:    '../',
-        VERSION:     '1.3.3',
+        VERSION:     '1.4.0',
         COLLAPSE_INDEX: false,
         FILE_SUFFIX: '.html',
         HAS_SOURCE:  true,
@@ -25,18 +21,18 @@
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.0/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
     <script type="text/javascript" src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
-    <link rel="next" title="Impute2 Merger - Options and Parameters" href="impute2_merger.html" />
-    <link rel="prev" title="Main Pipeline - Options and Parameters" href="main_pipeline.html" />
+    <link rel="next" title="Impute2 Merger - impute2-merger" href="impute2_merger.html" />
+    <link rel="prev" title="Main Pipeline - genipe-launcher" href="main_pipeline.html" />
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head>
-  <body role="document">
+  <body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -47,12 +43,12 @@
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="impute2_merger.html" title="Impute2 Merger - Options and Parameters"
+          <a href="impute2_merger.html" title="Impute2 Merger - impute2-merger"
              accesskey="N">next</a> |</li>
         <li class="right" >
-          <a href="main_pipeline.html" title="Main Pipeline - Options and Parameters"
+          <a href="main_pipeline.html" title="Main Pipeline - genipe-launcher"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../parameters.html" accesskey="U">Options and Parameters</a> &#187;</li> 
       </ul>
     </div>
@@ -60,7 +56,7 @@
         <div class="sphinxsidebarwrapper">
   <h3><a href="../index.html">Table Of Contents</a></h3>
   <ul>
-<li><a class="reference internal" href="#">Imputed Stats - Options and Parameters</a><ul>
+<li><a class="reference internal" href="#">Imputed Stats - <code class="docutils literal"><span class="pre">imputed-stats</span></code></a><ul>
 <li><a class="reference internal" href="#available-statistical-models">Available statistical models</a></li>
 <li><a class="reference internal" href="#common-options">Common options</a><ul>
 <li><a class="reference internal" href="#general-options">General options</a></li>
@@ -71,7 +67,7 @@
 <li><a class="reference internal" href="#phenotype-options">Phenotype options</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#cox-s-proportional-hazard-model-options">Cox&#8217;s proportional hazard model options</a></li>
+<li><a class="reference internal" href="#cox-s-proportional-hazard-model-options">Cox’s proportional hazard model options</a></li>
 <li><a class="reference internal" href="#linear-regression-options">Linear regression options</a></li>
 <li><a class="reference internal" href="#logistic-regression-options">Logistic regression options</a></li>
 <li><a class="reference internal" href="#linear-mixed-effects-options">Linear mixed effects options</a></li>
@@ -82,10 +78,10 @@
 
   <h4>Previous topic</h4>
   <p class="topless"><a href="main_pipeline.html"
-                        title="previous chapter">Main Pipeline - Options and Parameters</a></p>
+                        title="previous chapter">Main Pipeline - <code class="docutils literal"><span class="pre">genipe-launcher</span></code></a></p>
   <h4>Next topic</h4>
   <p class="topless"><a href="impute2_merger.html"
-                        title="next chapter">Impute2 Merger - Options and Parameters</a></p>
+                        title="next chapter">Impute2 Merger - <code class="docutils literal"><span class="pre">impute2-merger</span></code></a></p>
   <div role="note" aria-label="source link">
     <h3>This Page</h3>
     <ul class="this-page-menu">
@@ -114,7 +110,7 @@
   <div class="contents topic" id="quick-navigation">
 <p class="topic-title first">Quick navigation</p>
 <ul class="simple">
-<li><a class="reference internal" href="#imputed-stats-options-and-parameters" id="id2">Imputed Stats - Options and Parameters</a><ul>
+<li><a class="reference internal" href="#imputed-stats-imputed-stats" id="id2">Imputed Stats - <code class="docutils literal"><span class="pre">imputed-stats</span></code></a><ul>
 <li><a class="reference internal" href="#available-statistical-models" id="id3">Available statistical models</a></li>
 <li><a class="reference internal" href="#common-options" id="id4">Common options</a><ul>
 <li><a class="reference internal" href="#general-options" id="id5">General options</a></li>
@@ -125,7 +121,7 @@
 <li><a class="reference internal" href="#phenotype-options" id="id10">Phenotype options</a></li>
 </ul>
 </li>
-<li><a class="reference internal" href="#cox-s-proportional-hazard-model-options" id="id11">Cox&#8217;s proportional hazard model options</a></li>
+<li><a class="reference internal" href="#cox-s-proportional-hazard-model-options" id="id11">Cox’s proportional hazard model options</a></li>
 <li><a class="reference internal" href="#linear-regression-options" id="id12">Linear regression options</a></li>
 <li><a class="reference internal" href="#logistic-regression-options" id="id13">Logistic regression options</a></li>
 <li><a class="reference internal" href="#linear-mixed-effects-options" id="id14">Linear mixed effects options</a></li>
@@ -134,8 +130,10 @@
 </li>
 </ul>
 </div>
-<div class="section" id="imputed-stats-options-and-parameters">
-<h1><a class="toc-backref" href="#id2">Imputed Stats - Options and Parameters</a><a class="headerlink" href="#imputed-stats-options-and-parameters" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="imputed-stats-imputed-stats">
+<h1><a class="toc-backref" href="#id2">Imputed Stats - <code class="docutils literal"><span class="pre">imputed-stats</span></code></a><a class="headerlink" href="#imputed-stats-imputed-stats" title="Permalink to this headline">¶</a></h1>
+<p>Performs statistical analysis on imputed data (either SKAT analysis, or
+linear, logistic or survival regression).</p>
 <div class="section" id="available-statistical-models">
 <h2><a class="toc-backref" href="#id3">Available statistical models</a><a class="headerlink" href="#available-statistical-models" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
@@ -150,7 +148,7 @@
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">cox</span></code></td>
-<td>Cox&#8217;s proportional hazard model (survival regression).</td>
+<td>Cox’s proportional hazard model (survival regression).</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">linear</span></code></td>
 <td>Linear regression (ordinary least squares).</td>
@@ -186,7 +184,7 @@
 <td>Show this help message and exit.</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">-v</span></code>, <code class="docutils literal"><span class="pre">--version</span></code></td>
-<td>Show program&#8217;s version number and exit.</td>
+<td>Show program’s version number and exit.</td>
 </tr>
 <tr class="row-even"><td><code class="docutils literal"><span class="pre">--debug</span></code></td>
 <td>Set the logging level to debug.</td>
@@ -269,14 +267,14 @@ variables.</td>
 pseudo-autosomal region of the chromosome X
 (male dosage will be divided by 2 to get
 values [0, 0.5] instead of [0, 1]) (males are
-coded as 1 and option &#8216;<code class="docutils literal"><span class="pre">--gender-column</span></code>&#8216;
+coded as 1 and option ‘<code class="docutils literal"><span class="pre">--gender-column</span></code>’
 should be used).</td>
 </tr>
 <tr class="row-odd"><td><code class="docutils literal"><span class="pre">--gender-column</span> <span class="pre">NAME</span></code></td>
 <td>The name of the gender column (use to exclude
 samples with unknown gender (<em>i.e.</em> not 1,
 male, or 2, female). If gender not available,
-use &#8216;None&#8217;. [<code class="docutils literal"><span class="pre">Gender</span></code>]</td>
+use ‘None’. [<code class="docutils literal"><span class="pre">Gender</span></code>]</td>
 </tr>
 </tbody>
 </table>
@@ -348,7 +346,7 @@ this variable.</td>
 </div>
 </div>
 <div class="section" id="cox-s-proportional-hazard-model-options">
-<h2><a class="toc-backref" href="#id11">Cox&#8217;s proportional hazard model options</a><a class="headerlink" href="#cox-s-proportional-hazard-model-options" title="Permalink to this headline">¶</a></h2>
+<h2><a class="toc-backref" href="#id11">Cox’s proportional hazard model options</a><a class="headerlink" href="#cox-s-proportional-hazard-model-options" title="Permalink to this headline">¶</a></h2>
 <table border="1" class="docutils">
 <colgroup>
 <col width="36%" />
@@ -491,12 +489,12 @@ instead.</td>
           <a href="../py-modindex.html" title="Python Module Index"
              >modules</a> |</li>
         <li class="right" >
-          <a href="impute2_merger.html" title="Impute2 Merger - Options and Parameters"
+          <a href="impute2_merger.html" title="Impute2 Merger - impute2-merger"
              >next</a> |</li>
         <li class="right" >
-          <a href="main_pipeline.html" title="Main Pipeline - Options and Parameters"
+          <a href="main_pipeline.html" title="Main Pipeline - genipe-launcher"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.3.3 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../parameters.html" >Options and Parameters</a> &#187;</li> 
       </ul>
     </div>
@@ -504,7 +502,7 @@ instead.</td>
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.5.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
     </div>
 
 <script>
