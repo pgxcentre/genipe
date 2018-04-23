@@ -10,10 +10,12 @@
 import os
 import re
 import sys
+import time
 import shlex
 import logging
 import traceback
 from os.path import isfile
+from datetime import datetime
 from multiprocessing import Pool
 from subprocess import Popen, PIPE
 from tempfile import NamedTemporaryFile
@@ -602,10 +604,18 @@ def _execute_command_drmaa(command_info):
         logging.debug("'{}' exit status problem".format(task_id))
         return False, name, "problem", None
 
-    # Getting the time
+    # Getting the launch time (should always been present)
     launch_time = float(ret_val.resourceUsage["submission_time"])
-    start_time = float(ret_val.resourceUsage["start_time"])
-    end_time = float(ret_val.resourceUsage["end_time"])
+
+    # Getting the start time. If 'start_time' is missing from the dictionary
+    # (e.g. using Slurm), we use the launch time as the start time
+    start_time = float(ret_val.resourceUsage.get("start_time", launch_time))
+
+    # Getting the end time. If 'end_time' is missing from the dictionary
+    # (e.g. using Slurm), we use the current time as the end time
+    end_time = float(ret_val.resourceUsage.get(
+        "end_time", time.mktime(datetime.now().timetuple()),
+    ))
 
     # The task was performed correctly, so we update to completed
     db.mark_drmaa_task_completed(task_id, launch_time, start_time, end_time,
