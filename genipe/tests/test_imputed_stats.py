@@ -550,8 +550,10 @@ class TestImputedStats(unittest.TestCase):
         # Checking
         with self.assertRaises(ValueError) as cm:
             imputed_stats.read_samples(sample_filename)
-        self.assertEqual("Index has duplicate keys: ['sample_2']",
-                         str(cm.exception))
+        self.assertTrue(str(cm.exception).startswith(
+            "Index has duplicate keys"
+        ))
+        self.assertTrue("sample_2" in str(cm.exception))
 
     def test_read_sites_to_extract(self):
         """Tests the 'test_read_sites_to_extract' function."""
