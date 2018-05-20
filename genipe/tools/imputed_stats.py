@@ -733,7 +733,9 @@ def _extract_mixedlm_random_effect(fitted):
 
     # If it's a dictionary, we need to create a DataFrame
     if isinstance(random_effects, dict):
-        return pd.DataFrame(random_effects).T.rename(columns={"groups": "RE"})
+        return pd.DataFrame(random_effects).T.rename(
+            columns={"groups": "RE", "Group": "RE"},
+        )
 
     return random_effects.rename(columns={"Intercept": "RE"})
 
