@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>SKAT analysis &#8212; genipe 1.4.0 documentation</title>
+    <title>SKAT analysis &#8212; genipe 1.4.1 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.4.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -31,8 +23,7 @@
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -48,7 +39,7 @@
         <li class="right" >
           <a href="tutorial_cox.html" title="Survival analysis"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &#187;</li> 
       </ul>
     </div>
@@ -87,12 +78,14 @@
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -120,7 +113,7 @@
 <div class="section" id="skat-analysis">
 <h1><a class="toc-backref" href="#id2">SKAT analysis</a><a class="headerlink" href="#skat-analysis" title="Permalink to this headline">¶</a></h1>
 <p><a class="reference external" href="http://www.hsph.harvard.edu/skat/">SKAT</a> is a very popular test for the
-association of sets of rare and common variants. In <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a>, we
+association of sets of rare and common variants. In <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a>, we
 provide straightforward bindings over SKAT to make it easy to perform parallel
 SNP-set analysis of imputed variants.</p>
 <p>This tutorial will walk through a full example of an analysis while describing
@@ -138,7 +131,7 @@ probabilities for the AA, AB and BB genotypes for all the variants. Hence, a
 single variant is represented by three columns in <cite>Impute2</cite> files.</p>
 <p>The following example shows a single line of the <cite>Impute2</cite> file where column
 identifiers were added to help explain the file structure.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="n">B</span>            <span class="n">C</span>        <span class="n">D</span> <span class="n">E</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">1</span>     <span class="mi">2</span>     <span class="mi">3</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A</span> <span class="n">B</span>            <span class="n">C</span>        <span class="n">D</span> <span class="n">E</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">1</span> <span class="mi">2</span> <span class="mi">3</span> <span class="mi">1</span>     <span class="mi">2</span>     <span class="mi">3</span>
 <span class="mi">3</span> <span class="mi">3</span><span class="p">:</span><span class="mi">20109120</span><span class="p">:</span><span class="n">C</span> <span class="mi">20109120</span> <span class="n">A</span> <span class="n">C</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mf">0.998</span> <span class="mf">0.002</span> <span class="mi">0</span>
 <span class="mi">3</span> <span class="n">rs79511213</span><span class="p">:</span><span class="n">T</span> <span class="mi">20202955</span> <span class="n">C</span> <span class="n">T</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mf">0.989</span> <span class="mf">0.011</span> <span class="mi">0</span>
 <span class="o">...</span>
@@ -146,19 +139,19 @@ identifiers were added to help explain the file structure.</p>
 </div>
 <p>The columns for the previous examples go as follows:</p>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">A</span></code> The chromosome.</li>
-<li><code class="docutils literal"><span class="pre">B</span></code> The variant name.</li>
-<li><code class="docutils literal"><span class="pre">C</span></code> The genomic position of the variant.</li>
-<li><code class="docutils literal"><span class="pre">D</span></code> The “A1” allele. This is not necessarily the reference or alternative
+<li><code class="docutils literal notranslate"><span class="pre">A</span></code> The chromosome.</li>
+<li><code class="docutils literal notranslate"><span class="pre">B</span></code> The variant name.</li>
+<li><code class="docutils literal notranslate"><span class="pre">C</span></code> The genomic position of the variant.</li>
+<li><code class="docutils literal notranslate"><span class="pre">D</span></code> The “A1” allele. This is not necessarily the reference or alternative
 allele.</li>
-<li><code class="docutils literal"><span class="pre">E</span></code> The “A2” allele. This is not necessarily the reference or alternative
+<li><code class="docutils literal notranslate"><span class="pre">E</span></code> The “A2” allele. This is not necessarily the reference or alternative
 allele.</li>
-<li><code class="docutils literal"><span class="pre">1</span></code> All those columns represent the probability of being a A1-A1
+<li><code class="docutils literal notranslate"><span class="pre">1</span></code> All those columns represent the probability of being a A1-A1
 homozygous. It is noticeable that the columns 1, 2 and 3 alternate. This is
 because probabilities are given for all the variants in order. In other
 words, the probabilities are read as triplets.</li>
-<li><code class="docutils literal"><span class="pre">2</span></code> Columns representing the A1-A2 heterozygous.</li>
-<li><code class="docutils literal"><span class="pre">3</span></code> Columns representing the A2-A2 heterozygous.</li>
+<li><code class="docutils literal notranslate"><span class="pre">2</span></code> Columns representing the A1-A2 heterozygous.</li>
+<li><code class="docutils literal notranslate"><span class="pre">3</span></code> Columns representing the A2-A2 heterozygous.</li>
 </ul>
 <p>Also note that identifying the minor and major alleles is done internally by
 computing the minor allele frequency (MAF) and assigning the rarest allele to
@@ -171,13 +164,13 @@ to facilitate the description of the format.</p>
 </div>
 <div class="section" id="samples-file">
 <h3>Samples file<a class="headerlink" href="#samples-file" title="Permalink to this headline">¶</a></h3>
-<p>This file is generated by <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> and has the <code class="docutils literal"><span class="pre">.sample</span></code> extension.
-It greatly resembles the PLINK <code class="docutils literal"><span class="pre">fam</span></code> file for those who are familiar with
+<p>This file is generated by <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a> and has the <code class="docutils literal notranslate"><span class="pre">.sample</span></code> extension.
+It greatly resembles the PLINK <code class="docutils literal notranslate"><span class="pre">fam</span></code> file for those who are familiar with
 this format. Specifically, it contains the samples that are included in the
-<code class="docutils literal"><span class="pre">Impute2</span></code> file <strong>in the correct order</strong>. It is needed to correctly interpret
+<code class="docutils literal notranslate"><span class="pre">Impute2</span></code> file <strong>in the correct order</strong>. It is needed to correctly interpret
 the sample described by the probability triplets described earlier.</p>
 <p>Specifically, the format is as follow:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ID_1</span> <span class="n">ID_2</span> <span class="n">missing</span> <span class="n">father</span> <span class="n">mother</span> <span class="n">sex</span> <span class="n">plink_pheno</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ID_1</span> <span class="n">ID_2</span> <span class="n">missing</span> <span class="n">father</span> <span class="n">mother</span> <span class="n">sex</span> <span class="n">plink_pheno</span>
 <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="n">D</span> <span class="n">D</span> <span class="n">D</span> <span class="n">B</span>
 <span class="n">SAMPLE1</span> <span class="n">SAMPLE1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="o">-</span><span class="mi">9</span>
 <span class="n">SAMPLE2</span> <span class="n">SAMPLE2</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">2</span> <span class="o">-</span><span class="mi">9</span>
@@ -233,10 +226,10 @@ the major allele, which is often not true in practice.</p>
 </div>
 <div class="section" id="good-sites-file">
 <h3>Good sites file<a class="headerlink" href="#good-sites-file" title="Permalink to this headline">¶</a></h3>
-<p>The <cite>.good_sites</cite> file is also generated by <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a>. It contains a
+<p>The <cite>.good_sites</cite> file is also generated by <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a>. It contains a
 single column representing the name of the variants that passed the quality
 thresholds.</p>
-<p>Only the variants in this file will be considered by the <code class="docutils literal"><span class="pre">imputed-stats</span></code>
+<p>Only the variants in this file will be considered by the <code class="docutils literal notranslate"><span class="pre">imputed-stats</span></code>
 tool.</p>
 </div>
 </div>
@@ -253,10 +246,10 @@ possible approaches consist of testing variants in a same gene together, using
 variant prioritization tools to select interesting candidates or to group
 variants according to a biological pathway of interest.</p>
 <p>The expected format for SNP sets is very straightforward. A tab separated file
-with a single header row containing the following fields: <code class="docutils literal"><span class="pre">variant</span></code>,
-<code class="docutils literal"><span class="pre">snp_set</span></code> is required. An optional third field identified by the <code class="docutils literal"><span class="pre">weight</span></code>
+with a single header row containing the following fields: <code class="docutils literal notranslate"><span class="pre">variant</span></code>,
+<code class="docutils literal notranslate"><span class="pre">snp_set</span></code> is required. An optional third field identified by the <code class="docutils literal notranslate"><span class="pre">weight</span></code>
 header can also be provided. Concretely, the expected file looks like this:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">variant</span>         <span class="n">snp_set</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">variant</span>         <span class="n">snp_set</span>
 <span class="mi">3</span><span class="p">:</span><span class="mi">20109120</span><span class="p">:</span><span class="n">C</span>    <span class="n">SET1</span>
 <span class="n">exm295293</span>       <span class="n">SET1</span>
 <span class="mi">3</span><span class="p">:</span><span class="mi">20225460</span><span class="p">:</span><span class="n">T</span>    <span class="n">SET1</span>
@@ -275,7 +268,7 @@ the variants are rare.</p>
 <p class="last">Don’t forget that this file has to be tab (t) delimited!</p>
 </div>
 <p>Another example using weights is presented here:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">variant</span>         <span class="n">snp_set</span>  <span class="n">weight</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">variant</span>         <span class="n">snp_set</span>  <span class="n">weight</span>
 <span class="mi">3</span><span class="p">:</span><span class="mi">20109120</span><span class="p">:</span><span class="n">C</span>    <span class="n">SET1</span>     <span class="mf">1.4075226244343892</span>
 <span class="n">exm295293</span>       <span class="n">SET1</span>     <span class="mf">1.8227675243926944</span>
 <span class="mi">3</span><span class="p">:</span><span class="mi">20225460</span><span class="p">:</span><span class="n">T</span>    <span class="n">SET1</span>     <span class="mf">1.7138009049773757</span>
@@ -298,12 +291,12 @@ provide them in the SNP set file as shown here.</p>
 <p>The last required file is the phenotype file. The latter contains information
 on the phenotype of interest for all the samples included in the analysis. The
 expected format is a tab delimited file containing a user-specified identifier
-column (through the <code class="docutils literal"><span class="pre">--sample-column</span></code> argument) and a phenotype column (
-represented by the <code class="docutils literal"><span class="pre">--pheno-name</span></code> argument).</p>
+column (through the <code class="docutils literal notranslate"><span class="pre">--sample-column</span></code> argument) and a phenotype column (
+represented by the <code class="docutils literal notranslate"><span class="pre">--pheno-name</span></code> argument).</p>
 <p>The order of the samples is not important, as long as the identifier are
-consistent with the <code class="docutils literal"><span class="pre">.sample</span></code> file.</p>
+consistent with the <code class="docutils literal notranslate"><span class="pre">.sample</span></code> file.</p>
 <p>The following file is a valid example:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">Sample</span>  <span class="n">Hypertension</span> <span class="n">SystolicBP</span> <span class="n">Age</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Sample</span>  <span class="n">Hypertension</span> <span class="n">SystolicBP</span> <span class="n">Age</span>
 <span class="n">SAMPLE1</span> <span class="mi">1</span>            <span class="mf">163.21</span>     <span class="mi">63</span>
 <span class="n">SAMPLE2</span> <span class="mi">0</span>            <span class="mf">122.13</span>     <span class="mi">21</span>
 <span class="n">SAMPLE3</span> <span class="mi">0</span>            <span class="mf">119.01</span>     <span class="mi">42</span>
@@ -316,14 +309,14 @@ consistent with the <code class="docutils literal"><span class="pre">.sample</sp
 </div>
 <p>As you can see, both continuous an discrete traits can be included in this
 file, as well as covariates. The covariates are included in the analysis using
-the <code class="docutils literal"><span class="pre">--covar</span></code> argument and the variable type of the outcome is given using
-the <code class="docutils literal"><span class="pre">--outcome-type</span></code> argument which can be set to <cite>discrete</cite> or <cite>continuous</cite>.</p>
+the <code class="docutils literal notranslate"><span class="pre">--covar</span></code> argument and the variable type of the outcome is given using
+the <code class="docutils literal notranslate"><span class="pre">--outcome-type</span></code> argument which can be set to <cite>discrete</cite> or <cite>continuous</cite>.</p>
 </div>
 <div class="section" id="running-the-script">
 <span id="skat-tut-4"></span><h2><a class="toc-backref" href="#id6">Running the script</a><a class="headerlink" href="#running-the-script" title="Permalink to this headline">¶</a></h2>
 <p>Once all of this is ready, you can finally run the script. A sample command
 for the analysis described throughout this tutorial is the following:</p>
-<div class="highlight-console"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
+<div class="highlight-console notranslate"><table class="highlighttable"><tr><td class="linenos"><div class="linenodiv"><pre> 1
  2
  3
  4
@@ -350,14 +343,14 @@ for the analysis described throughout this tutorial is the following:</p>
 </td></tr></table></div>
 <p>The line by line explanation of this command is as follows:</p>
 <ol class="arabic simple">
-<li>We are calling the program with the <code class="docutils literal"><span class="pre">skat</span></code> option to specify the type of
+<li>We are calling the program with the <code class="docutils literal notranslate"><span class="pre">skat</span></code> option to specify the type of
 analysis. Alternative analysis types are presented in other tutorials, but
 they include linear and logistic regression as well as Cox survival
 analysis.</li>
 <li>The <cite>Impute2</cite> file as previously described. This contains the probability
-for every allele of every variant. It is generated by <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a>.</li>
+for every allele of every variant. It is generated by <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a>.</li>
 <li>The <cite>sample</cite> contained the sample identifiers with an ordering consistent
-with the <cite>Impute2</cite> file. It was generated by <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a>.</li>
+with the <cite>Impute2</cite> file. It was generated by <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a>.</li>
 <li>The <cite>phenotype</cite> is a tab delimited file containing phenotypic information
 for all the samples. Covariates are also included in this file.</li>
 <li>The sample column is the identifier for the column containing sample IDs in
@@ -372,7 +365,7 @@ add the <cite>Hypertension</cite> column as a covariate.</li>
 <li>A list of variants to keep for the analysis is provided here. A good choice
 would be to simply use the <cite>.good_sites</cite> file generated by py:mod:<cite>genipe</cite>,
 but additional QC steps could be used to further narrow this list.</li>
-<li>The <code class="docutils literal"><span class="pre">--nb-process</span></code> argument determines how many simultaneous SKAT analyses
+<li>The <code class="docutils literal notranslate"><span class="pre">--nb-process</span></code> argument determines how many simultaneous SKAT analyses
 will be started in parallel. This value should be a multiple of the number
 of the number of SNP sets or of the number of CPUs on your machine as
 parallelism only occurs at the gene set level.</li>
@@ -383,7 +376,7 @@ depending on the type of dependent variable under study.</li>
 </ol>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Also note that the SKAT-O algorithm can be used by using the <code class="docutils literal"><span class="pre">--skat-o</span></code>
+<p class="last">Also note that the SKAT-O algorithm can be used by using the <code class="docutils literal notranslate"><span class="pre">--skat-o</span></code>
 flag.</p>
 </div>
 </div>
@@ -392,7 +385,7 @@ flag.</p>
 <p>After running this analysis, a file named <cite>my_skat_analysis.skat.dosage</cite> should
 appear. This file will contain an association p-value for every one of the
 specified SNP sets.</p>
-<p>You can also verify the <cite>my_skat_analysis.log</cite> file to see if <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a>
+<p>You can also verify the <cite>my_skat_analysis.log</cite> file to see if <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a>
 or <cite>SKAT</cite> generated any warnings.</p>
 <p>Finally, a directory containing <cite>.csv</cite> files and an <cite>R</cite> script should also be
 visible. This directory contains everything that is needed to run the analysis
@@ -401,9 +394,9 @@ expectations and that the analysis is correct. If the file sizes are
 manageable, you can also archive them to insure reproducibility of the
 analysis.</p>
 <p>If you are unsatisfied about the generated R script, you can download the
-<a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> source and modify the
+<a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a> source and modify the
 <a class="reference external" href="https://github.com/pgxcentre/genipe/blob/master/genipe/script_templates/run_skat.R">run_skat.R</a>
-file. This is a template rendered and launched by <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> to conduct
+file. This is a template rendered and launched by <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a> to conduct
 the analysis by using the regular R SKAT package. It is easy to extend this
 file to customize your analysis or to write new ones.</p>
 <p>If you have any questions or problems, don’t hesitate to contact us through our
@@ -416,7 +409,7 @@ new interesting feature, please send us a push request from Github.</p>
 <span id="skat-tut-6"></span><h2><a class="toc-backref" href="#id8">Usage</a><a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
 <p>The following command will display the documentation for the SKAT analysis in
 the console:</p>
-<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> imputed-stats skat --help
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> imputed-stats skat --help
 <span class="go">usage: imputed-stats skat [-h] [-v] [--debug] --impute2 FILE --sample FILE</span>
 <span class="go">                          --pheno FILE [--extract-sites FILE] [--out FILE]</span>
 <span class="go">                          [--nb-process INT] [--nb-lines INT] [--chrx]</span>
@@ -511,7 +504,7 @@ the console:</p>
         <li class="right" >
           <a href="tutorial_cox.html" title="Survival analysis"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &#187;</li> 
       </ul>
     </div>
@@ -519,7 +512,7 @@ the console:</p>
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.
     </div>
 
 <script>

@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>genipe.formats package &#8212; genipe 1.4.0 documentation</title>
+    <title>genipe.formats package &#8212; genipe 1.4.1 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.4.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -31,8 +23,7 @@
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -48,7 +39,7 @@
         <li class="right" >
           <a href="genipe.db.html" title="genipe.db package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &#187;</li> 
@@ -82,12 +73,14 @@
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -116,7 +109,7 @@
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>impute2_line</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – a single line from IMPUTE2’s result (split by
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>impute2_line</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – a single line from IMPUTE2’s result (split by
 space)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
@@ -133,7 +126,7 @@ space)</td>
 The columns represent the probability for AA, AB and BB.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal"><span class="pre">impute2_line</span></code> variable is a list of str, corresponding to a line
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">impute2_line</span></code> variable is a list of str, corresponding to a line
 from the IMPUTE2’s result, split by space.</p>
 </div>
 </dd></dl>
@@ -147,8 +140,8 @@ from the IMPUTE2’s result, split by space.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>prob_matrix</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the probability matrix</li>
-<li><strong>min_prob</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#float" title="(in Jinja2 v2.11)"><em>float</em></a>) – the probability threshold</li>
+<li><strong>prob_matrix</strong> (<em>numpy.array</em>) – the probability matrix</li>
+<li><strong>min_prob</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the probability threshold</li>
 </ul>
 </td>
 </tr>
@@ -160,7 +153,7 @@ from the IMPUTE2’s result, split by space.</p>
 </p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array</p>
 </td>
 </tr>
 </tbody>
@@ -176,10 +169,10 @@ from the IMPUTE2’s result, split by space.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>prob_matrix</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the probability matrix</li>
+<li><strong>prob_matrix</strong> (<em>numpy.array</em>) – the probability matrix</li>
 <li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the first allele</li>
 <li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the second allele</li>
-<li><strong>gender</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the gender of the samples</li>
+<li><strong>gender</strong> (<em>numpy.array</em>) – the gender of the samples</li>
 <li><strong>site_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name for this site</li>
 </ul>
 </td>
@@ -211,17 +204,17 @@ an Exception raised if there are any heterozygous males.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>homo_probs</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the probabilities for the homozygous genotype</li>
-<li><strong>hetero_probs</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the probabilities for the heterozygous
+<li><strong>homo_probs</strong> (<em>numpy.array</em>) – the probabilities for the homozygous genotype</li>
+<li><strong>hetero_probs</strong> (<em>numpy.array</em>) – the probabilities for the heterozygous
 genotype</li>
-<li><strong>scale</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#int" title="(in Jinja2 v2.11)"><em>int</em></a>) – the scale value</li>
+<li><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a>) – the scale value</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the dosage computed from the probabilities</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array</p>
 </td>
 </tr>
 </tbody>
@@ -239,14 +232,14 @@ genotype</li>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the first allele</li>
 <li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the second allele</li>
-<li><strong>probs</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the probability matrix</li>
+<li><strong>probs</strong> (<em>numpy.array</em>) – the probability matrix</li>
 </ul>
 </td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the hard calls computed from the probabilities</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array</p>
 </td>
 </tr>
 </tbody>
@@ -262,11 +255,11 @@ genotype</li>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>prob_matrix</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the probability matrix</li>
+<li><strong>prob_matrix</strong> (<em>numpy.array</em>) – the probability matrix</li>
 <li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the first allele</li>
 <li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the second allele</li>
-<li><strong>scale</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#int" title="(in Jinja2 v2.11)"><em>int</em></a>) – the scale value</li>
-<li><strong>gender</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the gender of the samples</li>
+<li><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a>) – the scale value</li>
+<li><strong>gender</strong> (<em>numpy.array</em>) – the gender of the samples</li>
 <li><strong>site_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name for this site</li>
 </ul>
 </td>
@@ -300,7 +293,7 @@ an Exception raised if there are any heterozygous males.</p>
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the a1 allele</li>
 <li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the a2 allele</li>
-<li><strong>probs</strong> (<a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)"><em>numpy.array</em></a>) – the probability matrix</li>
+<li><strong>probs</strong> (<em>numpy.array</em>) – the probability matrix</li>
 </ul>
 </td>
 </tr>
@@ -336,8 +329,8 @@ we think a2 is the minor allele, but flip if required.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the file</li>
-<li><strong>cols</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – a list containing column to keep (as int)</li>
-<li><strong>names</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – the name corresponding to the column to keep (as str)</li>
+<li><strong>cols</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – a list containing column to keep (as int)</li>
+<li><strong>names</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the name corresponding to the column to keep (as str)</li>
 <li><strong>sep</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the field separator</li>
 </ul>
 </td>
@@ -345,7 +338,7 @@ we think a2 is the minor allele, but flip if required.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the index</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.21.0)">pandas.DataFrame</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)">pandas.DataFrame</a></p>
 </td>
 </tr>
 </tbody>
@@ -406,7 +399,7 @@ we think a2 is the minor allele, but flip if required.</p>
         <li class="right" >
           <a href="genipe.db.html" title="genipe.db package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &#187;</li> 
@@ -416,7 +409,7 @@ we think a2 is the minor allele, but flip if required.</p>
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.
     </div>
 
 <script>

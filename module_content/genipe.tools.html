@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>genipe.tools package &#8212; genipe 1.4.0 documentation</title>
+    <title>genipe.tools package &#8212; genipe 1.4.1 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.4.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -30,8 +22,7 @@
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -44,7 +35,7 @@
         <li class="right" >
           <a href="genipe.tests.html" title="genipe.tests package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &#187;</li> 
@@ -76,12 +67,14 @@
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -113,13 +106,13 @@
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">If there is a problem, a <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal"><span class="pre">genipe.error.GenipeError</span></code></a> is
+<p class="last">If there is a problem, a <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal notranslate"><span class="pre">genipe.error.GenipeError</span></code></a> is
 raised.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">Noting is checked (apart from the impute2 files) if indexation is asked
-(<code class="docutils literal"><span class="pre">--index</span></code> option).</p>
+(<code class="docutils literal notranslate"><span class="pre">--index</span></code> option).</p>
 </div>
 </dd></dl>
 
@@ -154,8 +147,8 @@ raised.</p>
 <li><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the input file</li>
 <li><strong>to_extract</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#set" title="(in Python v3.4)"><em>set</em></a>) – the list of markers to extract for each input file</li>
 <li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the output prefix</li>
-<li><strong>out_format</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – the output format(s)</li>
-<li><strong>prob_t</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#float" title="(in Jinja2 v2.11)"><em>float</em></a>) – the probability threshold</li>
+<li><strong>out_format</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the output format(s)</li>
+<li><strong>prob_t</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the probability threshold</li>
 <li><strong>is_long</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – True if format needs to be long</li>
 </ul>
 </td>
@@ -174,12 +167,12 @@ raised.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the impute2 filename</li>
-<li><strong>maf</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#float" title="(in Jinja2 v2.11)"><em>float</em></a>) – the minor allele frequency threshold (might be <code class="docutils literal"><span class="pre">None</span></code>)</li>
-<li><strong>rate</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#float" title="(in Jinja2 v2.11)"><em>float</em></a>) – the call rate threshold (might be <code class="docutils literal"><span class="pre">None</span></code>)</li>
-<li><strong>info</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#float" title="(in Jinja2 v2.11)"><em>float</em></a>) – the marker information value threshold (might be
-<code class="docutils literal"><span class="pre">None</span></code>)</li>
+<li><strong>maf</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the minor allele frequency threshold (might be <code class="docutils literal notranslate"><span class="pre">None</span></code>)</li>
+<li><strong>rate</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the call rate threshold (might be <code class="docutils literal notranslate"><span class="pre">None</span></code>)</li>
+<li><strong>info</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the marker information value threshold (might be
+<code class="docutils literal notranslate"><span class="pre">None</span></code>)</li>
 <li><strong>extract_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the file containing marker names to
-extract (might be <code class="docutils literal"><span class="pre">None</span></code>)</li>
+extract (might be <code class="docutils literal notranslate"><span class="pre">None</span></code>)</li>
 <li><strong>genomic_range</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the genomic range for extraction</li>
 </ul>
 </td>
@@ -193,7 +186,7 @@ extract (might be <code class="docutils literal"><span class="pre">None</span></
 </tbody>
 </table>
 <p>If extraction by marker name is required, only those markers will be
-extracted. Otherwise, <code class="docutils literal"><span class="pre">maf</span></code>, <code class="docutils literal"><span class="pre">rate</span></code>, <code class="docutils literal"><span class="pre">info</span></code> or <code class="docutils literal"><span class="pre">genomic_range</span></code> can
+extracted. Otherwise, <code class="docutils literal notranslate"><span class="pre">maf</span></code>, <code class="docutils literal notranslate"><span class="pre">rate</span></code>, <code class="docutils literal notranslate"><span class="pre">info</span></code> or <code class="docutils literal notranslate"><span class="pre">genomic_range</span></code> can
 be specified (alone or together) to extract markers according to minor
 allele frequency, call rate and genomic location.</p>
 </dd></dl>
@@ -215,8 +208,8 @@ allele frequency, call rate and genomic location.</p>
 </tbody>
 </table>
 <p>This function removes the extension from the file name, and return its
-prefix (<em>e.g.</em> <code class="docutils literal"><span class="pre">test.impute2</span></code> returns <code class="docutils literal"><span class="pre">test</span></code>, and
-<code class="docutils literal"><span class="pre">../test.impute2.gz</span></code> returns <code class="docutils literal"><span class="pre">../test</span></code>).</p>
+prefix (<em>e.g.</em> <code class="docutils literal notranslate"><span class="pre">test.impute2</span></code> returns <code class="docutils literal notranslate"><span class="pre">test</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">../test.impute2.gz</span></code> returns <code class="docutils literal notranslate"><span class="pre">../test</span></code>).</p>
 </dd></dl>
 
 <dl class="function">
@@ -231,7 +224,7 @@ prefix (<em>e.g.</em> <code class="docutils literal"><span class="pre">test.impu
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the sample information</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.21.0)">pandas.DataFrame</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
@@ -249,11 +242,11 @@ prefix (<em>e.g.</em> <code class="docutils literal"><span class="pre">test.impu
 </tr>
 </tbody>
 </table>
-<p>This function uses the <a class="reference internal" href="genipe.formats.html#genipe.formats.index.get_index" title="genipe.formats.index.get_index"><code class="xref py py-func docutils literal"><span class="pre">genipe.formats.index.get_index()</span></code></a> to create
+<p>This function uses the <a class="reference internal" href="genipe.formats.html#genipe.formats.index.get_index" title="genipe.formats.index.get_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">genipe.formats.index.get_index()</span></code></a> to create
 the index file if it’s missing.</p>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">We won’t catch the <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal"><span class="pre">genipe.error.GenipeError</span></code></a> exception if
+<p class="last">We won’t catch the <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal notranslate"><span class="pre">genipe.error.GenipeError</span></code></a> exception if
 it’s raised, since the message will be relevant to the user.</p>
 </div>
 </dd></dl>
@@ -267,7 +260,7 @@ it’s raised, since the message will be relevant to the user.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the arguments to be parsed (if
-<a class="reference internal" href="#genipe.tools.impute2_extractor.main" title="genipe.tools.impute2_extractor.main"><code class="xref py py-func docutils literal"><span class="pre">main()</span></code></a> is called by another
+<a class="reference internal" href="#genipe.tools.impute2_extractor.main" title="genipe.tools.impute2_extractor.main"><code class="xref py py-func docutils literal notranslate"><span class="pre">main()</span></code></a> is called by another
 modulel)</td>
 </tr>
 </tbody>
@@ -284,7 +277,7 @@ modulel)</td>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.4)"><em>argparse.ArgumentParser</em></a>) – the argument parser</li>
-<li><strong>args</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal"><span class="pre">sys.argv</span></code>)</li>
+<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code>)</li>
 </ul>
 </td>
 </tr>
@@ -299,7 +292,7 @@ modulel)</td>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The only check that is done here is by the parser itself. Values are
-verified later by the <a class="reference internal" href="#genipe.tools.impute2_extractor.check_args" title="genipe.tools.impute2_extractor.check_args"><code class="xref py py-func docutils literal"><span class="pre">check_args()</span></code></a> function.</p>
+verified later by the <a class="reference internal" href="#genipe.tools.impute2_extractor.check_args" title="genipe.tools.impute2_extractor.check_args"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_args()</span></code></a> function.</p>
 </div>
 </dd></dl>
 
@@ -312,13 +305,13 @@ verified later by the <a class="reference internal" href="#genipe.tools.impute2_
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>o_files</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#dict" title="(in Jinja2 v2.11)"><em>dict</em></a>) – the output files</li>
-<li><strong>prob_t</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#float" title="(in Jinja2 v2.11)"><em>float</em></a>) – the probability threshold</li>
-<li><strong>fid</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – the list of family IDs</li>
-<li><strong>iid</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – the list of sample IDs</li>
+<li><strong>o_files</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – the output files</li>
+<li><strong>prob_t</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the probability threshold</li>
+<li><strong>fid</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of family IDs</li>
+<li><strong>iid</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of sample IDs</li>
 <li><strong>is_long</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – True if the format is long (dosage, calls)</li>
 <li><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the impute2 line</li>
-<li><strong>row</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – the impute2 line, split by spaces</li>
+<li><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the impute2 line, split by spaces</li>
 </ul>
 </td>
 </tr>
@@ -343,7 +336,7 @@ verified later by the <a class="reference internal" href="#genipe.tools.impute2_
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">If there is a problem, a <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal"><span class="pre">genipe.error.GenipeError</span></code></a> is
+<p class="last">If there is a problem, a <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal notranslate"><span class="pre">genipe.error.GenipeError</span></code></a> is
 raised.</p>
 </div>
 </dd></dl>
@@ -357,7 +350,7 @@ raised.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>i_filenames</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – the list of input filenames (to concatenate)</li>
+<li><strong>i_filenames</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of input filenames (to concatenate)</li>
 <li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the output prefix for the output files</li>
 <li><strong>real_chrom</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the chromosome contained in all the input files</li>
 <li><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the options</li>
@@ -378,46 +371,46 @@ raised.</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">.impute2</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.impute2</span></code></td>
 <td>Imputation results (merged from all the input
 files).</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.alleles</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.alleles</span></code></td>
 <td>Description of the reference and alternative
 allele at each sites.</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed_sites</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.imputed_sites</span></code></td>
 <td>List of imputed sites (excluding sites that
 were previously genotyped in the study cohort).</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.impute2_info</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.impute2_info</span></code></td>
 <td>SNP-wise information file with one line per SNP
 and a single header line at the beginning.</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">.completion_rates</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.completion_rates</span></code></td>
 <td>Number of missing values and completion rate
 for all sites (using the probability threshold
 set by the user, where the default is higher
 and equal to 0.9).</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.good_sites</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.good_sites</span></code></td>
 <td>List of sites which pass the completion rate
 threshold (set by the user, where the default
 is higher and equal to 0.98) using the
 probability threshold (set by the user, where
 the default is higher and equal to 0.9).</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">.map</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.map</span></code></td>
 <td>A map file describing the genomic location of
 all sites.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.maf</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.maf</span></code></td>
 <td>File containing the minor allele frequency
 (along with minor allele identification) for
 all sites using the probabilitty threshold of
 0.9. When no genotypes are available (because
 they are all below the threshold), the MAF is
-<code class="docutils literal"><span class="pre">NA</span></code>.</td>
+<code class="docutils literal notranslate"><span class="pre">NA</span></code>.</td>
 </tr>
 </tbody>
 </table>
@@ -432,7 +425,7 @@ they are all below the threshold), the MAF is
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the arguments to be parsed (if
-<a class="reference internal" href="#genipe.tools.impute2_merger.main" title="genipe.tools.impute2_merger.main"><code class="xref py py-func docutils literal"><span class="pre">main()</span></code></a> is called by another
+<a class="reference internal" href="#genipe.tools.impute2_merger.main" title="genipe.tools.impute2_merger.main"><code class="xref py py-func docutils literal notranslate"><span class="pre">main()</span></code></a> is called by another
 modulel)</td>
 </tr>
 </tbody>
@@ -449,7 +442,7 @@ modulel)</td>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.4)"><em>argparse.ArgumentParser</em></a>) – the argument parser</li>
-<li><strong>args</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal"><span class="pre">sys.argv</span></code>)</li>
+<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code>)</li>
 </ul>
 </td>
 </tr>
@@ -464,7 +457,7 @@ modulel)</td>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The only check that is done here is by the parser itself. Values are
-verified later by the <a class="reference internal" href="#genipe.tools.impute2_merger.check_args" title="genipe.tools.impute2_merger.check_args"><code class="xref py py-func docutils literal"><span class="pre">check_args()</span></code></a> function.</p>
+verified later by the <a class="reference internal" href="#genipe.tools.impute2_merger.check_args" title="genipe.tools.impute2_merger.check_args"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_args()</span></code></a> function.</p>
 </div>
 </dd></dl>
 
@@ -485,7 +478,7 @@ verified later by the <a class="reference internal" href="#genipe.tools.impute2_
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">If there is a problem, a <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal"><span class="pre">genipe.error.GenipeError</span></code></a> is
+<p class="last">If there is a problem, a <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal notranslate"><span class="pre">genipe.error.GenipeError</span></code></a> is
 raised.</p>
 </div>
 </dd></dl>
@@ -500,9 +493,9 @@ raised.</p>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>impute2_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the input file</li>
-<li><strong>samples</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.21.0)"><em>pandas.DataFrame</em></a>) – the list of samples</li>
+<li><strong>samples</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><em>pandas.DataFrame</em></a>) – the list of samples</li>
 <li><strong>markers_to_extract</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#set" title="(in Python v3.4)"><em>set</em></a>) – the set of markers to extract</li>
-<li><strong>phenotypes</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.21.0)"><em>pandas.DataFrame</em></a>) – the phenotypes</li>
+<li><strong>phenotypes</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><em>pandas.DataFrame</em></a>) – the phenotypes</li>
 <li><strong>remove_gender</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – whether or not to remove the gender column</li>
 <li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the output prefix</li>
 <li><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the options</li>
@@ -526,7 +519,7 @@ come.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.21.0)"><em>pandas.DataFrame</em></a>) – the data to analyse</li>
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><em>pandas.DataFrame</em></a>) – the data to analyse</li>
 <li><strong>time_to_event</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the time to event column for the survival analysis</li>
 <li><strong>event</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the event column for the survival analysis</li>
 <li><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the formula for the data preparation</li>
@@ -537,14 +530,14 @@ come.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the results from the survival analysis</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.scipy.org/doc/numpy/reference/generated/numpy.array.html#numpy.array" title="(in NumPy v1.13)">numpy.array</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array</p>
 </td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The tie method used is <code class="docutils literal"><span class="pre">Efron</span></code>. Normalization is set to <code class="docutils literal"><span class="pre">False</span></code>.</p>
+<p class="last">The tie method used is <code class="docutils literal notranslate"><span class="pre">Efron</span></code>. Normalization is set to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
 </div>
 </dd></dl>
 
@@ -557,7 +550,7 @@ come.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.21.0)"><em>pandas.DataFrame</em></a>) – the data to analyse</li>
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><em>pandas.DataFrame</em></a>) – the data to analyse</li>
 <li><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the formula for the linear regression</li>
 <li><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the column that will contain the results</li>
 </ul>
@@ -566,7 +559,7 @@ come.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the results from the linear regression</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)">list</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)">list</a></p>
 </td>
 </tr>
 </tbody>
@@ -582,7 +575,7 @@ come.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.21.0)"><em>pandas.DataFrame</em></a>) – the data to analyse</li>
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><em>pandas.DataFrame</em></a>) – the data to analyse</li>
 <li><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the formula for the logistic regression</li>
 <li><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the column that will contain the results</li>
 </ul>
@@ -591,7 +584,7 @@ come.</p>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the results from the logistic regression</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)">list</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)">list</a></p>
 </td>
 </tr>
 </tbody>
@@ -607,13 +600,13 @@ come.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.21.0)"><em>pandas.DataFrame</em></a>) – the data to analyse</li>
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><em>pandas.DataFrame</em></a>) – the data to analyse</li>
 <li><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the formula for the linear mixed effects model</li>
 <li><strong>use_ml</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – whether to use ML instead of REML</li>
 <li><strong>groups</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the column containing the groups</li>
 <li><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the column that will contain the results</li>
-<li><strong>random_effects</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.21.0)"><em>pandas.Series</em></a>) – the random effects</li>
-<li><strong>mixedlm_p</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#float" title="(in Jinja2 v2.11)"><em>float</em></a>) – the p-value threshold for which loci will be
+<li><strong>random_effects</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.23.0)"><em>pandas.Series</em></a>) – the random effects</li>
+<li><strong>mixedlm_p</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the p-value threshold for which loci will be
 computed with the real MixedLM analysis</li>
 <li><strong>interaction</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – Whether there is an interaction or not</li>
 </ul>
@@ -622,7 +615,7 @@ computed with the real MixedLM analysis</li>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the results from the linear mixed effects model</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)">list</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)">list</a></p>
 </td>
 </tr>
 </tbody>
@@ -639,7 +632,7 @@ computed with the real MixedLM analysis</li>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>phenotype</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the phenotype column</li>
-<li><strong>covars</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – the list of co variable columns</li>
+<li><strong>covars</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of co variable columns</li>
 <li><strong>interaction</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the interaction column</li>
 </ul>
 </td>
@@ -656,12 +649,12 @@ computed with the real MixedLM analysis</li>
 <p class="first admonition-title">Note</p>
 <p class="last">The phenotype column needs to be specified. The list of co variables
 might be empty (if no co variables are necessary). The interaction
-column can be set to <code class="docutils literal"><span class="pre">None</span></code> if there is no interaction.</p>
+column can be set to <code class="docutils literal notranslate"><span class="pre">None</span></code> if there is no interaction.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The gender column should be categorical (hence, the formula requires
-the gender to be included into <code class="docutils literal"><span class="pre">C()</span></code>, <em>e.g.</em> <code class="docutils literal"><span class="pre">C(Gender)</span></code>).</p>
+the gender to be included into <code class="docutils literal notranslate"><span class="pre">C()</span></code>, <em>e.g.</em> <code class="docutils literal notranslate"><span class="pre">C(Gender)</span></code>).</p>
 </div>
 </dd></dl>
 
@@ -692,7 +685,7 @@ the gender to be included into <code class="docutils literal"><span class="pre">
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the arguments to be parsed (if
-<a class="reference internal" href="#genipe.tools.imputed_stats.main" title="genipe.tools.imputed_stats.main"><code class="xref py py-func docutils literal"><span class="pre">main()</span></code></a> is called by another
+<a class="reference internal" href="#genipe.tools.imputed_stats.main" title="genipe.tools.imputed_stats.main"><code class="xref py py-func docutils literal notranslate"><span class="pre">main()</span></code></a> is called by another
 modulel)</td>
 </tr>
 </tbody>
@@ -709,7 +702,7 @@ modulel)</td>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.4)"><em>argparse.ArgumentParser</em></a>) – the argument parser</li>
-<li><strong>args</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal"><span class="pre">sys.argv</span></code>)</li>
+<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code>)</li>
 </ul>
 </td>
 </tr>
@@ -724,7 +717,7 @@ modulel)</td>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The only check that is done here is by the parser itself. Values are
-verified later by the <a class="reference internal" href="#genipe.tools.imputed_stats.check_args" title="genipe.tools.imputed_stats.check_args"><code class="xref py py-func docutils literal"><span class="pre">check_args()</span></code></a> function.</p>
+verified later by the <a class="reference internal" href="#genipe.tools.imputed_stats.check_args" title="genipe.tools.imputed_stats.check_args"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_args()</span></code></a> function.</p>
 </div>
 </dd></dl>
 
@@ -736,11 +729,11 @@ verified later by the <a class="reference internal" href="#genipe.tools.imputed_
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_info</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – the impute2 line (split by space)</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_info</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the impute2 line (split by space)</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the results of the analysis</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)">list</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)">list</a></td>
 </tr>
 </tbody>
 </table>
@@ -764,14 +757,14 @@ verified later by the <a class="reference internal" href="#genipe.tools.imputed_
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the phenotypes</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.21.0)">pandas.DataFrame</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)">pandas.DataFrame</a></p>
 </td>
 </tr>
 </tbody>
 </table>
 <p>This file is expected to be a tab separated file of phenotypes and
 covariates. The columns to use will be determined by the
-<code class="docutils literal"><span class="pre">--sample-column</span></code> and the <code class="docutils literal"><span class="pre">--covar</span></code> options.</p>
+<code class="docutils literal notranslate"><span class="pre">--sample-column</span></code> and the <code class="docutils literal notranslate"><span class="pre">--covar</span></code> options.</p>
 <p>For analysis including the X chromosome, the gender is automatically
 added as a covariate. The results are not shown to the user unless asked
 for.</p>
@@ -789,23 +782,23 @@ for.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the list of samples</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.21.0)">pandas.DataFrame</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
 <p>This file contains the list of samples that are contained in the
-<code class="docutils literal"><span class="pre">impute2</span></code> file (with same order). The expected format for this file is a
+<code class="docutils literal notranslate"><span class="pre">impute2</span></code> file (with same order). The expected format for this file is a
 tab separated file with a first row containing the following columns:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">ID_1</span>    <span class="n">ID_2</span>    <span class="n">missing</span> <span class="n">father</span>  <span class="n">mother</span>  <span class="n">sex</span>     <span class="n">plink_pheno</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ID_1</span>    <span class="n">ID_2</span>    <span class="n">missing</span> <span class="n">father</span>  <span class="n">mother</span>  <span class="n">sex</span>     <span class="n">plink_pheno</span>
 </pre></div>
 </div>
 <p>The subsequent row will be discarded and should contain:</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span> <span class="n">D</span>     <span class="n">D</span>       <span class="n">D</span>       <span class="n">B</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span> <span class="n">D</span>     <span class="n">D</span>       <span class="n">D</span>       <span class="n">B</span>
 </pre></div>
 </div>
 <p class="rubric">Notes</p>
 <p>We are mostly interested in the sample IDs corresponding to the
-<code class="docutils literal"><span class="pre">ID_2</span></code> column. Their uniqueness is verified by pandas.</p>
+<code class="docutils literal notranslate"><span class="pre">ID_2</span></code> column. Their uniqueness is verified by pandas.</p>
 </dd></dl>
 
 <dl class="function">
@@ -827,13 +820,13 @@ to consider for the analysis.</td>
 </table>
 <p>The expected file format is simply a list of variants. Every row should
 correspond to a single variant identifier.</p>
-<div class="highlight-default"><div class="highlight"><pre><span></span><span class="mi">3</span><span class="p">:</span><span class="mi">60069</span><span class="p">:</span><span class="n">t</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">3</span><span class="p">:</span><span class="mi">60069</span><span class="p">:</span><span class="n">t</span>
 <span class="n">rs123456</span><span class="p">:</span><span class="n">A</span>
 <span class="mi">3</span><span class="p">:</span><span class="mi">60322</span><span class="p">:</span><span class="n">A</span>
 </pre></div>
 </div>
 <p>Typically, this is used to analyze only variants that passed some QC
-threshold. The <a class="reference internal" href="genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> pipeline generates this file at the
+threshold. The <a class="reference internal" href="genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a> pipeline generates this file at the
 ‘merge_impute2’ step.</p>
 </dd></dl>
 
@@ -846,7 +839,7 @@ threshold. The <a class="reference internal" href="genipe.html#module-genipe" ti
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.21.0)"><em>pandas.DataFrame</em></a>) – the probability matrix</li>
+<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><em>pandas.DataFrame</em></a>) – the probability matrix</li>
 <li><strong>hetero_c</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the heterozygous column</li>
 </ul>
 </td>
@@ -854,7 +847,7 @@ threshold. The <a class="reference internal" href="genipe.html#module-genipe" ti
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">samples where call is heterozygous</p>
 </td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Index.html#pandas.Index" title="(in pandas v0.21.0)">pandas.Index</a></p>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Index.html#pandas.Index" title="(in pandas v0.23.0)">pandas.Index</a></p>
 </td>
 </tr>
 </tbody>
@@ -875,9 +868,9 @@ threshold. The <a class="reference internal" href="genipe.html#module-genipe" ti
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
 <li><strong>impute2_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the input file</li>
-<li><strong>samples</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.21.0)"><em>pandas.DataFrame</em></a>) – the samples</li>
+<li><strong>samples</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><em>pandas.DataFrame</em></a>) – the samples</li>
 <li><strong>markers_to_extract</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#set" title="(in Python v3.4)"><em>set</em></a>) – the set of markers to analyse</li>
-<li><strong>phenotypes</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.21.0)"><em>pandas.DataFrame</em></a>) – the phenotypes</li>
+<li><strong>phenotypes</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)"><em>pandas.DataFrame</em></a>) – the phenotypes</li>
 <li><strong>remove_gender</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – whether or not to remove the gender column</li>
 <li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the output prefix</li>
 <li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the options</li>
@@ -903,12 +896,12 @@ analysis and then writes the results to disk.</p>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the SNP set for the SKAT analysis</td>
 </tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.21.0)">pandas.DataFrame</a></td>
+<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.0)">pandas.DataFrame</a></td>
 </tr>
 </tbody>
 </table>
 <p>This file has to be supplied by the user. The recognized columns are:
-<code class="docutils literal"><span class="pre">variant</span></code>, <code class="docutils literal"><span class="pre">snp_set</span></code> and <code class="docutils literal"><span class="pre">weight</span></code>. The <code class="docutils literal"><span class="pre">weight</span></code> column is optional
+<code class="docutils literal notranslate"><span class="pre">variant</span></code>, <code class="docutils literal notranslate"><span class="pre">snp_set</span></code> and <code class="docutils literal notranslate"><span class="pre">weight</span></code>. The <code class="docutils literal notranslate"><span class="pre">weight</span></code> column is optional
 and can be used to specify a custom weighting scheme for SKAT. If nothing
 is specified, the default Beta weights are used.</p>
 <p>The file has to be tab delimited.</p>
@@ -925,7 +918,7 @@ is specified, the default Beta weights are used.</p>
 <col class="field-name" />
 <col class="field-body" />
 <tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filenames</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – the list of file to check</td>
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filenames</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of file to check</td>
 </tr>
 <tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if all files exist, False otherwise</td>
 </tr>
@@ -1115,7 +1108,7 @@ path. Otherwise, we download it.</p>
 <col class="field-body" />
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the arguments to be parsed (if
-<a class="reference internal" href="#genipe.tools.genipe_tutorial.main" title="genipe.tools.genipe_tutorial.main"><code class="xref py py-func docutils literal"><span class="pre">main()</span></code></a> is called by another
+<a class="reference internal" href="#genipe.tools.genipe_tutorial.main" title="genipe.tools.genipe_tutorial.main"><code class="xref py py-func docutils literal notranslate"><span class="pre">main()</span></code></a> is called by another
 modulel)</td>
 </tr>
 </tbody>
@@ -1132,7 +1125,7 @@ modulel)</td>
 <tbody valign="top">
 <tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
 <li><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.4)"><em>argparse.ArgumentParser</em></a>) – the argument parser</li>
-<li><strong>args</strong> (<a class="reference external" href="http://jinja.pocoo.org/docs/templates/#list" title="(in Jinja2 v2.11)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal"><span class="pre">sys.argv</span></code>)</li>
+<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code>)</li>
 </ul>
 </td>
 </tr>
@@ -1147,7 +1140,7 @@ modulel)</td>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">The only check that is done here is by the parser itself. Values are
-verified later by the <code class="xref py py-func docutils literal"><span class="pre">check_args()</span></code> function.</p>
+verified later by the <code class="xref py py-func docutils literal notranslate"><span class="pre">check_args()</span></code> function.</p>
 </div>
 </dd></dl>
 
@@ -1190,7 +1183,7 @@ verified later by the <code class="xref py py-func docutils literal"><span class
         <li class="right" >
           <a href="genipe.tests.html" title="genipe.tests package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
           <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &#187;</li> 
@@ -1200,7 +1193,7 @@ verified later by the <code class="xref py py-func docutils literal"><span class
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.
     </div>
 
 <script>

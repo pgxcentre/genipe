@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Genome-Wide Imputation Pipeline &#8212; genipe 1.4.0 documentation</title>
+    <title>Genome-Wide Imputation Pipeline &#8212; genipe 1.4.1 documentation</title>
     <link rel="stylesheet" href="_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    './',
-        VERSION:     '1.4.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
     <script type="text/javascript" src="_static/jquery.js"></script>
     <script type="text/javascript" src="_static/underscore.js"></script>
     <script type="text/javascript" src="_static/doctools.js"></script>
@@ -30,8 +22,7 @@
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -44,7 +35,7 @@
         <li class="right" >
           <a href="installation.html" title="Installation"
              accesskey="N">next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">genipe 1.4.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">genipe 1.4.1 documentation</a> &#187;</li> 
       </ul>
     </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
@@ -72,12 +63,14 @@
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -92,7 +85,7 @@
 <h1>Genome-Wide Imputation Pipeline<a class="headerlink" href="#genome-wide-imputation-pipeline" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> (GENome-wide Imputation PipelinE) module provides an easy
+<p>The <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a> (GENome-wide Imputation PipelinE) module provides an easy
 and efficient way of performing genome-wide imputation analysis using the three
 commonly used tools <a class="reference external" href="http://pngu.mgh.harvard.edu/~purcell/plink/">PLINK</a>,
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html">SHAPEIT</a> and
@@ -127,10 +120,10 @@ time, see the <a class="reference internal" href="execution_time.html#stats-exec
 </li>
 <li class="toctree-l1"><a class="reference internal" href="execution_time.html">Statistical Analysis Execution Time</a></li>
 <li class="toctree-l1"><a class="reference internal" href="parameters.html">Options and Parameters</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="parameters/main_pipeline.html">Main Pipeline - <code class="docutils literal"><span class="pre">genipe-launcher</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="parameters/imputed_stats.html">Imputed Stats - <code class="docutils literal"><span class="pre">imputed-stats</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="parameters/impute2_merger.html">Impute2 Merger - <code class="docutils literal"><span class="pre">impute2-merger</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="parameters/impute2_extractor.html">Impute2 Extractor - <code class="docutils literal"><span class="pre">impute2-extractor</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameters/main_pipeline.html">Main Pipeline - <code class="docutils literal notranslate"><span class="pre">genipe-launcher</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameters/imputed_stats.html">Imputed Stats - <code class="docutils literal notranslate"><span class="pre">imputed-stats</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameters/impute2_merger.html">Impute2 Merger - <code class="docutils literal notranslate"><span class="pre">impute2-merger</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="parameters/impute2_extractor.html">Impute2 Extractor - <code class="docutils literal notranslate"><span class="pre">impute2-extractor</span></code></a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="input_files.html">Input Files</a></li>
@@ -144,7 +137,7 @@ time, see the <a class="reference internal" href="execution_time.html#stats-exec
 </div>
 <div class="section" id="usage">
 <span id="genipe-usage"></span><h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-console"><div class="highlight"><pre><span></span><span class="gp">$</span> genipe-launcher --help
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="gp">$</span> genipe-launcher --help
 <span class="go">usage: genipe-launcher [-h] [-v] [--debug] [--thread THREAD] --bfile PREFIX</span>
 <span class="go">                       [--reference FILE] [--chrom CHROM [CHROM ...]]</span>
 <span class="go">                       [--output-dir DIR] [--bgzip] [--use-drmaa]</span>
@@ -278,7 +271,7 @@ time, see the <a class="reference internal" href="execution_time.html#stats-exec
 </div>
 <div class="section" id="citing-genipe">
 <h2>Citing genipe<a class="headerlink" href="#citing-genipe" title="Permalink to this headline">¶</a></h2>
-<p>If you use <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> in any published work, please cite the paper
+<p>If you use <a class="reference internal" href="module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a> in any published work, please cite the paper
 describing the tool.</p>
 <blockquote>
 <div>Lemieux Perreault LP, Legault MA, Asselin G, Dubé MP:
@@ -318,14 +311,14 @@ downstream data analysis.</p>
         <li class="right" >
           <a href="installation.html" title="Installation"
              >next</a> |</li>
-        <li class="nav-item nav-item-0"><a href="#">genipe 1.4.0 documentation</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="#">genipe 1.4.1 documentation</a> &#187;</li> 
       </ul>
     </div>
 
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.
     </div>
 
 <script>

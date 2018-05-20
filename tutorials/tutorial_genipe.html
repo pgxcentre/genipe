@@ -4,20 +4,12 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
   <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Genome-wide imputation pipeline &#8212; genipe 1.4.0 documentation</title>
+    <title>Genome-wide imputation pipeline &#8212; genipe 1.4.1 documentation</title>
     <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript">
-      var DOCUMENTATION_OPTIONS = {
-        URL_ROOT:    '../',
-        VERSION:     '1.4.0',
-        COLLAPSE_INDEX: false,
-        FILE_SUFFIX: '.html',
-        HAS_SOURCE:  true,
-        SOURCELINK_SUFFIX: '.txt'
-      };
-    </script>
+    <script type="text/javascript" src="../_static/documentation_options.js"></script>
     <script type="text/javascript" src="../_static/jquery.js"></script>
     <script type="text/javascript" src="../_static/underscore.js"></script>
     <script type="text/javascript" src="../_static/doctools.js"></script>
@@ -31,8 +23,7 @@
     <!--[if lt IE 9]>
     <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
-  </head>
-  <body>
+  </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
       <h3>Navigation</h3>
       <ul>
@@ -48,7 +39,7 @@
         <li class="right" >
           <a href="../tutorials.html" title="Short Tutorials"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &#187;</li> 
       </ul>
     </div>
@@ -62,11 +53,11 @@
 <li><a class="reference internal" href="#executing-the-pipeline">Executing the pipeline</a></li>
 <li><a class="reference internal" href="#compiling-the-report">Compiling the report</a></li>
 <li><a class="reference internal" href="#output-files">Output files</a><ul>
-<li><a class="reference internal" href="#genipe-directory"><code class="docutils literal"><span class="pre">genipe</span></code> directory</a></li>
-<li><a class="reference internal" href="#genipe-chrn-directories"><code class="docutils literal"><span class="pre">genipe/chrN</span></code> directories</a></li>
-<li><a class="reference internal" href="#genipe-chrn-final-impute2-directories"><code class="docutils literal"><span class="pre">genipe/chrN/final_impute2</span></code> directories</a></li>
-<li><a class="reference internal" href="#genipe-missing-directory"><code class="docutils literal"><span class="pre">genipe/missing</span></code> directory</a></li>
-<li><a class="reference internal" href="#genipe-report-directory"><code class="docutils literal"><span class="pre">genipe/report</span></code> directory</a></li>
+<li><a class="reference internal" href="#genipe-directory"><code class="docutils literal notranslate"><span class="pre">genipe</span></code> directory</a></li>
+<li><a class="reference internal" href="#genipe-chrn-directories"><code class="docutils literal notranslate"><span class="pre">genipe/chrN</span></code> directories</a></li>
+<li><a class="reference internal" href="#genipe-chrn-final-impute2-directories"><code class="docutils literal notranslate"><span class="pre">genipe/chrN/final_impute2</span></code> directories</a></li>
+<li><a class="reference internal" href="#genipe-missing-directory"><code class="docutils literal notranslate"><span class="pre">genipe/missing</span></code> directory</a></li>
+<li><a class="reference internal" href="#genipe-report-directory"><code class="docutils literal notranslate"><span class="pre">genipe/report</span></code> directory</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#using-genipe-on-a-server">Using genipe on a server</a><ul>
@@ -103,12 +94,14 @@
    </div>
 <div id="searchbox" style="display: none" role="search">
   <h3>Quick search</h3>
+    <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <div><input type="text" name="q" /></div>
-      <div><input type="submit" value="Go" /></div>
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
       <input type="hidden" name="check_keywords" value="yes" />
       <input type="hidden" name="area" value="default" />
     </form>
+    </div>
 </div>
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
@@ -142,14 +135,14 @@ panel used, genome-wide imputation tools can infer genotypes for more than 38
 million variants (single nucleotides, insertions and deletions). Unfortunately,
 genome-wide imputation requires high computation power and multiple data
 processing steps.</p>
-<p>The <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> pipeline automates the different steps for pre-phasing and
+<p>The <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a> pipeline automates the different steps for pre-phasing and
 imputation for genome-wide data. The pipeline follows the guideline described
 by IMPUTE2’s best practices when analyzing genome-wide data (described
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#prephasing">by IMPUTE2</a>
 and <a class="reference external" href="http://www.shapeit.fr/pages/m03_phasing/imputation.html">by SHAPEIT</a>).</p>
 <div class="section" id="preparing-the-data">
 <h2><a class="toc-backref" href="#id3">Preparing the data</a><a class="headerlink" href="#preparing-the-data" title="Permalink to this headline">¶</a></h2>
-<p>The <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> module provides a script to prepare all the required files
+<p>The <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a> module provides a script to prepare all the required files
 for this tutorial. It will download the appropriate binary files for Plink,
 IMPUTE2 and SHAPETIT, the genotypes of the study cohort to impute, the
 IMPUTE2’s reference panels, and the indexed human reference (in <em>fasta</em>
@@ -164,14 +157,14 @@ to make sure that you have the right to use these tools.</p>
 <p>To following command will execute the script (once the virtual Python
 environment is activated, see <a class="reference internal" href="../installation.html#genipe-pyvenv-activation"><span class="std std-ref">Virtual environment activation</span></a> for more
 details).</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>genipe-tutorial
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>genipe-tutorial
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The script will create a directory called <code class="docutils literal"><span class="pre">genipe_tutorial</span></code> in the home
+<p class="last">The script will create a directory called <code class="docutils literal notranslate"><span class="pre">genipe_tutorial</span></code> in the home
 directory. If another directory is required, the default path can be modify
-using the <code class="docutils literal"><span class="pre">--tutorial-path</span></code> option.</p>
+using the <code class="docutils literal notranslate"><span class="pre">--tutorial-path</span></code> option.</p>
 </div>
 <p>To have more information about the input data, have a look at the
 <a class="reference internal" href="#genipe-tut-more-details"><span class="std std-ref">Data in more details</span></a> section below. If the imputation is to be run on
@@ -181,7 +174,7 @@ section.</p>
 <div class="section" id="input-file-summary">
 <h2><a class="toc-backref" href="#id4">Input file summary</a><a class="headerlink" href="#input-file-summary" title="Permalink to this headline">¶</a></h2>
 <p>You should have the following directory structure:</p>
-<div class="highlight-text"><div class="highlight"><pre><span></span>$HOME/genipe_tutorial/
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>$HOME/genipe_tutorial/
 │
 ├── 1000GP_Phase3/
 │   ├── 1000GP_Phase3_chr1.hap.gz
@@ -220,10 +213,10 @@ section.</p>
 <p>Once all the input files are ready for analysis, you can finally execute the
 pipeline. Make sure that the virtual Python environment was properly activated
 (see <a class="reference internal" href="../installation.html#genipe-pyvenv-activation"><span class="std std-ref">Virtual environment activation</span></a> for more details).</p>
-<p>When automatically preparing the data using the <code class="docutils literal"><span class="pre">genipe-tutorial</span></code> script, a
-new script named <code class="docutils literal"><span class="pre">execute.sh</span></code> will be created to execute the analysis. Here
-is the content of the <code class="docutils literal"><span class="pre">execute.sh</span></code> script.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env bash</span>
+<p>When automatically preparing the data using the <code class="docutils literal notranslate"><span class="pre">genipe-tutorial</span></code> script, a
+new script named <code class="docutils literal notranslate"><span class="pre">execute.sh</span></code> will be created to execute the analysis. Here
+is the content of the <code class="docutils literal notranslate"><span class="pre">execute.sh</span></code> script.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="ch">#!/usr/bin/env bash</span>
 <span class="c1"># Changing directory</span>
 <span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial
 
@@ -247,41 +240,41 @@ genipe-launcher <span class="se">\</span>
 </div>
 <p>When in the correct working directory, the following command should execute the
 genome-wide imputation of the <em>HapMap</em> CEU dataset.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial
 
 ./execute.sh
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">In the script <code class="docutils literal"><span class="pre">execute.sh</span></code>, the <code class="docutils literal"><span class="pre">--reference</span></code> option is optional and
+<p class="last">In the script <code class="docutils literal notranslate"><span class="pre">execute.sh</span></code>, the <code class="docutils literal notranslate"><span class="pre">--reference</span></code> option is optional and
 might be removed.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">It is possible to compress IMPUTE2’s output files by adding the <code class="docutils literal"><span class="pre">--bgzip</span></code>
-option (the <code class="docutils literal"><span class="pre">bgzip</span></code> software should be in the path).</p>
+<p class="last">It is possible to compress IMPUTE2’s output files by adding the <code class="docutils literal notranslate"><span class="pre">--bgzip</span></code>
+option (the <code class="docutils literal notranslate"><span class="pre">bgzip</span></code> software should be in the path).</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">It is possible to remove the <code class="docutils literal"><span class="pre">--shapeit-bin</span></code>, the <code class="docutils literal"><span class="pre">--impute2-bin</span></code> and/or
-the <code class="docutils literal"><span class="pre">--plink-bin</span></code> options if the SHAPEIT, IMPUTE2 and/or the Plink
-binaries are in  the <code class="docutils literal"><span class="pre">PATH</span></code> variable.</p>
+<p class="last">It is possible to remove the <code class="docutils literal notranslate"><span class="pre">--shapeit-bin</span></code>, the <code class="docutils literal notranslate"><span class="pre">--impute2-bin</span></code> and/or
+the <code class="docutils literal notranslate"><span class="pre">--plink-bin</span></code> options if the SHAPEIT, IMPUTE2 and/or the Plink
+binaries are in  the <code class="docutils literal notranslate"><span class="pre">PATH</span></code> variable.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal"><span class="pre">--chrom</span> <span class="pre">autosomes</span></code> option will run the imputation only on the
+<p class="last">The <code class="docutils literal notranslate"><span class="pre">--chrom</span> <span class="pre">autosomes</span></code> option will run the imputation only on the
 autosomes. If all chromosomes are required (including chromosomes 23 and 25
-(pseudo-autosomal region), then the <code class="docutils literal"><span class="pre">--chrom</span></code> option can be removed, and
+(pseudo-autosomal region), then the <code class="docutils literal notranslate"><span class="pre">--chrom</span></code> option can be removed, and
 the imputation reference files for chromosome 23 PAR and nonPAR are required
 (see <a class="reference internal" href="../parameters/main_pipeline.html#params-chrom-x"><span class="std std-ref">this section</span></a> for more information).</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
 <p class="last">It is possible to add extra options to SHAPEIT and IMPUTE2 using the
-<code class="docutils literal"><span class="pre">--shapeit-extra</span></code> and <code class="docutils literal"><span class="pre">--impute2-extra</span></code> options, respectively.</p>
+<code class="docutils literal notranslate"><span class="pre">--shapeit-extra</span></code> and <code class="docutils literal notranslate"><span class="pre">--impute2-extra</span></code> options, respectively.</p>
 </div>
-<p>The following table describes the options <strong>used by</strong> <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> <strong>in the
+<p>The following table describes the options <strong>used by</strong> <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a> <strong>in the
 previous command</strong> (see the <a class="reference internal" href="../index.html#genipe-usage"><span class="std std-ref">Usage</span></a> section for a full list):</p>
 <table border="1" class="docutils">
 <colgroup>
@@ -294,44 +287,44 @@ previous command</strong> (see the <a class="reference internal" href="../index.
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--chrom</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">--chrom</span></code></td>
 <td>The chromosome to impute (here, the autosomes).</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--bfile</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--bfile</span></code></td>
 <td>The genotypes of the study cohort to be imputed.</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--shapeit-bin</span></code></td>
-<td>The <code class="docutils literal"><span class="pre">shapeit</span></code> binary.</td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">--shapeit-bin</span></code></td>
+<td>The <code class="docutils literal notranslate"><span class="pre">shapeit</span></code> binary.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--impute2-bin</span></code></td>
-<td>The <code class="docutils literal"><span class="pre">impute2</span></code> binary.</td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--impute2-bin</span></code></td>
+<td>The <code class="docutils literal notranslate"><span class="pre">impute2</span></code> binary.</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--plink-bin</span></code></td>
-<td>The <code class="docutils literal"><span class="pre">plink</span></code> binary.</td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">--plink-bin</span></code></td>
+<td>The <code class="docutils literal notranslate"><span class="pre">plink</span></code> binary.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--reference</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--reference</span></code></td>
 <td>The <em>fasta</em> file containing the reference genome
 for initial strand verification (<em>optional</em>).</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--hap-template</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">--hap-template</span></code></td>
 <td>The template for <em>IMPUTE2</em>’s reference haplotype
-files (<code class="docutils literal"><span class="pre">{chrom}</span></code> will be replaced by the
+files (<code class="docutils literal notranslate"><span class="pre">{chrom}</span></code> will be replaced by the
 chromosome number).</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--legend-template</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--legend-template</span></code></td>
 <td>The template for <em>IMPUTE2</em>’s reference legend
-files (<code class="docutils literal"><span class="pre">{chrom}</span></code> will be replaced by the
+files (<code class="docutils literal notranslate"><span class="pre">{chrom}</span></code> will be replaced by the
 chromosome number).</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--map-template</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">--map-template</span></code></td>
 <td>The template for <em>IMPUTE2</em>’s reference map
-files (<code class="docutils literal"><span class="pre">{chrom}</span></code> will be replaced by the
+files (<code class="docutils literal notranslate"><span class="pre">{chrom}</span></code> will be replaced by the
 chromosome number).</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--sample-file</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--sample-file</span></code></td>
 <td>The name of <em>IMPUTE2</em>’s reference sample file.</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--filtering-rules</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">--filtering-rules</span></code></td>
 <td>Rules used by <em>IMPUTE2</em> to exclude sites from
 its reference files (using the legend files).
 Each terms are joined using a logical <em>OR</em>.
@@ -339,15 +332,15 @@ Here, loci with an alternative allele frequency
 lower than 0.01 and higher than 0.99 will be
 excluded from the imputation reference.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--thread</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--thread</span></code></td>
 <td>The number of thread to use for the analysis.
 When using <em>DRMAA</em>, this will be the number of
 simultaneous tasks. Four threads will be used.</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">--report-title</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">--report-title</span></code></td>
 <td>The title of the automatic report.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">--report-number</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--report-number</span></code></td>
 <td>The number of the report (will appear as
 sub-title and in the footer of the automatic
 report).</td>
@@ -366,8 +359,8 @@ subsequent steps).</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Four options will modify the report content: <code class="docutils literal"><span class="pre">--report-number</span></code>,
-<code class="docutils literal"><span class="pre">--report-title</span></code>, <code class="docutils literal"><span class="pre">--report-author</span></code> and <code class="docutils literal"><span class="pre">--report-background</span></code>.</p>
+<p class="last">Four options will modify the report content: <code class="docutils literal notranslate"><span class="pre">--report-number</span></code>,
+<code class="docutils literal notranslate"><span class="pre">--report-title</span></code>, <code class="docutils literal notranslate"><span class="pre">--report-author</span></code> and <code class="docutils literal notranslate"><span class="pre">--report-background</span></code>.</p>
 </div>
 </div>
 <div class="section" id="compiling-the-report">
@@ -375,23 +368,23 @@ subsequent steps).</p>
 <p>A report containing useful information (such as quality metrics and execution
 time, among others) is automatically generated once the imputation process is
 completed. To compile the report, perform the following commands:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/genipe/report
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/genipe/report
 
 make <span class="o">&amp;&amp;</span> make clean
 </pre></div>
 </div>
 <p>This will generate the following
 <a class="reference external" href="http://pgxcentre.github.io/genipe/_static/tutorial/report.pdf">PDF report</a>
-(which is named <code class="docutils literal"><span class="pre">report.pdf</span></code>). It is always possible to modify the original
-<code class="docutils literal"><span class="pre">report.tex</span></code> file to include analysis specific details (<em>e.g.</em> cohort
+(which is named <code class="docutils literal notranslate"><span class="pre">report.pdf</span></code>). It is always possible to modify the original
+<code class="docutils literal notranslate"><span class="pre">report.tex</span></code> file to include analysis specific details (<em>e.g.</em> cohort
 description).</p>
 </div>
 <div class="section" id="output-files">
 <span id="genipe-tut-output-files"></span><h2><a class="toc-backref" href="#id7">Output files</a><a class="headerlink" href="#output-files" title="Permalink to this headline">¶</a></h2>
-<p>All results will be located in the <code class="docutils literal"><span class="pre">genipe</span></code> directory (or whatever
-<code class="docutils literal"><span class="pre">--output-dir</span></code> links to). Here is the directory tree summarizing the output
+<p>All results will be located in the <code class="docutils literal notranslate"><span class="pre">genipe</span></code> directory (or whatever
+<code class="docutils literal notranslate"><span class="pre">--output-dir</span></code> links to). Here is the directory tree summarizing the output
 files.</p>
-<div class="highlight-text"><div class="highlight"><pre><span></span>genipe/
+<div class="highlight-text notranslate"><div class="highlight"><pre><span></span>genipe/
 │
 ├── chr1/
 │   ├── chr1.1_5000000.impute2
@@ -450,10 +443,10 @@ files.</p>
 </pre></div>
 </div>
 <div class="section" id="genipe-directory">
-<h3><code class="docutils literal"><span class="pre">genipe</span></code> directory<a class="headerlink" href="#genipe-directory" title="Permalink to this headline">¶</a></h3>
+<h3><code class="docutils literal notranslate"><span class="pre">genipe</span></code> directory<a class="headerlink" href="#genipe-directory" title="Permalink to this headline">¶</a></h3>
 <p>This directory contains all the chromosome specific analysis. The specific
 directory content is describe below. The following files are created inside the
-<code class="docutils literal"><span class="pre">genipe</span></code> directory:</p>
+<code class="docutils literal notranslate"><span class="pre">genipe</span></code> directory:</p>
 <table border="1" class="docutils">
 <colgroup>
 <col width="39%" />
@@ -465,35 +458,35 @@ directory content is describe below. The following files are created inside the
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">chromosome_lengths.txt</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">chromosome_lengths.txt</span></code></td>
 <td>The length of each chromosome (this
 information is fetched from Ensembl using
 its REST API and saved to file).</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">exclusion_summary.txt</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">exclusion_summary.txt</span></code></td>
 <td>A file containing the exclusion summary
 prior to phasing (<em>e.g</em> the number of
 ambiguous markers, the number of flipped
 markers, etc.).</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">frequency_pie.pdf</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">frequency_pie.pdf</span></code></td>
 <td>This file contains a pie chart describing
 the minor allele frequency distribution of
 the imputed markers. This file is generated
-only if the <code class="xref py py-mod docutils literal"><span class="pre">matplotlib</span></code> module is
+only if the <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> module is
 installed.</td>
 </tr>
-<tr class="row-odd"><td colspan="2"><code class="docutils literal"><span class="pre">genipe.log</span></code>               | The log file of the main pipeline.</td>
+<tr class="row-odd"><td colspan="2"><code class="docutils literal notranslate"><span class="pre">genipe.log</span></code>               | The log file of the main pipeline.</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">markers_to_exclude.txt</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">markers_to_exclude.txt</span></code></td>
 <td>The list of markers to exclude prior to
 phasing.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">markers_to_flip.txt</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">markers_to_flip.txt</span></code></td>
 <td>The list of markers to flip prior to
 phasing.</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">tasks.db</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">tasks.db</span></code></td>
 <td>The <em>sqlite</em> database containing
 information of all tasks (if it’s
 completed, execution time, etc).</td>
@@ -502,15 +495,15 @@ completed, execution time, etc).</td>
 </table>
 </div>
 <div class="section" id="genipe-chrn-directories">
-<h3><code class="docutils literal"><span class="pre">genipe/chrN</span></code> directories<a class="headerlink" href="#genipe-chrn-directories" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal"><span class="pre">chrN</span></code> directories contain the intermediate files, created throughout the
+<h3><code class="docutils literal notranslate"><span class="pre">genipe/chrN</span></code> directories<a class="headerlink" href="#genipe-chrn-directories" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">chrN</span></code> directories contain the intermediate files, created throughout the
 pipeline. The most important files in these directories are the log files (for
 errors and summary statistics). There will be one directory per autosomal
 chromosomes.</p>
 </div>
 <div class="section" id="genipe-chrn-final-impute2-directories">
-<span id="genipe-tut-output-files-final-impute2"></span><h3><code class="docutils literal"><span class="pre">genipe/chrN/final_impute2</span></code> directories<a class="headerlink" href="#genipe-chrn-final-impute2-directories" title="Permalink to this headline">¶</a></h3>
-<p>These <code class="docutils literal"><span class="pre">final_impute2</span></code> directories (located in the <code class="docutils literal"><span class="pre">genipe/chrN</span></code>
+<span id="genipe-tut-output-files-final-impute2"></span><h3><code class="docutils literal notranslate"><span class="pre">genipe/chrN/final_impute2</span></code> directories<a class="headerlink" href="#genipe-chrn-final-impute2-directories" title="Permalink to this headline">¶</a></h3>
+<p>These <code class="docutils literal notranslate"><span class="pre">final_impute2</span></code> directories (located in the <code class="docutils literal notranslate"><span class="pre">genipe/chrN</span></code>
 directories) contain the final output files from the pipeline for each
 autosomal chromosomes. They will contain the following files:</p>
 <table border="1" class="docutils">
@@ -524,18 +517,18 @@ autosomal chromosomes. They will contain the following files:</p>
 </tr>
 </thead>
 <tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.alleles</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.imputed.alleles</span></code></td>
 <td>Description of the reference and
 alternative allele at each sites.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.completion_rates</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.imputed.completion_rates</span></code></td>
 <td>Number of missing values and completion
 rate for all sites (using the
 probability threshold set by the user,
 where the default is higher and equal
 to 0.9).</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.good_sites</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.imputed.good_sites</span></code></td>
 <td>List of sites which pass the completion
 rate threshold (set by the user, where
 the default is higher and equal to 0.98)
@@ -546,15 +539,15 @@ the INFO threshold (set by the user,
 where the default is higher and equal to
 0).</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.impute2</span></code> or
-<code class="docutils literal"><span class="pre">.imputed.impute2.gz</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.imputed.impute2</span></code> or
+<code class="docutils literal notranslate"><span class="pre">.imputed.impute2.gz</span></code></td>
 <td>Imputation results (merged from the
 individual segment files. This file
-might be compress (with the <code class="docutils literal"><span class="pre">.gz</span></code>
-extension) if the <code class="docutils literal"><span class="pre">--bgzip</span></code> option was
+might be compress (with the <code class="docutils literal notranslate"><span class="pre">.gz</span></code>
+extension) if the <code class="docutils literal notranslate"><span class="pre">--bgzip</span></code> option was
 used when launching the pipeline.</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.impute2_info</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.imputed.impute2_info</span></code></td>
 <td>Marker-wise information file with one
 line per marker and a single header line
 at the begening. It contains, among
@@ -563,28 +556,28 @@ measure of the observed statistical
 information associated with the allele
 frequency estimate.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.imputed_sites</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.imputed.imputed_sites</span></code></td>
 <td>List of imputed sites (excluding sites
 that were previously genotyped in the
 study cohort).</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.log</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.imputed.log</span></code></td>
 <td>The log file of the merging step.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.maf</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.imputed.maf</span></code></td>
 <td>File containing the minor allele
 frequency (along with minor allele
 identification) for all sites using the
 probabilitty threshold of 0.9. When no
 genotypes are available (because they
 are all below the threshold), the MAF is
-<code class="docutils literal"><span class="pre">NA</span></code>.</td>
+<code class="docutils literal notranslate"><span class="pre">NA</span></code>.</td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal"><span class="pre">.imputed.map</span></code></td>
+<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.imputed.map</span></code></td>
 <td>A <em>map</em> file describing the genomic
 location of all sites.</td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal"><span class="pre">.imputed.sample</span></code></td>
+<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.imputed.sample</span></code></td>
 <td>The sample file generated by the phasing
 step, which describe the sample ordering
 in the IMPUTE2 files.</td>
@@ -593,28 +586,28 @@ in the IMPUTE2 files.</td>
 </table>
 </div>
 <div class="section" id="genipe-missing-directory">
-<h3><code class="docutils literal"><span class="pre">genipe/missing</span></code> directory<a class="headerlink" href="#genipe-missing-directory" title="Permalink to this headline">¶</a></h3>
-<p>The <code class="docutils literal"><span class="pre">missing</span></code> directory contains the missing rates for both samples
-(<code class="docutils literal"><span class="pre">missing.imiss</span></code>) and genotypes markers (<code class="docutils literal"><span class="pre">missing.lmiss</span></code>). Those files are
+<h3><code class="docutils literal notranslate"><span class="pre">genipe/missing</span></code> directory<a class="headerlink" href="#genipe-missing-directory" title="Permalink to this headline">¶</a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">missing</span></code> directory contains the missing rates for both samples
+(<code class="docutils literal notranslate"><span class="pre">missing.imiss</span></code>) and genotypes markers (<code class="docutils literal notranslate"><span class="pre">missing.lmiss</span></code>). Those files are
 generated by Plink.</p>
 </div>
 <div class="section" id="genipe-report-directory">
-<h3><code class="docutils literal"><span class="pre">genipe/report</span></code> directory<a class="headerlink" href="#genipe-report-directory" title="Permalink to this headline">¶</a></h3>
-<p>This <code class="docutils literal"><span class="pre">report</span></code> directory contains the automatically generated report, which
+<h3><code class="docutils literal notranslate"><span class="pre">genipe/report</span></code> directory<a class="headerlink" href="#genipe-report-directory" title="Permalink to this headline">¶</a></h3>
+<p>This <code class="docutils literal notranslate"><span class="pre">report</span></code> directory contains the automatically generated report, which
 provides valuable information about the imputation analysis. Such information
 contains cross-validation statistics (as provided by IMPUTE2), frequency
 statistics and completion rates according to user defined parameters.</p>
-<p>The automatic report is generated in the <code class="docutils literal"><span class="pre">LaTeX</span></code> language (file
-<code class="docutils literal"><span class="pre">report.tex</span></code>), and can be compile using the following command (as long as
-<code class="docutils literal"><span class="pre">LaTeX</span></code> is installed).</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/genipe/report
+<p>The automatic report is generated in the <code class="docutils literal notranslate"><span class="pre">LaTeX</span></code> language (file
+<code class="docutils literal notranslate"><span class="pre">report.tex</span></code>), and can be compile using the following command (as long as
+<code class="docutils literal notranslate"><span class="pre">LaTeX</span></code> is installed).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/genipe/report
 make <span class="o">&amp;&amp;</span> make clean
 </pre></div>
 </div>
 <p>This will generate the following
 <a class="reference external" href="http://pgxcentre.github.io/genipe/_static/tutorial/report.pdf">PDF report</a>
-(which is named <code class="docutils literal"><span class="pre">report.pdf</span></code>). It is always possible to modify the original
-<code class="docutils literal"><span class="pre">report.tex</span></code> file to include analysis specific details (<em>e.g.</em> cohort
+(which is named <code class="docutils literal notranslate"><span class="pre">report.pdf</span></code>). It is always possible to modify the original
+<code class="docutils literal notranslate"><span class="pre">report.tex</span></code> file to include analysis specific details (<em>e.g.</em> cohort
 description).</p>
 </div>
 </div>
@@ -622,7 +615,7 @@ description).</p>
 <span id="genipe-tut-drmaa"></span><h2><a class="toc-backref" href="#id8">Using genipe on a server</a><a class="headerlink" href="#using-genipe-on-a-server" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="drmaa-configuration">
 <h3>DRMAA configuration<a class="headerlink" href="#drmaa-configuration" title="Permalink to this headline">¶</a></h3>
-<p>If the pipeline is to be launch on a computing server, the <code class="docutils literal"><span class="pre">--use-drmaa</span></code>
+<p>If the pipeline is to be launch on a computing server, the <code class="docutils literal notranslate"><span class="pre">--use-drmaa</span></code>
 option should be used. This will launch each step on the server using the DRMAA
 api. On some cluster, supplemental information is required for each task
 (<em>i.e.</em> execution time, number of nodes/processes to reserve). This
@@ -633,7 +626,7 @@ nodes/processes will be 15 minutes and 1/1, respectively. Otherwise, different
 parameters can be used for each step. For example, the following configuration
 will increase the walltime for all phasing tasks from 15 minutes to 3 hours. It
 will also run each phasing tasks on one node using 12 processes.</p>
-<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[shapeit_phase]</span>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[shapeit_phase]</span>
 <span class="na">walltime</span> <span class="o">=</span> <span class="s">03:00:00</span>
 <span class="na">nodes</span>    <span class="o">=</span> <span class="s">1</span>
 <span class="na">ppn</span>      <span class="o">=</span> <span class="s">12</span>
@@ -642,7 +635,7 @@ will also run each phasing tasks on one node using 12 processes.</p>
 <p>The following example has the same configuration as the previous example, but
 will increase the walltime for chromosome 2 to 4 hours, with 1 node and 24
 processes.</p>
-<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[shapeit_phase]</span>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[shapeit_phase]</span>
 <span class="na">walltime</span> <span class="o">=</span> <span class="s">03:00:00</span>
 <span class="na">nodes</span>    <span class="o">=</span> <span class="s">1</span>
 <span class="na">ppn</span>      <span class="o">=</span> <span class="s">12</span>
@@ -658,7 +651,7 @@ doesn’t have time to finish and its imputation requires a rerun. For example,
 the following parameters will increase the walltime from 15 minutes to 3.5
 hours for segment 10,000,001-15,000,000 on chromosome 1. Also, all segments
 located on chromosome 2 will have a walltime of 4 hours.</p>
-<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[impute2]</span>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[impute2]</span>
 <span class="na">chr1_10000001_15000000_walltime</span> <span class="o">=</span> <span class="s">03:30:00</span>
 
 <span class="na">chr2_walltime</span> <span class="o">=</span> <span class="s">04:00:00</span>
@@ -669,41 +662,41 @@ located on chromosome 2 will have a walltime of 4 hours.</p>
 including all possible section. Also, here is a list of all possible section
 (<em>i.e</em> pipeline step) that can be parametrized.</p>
 <ul class="simple">
-<li><code class="docutils literal"><span class="pre">plink_exclude</span></code></li>
-<li><code class="docutils literal"><span class="pre">plink_missing_rate</span></code></li>
-<li><code class="docutils literal"><span class="pre">shapeit_check_1</span></code></li>
-<li><code class="docutils literal"><span class="pre">plink_flip</span></code></li>
-<li><code class="docutils literal"><span class="pre">shapeit_check_2</span></code></li>
-<li><code class="docutils literal"><span class="pre">plink_final_exclude</span></code></li>
-<li><code class="docutils literal"><span class="pre">shapeit_phase</span></code></li>
-<li><code class="docutils literal"><span class="pre">impute2</span></code></li>
-<li><code class="docutils literal"><span class="pre">merge_impute2</span></code></li>
-<li><code class="docutils literal"><span class="pre">bgzip</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">plink_exclude</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">plink_missing_rate</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">shapeit_check_1</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">plink_flip</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">shapeit_check_2</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">plink_final_exclude</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">shapeit_phase</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">impute2</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">merge_impute2</span></code></li>
+<li><code class="docutils literal notranslate"><span class="pre">bgzip</span></code></li>
 </ul>
 <p>Some cluster doesn’t require any configuration at all. To skip configuration,
-use the <code class="docutils literal"><span class="pre">main</span></code> section of the <em>ini</em> file as such:</p>
-<div class="highlight-ini"><div class="highlight"><pre><span></span><span class="k">[main]</span>
+use the <code class="docutils literal notranslate"><span class="pre">main</span></code> section of the <em>ini</em> file as such:</p>
+<div class="highlight-ini notranslate"><div class="highlight"><pre><span></span><span class="k">[main]</span>
 <span class="na">skip_drmaa_config</span> <span class="o">=</span> <span class="s">yes</span>
 </pre></div>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p class="last">Keep in mind that lines starting with a <code class="docutils literal"><span class="pre">#</span></code> are comments and are not used
+<p class="last">Keep in mind that lines starting with a <code class="docutils literal notranslate"><span class="pre">#</span></code> are comments and are not used
 in the DRMAA configuration. This is useful to describe what parameters are
 used for each step.</p>
 </div>
 </div>
 <div class="section" id="drmaa-preamble">
 <h3>DRMAA preamble<a class="headerlink" href="#drmaa-preamble" title="Permalink to this headline">¶</a></h3>
-<p>When using the <code class="docutils literal"><span class="pre">--use-drmaa</span></code> option, the pipeline creates <em>bash</em> script that
+<p>When using the <code class="docutils literal notranslate"><span class="pre">--use-drmaa</span></code> option, the pipeline creates <em>bash</em> script that
 are launched on the computing cluster. Some clusters require module to be
 loaded and the python virtual environment to be loaded before executing a
-script. This is done using the preamble file (the <code class="docutils literal"><span class="pre">--preamble</span></code> option).</p>
+script. This is done using the preamble file (the <code class="docutils literal notranslate"><span class="pre">--preamble</span></code> option).</p>
 <p>The content of the file will be added between the first line of the temporary
 <em>bash</em> script (the <em>shebang</em>) and the actual command. For example, the
 following file will load the gcc module (version 4.8.2) and the python virtual
 environment before launching the task.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="c1"># Loading the required module</span>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Loading the required module</span>
 module load gcc/4.8.2
 
 <span class="c1"># The python virtual environment</span>
@@ -714,7 +707,7 @@ module load gcc/4.8.2
 <p class="first admonition-title">Note</p>
 <p class="last">The preamble file is system dependent, but you should always at least
 activate the virtual python environment so that the tools provided by
-<a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> are automatically in the system path.</p>
+<a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a> are automatically in the system path.</p>
 </div>
 <div class="admonition warning">
 <p class="first admonition-title">Warning</p>
@@ -727,38 +720,38 @@ executed. Hence, always be careful of what is included in the preamble.</p>
 <span id="genipe-tut-more-details"></span><h2><a class="toc-backref" href="#id9">Data in more details</a><a class="headerlink" href="#data-in-more-details" title="Permalink to this headline">¶</a></h2>
 <p>First, we will create a project directory where all the analysis will be
 performed:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial
 <span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial
 </pre></div>
 </div>
 <div class="section" id="required-softwares">
 <span id="genipe-tut-softwares"></span><h3>Required softwares<a class="headerlink" href="#required-softwares" title="Permalink to this headline">¶</a></h3>
-<p>The main <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal"><span class="pre">genipe</span></code></a> pipeline requires three external tools:
+<p>The main <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a> pipeline requires three external tools:
 <a class="reference external" href="http://pngu.mgh.harvard.edu/~purcell/plink/">Plink</a>,
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html">IMPUTE2</a> and
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html">SHAPEIT</a>.
-These tools are not required to be located in your <code class="docutils literal"><span class="pre">PATH</span></code> variable, since you
+These tools are not required to be located in your <code class="docutils literal notranslate"><span class="pre">PATH</span></code> variable, since you
 can specify each of their location at runtime.</p>
-<p>If some of the binaries are missing in you <code class="docutils literal"><span class="pre">PATH</span></code> variable, we will create a
+<p>If some of the binaries are missing in you <code class="docutils literal notranslate"><span class="pre">PATH</span></code> variable, we will create a
 directory where the missing binaries will go:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial/bin
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial/bin
 <span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/bin
 </pre></div>
 </div>
 <p>Plink is freely available. Go to
 <a class="reference external" href="http://pngu.mgh.harvard.edu/~purcell/plink/download.shtml">Plink download page</a>,
 read the license, and download the most recent version. Extract the binary and
-copy it to the <code class="docutils literal"><span class="pre">bin</span></code> directory previously created.</p>
+copy it to the <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory previously created.</p>
 <p>IMPUTE2 is freely available for academic use. Go to
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#download">IMPUTE2 download page</a>,
 read the license, and download the most recent version. Extract the binary and
-copy it to the <code class="docutils literal"><span class="pre">bin</span></code> directory previously created.</p>
+copy it to the <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory previously created.</p>
 <p>SHAPEIT is freely available for academic use. Go to
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html#download">SHAPEIT download page</a>,
 read the license, and download the most recent version. Extract the binary and
-copy it to the <code class="docutils literal"><span class="pre">bin</span></code> directory previously created.</p>
-<p>The <code class="docutils literal"><span class="pre">bin</span></code> directory should now contain the missing binaries: <code class="docutils literal"><span class="pre">impute2</span></code>,
-<code class="docutils literal"><span class="pre">plink</span></code> and/or <code class="docutils literal"><span class="pre">shapeit</span></code>.</p>
+copy it to the <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory previously created.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">bin</span></code> directory should now contain the missing binaries: <code class="docutils literal notranslate"><span class="pre">impute2</span></code>,
+<code class="docutils literal notranslate"><span class="pre">plink</span></code> and/or <code class="docutils literal notranslate"><span class="pre">shapeit</span></code>.</p>
 </div>
 <div class="section" id="input-files">
 <span id="genipe-tut-input-files"></span><h3>Input files<a class="headerlink" href="#input-files" title="Permalink to this headline">¶</a></h3>
@@ -766,8 +759,8 @@ copy it to the <code class="docutils literal"><span class="pre">bin</span></code
 <h4>Genotypes<a class="headerlink" href="#genotypes" title="Permalink to this headline">¶</a></h4>
 <p>The genotypes of the study cohort have to be in Plink’s binary pedfile format.
 This format allows for time and disk space optimization. Each dataset is
-comprised of three files: the <code class="docutils literal"><span class="pre">.bed</span></code> (binary file, genotype information),
-<code class="docutils literal"><span class="pre">.fam</span></code> (text file, sample information) and <code class="docutils literal"><span class="pre">.bim</span></code> (text file, marker
+comprised of three files: the <code class="docutils literal notranslate"><span class="pre">.bed</span></code> (binary file, genotype information),
+<code class="docutils literal notranslate"><span class="pre">.fam</span></code> (text file, sample information) and <code class="docutils literal notranslate"><span class="pre">.bim</span></code> (text file, marker
 information) files. Those file are generated by Plink.</p>
 <p>Genotype data are provided for this tutorial. They are a subset from the files
 provided by Plink on its
@@ -776,7 +769,7 @@ The build was lifted over from <em>GRCh36</em> to <em>GRCh37</em> using
 <a class="reference external" href="https://genome.ucsc.edu/cgi-bin/hgLiftOver">USCS liftOver</a>. Only CEU samples
 were kept, along with markers having a completion rate higher or equal to 0.98.
 To download the data for this tutorial, execute the following command:</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial/data
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial/data
 <span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/data
 
 wget http://pgxcentre.github.io/genipe/_static/tutorial/hapmap_CEU_r23a_hg19.tar.bz2
@@ -792,11 +785,11 @@ dataset on their website. Go to IMPUTE2’s
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#reference">reference page</a>,
 and download the most recent reference data (which is over 12Gb). Once the
 reference is downloaded, extract it in the working directory
-(<code class="docutils literal"><span class="pre">$HOME/genipe_tutorial</span></code>).</p>
+(<code class="docutils literal notranslate"><span class="pre">$HOME/genipe_tutorial</span></code>).</p>
 <p>The following commands should download the reference files (1000 Genomes phase
 3) and extract them in the required directory. Note that the specified URL
 might change.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial
 
 wget https://mathgen.stats.ox.ac.uk/impute/1000GP_Phase3.tgz
 tar -zxf 1000GP_Phase3.tgz
@@ -813,7 +806,7 @@ impossible to verify the strand of markers which are absent from the
 reference genome (in <em>fasta</em> format, indexed using <em>faidx</em>).</p>
 <p>We have created such reference using the
 <a class="reference external" href="http://hgdownload.cse.ucsc.edu/goldenPath/hg19/bigZips/">UCSC’s human reference</a>.</p>
-<div class="highlight-bash"><div class="highlight"><pre><span></span>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial/hg19
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir -p <span class="nv">$HOME</span>/genipe_tutorial/hg19
 <span class="nb">cd</span> <span class="nv">$HOME</span>/genipe_tutorial/hg19
 
 wget http://statgen.org/wp-content/uploads/Softwares/genipe/supp_files/hg19.tar.bz2
@@ -847,7 +840,7 @@ rm hg19.tar.bz2
         <li class="right" >
           <a href="../tutorials.html" title="Short Tutorials"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.0 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.1 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &#187;</li> 
       </ul>
     </div>
@@ -855,7 +848,7 @@ rm hg19.tar.bz2
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.6.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.4.
     </div>
 
 <script>
