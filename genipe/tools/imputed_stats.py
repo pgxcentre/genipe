@@ -1041,9 +1041,20 @@ def process_impute2_site(site_info):
             mixedlm_p=site_info.mixedlm_p,
             interaction=site_info.inter_c is not None,
         )
+
     except LinAlgError as e:
         # Something strange happened...
         logging.warning("{}: numpy LinAlgError: {}".format(name, str(e)))
+
+    except ValueError as e:
+        if ((site_info.analysis_type == "cox")
+                and ("convergence halted" in str(e).lower())):
+            # With newer versions of lifelines (cox), if the convergence halted
+            # prematurely, a ValueError is raised containing the 'Convergence
+            # halted' message.
+            logging.warning("{}: Convergence halted".format(name))
+        else:
+            raise
 
     # Extending the list to return
     if len(results) == 0:
