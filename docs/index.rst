@@ -72,7 +72,7 @@ Usage
                           [--report-background BACKGROUND]
 
    Execute the genome-wide imputation pipeline. This script is part of the
-   'genipe' package, version 1.4.0.
+   'genipe' package, version 1.4.2.
 
    optional arguments:
      -h, --help            show this help message and exit
