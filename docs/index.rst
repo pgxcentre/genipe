@@ -29,7 +29,8 @@ Finally, it also provides a useful standalone tool to perform statistical
 analysis on imputed (dosage) data (such as linear, logistic, repeated
 measurements, survival analysis, or `SKAT
 <http://www.hsph.harvard.edu/skat/>`_). For more information about execution
-time, see the :ref:`stats-exec-time` page.
+time and important system configuration impacting performance, see the
+:ref:`stats-exec-time` page.
 
 .. toctree::
    :maxdepth: 2
