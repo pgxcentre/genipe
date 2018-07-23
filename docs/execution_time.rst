@@ -29,17 +29,19 @@ MAF higher than 1%. The black dashed line is the execution time for Plink.
 
 .. note::
 
-   On some installation, when executing the analysis with *n* threads,
-   *OPENBLAS* automatically uses all the CPUs for each thread, such that the
-   load quickly increases to *n* times the number of CPUs. Such high load slows
-   down the analysis considerably.
+   Depending on the installation, when executing the analysis with *n* threads,
+   *OPENBLAS* (typical python environment) or *MKL* (miniconda environment)
+   automatically use all the CPUs for each thread, such that the load quickly
+   increases to *n* times the number of CPUs. Such high load slows down the
+   analysis considerably.
 
-   To avoid this, always export the following environment variable and specify
+   To avoid this, always export the following environment variables and specify
    the total number of threads using the ``--nb-process`` option.
 
    .. code-block:: bash
 
       export OPENBLAS_NUM_THREADS=1
+      export MKL_NUM_THREADS=1
 
 We are planning to optimize the Cox's proportional hazard regression in the
 near future.
