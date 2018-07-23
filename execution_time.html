@@ -98,13 +98,15 @@ MAF higher than 1%. The black dashed line is the execution time for Plink.</p>
 </div>
 <div class="admonition note">
 <p class="first admonition-title">Note</p>
-<p>On some installation, when executing the analysis with <em>n</em> threads,
-<em>OPENBLAS</em> automatically uses all the CPUs for each thread, such that the
-load quickly increases to <em>n</em> times the number of CPUs. Such high load slows
-down the analysis considerably.</p>
-<p>To avoid this, always export the following environment variable and specify
+<p>Depending on the installation, when executing the analysis with <em>n</em> threads,
+<em>OPENBLAS</em> (typical python environment) or <em>MKL</em> (miniconda environment)
+automatically use all the CPUs for each thread, such that the load quickly
+increases to <em>n</em> times the number of CPUs. Such high load slows down the
+analysis considerably.</p>
+<p>To avoid this, always export the following environment variables and specify
 the total number of threads using the <code class="docutils literal notranslate"><span class="pre">--nb-process</span></code> option.</p>
 <div class="last highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="nb">export</span> <span class="nv">OPENBLAS_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
+<span class="nb">export</span> <span class="nv">MKL_NUM_THREADS</span><span class="o">=</span><span class="m">1</span>
 </pre></div>
 </div>
 </div>
@@ -140,7 +142,7 @@ near future.</p>
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.5.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
     </div>
 
 <script>
