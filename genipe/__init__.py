@@ -6,8 +6,10 @@
 # http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
+"""Genipe is a genome-wide imputation pipeline with statistics."""
 
-import importlib
+
+from importlib import util as importlib_util
 
 try:
     from .version import genipe_version as __version__
@@ -31,9 +33,9 @@ chromosomes = tuple(autosomes) + chromosomes_23
 
 
 # Checking once for 'pyfaidx' and 'matplotlib'
-HAS_PYFAIDX = importlib.find_loader("pyfaidx") is not None
-HAS_MATPLOTLIB = importlib.find_loader("matplotlib") is not None
-HAS_DRMAA = importlib.find_loader("drmaa") is not None
+HAS_PYFAIDX = importlib_util.find_spec("pyfaidx") is not None
+HAS_MATPLOTLIB = importlib_util.find_spec("matplotlib") is not None
+HAS_DRMAA = importlib_util.find_spec("drmaa") is not None
 
 
 def test(verbosity=1):
