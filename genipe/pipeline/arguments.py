@@ -147,7 +147,8 @@ def parse_args(parser):
     )
     group.add_argument(
         "--sample-file", type=str, metavar="FILE", required=True,
-        help="The name of IMPUTE2's sample file.",
+        help="The template for IMPUTE2's sample files (replace the chromosome "
+             "number by '{chrom}' if there is one file per chromosome.",
     )
 
     # The IMPUTE2 sexual chromosome file options
@@ -195,6 +196,21 @@ def parse_args(parser):
     group.add_argument(
         "--map-PAR2", type=str, metavar="FILE", dest="map_par2",
         help="The IMPUTE2's map file for the second pseudoautosomal "
+             "region of chromosome 23.",
+    )
+    group.add_argument(
+        "--sample-nonPAR", type=str, metavar="FILE", dest="sample_chr23",
+        help="The IMPUTE2's sample file for the non-pseudoautosomal region "
+             "of chromosome 23.",
+    )
+    group.add_argument(
+        "--sample-PAR1", type=str, metavar="FILE", dest="sample_par1",
+        help="The IMPUTE2's sample file for the first pseudoautosomal "
+             "region of chromosome 23.",
+    )
+    group.add_argument(
+        "--sample-PAR2", type=str, metavar="FILE", dest="sample_par2",
+        help="The IMPUTE2's sample file for the second pseudoautosomal "
              "region of chromosome 23.",
     )
 
@@ -319,7 +335,7 @@ def check_args(args):
                 )
 
             for template in (args.hap_template, args.legend_template,
-                             args.map_template):
+                             args.map_template, args.sample_file):
                 filename = template.format(chrom=chrom)
                 if not os.path.isfile(filename):
                     raise GenipeError("{}: no such file".format(filename))
@@ -340,6 +356,11 @@ def check_args(args):
             raise GenipeError("chr23 requires '--map-nonPAR'")
         if not os.path.isfile(args.map_chr23):
             raise GenipeError("{}: no such file".format(args.map_chr23))
+
+        if args.sample_chr23 is None:
+            raise GenipeError("chr23 requires '--sample-nonPAR'")
+        if not os.path.isfile(args.sample_chr23):
+            raise GenipeError("{}: no such file".format(args.sample_chr23))
 
     # Checking the pseudo-autosomal region of chromosome 23
     if 25 in args.required_chrom:
@@ -365,6 +386,13 @@ def check_args(args):
                     "{}: no such file".format(vars(args)["map_par" + i])
                 )
 
+            if vars(args)["sample_par" + i] is None:
+                raise GenipeError("chr25 requires '--sample-PAR" + i + "'")
+            if not os.path.isfile(vars(args)["sample_par" + i]):
+                raise GenipeError(
+                    "{}: no such file".format(vars(args)["sample_par" + i])
+                )
+
     # The final chromosomal requirement
     chrom_names = []
     args.required_chrom = tuple(sorted(args.required_chrom))
@@ -374,10 +402,6 @@ def check_args(args):
             continue
         chrom_names.append(chrom)
     args.required_chrom_names = tuple(chrom_names)
-
-    # Checking IMPUTE2's sample file
-    if not os.path.isfile(args.sample_file):
-        raise GenipeError("{}: no such file".format(args.sample_file))
 
     # Checking if bgzip is installed, if asking for compression
     if args.bgzip:

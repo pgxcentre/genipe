@@ -983,22 +983,26 @@ def check_strand(required_chrom, prefix, id_suffix, db_name, options,
         map_filename = options.map_template.format(chrom=chrom)
         hap_filename = options.hap_template.format(chrom=chrom)
         legend_filename = options.legend_template.format(chrom=chrom)
+        sample_filename = options.sample_file.format(chrom=chrom)
 
         # The specific reference files for the chromosome 23
         if chrom == 23:
             map_filename = options.map_chr23
             hap_filename = options.hap_chr23
             legend_filename = options.legend_chr23
+            sample_filename = options.sample_chr23
 
         elif chrom == "25_1":
             map_filename = options.map_par1
             hap_filename = options.hap_par1
             legend_filename = options.legend_par1
+            sample_filename = options.sample_par1
 
         elif chrom == "25_2":
             map_filename = options.map_par2
             hap_filename = options.hap_par2
             legend_filename = options.legend_par2
+            sample_filename = options.sample_par2
 
         remaining_command = [
             "-B", prefix.format(chrom=chrom),
@@ -1006,7 +1010,7 @@ def check_strand(required_chrom, prefix, id_suffix, db_name, options,
             "--input-ref",
             hap_filename,
             legend_filename,
-            options.sample_file,
+            sample_filename,
             "--output-log", c_prefix,
         ]
         commands_info.append({

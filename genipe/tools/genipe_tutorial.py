@@ -6,6 +6,8 @@
 # http://creativecommons.org/licenses/by-nc/4.0/ or send a letter to Creative
 # Commons, PO Box 1866, Mountain View, CA 94042, USA.
 
+"""Prepare a directory for the tutorial."""
+
 
 import os
 import sys
@@ -15,12 +17,14 @@ import logging
 import zipfile
 import argparse
 import platform
+from shlex import quote
 from glob import glob
-from urllib.request import urlretrieve
 from tempfile import TemporaryDirectory
 from distutils.spawn import find_executable
-from urllib.error import HTTPError, URLError
 from subprocess import check_call, CalledProcessError
+
+from urllib.request import urlretrieve
+from urllib.error import HTTPError, URLError
 
 from .. import __version__
 from ..error import GenipeError
@@ -83,7 +87,7 @@ def main(args=None):
         args = parse_args(parser, args)
 
         # Let's start
-        logger.info("Preparing '{}' for genipe tutorial".format(args.path))
+        logger.info("Preparing '%s' for genipe tutorial", args.path)
         is_ok = input("Proceed (y/n)? ").upper()
         if is_ok != "Y":
             raise KeyboardInterrupt
@@ -91,8 +95,8 @@ def main(args=None):
         # Getting the system type and architecture
         logger.info("Inferring operating system and architecture")
         os_name, architecture = get_os_info()
-        logger.info("  - " + os_name)
-        logger.info("  - " + architecture + " bits")
+        logger.info("  - %s", os_name)
+        logger.info("  - %s", architecture + " bits")
 
         # Creating the directories (if required)
         if not os.path.isdir(args.path):
@@ -166,18 +170,19 @@ def main(args=None):
         else:
             logger.info("Genotypes already downloaded")
 
-        # Downloading IMPUTE2 reference files
-        has_impute2_ref = check_files(
-            os.path.join(args.path, "1000GP_Phase3", "genipe_tut_done"),
-        )
-        if not has_impute2_ref:
-            logger.info("Downloading IMPUTE2's reference files")
-            get_impute2_ref(args.path)
-        else:
-            logger.info("Impute2 reference files already downloaded")
+        # Downloading IMPUTE2 reference files if none are supplied
+        if args.impute2_path is None:
+            has_impute2_ref = check_files(
+                os.path.join(args.path, "1000GP_Phase3", "genipe_tut_done"),
+            )
+            if not has_impute2_ref:
+                logger.info("Downloading IMPUTE2's reference files")
+                get_impute2_ref(args.path)
+            else:
+                logger.info("Impute2 reference files already downloaded")
 
         # Generating the bash script
-        generate_bash(args.path)
+        generate_bash(args.path, args.impute2_path)
 
     # Catching the Ctrl^C
     except KeyboardInterrupt:
@@ -185,42 +190,51 @@ def main(args=None):
         sys.exit(0)
 
     # Catching the GenipeError
-    except GenipeError as e:
-        logger.error(e)
-        parser.error(e.message)
+    except GenipeError as error:
+        logger.error(error)
+        parser.error(error.message)
 
-    except Exception as e:
-        logger.error(e)
+    except Exception as error:
+        logger.error(error)
         raise
 
 
-def generate_bash(path):
+def generate_bash(path, impute2_path):
     """Generates a bash script to launch the imputation pipeline.
 
     Args:
         path (str): the path to write the bash script
+        impute2_path (str): the path to already existing IMPUTE2 reference
 
     """
     fn = os.path.join(path, "execute.sh")
     path = os.path.abspath(path)
+
+    if impute2_path is None:
+        impute2_path = os.path.join(path, "1000GP_Phase3")
+
     with open(fn, "w") as f:
         f.write(_SCRIPT.format(
             path=path,
-            genotypes_prefix=os.path.join(path, "data",
-                                          "hapmap_CEU_r23a_hg19"),
-            shapeit_bin=os.path.join(path, "bin", "shapeit"),
-            impute2_bin=os.path.join(path, "bin", "impute2"),
-            plink_bin=os.path.join(path, "bin", "plink"),
-            hg19_fasta=os.path.join(path, "hg19", "hg19.fasta"),
-            hap_template=os.path.join(path, "1000GP_Phase3",
-                                      "1000GP_Phase3_chr{chrom}.hap.gz"),
-            legend_template=os.path.join(path, "1000GP_Phase3",
-                                         "1000GP_Phase3_chr{chrom}.legend.gz"),
-            map_template=os.path.join(path, "1000GP_Phase3",
-                                      "genetic_map_chr{chrom}_combined_b37"
-                                      ".txt"),
-            sample_file=os.path.join(path, "1000GP_Phase3",
-                                     "1000GP_Phase3.sample"),
+            genotypes_prefix=quote(
+                os.path.join(path, "data", "hapmap_CEU_r23a_hg19"),
+            ),
+            shapeit_bin=quote(os.path.join(path, "bin", "shapeit")),
+            impute2_bin=quote(os.path.join(path, "bin", "impute2")),
+            plink_bin=quote(os.path.join(path, "bin", "plink")),
+            hg19_fasta=quote(os.path.join(path, "hg19", "hg19.fasta")),
+            hap_template=quote(os.path.join(
+                impute2_path, "1000GP_Phase3_chr{chrom}.hap.gz",
+            )),
+            legend_template=quote(os.path.join(
+                impute2_path, "1000GP_Phase3_chr{chrom}.legend.gz",
+            )),
+            map_template=quote(os.path.join(
+                impute2_path, "genetic_map_chr{chrom}_combined_b37.txt",
+            )),
+            sample_file=quote(
+                os.path.join(impute2_path, "1000GP_Phase3.sample"),
+            ),
         ))
 
     # Making the script executable
@@ -280,7 +294,7 @@ def get_impute2_ref(path):
     filename = "1000GP_Phase3.tgz"
 
     # Downloading Impute2 in a temporary directory
-    logger.info("  - " + filename)
+    logger.info("  - %s", filename)
     tar_path = os.path.join(path, filename)
     download_file(url.format(filename=filename), tar_path)
 
@@ -316,7 +330,7 @@ def get_genotypes(path):
     filename = "hapmap_CEU_r23a_hg19.tar.bz2"
 
     # Downloading genotypes in a temporary directory
-    logger.info("  - " + filename)
+    logger.info("  - %s", filename)
     with TemporaryDirectory() as tmpdir:
         tar_path = os.path.join(tmpdir, filename)
         download_file(url.format(filename=filename), tar_path)
@@ -354,7 +368,7 @@ def get_hg19(path):
     filename = "hg19.tar.bz2"
 
     # Downloading hg19 in a temporary directory
-    logger.info("  - " + filename)
+    logger.info("  - %s", filename)
     with TemporaryDirectory() as tmpdir:
         tar_path = os.path.join(tmpdir, filename)
         download_file(url.format(filename=filename), tar_path)
@@ -392,7 +406,7 @@ def get_plink(os_name, arch, path):
     """
     system_plink = find_executable("plink")
     if system_plink is not None:
-        logger.info("  - Copying Plink from {}".format(system_plink))
+        logger.info("  - Copying Plink from %s", system_plink)
         shutil.copy(system_plink, path, follow_symlinks=True)
 
     else:
@@ -410,7 +424,7 @@ def get_plink(os_name, arch, path):
                               "{} {} bits".format(os_name, arch))
 
         # Downloading Plink in a temporary directory
-        logger.info("  - " + filename)
+        logger.info("  - %s", filename)
         with TemporaryDirectory() as tmpdir:
             zip_path = os.path.join(tmpdir, filename)
             download_file(url.format(filename=filename), zip_path)
@@ -450,7 +464,7 @@ def get_impute2(os_name, arch, path):
     """
     system_impute2 = find_executable("impute2")
     if system_impute2 is not None:
-        logger.info("  - Copying impute2 from {}".format(system_impute2))
+        logger.info("  - Copying impute2 from %s", system_impute2)
         shutil.copy(system_impute2, path, follow_symlinks=True)
 
     else:
@@ -468,7 +482,7 @@ def get_impute2(os_name, arch, path):
                               "{} {} bits".format(os_name, arch))
 
         # Downloading Impute2 in a temporary directory
-        logger.info("  - " + filename)
+        logger.info("  - %s", filename)
         with TemporaryDirectory() as tmpdir:
             tar_path = os.path.join(tmpdir, filename)
             download_file(url.format(filename=filename), tar_path)
@@ -507,7 +521,7 @@ def get_shapeit(os_name, arch, path):
     """
     system_shapeit = find_executable("shapeit")
     if system_shapeit is not None:
-        logger.info("  - Copying shapeit from {}".format(system_shapeit))
+        logger.info("  - Copying shapeit from %s", system_shapeit)
         shutil.copy(system_shapeit, path, follow_symlinks=True)
 
     else:
@@ -526,7 +540,7 @@ def get_shapeit(os_name, arch, path):
                               "{} {} bits".format(os_name, arch))
 
         # Downloading shapeit in a temporary directory
-        logger.info("  - " + filename)
+        logger.info("  - %s", filename)
         with TemporaryDirectory() as tmpdir:
             tar_path = os.path.join(tmpdir, filename)
             download_file(url.format(filename=filename), tar_path)
@@ -601,12 +615,16 @@ def parse_args(parser, args=None):
     )
 
     parser.add_argument(
-        "--tutorial-path",
-        type=str,
-        metavar="PATH",
-        dest="path",
+        "--tutorial-path", type=str, metavar="PATH", dest="path",
         default=os.path.join(os.environ["HOME"], "genipe_tutorial"),
         help="The path where the tutorial will be run. [%(default)s]",
+    )
+    parser.add_argument(
+        "--impute2-reference-path", type=str, metavar="PATH",
+        dest="impute2_path",
+        help="Skip the reference download and uses the files in this "
+             "directory. Note that the name of the files should be "
+             "'1000GP_Phase3_chr{chrom}.*'",
     )
 
     if args is not None:
