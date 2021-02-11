@@ -10,5 +10,6 @@ conda_dist
 
 genipe/version.py
 
+.tox
 .coverage
 htmlcov
