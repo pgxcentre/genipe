@@ -29,7 +29,7 @@ Full documentation is available at
 Version 1.5.0 of `genipe` should work with the most recent versions of the
 packages.
 
-We recommend installing the package in a Python 3.6 (or latest) virtual
+We recommend installing the package in a Python 3.7 (or latest) virtual
 environment. There are two ways to install: `pip` or `conda`.
 
 ```bash
