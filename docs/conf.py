@@ -293,7 +293,7 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {
-    'https://docs.python.org/3.4': None,
+    'https://docs.python.org/3': None,
     'numpy': ('http://docs.scipy.org/doc/numpy/', None),
     'pandas': ('http://pandas.pydata.org/pandas-docs/stable/', None),
     'jinja2': ('http://jinja.pocoo.org/docs', None),
