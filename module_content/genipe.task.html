@@ -2,26 +2,27 @@
 
 <!doctype html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>genipe.task package &#8212; genipe 1.4.2 documentation</title>
-    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>genipe.task package &#8212; genipe 1.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="genipe.tests package" href="genipe.tests.html" />
     <link rel="prev" title="genipe.reporting package" href="genipe.reporting.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
-    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -39,15 +40,59 @@
         <li class="right" >
           <a href="genipe.reporting.html" title="genipe.reporting package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &#187;</li> 
+          <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">genipe.task package</a></li> 
       </ul>
-    </div>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="genipe-task-package">
+<h1>genipe.task package<a class="headerlink" href="#genipe-task-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-genipe.task">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-genipe.task" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-genipe.task.launcher">
+<span id="genipe-task-launcher-module"></span><h2>genipe.task.launcher module<a class="headerlink" href="#module-genipe.task.launcher" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="genipe.task.launcher.launch_tasks">
+<code class="sig-prename descclassname">genipe.task.launcher.</code><code class="sig-name descname">launch_tasks</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">to_process</span></em>, <em class="sig-param"><span class="n">nb_threads</span></em>, <em class="sig-param"><span class="n">check_rc</span><span class="o">=</span><span class="default_value">True</span></em>, <em class="sig-param"><span class="n">hpc</span><span class="o">=</span><span class="default_value">False</span></em>, <em class="sig-param"><span class="n">hpc_options</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">out_dir</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">preamble</span><span class="o">=</span><span class="default_value">''</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/task/launcher.html#launch_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.task.launcher.launch_tasks" title="Permalink to this definition">¶</a></dt>
+<dd><p>Executes commands.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>to_process</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – a list of tasks to process</p></li>
+<li><p><strong>nb_threads</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the number of processes that is required</p></li>
+<li><p><strong>check_rc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – whether or not to check the return code of the task</p></li>
+<li><p><strong>hpc</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – whether or not to execute the tasks on a cluster (DRMAA)</p></li>
+<li><p><strong>hpc_options</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – the DRMAA options</p></li>
+<li><p><strong>out_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the output directory</p></li>
+<li><p><strong>preamble</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the script preamble (for DRMAA)</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <h3><a href="../index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">genipe.task package</a><ul>
 <li><a class="reference internal" href="#module-genipe.task">Module contents</a></li>
@@ -71,63 +116,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <div class="section" id="genipe-task-package">
-<h1>genipe.task package<a class="headerlink" href="#genipe-task-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-genipe.task">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-genipe.task" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-genipe.task.launcher">
-<span id="genipe-task-launcher-module"></span><h2>genipe.task.launcher module<a class="headerlink" href="#module-genipe.task.launcher" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="genipe.task.launcher.launch_tasks">
-<code class="descclassname">genipe.task.launcher.</code><code class="descname">launch_tasks</code><span class="sig-paren">(</span><em>to_process</em>, <em>nb_threads</em>, <em>check_rc=True</em>, <em>hpc=False</em>, <em>hpc_options=None</em>, <em>out_dir=None</em>, <em>preamble=''</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/task/launcher.html#launch_tasks"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.task.launcher.launch_tasks" title="Permalink to this definition">¶</a></dt>
-<dd><p>Executes commands.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>to_process</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – a list of tasks to process</li>
-<li><strong>nb_threads</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a>) – the number of processes that is required</li>
-<li><strong>check_rc</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – whether or not to check the return code of the task</li>
-<li><strong>hpc</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – whether or not to execute the tasks on a cluster (DRMAA)</li>
-<li><strong>hpc_options</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – the DRMAA options</li>
-<li><strong>out_dir</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the output directory</li>
-<li><strong>preamble</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the script preamble (for DRMAA)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-</div>
-
-
-          </div>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -147,17 +144,18 @@
         <li class="right" >
           <a href="genipe.reporting.html" title="genipe.reporting package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &#187;</li> 
+          <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">genipe.task package</a></li> 
       </ul>
     </div>
 
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
     </div>
 
 <script>

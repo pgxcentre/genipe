@@ -2,26 +2,27 @@
 
 <!doctype html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>genipe.formats package &#8212; genipe 1.4.2 documentation</title>
-    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>genipe.formats package &#8212; genipe 1.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="genipe.reporting package" href="genipe.reporting.html" />
     <link rel="prev" title="genipe.db package" href="genipe.db.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
-    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -39,15 +40,276 @@
         <li class="right" >
           <a href="genipe.db.html" title="genipe.db package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &#187;</li> 
+          <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">genipe.formats package</a></li> 
       </ul>
-    </div>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="genipe-formats-package">
+<h1>genipe.formats package<a class="headerlink" href="#genipe-formats-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-genipe.formats">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-genipe.formats" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-genipe.formats.impute2">
+<span id="genipe-formats-impute2-module"></span><h2>genipe.formats.impute2 module<a class="headerlink" href="#module-genipe.formats.impute2" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="genipe.formats.impute2.additive_from_probs">
+<code class="sig-prename descclassname">genipe.formats.impute2.</code><code class="sig-name descname">additive_from_probs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a1</span></em>, <em class="sig-param"><span class="n">a2</span></em>, <em class="sig-param"><span class="n">probs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/impute2.html#additive_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.impute2.additive_from_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Compute additive format from probability matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the a1 allele</p></li>
+<li><p><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the a2 allele</p></li>
+<li><p><strong>probs</strong> (<em>numpy.array</em>) – the probability matrix</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>the additive format computed from the probabilities, the minor</dt><dd><p>and major allele.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)">tuple</a></p>
+</dd>
+</dl>
+<p>The encoding is as follow: 0 when homozygous major allele, 1 when
+heterozygous and 2 when homozygous minor allele.</p>
+<p>The minor and major alleles are inferred by looking at the MAF. By default,
+we think a2 is the minor allele, but flip if required.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.formats.impute2.dosage_from_probs">
+<code class="sig-prename descclassname">genipe.formats.impute2.</code><code class="sig-name descname">dosage_from_probs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">homo_probs</span></em>, <em class="sig-param"><span class="n">hetero_probs</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">2</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/impute2.html#dosage_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.impute2.dosage_from_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes dosage from probability matrix (for the minor allele).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>homo_probs</strong> (<em>numpy.array</em>) – the probabilities for the homozygous genotype</p></li>
+<li><p><strong>hetero_probs</strong> (<em>numpy.array</em>) – the probabilities for the heterozygous
+genotype</p></li>
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the scale value</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the dosage computed from the probabilities</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.formats.impute2.get_good_probs">
+<code class="sig-prename descclassname">genipe.formats.impute2.</code><code class="sig-name descname">get_good_probs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob_matrix</span></em>, <em class="sig-param"><span class="n">min_prob</span><span class="o">=</span><span class="default_value">0.9</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/impute2.html#get_good_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.impute2.get_good_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gathers good imputed genotypes (&gt;= probability threshold).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prob_matrix</strong> (<em>numpy.array</em>) – the probability matrix</p></li>
+<li><p><strong>min_prob</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the probability threshold</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>a mask array containing the positions where the</dt><dd><p>probabilities are equal or higher to the threshold</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.formats.impute2.hard_calls_from_probs">
+<code class="sig-prename descclassname">genipe.formats.impute2.</code><code class="sig-name descname">hard_calls_from_probs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">a1</span></em>, <em class="sig-param"><span class="n">a2</span></em>, <em class="sig-param"><span class="n">probs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/impute2.html#hard_calls_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.impute2.hard_calls_from_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes hard calls from probability matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the first allele</p></li>
+<li><p><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the second allele</p></li>
+<li><p><strong>probs</strong> (<em>numpy.array</em>) – the probability matrix</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the hard calls computed from the probabilities</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.formats.impute2.maf_dosage_from_probs">
+<code class="sig-prename descclassname">genipe.formats.impute2.</code><code class="sig-name descname">maf_dosage_from_probs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob_matrix</span></em>, <em class="sig-param"><span class="n">a1</span></em>, <em class="sig-param"><span class="n">a2</span></em>, <em class="sig-param"><span class="n">scale</span><span class="o">=</span><span class="default_value">2</span></em>, <em class="sig-param"><span class="n">gender</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">site_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/impute2.html#maf_dosage_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.impute2.maf_dosage_from_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes MAF and dosage vector from probs matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prob_matrix</strong> (<em>numpy.array</em>) – the probability matrix</p></li>
+<li><p><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the first allele</p></li>
+<li><p><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the second allele</p></li>
+<li><p><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the scale value</p></li>
+<li><p><strong>gender</strong> (<em>numpy.array</em>) – the gender of the samples</p></li>
+<li><p><strong>site_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name for this site</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>a tuple containing four values: the dosage vector, the minor</dt><dd><p>allele frequency, the minor and the major allele.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)">tuple</a></p>
+</dd>
+</dl>
+<p>When ‘gender’ is not None, we assume that the MAF on chromosome X is
+required (hence, males count as 1, and females as 2 alleles). There is also
+an Exception raised if there are any heterozygous males.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.formats.impute2.maf_from_probs">
+<code class="sig-prename descclassname">genipe.formats.impute2.</code><code class="sig-name descname">maf_from_probs</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">prob_matrix</span></em>, <em class="sig-param"><span class="n">a1</span></em>, <em class="sig-param"><span class="n">a2</span></em>, <em class="sig-param"><span class="n">gender</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">site_name</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/impute2.html#maf_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.impute2.maf_from_probs" title="Permalink to this definition">¶</a></dt>
+<dd><p>Computes MAF from a probability matrix (and gender if chromosome X).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>prob_matrix</strong> (<em>numpy.array</em>) – the probability matrix</p></li>
+<li><p><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the first allele</p></li>
+<li><p><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the second allele</p></li>
+<li><p><strong>gender</strong> (<em>numpy.array</em>) – the gender of the samples</p></li>
+<li><p><strong>site_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name for this site</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>a tuple containing three values: the minor allele frequency, the</dt><dd><p>minor and the major allele.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)">tuple</a></p>
+</dd>
+</dl>
+<p>When ‘gender’ is not None, we assume that the MAF on chromosome X is
+required (hence, males count as 1, and females as 2 alleles). There is also
+an Exception raised if there are any heterozygous males.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.formats.impute2.matrix_from_line">
+<code class="sig-prename descclassname">genipe.formats.impute2.</code><code class="sig-name descname">matrix_from_line</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">impute2_line</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/impute2.html#matrix_from_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.impute2.matrix_from_line" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates the probability matrix from an IMPUTE2 line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>impute2_line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – a single line from IMPUTE2’s result (split by
+space)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>a tuple containing the marker’s information (first five values</dt><dd><p>of the line) and the matrix probability (numpy array, float)</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)">tuple</a></p>
+</dd>
+</dl>
+<p>The shape of the matrix is n x 3 where n is the number of samples.
+The columns represent the probability for AA, AB and BB.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">impute2_line</span></code> variable is a list of str, corresponding to a line
+from the IMPUTE2’s result, split by space.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-genipe.formats.index">
+<span id="genipe-formats-index-module"></span><h2>genipe.formats.index module<a class="headerlink" href="#module-genipe.formats.index" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="genipe.formats.index.get_index">
+<code class="sig-prename descclassname">genipe.formats.index.</code><code class="sig-name descname">get_index</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">cols</span></em>, <em class="sig-param"><span class="n">names</span></em>, <em class="sig-param"><span class="n">sep</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/index.html#get_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.index.get_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>Restores the index for a given file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the file</p></li>
+<li><p><strong>cols</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – a list containing column to keep (as int)</p></li>
+<li><p><strong>names</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – the name corresponding to the column to keep (as str)</p></li>
+<li><p><strong>sep</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the field separator</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the index</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.2)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+<p>If the index doesn’t exist for the file, it is first created.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.formats.index.get_open_func">
+<code class="sig-prename descclassname">genipe.formats.index.</code><code class="sig-name descname">get_open_func</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">return_fmt</span><span class="o">=</span><span class="default_value">False</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/index.html#get_open_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.index.get_open_func" title="Permalink to this definition">¶</a></dt>
+<dd><p>Get the opening function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the file</p></li>
+<li><p><strong>return_fmt</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – if the file format needs to be returned</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt>either a tuple containing two elements: a boolean telling if the</dt><dd><p>format is bgzip, and the opening function.</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)">tuple</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <h3><a href="../index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">genipe.formats package</a><ul>
 <li><a class="reference internal" href="#module-genipe.formats">Module contents</a></li>
@@ -72,314 +334,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <div class="section" id="genipe-formats-package">
-<h1>genipe.formats package<a class="headerlink" href="#genipe-formats-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-genipe.formats">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-genipe.formats" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-genipe.formats.impute2">
-<span id="genipe-formats-impute2-module"></span><h2>genipe.formats.impute2 module<a class="headerlink" href="#module-genipe.formats.impute2" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="genipe.formats.impute2.matrix_from_line">
-<code class="descclassname">genipe.formats.impute2.</code><code class="descname">matrix_from_line</code><span class="sig-paren">(</span><em>impute2_line</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/impute2.html#matrix_from_line"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.impute2.matrix_from_line" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates the probability matrix from an IMPUTE2 line.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>impute2_line</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – a single line from IMPUTE2’s result (split by
-space)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
-<dt>a tuple containing the marker’s information (first five values</dt>
-<dd>of the line) and the matrix probability (numpy array, float)</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#tuple" title="(in Python v3.4)">tuple</a></td>
-</tr>
-</tbody>
-</table>
-<p>The shape of the matrix is n x 3 where n is the number of samples.
-The columns represent the probability for AA, AB and BB.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal notranslate"><span class="pre">impute2_line</span></code> variable is a list of str, corresponding to a line
-from the IMPUTE2’s result, split by space.</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.formats.impute2.get_good_probs">
-<code class="descclassname">genipe.formats.impute2.</code><code class="descname">get_good_probs</code><span class="sig-paren">(</span><em>prob_matrix</em>, <em>min_prob=0.9</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/impute2.html#get_good_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.impute2.get_good_probs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gathers good imputed genotypes (&gt;= probability threshold).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>prob_matrix</strong> (<em>numpy.array</em>) – the probability matrix</li>
-<li><strong>min_prob</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the probability threshold</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt>a mask array containing the positions where the</dt>
-<dd><p class="first last">probabilities are equal or higher to the threshold</p>
-</dd>
-</dl>
-</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.formats.impute2.maf_from_probs">
-<code class="descclassname">genipe.formats.impute2.</code><code class="descname">maf_from_probs</code><span class="sig-paren">(</span><em>prob_matrix</em>, <em>a1</em>, <em>a2</em>, <em>gender=None</em>, <em>site_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/impute2.html#maf_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.impute2.maf_from_probs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes MAF from a probability matrix (and gender if chromosome X).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>prob_matrix</strong> (<em>numpy.array</em>) – the probability matrix</li>
-<li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the first allele</li>
-<li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the second allele</li>
-<li><strong>gender</strong> (<em>numpy.array</em>) – the gender of the samples</li>
-<li><strong>site_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name for this site</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt>a tuple containing three values: the minor allele frequency, the</dt>
-<dd><p class="first last">minor and the major allele.</p>
-</dd>
-</dl>
-</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#tuple" title="(in Python v3.4)">tuple</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-<p>When ‘gender’ is not None, we assume that the MAF on chromosome X is
-required (hence, males count as 1, and females as 2 alleles). There is also
-an Exception raised if there are any heterozygous males.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.formats.impute2.dosage_from_probs">
-<code class="descclassname">genipe.formats.impute2.</code><code class="descname">dosage_from_probs</code><span class="sig-paren">(</span><em>homo_probs</em>, <em>hetero_probs</em>, <em>scale=2</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/impute2.html#dosage_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.impute2.dosage_from_probs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes dosage from probability matrix (for the minor allele).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>homo_probs</strong> (<em>numpy.array</em>) – the probabilities for the homozygous genotype</li>
-<li><strong>hetero_probs</strong> (<em>numpy.array</em>) – the probabilities for the heterozygous
-genotype</li>
-<li><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a>) – the scale value</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the dosage computed from the probabilities</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.formats.impute2.hard_calls_from_probs">
-<code class="descclassname">genipe.formats.impute2.</code><code class="descname">hard_calls_from_probs</code><span class="sig-paren">(</span><em>a1</em>, <em>a2</em>, <em>probs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/impute2.html#hard_calls_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.impute2.hard_calls_from_probs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes hard calls from probability matrix.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the first allele</li>
-<li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the second allele</li>
-<li><strong>probs</strong> (<em>numpy.array</em>) – the probability matrix</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the hard calls computed from the probabilities</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array</p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.formats.impute2.maf_dosage_from_probs">
-<code class="descclassname">genipe.formats.impute2.</code><code class="descname">maf_dosage_from_probs</code><span class="sig-paren">(</span><em>prob_matrix</em>, <em>a1</em>, <em>a2</em>, <em>scale=2</em>, <em>gender=None</em>, <em>site_name=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/impute2.html#maf_dosage_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.impute2.maf_dosage_from_probs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Computes MAF and dosage vector from probs matrix.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>prob_matrix</strong> (<em>numpy.array</em>) – the probability matrix</li>
-<li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the first allele</li>
-<li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the second allele</li>
-<li><strong>scale</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a>) – the scale value</li>
-<li><strong>gender</strong> (<em>numpy.array</em>) – the gender of the samples</li>
-<li><strong>site_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name for this site</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt>a tuple containing four values: the dosage vector, the minor</dt>
-<dd><p class="first last">allele frequency, the minor and the major allele.</p>
-</dd>
-</dl>
-</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#tuple" title="(in Python v3.4)">tuple</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-<p>When ‘gender’ is not None, we assume that the MAF on chromosome X is
-required (hence, males count as 1, and females as 2 alleles). There is also
-an Exception raised if there are any heterozygous males.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.formats.impute2.additive_from_probs">
-<code class="descclassname">genipe.formats.impute2.</code><code class="descname">additive_from_probs</code><span class="sig-paren">(</span><em>a1</em>, <em>a2</em>, <em>probs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/impute2.html#additive_from_probs"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.impute2.additive_from_probs" title="Permalink to this definition">¶</a></dt>
-<dd><p>Compute additive format from probability matrix.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>a1</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the a1 allele</li>
-<li><strong>a2</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the a2 allele</li>
-<li><strong>probs</strong> (<em>numpy.array</em>) – the probability matrix</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt>the additive format computed from the probabilities, the minor</dt>
-<dd><p class="first last">and major allele.</p>
-</dd>
-</dl>
-</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#tuple" title="(in Python v3.4)">tuple</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-<p>The encoding is as follow: 0 when homozygous major allele, 1 when
-heterozygous and 2 when homozygous minor allele.</p>
-<p>The minor and major alleles are inferred by looking at the MAF. By default,
-we think a2 is the minor allele, but flip if required.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-genipe.formats.index">
-<span id="genipe-formats-index-module"></span><h2>genipe.formats.index module<a class="headerlink" href="#module-genipe.formats.index" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="genipe.formats.index.get_index">
-<code class="descclassname">genipe.formats.index.</code><code class="descname">get_index</code><span class="sig-paren">(</span><em>fn</em>, <em>cols</em>, <em>names</em>, <em>sep</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/index.html#get_index"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.index.get_index" title="Permalink to this definition">¶</a></dt>
-<dd><p>Restores the index for a given file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the file</li>
-<li><strong>cols</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – a list containing column to keep (as int)</li>
-<li><strong>names</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the name corresponding to the column to keep (as str)</li>
-<li><strong>sep</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the field separator</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the index</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)">pandas.DataFrame</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-<p>If the index doesn’t exist for the file, it is first created.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.formats.index.get_open_func">
-<code class="descclassname">genipe.formats.index.</code><code class="descname">get_open_func</code><span class="sig-paren">(</span><em>fn</em>, <em>return_fmt=False</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/formats/index.html#get_open_func"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.formats.index.get_open_func" title="Permalink to this definition">¶</a></dt>
-<dd><p>Get the opening function.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the file</li>
-<li><strong>return_fmt</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – if the file format needs to be returned</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt>either a tuple containing two elements: a boolean telling if the</dt>
-<dd><p class="first last">format is bgzip, and the opening function.</p>
-</dd>
-</dl>
-</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#tuple" title="(in Python v3.4)">tuple</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-</div>
-
-
-          </div>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -399,17 +362,18 @@ we think a2 is the minor allele, but flip if required.</p>
         <li class="right" >
           <a href="genipe.db.html" title="genipe.db package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &#187;</li> 
+          <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">genipe.formats package</a></li> 
       </ul>
     </div>
 
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
     </div>
 
 <script>

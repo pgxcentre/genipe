@@ -9,13 +9,13 @@ Installation
 Requirements
 -------------
 
-`genipe` requires a standard Python 3.4 (or latest) installation with the
+`genipe` requires a standard Python 3.7 (or latest) installation with the
 following modules:
 
-* ``numpy`` version 1.11.3 or latest
-* ``jinja2`` version 2.9 or latest
-* ``pandas`` version 0.19.2 or latest
-* ``setuptools`` version 12.0.5 or latest
+* ``numpy``
+* ``jinja2``
+* ``pandas``
+* ``setuptools``
 
 The following modules are optional (required for statistical analysis and data
 management):
@@ -37,7 +37,7 @@ management):
 
 .. note::
 
-   Only Python version 3.4 and higher are supported.
+   Only Python version 3.7 and higher are supported.
 
 
 .. _install-virt:
@@ -51,7 +51,7 @@ Using python's pyvenv
 ^^^^^^^^^^^^^^^^^^^^^^
 
 The following commands should successfully create a virtual environment and
-activate it, as long as Python 3.4 (or latest) was previously installed on the
+activate it, as long as Python 3.7 (or latest) was previously installed on the
 machine.
 
 .. code-block:: bash

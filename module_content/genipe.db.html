@@ -2,26 +2,27 @@
 
 <!doctype html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>genipe.db package &#8212; genipe 1.4.2 documentation</title>
-    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>genipe.db package &#8212; genipe 1.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="genipe.formats package" href="genipe.formats.html" />
     <link rel="prev" title="genipe.config package" href="genipe.config.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
-    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -39,15 +40,200 @@
         <li class="right" >
           <a href="genipe.config.html" title="genipe.config package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &#187;</li> 
+          <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">genipe.db package</a></li> 
       </ul>
-    </div>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="genipe-db-package">
+<h1>genipe.db package<a class="headerlink" href="#genipe-db-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-genipe.db">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-genipe.db" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-genipe.db.utils">
+<span id="genipe-db-utils-module"></span><h2>genipe.db.utils module<a class="headerlink" href="#module-genipe.db.utils" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="genipe.db.utils.check_task_completion">
+<code class="sig-prename descclassname">genipe.db.utils.</code><code class="sig-name descname">check_task_completion</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">task_id</span></em>, <em class="sig-param"><span class="n">db_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#check_task_completion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.check_task_completion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the task exists and if it’s completed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the ID of the task</p></li>
+<li><p><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the database (usually a file)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">True</span></code> if the task exists <strong>and</strong> is completed, <code class="docutils literal notranslate"><span class="pre">False</span></code></dt><dd><p>otherwise</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A task is completed if the column <code class="docutils literal notranslate"><span class="pre">completed</span></code> equals 1. It is not
+completed otherwise.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.db.utils.create_task_db">
+<code class="sig-prename descclassname">genipe.db.utils.</code><code class="sig-name descname">create_task_db</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">out_dir</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#create_task_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.create_task_db" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates a task DB.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>out_dir</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the directory where the DB will be saved</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the name of the file containing the DB</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
+</dd>
+</dl>
+<p>A SQLITE database will be created in the <code class="docutils literal notranslate"><span class="pre">out_dir</span></code> directory (with the
+name <code class="docutils literal notranslate"><span class="pre">tasks.db</span></code>. The <code class="docutils literal notranslate"><span class="pre">genipe_task</span></code> table is automatically created.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.db.utils.create_task_entry">
+<code class="sig-prename descclassname">genipe.db.utils.</code><code class="sig-name descname">create_task_entry</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">task_id</span></em>, <em class="sig-param"><span class="n">db_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#create_task_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.create_task_entry" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates (or updates) a task.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the ID of the task</p></li>
+<li><p><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the database (usually a file)</p></li>
+</ul>
+</dd>
+</dl>
+<p>If the task ID doesn’t exist in the DB, a new one will be created with the
+current time as launch and start time.</p>
+<p>If the task ID already exist, it is presumed that the task will be
+relaunched, hence the database entry is updated to the current time (for
+launch and start time) and <code class="docutils literal notranslate"><span class="pre">completed</span></code> is set to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.db.utils.get_all_runtimes">
+<code class="sig-prename descclassname">genipe.db.utils.</code><code class="sig-name descname">get_all_runtimes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">db_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#get_all_runtimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.get_all_runtimes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets all tasks execution time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the DB (usually a file)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the execution time (seconds) of all the tasks in the database</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)">dict</a></p>
+</dd>
+</dl>
+<p>This function returns a dictionary of task ID (keys) pointing to execution
+time (in second) (int).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.db.utils.get_task_runtime">
+<code class="sig-prename descclassname">genipe.db.utils.</code><code class="sig-name descname">get_task_runtime</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">task_id</span></em>, <em class="sig-param"><span class="n">db_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#get_task_runtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.get_task_runtime" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the task run time.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the ID of the task</p></li>
+<li><p><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the DB (usually a file)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the execution time of the task (in seconds)</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)">int</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.db.utils.mark_drmaa_task_completed">
+<code class="sig-prename descclassname">genipe.db.utils.</code><code class="sig-name descname">mark_drmaa_task_completed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">task_id</span></em>, <em class="sig-param"><span class="n">launch_time</span></em>, <em class="sig-param"><span class="n">start_time</span></em>, <em class="sig-param"><span class="n">end_time</span></em>, <em class="sig-param"><span class="n">db_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#mark_drmaa_task_completed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.mark_drmaa_task_completed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marks a task run by DRMAA as completed (while updating times).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the ID of the task</p></li>
+<li><p><strong>launch_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the launch time (according to DRMAA)</p></li>
+<li><p><strong>start_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the start time (according to DRMAA)</p></li>
+<li><p><strong>end_time</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the end time (according to DRMAA)</p></li>
+<li><p><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the DB (usually a file)</p></li>
+</ul>
+</dd>
+</dl>
+<p>The task entry is updated with the launch, start and end time. Those times
+come from the DRMAA library. The launch time is the time at which the task
+was launched to the scheduler. The start time correspond to the time that
+the scheduler started the job on the cluster. Finally, the end time is the
+time that the job was completed.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.db.utils.mark_task_completed">
+<code class="sig-prename descclassname">genipe.db.utils.</code><code class="sig-name descname">mark_task_completed</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">task_id</span></em>, <em class="sig-param"><span class="n">db_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#mark_task_completed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.mark_task_completed" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marks the task as completed.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the ID of the task</p></li>
+<li><p><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the DB (usually a file)</p></li>
+</ul>
+</dd>
+</dl>
+<p>The task entry is modified so that <code class="docutils literal notranslate"><span class="pre">completed=1</span></code> and the end time is
+updated to the current time.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.db.utils.mark_task_incomplete">
+<code class="sig-prename descclassname">genipe.db.utils.</code><code class="sig-name descname">mark_task_incomplete</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">task_id</span></em>, <em class="sig-param"><span class="n">db_name</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#mark_task_incomplete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.mark_task_incomplete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Marks a task as incomplete.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>task_id</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the ID of the task</p></li>
+<li><p><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the DB (usually a file)</p></li>
+</ul>
+</dd>
+</dl>
+<p>The task entry is set as incomplete by updating the <code class="docutils literal notranslate"><span class="pre">completed</span></code> value to
+<code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
+</dd></dl>
+
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <h3><a href="../index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">genipe.db package</a><ul>
 <li><a class="reference internal" href="#module-genipe.db">Module contents</a></li>
@@ -71,227 +257,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <div class="section" id="genipe-db-package">
-<h1>genipe.db package<a class="headerlink" href="#genipe-db-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-genipe.db">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-genipe.db" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="submodules">
-<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-genipe.db.utils">
-<span id="genipe-db-utils-module"></span><h2>genipe.db.utils module<a class="headerlink" href="#module-genipe.db.utils" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="genipe.db.utils.create_task_db">
-<code class="descclassname">genipe.db.utils.</code><code class="descname">create_task_db</code><span class="sig-paren">(</span><em>out_dir</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#create_task_db"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.create_task_db" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates a task DB.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>out_dir</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the directory where the DB will be saved</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the name of the file containing the DB</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)">str</a></td>
-</tr>
-</tbody>
-</table>
-<p>A SQLITE database will be created in the <code class="docutils literal notranslate"><span class="pre">out_dir</span></code> directory (with the
-name <code class="docutils literal notranslate"><span class="pre">tasks.db</span></code>. The <code class="docutils literal notranslate"><span class="pre">genipe_task</span></code> table is automatically created.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.db.utils.check_task_completion">
-<code class="descclassname">genipe.db.utils.</code><code class="descname">check_task_completion</code><span class="sig-paren">(</span><em>task_id</em>, <em>db_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#check_task_completion"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.check_task_completion" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if the task exists and if it’s completed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>task_id</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the ID of the task</li>
-<li><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the database (usually a file)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first"><dl class="docutils">
-<dt><code class="docutils literal notranslate"><span class="pre">True</span></code> if the task exists <strong>and</strong> is completed, <code class="docutils literal notranslate"><span class="pre">False</span></code></dt>
-<dd><p class="first last">otherwise</p>
-</dd>
-</dl>
-</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)">bool</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">A task is completed if the column <code class="docutils literal notranslate"><span class="pre">completed</span></code> equals 1. It is not
-completed otherwise.</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.db.utils.create_task_entry">
-<code class="descclassname">genipe.db.utils.</code><code class="descname">create_task_entry</code><span class="sig-paren">(</span><em>task_id</em>, <em>db_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#create_task_entry"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.create_task_entry" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates (or updates) a task.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>task_id</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the ID of the task</li>
-<li><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the database (usually a file)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>If the task ID doesn’t exist in the DB, a new one will be created with the
-current time as launch and start time.</p>
-<p>If the task ID already exist, it is presumed that the task will be
-relaunched, hence the database entry is updated to the current time (for
-launch and start time) and <code class="docutils literal notranslate"><span class="pre">completed</span></code> is set to <code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.db.utils.mark_task_completed">
-<code class="descclassname">genipe.db.utils.</code><code class="descname">mark_task_completed</code><span class="sig-paren">(</span><em>task_id</em>, <em>db_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#mark_task_completed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.mark_task_completed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Marks the task as completed.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>task_id</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the ID of the task</li>
-<li><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the DB (usually a file)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>The task entry is modified so that <code class="docutils literal notranslate"><span class="pre">completed=1</span></code> and the end time is
-updated to the current time.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.db.utils.mark_task_incomplete">
-<code class="descclassname">genipe.db.utils.</code><code class="descname">mark_task_incomplete</code><span class="sig-paren">(</span><em>task_id</em>, <em>db_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#mark_task_incomplete"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.mark_task_incomplete" title="Permalink to this definition">¶</a></dt>
-<dd><p>Marks a task as incomplete.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>task_id</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the ID of the task</li>
-<li><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the DB (usually a file)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>The task entry is set as incomplete by updating the <code class="docutils literal notranslate"><span class="pre">completed</span></code> value to
-<code class="docutils literal notranslate"><span class="pre">0</span></code>.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.db.utils.get_task_runtime">
-<code class="descclassname">genipe.db.utils.</code><code class="descname">get_task_runtime</code><span class="sig-paren">(</span><em>task_id</em>, <em>db_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#get_task_runtime"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.get_task_runtime" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the task run time.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>task_id</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the ID of the task</li>
-<li><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the DB (usually a file)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the execution time of the task (in seconds)</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)">int</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.db.utils.get_all_runtimes">
-<code class="descclassname">genipe.db.utils.</code><code class="descname">get_all_runtimes</code><span class="sig-paren">(</span><em>db_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#get_all_runtimes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.get_all_runtimes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets all tasks execution time.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the DB (usually a file)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the execution time (seconds) of all the tasks in the database</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)">dict</a></td>
-</tr>
-</tbody>
-</table>
-<p>This function returns a dictionary of task ID (keys) pointing to execution
-time (in second) (int).</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.db.utils.mark_drmaa_task_completed">
-<code class="descclassname">genipe.db.utils.</code><code class="descname">mark_drmaa_task_completed</code><span class="sig-paren">(</span><em>task_id</em>, <em>launch_time</em>, <em>start_time</em>, <em>end_time</em>, <em>db_name</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/db/utils.html#mark_drmaa_task_completed"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.db.utils.mark_drmaa_task_completed" title="Permalink to this definition">¶</a></dt>
-<dd><p>Marks a task run by DRMAA as completed (while updating times).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>task_id</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the ID of the task</li>
-<li><strong>launch_time</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the launch time (according to DRMAA)</li>
-<li><strong>start_time</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the start time (according to DRMAA)</li>
-<li><strong>end_time</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the end time (according to DRMAA)</li>
-<li><strong>db_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the DB (usually a file)</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>The task entry is updated with the launch, start and end time. Those times
-come from the DRMAA library. The launch time is the time at which the task
-was launched to the scheduler. The start time correspond to the time that
-the scheduler started the job on the cluster. Finally, the end time is the
-time that the job was completed.</p>
-</dd></dl>
-
-</div>
-</div>
-
-
-          </div>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -311,17 +285,18 @@ time that the job was completed.</p>
         <li class="right" >
           <a href="genipe.config.html" title="genipe.config package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &#187;</li> 
+          <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">genipe.db package</a></li> 
       </ul>
     </div>
 
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
     </div>
 
 <script>

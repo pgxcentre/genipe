@@ -2,26 +2,27 @@
 
 <!doctype html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>genipe package &#8212; genipe 1.4.2 documentation</title>
-    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>genipe package &#8212; genipe 1.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="genipe.config package" href="genipe.config.html" />
     <link rel="prev" title="genipe" href="modules.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
-    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -39,53 +40,12 @@
         <li class="right" >
           <a href="modules.html" title="genipe"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="modules.html" accesskey="U">genipe</a> &#187;</li> 
+          <li class="nav-item nav-item-2"><a href="modules.html" accesskey="U">genipe</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">genipe package</a></li> 
       </ul>
-    </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">genipe package</a><ul>
-<li><a class="reference internal" href="#module-genipe">Module contents</a></li>
-<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
-<li><a class="reference internal" href="#submodules">Submodules</a></li>
-<li><a class="reference internal" href="#module-genipe.error">genipe.error module</a></li>
-<li><a class="reference internal" href="#module-genipe.pipeline">genipe.pipeline module</a></li>
-<li><a class="reference internal" href="#module-genipe.version">genipe.version module</a></li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="modules.html"
-                        title="previous chapter">genipe</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="genipe.config.html"
-                        title="next chapter">genipe.config package</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/module_content/genipe.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
@@ -96,18 +56,16 @@
 <h1>genipe package<a class="headerlink" href="#genipe-package" title="Permalink to this headline">¶</a></h1>
 <div class="section" id="module-genipe">
 <span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-genipe" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
+<p>Genipe is a genome-wide imputation pipeline with statistics.</p>
+<dl class="py function">
 <dt id="genipe.test">
-<code class="descclassname">genipe.</code><code class="descname">test</code><span class="sig-paren">(</span><em>verbosity=1</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.test" title="Permalink to this definition">¶</a></dt>
+<code class="sig-prename descclassname">genipe.</code><code class="sig-name descname">test</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">verbosity</span><span class="o">=</span><span class="default_value">1</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe.html#test"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.test" title="Permalink to this definition">¶</a></dt>
 <dd><p>Executes all the tests for genipe.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>verbosity</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#int" title="(in Python v3.4)"><em>int</em></a>) – the verbosity level</td>
-</tr>
-</tbody>
-</table>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>verbosity</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.9)"><em>int</em></a>) – the verbosity level</p>
+</dd>
+</dl>
 <p>Just set <code class="docutils literal notranslate"><span class="pre">verbosity</span></code> to an integer higher than 1 to have more information
 about the tests.</p>
 </dd></dl>
@@ -178,10 +136,10 @@ about the tests.</p>
 </div>
 <div class="section" id="module-genipe.error">
 <span id="genipe-error-module"></span><h2>genipe.error module<a class="headerlink" href="#module-genipe.error" title="Permalink to this headline">¶</a></h2>
-<dl class="exception">
+<dl class="py exception">
 <dt id="genipe.error.GenipeError">
-<em class="property">exception </em><code class="descclassname">genipe.error.</code><code class="descname">GenipeError</code><span class="sig-paren">(</span><em>msg</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/error.html#GenipeError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.error.GenipeError" title="Permalink to this definition">¶</a></dt>
-<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3.4/library/exceptions.html#Exception" title="(in Python v3.4)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
+<em class="property">exception </em><code class="sig-prename descclassname">genipe.error.</code><code class="sig-name descname">GenipeError</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">msg</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/error.html#GenipeError"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.error.GenipeError" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <a class="reference external" href="https://docs.python.org/3/library/exceptions.html#Exception" title="(in Python v3.9)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Exception</span></code></a></p>
 <p>An Exception raised in case of a problem.</p>
 </dd></dl>
 
@@ -195,7 +153,48 @@ about the tests.</p>
 </div>
 
 
+            <div class="clearer"></div>
           </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">genipe package</a><ul>
+<li><a class="reference internal" href="#module-genipe">Module contents</a></li>
+<li><a class="reference internal" href="#subpackages">Subpackages</a></li>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-genipe.error">genipe.error module</a></li>
+<li><a class="reference internal" href="#module-genipe.pipeline">genipe.pipeline module</a></li>
+<li><a class="reference internal" href="#module-genipe.version">genipe.version module</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="modules.html"
+                        title="previous chapter">genipe</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="genipe.config.html"
+                        title="next chapter">genipe.config package</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/module_content/genipe.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -215,16 +214,17 @@ about the tests.</p>
         <li class="right" >
           <a href="modules.html" title="genipe"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
-          <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li> 
+          <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">genipe package</a></li> 
       </ul>
     </div>
 
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
     </div>
 
 <script>

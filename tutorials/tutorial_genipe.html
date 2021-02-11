@@ -2,26 +2,27 @@
 
 <!doctype html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Genome-wide imputation pipeline &#8212; genipe 1.4.2 documentation</title>
-    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Genome-wide imputation pipeline &#8212; genipe 1.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="next" title="Linear mixed effects model" href="tutorial_mixedlm.html" />
     <link rel="prev" title="Short Tutorials" href="../tutorials.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
-    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -39,73 +40,11 @@
         <li class="right" >
           <a href="../tutorials.html" title="Short Tutorials"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.2 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.5.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tutorials.html" accesskey="U">Short Tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Genome-wide imputation pipeline</a></li> 
       </ul>
-    </div>
-      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
-  <ul>
-<li><a class="reference internal" href="#">Genome-wide imputation pipeline</a><ul>
-<li><a class="reference internal" href="#preparing-the-data">Preparing the data</a></li>
-<li><a class="reference internal" href="#input-file-summary">Input file summary</a></li>
-<li><a class="reference internal" href="#executing-the-pipeline">Executing the pipeline</a></li>
-<li><a class="reference internal" href="#compiling-the-report">Compiling the report</a></li>
-<li><a class="reference internal" href="#output-files">Output files</a><ul>
-<li><a class="reference internal" href="#genipe-directory"><code class="docutils literal notranslate"><span class="pre">genipe</span></code> directory</a></li>
-<li><a class="reference internal" href="#genipe-chrn-directories"><code class="docutils literal notranslate"><span class="pre">genipe/chrN</span></code> directories</a></li>
-<li><a class="reference internal" href="#genipe-chrn-final-impute2-directories"><code class="docutils literal notranslate"><span class="pre">genipe/chrN/final_impute2</span></code> directories</a></li>
-<li><a class="reference internal" href="#genipe-missing-directory"><code class="docutils literal notranslate"><span class="pre">genipe/missing</span></code> directory</a></li>
-<li><a class="reference internal" href="#genipe-report-directory"><code class="docutils literal notranslate"><span class="pre">genipe/report</span></code> directory</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#using-genipe-on-a-server">Using genipe on a server</a><ul>
-<li><a class="reference internal" href="#drmaa-configuration">DRMAA configuration</a></li>
-<li><a class="reference internal" href="#drmaa-preamble">DRMAA preamble</a></li>
-</ul>
-</li>
-<li><a class="reference internal" href="#data-in-more-details">Data in more details</a><ul>
-<li><a class="reference internal" href="#required-softwares">Required softwares</a></li>
-<li><a class="reference internal" href="#input-files">Input files</a><ul>
-<li><a class="reference internal" href="#genotypes">Genotypes</a></li>
-<li><a class="reference internal" href="#reference-panels">Reference panels</a></li>
-<li><a class="reference internal" href="#human-reference-optional">Human reference (optional)</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-
-  <h4>Previous topic</h4>
-  <p class="topless"><a href="../tutorials.html"
-                        title="previous chapter">Short Tutorials</a></p>
-  <h4>Next topic</h4>
-  <p class="topless"><a href="tutorial_mixedlm.html"
-                        title="next chapter">Linear mixed effects model</a></p>
-  <div role="note" aria-label="source link">
-    <h3>This Page</h3>
-    <ul class="this-page-menu">
-      <li><a href="../_sources/tutorials/tutorial_genipe.rst.txt"
-            rel="nofollow">Show Source</a></li>
-    </ul>
-   </div>
-<div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
-    <div class="searchformwrapper">
-    <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
-      <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
-    </form>
-    </div>
-</div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
+    </div>  
 
     <div class="document">
       <div class="documentwrapper">
@@ -113,16 +52,17 @@
           <div class="body" role="main">
             
   <div class="contents topic" id="quick-navigation">
-<p class="topic-title first">Quick navigation</p>
+<p class="topic-title">Quick navigation</p>
 <ul class="simple">
-<li><a class="reference internal" href="#genome-wide-imputation-pipeline" id="id2">Genome-wide imputation pipeline</a><ul>
-<li><a class="reference internal" href="#preparing-the-data" id="id3">Preparing the data</a></li>
-<li><a class="reference internal" href="#input-file-summary" id="id4">Input file summary</a></li>
-<li><a class="reference internal" href="#executing-the-pipeline" id="id5">Executing the pipeline</a></li>
-<li><a class="reference internal" href="#compiling-the-report" id="id6">Compiling the report</a></li>
-<li><a class="reference internal" href="#output-files" id="id7">Output files</a></li>
-<li><a class="reference internal" href="#using-genipe-on-a-server" id="id8">Using genipe on a server</a></li>
-<li><a class="reference internal" href="#data-in-more-details" id="id9">Data in more details</a></li>
+<li><p><a class="reference internal" href="#genome-wide-imputation-pipeline" id="id2">Genome-wide imputation pipeline</a></p>
+<ul>
+<li><p><a class="reference internal" href="#preparing-the-data" id="id3">Preparing the data</a></p></li>
+<li><p><a class="reference internal" href="#input-file-summary" id="id4">Input file summary</a></p></li>
+<li><p><a class="reference internal" href="#executing-the-pipeline" id="id5">Executing the pipeline</a></p></li>
+<li><p><a class="reference internal" href="#compiling-the-report" id="id6">Compiling the report</a></p></li>
+<li><p><a class="reference internal" href="#output-files" id="id7">Output files</a></p></li>
+<li><p><a class="reference internal" href="#using-genipe-on-a-server" id="id8">Using genipe on a server</a></p></li>
+<li><p><a class="reference internal" href="#data-in-more-details" id="id9">Data in more details</a></p></li>
 </ul>
 </li>
 </ul>
@@ -148,8 +88,8 @@ IMPUTE2 and SHAPETIT, the genotypes of the study cohort to impute, the
 IMPUTE2’s reference panels, and the indexed human reference (in <em>fasta</em>
 format).</p>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">You should review
+<p class="admonition-title">Warning</p>
+<p>You should review
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/impute/impute_v2.html#download">IMPUTE2 licence</a> and
 <a class="reference external" href="https://mathgen.stats.ox.ac.uk/genetics_software/shapeit/shapeit.html#download">SHAPEIT licence</a>
 to make sure that you have the right to use these tools.</p>
@@ -161,8 +101,8 @@ details).</p>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The script will create a directory called <code class="docutils literal notranslate"><span class="pre">genipe_tutorial</span></code> in the home
+<p class="admonition-title">Note</p>
+<p>The script will create a directory called <code class="docutils literal notranslate"><span class="pre">genipe_tutorial</span></code> in the home
 directory. If another directory is required, the default path can be modify
 using the <code class="docutils literal notranslate"><span class="pre">--tutorial-path</span></code> option.</p>
 </div>
@@ -246,120 +186,120 @@ genome-wide imputation of the <em>HapMap</em> CEU dataset.</p>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">In the script <code class="docutils literal notranslate"><span class="pre">execute.sh</span></code>, the <code class="docutils literal notranslate"><span class="pre">--reference</span></code> option is optional and
+<p class="admonition-title">Note</p>
+<p>In the script <code class="docutils literal notranslate"><span class="pre">execute.sh</span></code>, the <code class="docutils literal notranslate"><span class="pre">--reference</span></code> option is optional and
 might be removed.</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">It is possible to compress IMPUTE2’s output files by adding the <code class="docutils literal notranslate"><span class="pre">--bgzip</span></code>
+<p class="admonition-title">Note</p>
+<p>It is possible to compress IMPUTE2’s output files by adding the <code class="docutils literal notranslate"><span class="pre">--bgzip</span></code>
 option (the <code class="docutils literal notranslate"><span class="pre">bgzip</span></code> software should be in the path).</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">It is possible to remove the <code class="docutils literal notranslate"><span class="pre">--shapeit-bin</span></code>, the <code class="docutils literal notranslate"><span class="pre">--impute2-bin</span></code> and/or
+<p class="admonition-title">Note</p>
+<p>It is possible to remove the <code class="docutils literal notranslate"><span class="pre">--shapeit-bin</span></code>, the <code class="docutils literal notranslate"><span class="pre">--impute2-bin</span></code> and/or
 the <code class="docutils literal notranslate"><span class="pre">--plink-bin</span></code> options if the SHAPEIT, IMPUTE2 and/or the Plink
 binaries are in  the <code class="docutils literal notranslate"><span class="pre">PATH</span></code> variable.</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The <code class="docutils literal notranslate"><span class="pre">--chrom</span> <span class="pre">autosomes</span></code> option will run the imputation only on the
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">--chrom</span> <span class="pre">autosomes</span></code> option will run the imputation only on the
 autosomes. If all chromosomes are required (including chromosomes 23 and 25
 (pseudo-autosomal region), then the <code class="docutils literal notranslate"><span class="pre">--chrom</span></code> option can be removed, and
 the imputation reference files for chromosome 23 PAR and nonPAR are required
 (see <a class="reference internal" href="../parameters/main_pipeline.html#params-chrom-x"><span class="std std-ref">this section</span></a> for more information).</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">It is possible to add extra options to SHAPEIT and IMPUTE2 using the
+<p class="admonition-title">Note</p>
+<p>It is possible to add extra options to SHAPEIT and IMPUTE2 using the
 <code class="docutils literal notranslate"><span class="pre">--shapeit-extra</span></code> and <code class="docutils literal notranslate"><span class="pre">--impute2-extra</span></code> options, respectively.</p>
 </div>
 <p>The following table describes the options <strong>used by</strong> <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a> <strong>in the
 previous command</strong> (see the <a class="reference internal" href="../index.html#genipe-usage"><span class="std std-ref">Usage</span></a> section for a full list):</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="32%" />
-<col width="68%" />
+<col style="width: 32%" />
+<col style="width: 68%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Option</th>
-<th class="head">Description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Option</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">--chrom</span></code></td>
-<td>The chromosome to impute (here, the autosomes).</td>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--chrom</span></code></p></td>
+<td><p>The chromosome to impute (here, the autosomes).</p></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--bfile</span></code></td>
-<td>The genotypes of the study cohort to be imputed.</td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--bfile</span></code></p></td>
+<td><p>The genotypes of the study cohort to be imputed.</p></td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">--shapeit-bin</span></code></td>
-<td>The <code class="docutils literal notranslate"><span class="pre">shapeit</span></code> binary.</td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--shapeit-bin</span></code></p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">shapeit</span></code> binary.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--impute2-bin</span></code></td>
-<td>The <code class="docutils literal notranslate"><span class="pre">impute2</span></code> binary.</td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--impute2-bin</span></code></p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">impute2</span></code> binary.</p></td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">--plink-bin</span></code></td>
-<td>The <code class="docutils literal notranslate"><span class="pre">plink</span></code> binary.</td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--plink-bin</span></code></p></td>
+<td><p>The <code class="docutils literal notranslate"><span class="pre">plink</span></code> binary.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--reference</span></code></td>
-<td>The <em>fasta</em> file containing the reference genome
-for initial strand verification (<em>optional</em>).</td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--reference</span></code></p></td>
+<td><p>The <em>fasta</em> file containing the reference genome
+for initial strand verification (<em>optional</em>).</p></td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">--hap-template</span></code></td>
-<td>The template for <em>IMPUTE2</em>’s reference haplotype
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--hap-template</span></code></p></td>
+<td><p>The template for <em>IMPUTE2</em>’s reference haplotype
 files (<code class="docutils literal notranslate"><span class="pre">{chrom}</span></code> will be replaced by the
-chromosome number).</td>
+chromosome number).</p></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--legend-template</span></code></td>
-<td>The template for <em>IMPUTE2</em>’s reference legend
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--legend-template</span></code></p></td>
+<td><p>The template for <em>IMPUTE2</em>’s reference legend
 files (<code class="docutils literal notranslate"><span class="pre">{chrom}</span></code> will be replaced by the
-chromosome number).</td>
+chromosome number).</p></td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">--map-template</span></code></td>
-<td>The template for <em>IMPUTE2</em>’s reference map
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--map-template</span></code></p></td>
+<td><p>The template for <em>IMPUTE2</em>’s reference map
 files (<code class="docutils literal notranslate"><span class="pre">{chrom}</span></code> will be replaced by the
-chromosome number).</td>
+chromosome number).</p></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--sample-file</span></code></td>
-<td>The name of <em>IMPUTE2</em>’s reference sample file.</td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--sample-file</span></code></p></td>
+<td><p>The name of <em>IMPUTE2</em>’s reference sample file.</p></td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">--filtering-rules</span></code></td>
-<td>Rules used by <em>IMPUTE2</em> to exclude sites from
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--filtering-rules</span></code></p></td>
+<td><p>Rules used by <em>IMPUTE2</em> to exclude sites from
 its reference files (using the legend files).
 Each terms are joined using a logical <em>OR</em>.
 Here, loci with an alternative allele frequency
 lower than 0.01 and higher than 0.99 will be
-excluded from the imputation reference.</td>
+excluded from the imputation reference.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--thread</span></code></td>
-<td>The number of thread to use for the analysis.
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--thread</span></code></p></td>
+<td><p>The number of thread to use for the analysis.
 When using <em>DRMAA</em>, this will be the number of
-simultaneous tasks. Four threads will be used.</td>
+simultaneous tasks. Four threads will be used.</p></td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">--report-title</span></code></td>
-<td>The title of the automatic report.</td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">--report-title</span></code></p></td>
+<td><p>The title of the automatic report.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">--report-number</span></code></td>
-<td>The number of the report (will appear as
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">--report-number</span></code></p></td>
+<td><p>The number of the report (will appear as
 sub-title and in the footer of the automatic
-report).</td>
+report).</p></td>
 </tr>
 </tbody>
 </table>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
+<p class="admonition-title">Note</p>
 <p>If the pipeline fails (<em>e.g.</em> not enough memory or the walltime exceeded on
 a computing cluster), re-running the pipeline (with different number of
 thread or different walltime) will only launch the task that were not
 completed.</p>
-<p class="last">The pipeline checks if output files are missing. If an output file is
+<p>The pipeline checks if output files are missing. If an output file is
 deleted, the step producing this file will be run again (but not the
 subsequent steps).</p>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Four options will modify the report content: <code class="docutils literal notranslate"><span class="pre">--report-number</span></code>,
+<p class="admonition-title">Note</p>
+<p>Four options will modify the report content: <code class="docutils literal notranslate"><span class="pre">--report-number</span></code>,
 <code class="docutils literal notranslate"><span class="pre">--report-title</span></code>, <code class="docutils literal notranslate"><span class="pre">--report-author</span></code> and <code class="docutils literal notranslate"><span class="pre">--report-background</span></code>.</p>
 </div>
 </div>
@@ -447,49 +387,49 @@ files.</p>
 <p>This directory contains all the chromosome specific analysis. The specific
 directory content is describe below. The following files are created inside the
 <code class="docutils literal notranslate"><span class="pre">genipe</span></code> directory:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="39%" />
-<col width="61%" />
+<col style="width: 39%" />
+<col style="width: 61%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">File</th>
-<th class="head">Description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>File</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">chromosome_lengths.txt</span></code></td>
-<td>The length of each chromosome (this
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">chromosome_lengths.txt</span></code></p></td>
+<td><p>The length of each chromosome (this
 information is fetched from Ensembl using
-its REST API and saved to file).</td>
+its REST API and saved to file).</p></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">exclusion_summary.txt</span></code></td>
-<td>A file containing the exclusion summary
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">exclusion_summary.txt</span></code></p></td>
+<td><p>A file containing the exclusion summary
 prior to phasing (<em>e.g</em> the number of
 ambiguous markers, the number of flipped
-markers, etc.).</td>
+markers, etc.).</p></td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">frequency_pie.pdf</span></code></td>
-<td>This file contains a pie chart describing
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">frequency_pie.pdf</span></code></p></td>
+<td><p>This file contains a pie chart describing
 the minor allele frequency distribution of
 the imputed markers. This file is generated
 only if the <code class="xref py py-mod docutils literal notranslate"><span class="pre">matplotlib</span></code> module is
-installed.</td>
+installed.</p></td>
 </tr>
-<tr class="row-odd"><td colspan="2"><code class="docutils literal notranslate"><span class="pre">genipe.log</span></code>               | The log file of the main pipeline.</td>
+<tr class="row-odd"><td colspan="2"><p><code class="docutils literal notranslate"><span class="pre">genipe.log</span></code>               | The log file of the main pipeline.</p></td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">markers_to_exclude.txt</span></code></td>
-<td>The list of markers to exclude prior to
-phasing.</td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">markers_to_exclude.txt</span></code></p></td>
+<td><p>The list of markers to exclude prior to
+phasing.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">markers_to_flip.txt</span></code></td>
-<td>The list of markers to flip prior to
-phasing.</td>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">markers_to_flip.txt</span></code></p></td>
+<td><p>The list of markers to flip prior to
+phasing.</p></td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">tasks.db</span></code></td>
-<td>The <em>sqlite</em> database containing
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">tasks.db</span></code></p></td>
+<td><p>The <em>sqlite</em> database containing
 information of all tasks (if it’s
-completed, execution time, etc).</td>
+completed, execution time, etc).</p></td>
 </tr>
 </tbody>
 </table>
@@ -506,30 +446,30 @@ chromosomes.</p>
 <p>These <code class="docutils literal notranslate"><span class="pre">final_impute2</span></code> directories (located in the <code class="docutils literal notranslate"><span class="pre">genipe/chrN</span></code>
 directories) contain the final output files from the pipeline for each
 autosomal chromosomes. They will contain the following files:</p>
-<table border="1" class="docutils">
+<table class="docutils align-default">
 <colgroup>
-<col width="43%" />
-<col width="57%" />
+<col style="width: 43%" />
+<col style="width: 57%" />
 </colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">Extension</th>
-<th class="head">Description</th>
+<thead>
+<tr class="row-odd"><th class="head"><p>Extension</p></th>
+<th class="head"><p>Description</p></th>
 </tr>
 </thead>
-<tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.imputed.alleles</span></code></td>
-<td>Description of the reference and
-alternative allele at each sites.</td>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.imputed.alleles</span></code></p></td>
+<td><p>Description of the reference and
+alternative allele at each sites.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.imputed.completion_rates</span></code></td>
-<td>Number of missing values and completion
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.imputed.completion_rates</span></code></p></td>
+<td><p>Number of missing values and completion
 rate for all sites (using the
 probability threshold set by the user,
 where the default is higher and equal
-to 0.9).</td>
+to 0.9).</p></td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.imputed.good_sites</span></code></td>
-<td>List of sites which pass the completion
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.imputed.good_sites</span></code></p></td>
+<td><p>List of sites which pass the completion
 rate threshold (set by the user, where
 the default is higher and equal to 0.98)
 using the probability threshold (set by
@@ -537,50 +477,50 @@ the user, where the default is higher
 and equal to 0.9). The sites also pass
 the INFO threshold (set by the user,
 where the default is higher and equal to
-0).</td>
+0).</p></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.imputed.impute2</span></code> or
-<code class="docutils literal notranslate"><span class="pre">.imputed.impute2.gz</span></code></td>
-<td>Imputation results (merged from the
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.imputed.impute2</span></code> or
+<code class="docutils literal notranslate"><span class="pre">.imputed.impute2.gz</span></code></p></td>
+<td><p>Imputation results (merged from the
 individual segment files. This file
 might be compress (with the <code class="docutils literal notranslate"><span class="pre">.gz</span></code>
 extension) if the <code class="docutils literal notranslate"><span class="pre">--bgzip</span></code> option was
-used when launching the pipeline.</td>
+used when launching the pipeline.</p></td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.imputed.impute2_info</span></code></td>
-<td>Marker-wise information file with one
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.imputed.impute2_info</span></code></p></td>
+<td><p>Marker-wise information file with one
 line per marker and a single header line
 at the begening. It contains, among
 others, the information value which is a
 measure of the observed statistical
 information associated with the allele
-frequency estimate.</td>
+frequency estimate.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.imputed.imputed_sites</span></code></td>
-<td>List of imputed sites (excluding sites
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.imputed.imputed_sites</span></code></p></td>
+<td><p>List of imputed sites (excluding sites
 that were previously genotyped in the
-study cohort).</td>
+study cohort).</p></td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.imputed.log</span></code></td>
-<td>The log file of the merging step.</td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.imputed.log</span></code></p></td>
+<td><p>The log file of the merging step.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.imputed.maf</span></code></td>
-<td>File containing the minor allele
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.imputed.maf</span></code></p></td>
+<td><p>File containing the minor allele
 frequency (along with minor allele
 identification) for all sites using the
 probabilitty threshold of 0.9. When no
 genotypes are available (because they
 are all below the threshold), the MAF is
-<code class="docutils literal notranslate"><span class="pre">NA</span></code>.</td>
+<code class="docutils literal notranslate"><span class="pre">NA</span></code>.</p></td>
 </tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.imputed.map</span></code></td>
-<td>A <em>map</em> file describing the genomic
-location of all sites.</td>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.imputed.map</span></code></p></td>
+<td><p>A <em>map</em> file describing the genomic
+location of all sites.</p></td>
 </tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.imputed.sample</span></code></td>
-<td>The sample file generated by the phasing
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.imputed.sample</span></code></p></td>
+<td><p>The sample file generated by the phasing
 step, which describe the sample ordering
-in the IMPUTE2 files.</td>
+in the IMPUTE2 files.</p></td>
 </tr>
 </tbody>
 </table>
@@ -662,16 +602,16 @@ located on chromosome 2 will have a walltime of 4 hours.</p>
 including all possible section. Also, here is a list of all possible section
 (<em>i.e</em> pipeline step) that can be parametrized.</p>
 <ul class="simple">
-<li><code class="docutils literal notranslate"><span class="pre">plink_exclude</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">plink_missing_rate</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">shapeit_check_1</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">plink_flip</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">shapeit_check_2</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">plink_final_exclude</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">shapeit_phase</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">impute2</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">merge_impute2</span></code></li>
-<li><code class="docutils literal notranslate"><span class="pre">bgzip</span></code></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plink_exclude</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plink_missing_rate</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shapeit_check_1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plink_flip</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shapeit_check_2</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">plink_final_exclude</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">shapeit_phase</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">impute2</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">merge_impute2</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">bgzip</span></code></p></li>
 </ul>
 <p>Some cluster doesn’t require any configuration at all. To skip configuration,
 use the <code class="docutils literal notranslate"><span class="pre">main</span></code> section of the <em>ini</em> file as such:</p>
@@ -680,8 +620,8 @@ use the <code class="docutils literal notranslate"><span class="pre">main</span>
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Keep in mind that lines starting with a <code class="docutils literal notranslate"><span class="pre">#</span></code> are comments and are not used
+<p class="admonition-title">Note</p>
+<p>Keep in mind that lines starting with a <code class="docutils literal notranslate"><span class="pre">#</span></code> are comments and are not used
 in the DRMAA configuration. This is useful to describe what parameters are
 used for each step.</p>
 </div>
@@ -704,14 +644,14 @@ module load gcc/4.8.2
 </pre></div>
 </div>
 <div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The preamble file is system dependent, but you should always at least
+<p class="admonition-title">Note</p>
+<p>The preamble file is system dependent, but you should always at least
 activate the virtual python environment so that the tools provided by
 <a class="reference internal" href="../module_content/genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a> are automatically in the system path.</p>
 </div>
 <div class="admonition warning">
-<p class="first admonition-title">Warning</p>
-<p class="last">The preamble will be added <strong>as-is</strong> in the <em>bash</em> script that will be
+<p class="admonition-title">Warning</p>
+<p>The preamble will be added <strong>as-is</strong> in the <em>bash</em> script that will be
 executed. Hence, always be careful of what is included in the preamble.</p>
 </div>
 </div>
@@ -820,7 +760,69 @@ rm hg19.tar.bz2
 </div>
 
 
+            <div class="clearer"></div>
           </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="../index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Genome-wide imputation pipeline</a><ul>
+<li><a class="reference internal" href="#preparing-the-data">Preparing the data</a></li>
+<li><a class="reference internal" href="#input-file-summary">Input file summary</a></li>
+<li><a class="reference internal" href="#executing-the-pipeline">Executing the pipeline</a></li>
+<li><a class="reference internal" href="#compiling-the-report">Compiling the report</a></li>
+<li><a class="reference internal" href="#output-files">Output files</a><ul>
+<li><a class="reference internal" href="#genipe-directory"><code class="docutils literal notranslate"><span class="pre">genipe</span></code> directory</a></li>
+<li><a class="reference internal" href="#genipe-chrn-directories"><code class="docutils literal notranslate"><span class="pre">genipe/chrN</span></code> directories</a></li>
+<li><a class="reference internal" href="#genipe-chrn-final-impute2-directories"><code class="docutils literal notranslate"><span class="pre">genipe/chrN/final_impute2</span></code> directories</a></li>
+<li><a class="reference internal" href="#genipe-missing-directory"><code class="docutils literal notranslate"><span class="pre">genipe/missing</span></code> directory</a></li>
+<li><a class="reference internal" href="#genipe-report-directory"><code class="docutils literal notranslate"><span class="pre">genipe/report</span></code> directory</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#using-genipe-on-a-server">Using genipe on a server</a><ul>
+<li><a class="reference internal" href="#drmaa-configuration">DRMAA configuration</a></li>
+<li><a class="reference internal" href="#drmaa-preamble">DRMAA preamble</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#data-in-more-details">Data in more details</a><ul>
+<li><a class="reference internal" href="#required-softwares">Required softwares</a></li>
+<li><a class="reference internal" href="#input-files">Input files</a><ul>
+<li><a class="reference internal" href="#genotypes">Genotypes</a></li>
+<li><a class="reference internal" href="#reference-panels">Reference panels</a></li>
+<li><a class="reference internal" href="#human-reference-optional">Human reference (optional)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="../tutorials.html"
+                        title="previous chapter">Short Tutorials</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="tutorial_mixedlm.html"
+                        title="next chapter">Linear mixed effects model</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="../_sources/tutorials/tutorial_genipe.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="../search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -840,15 +842,16 @@ rm hg19.tar.bz2
         <li class="right" >
           <a href="../tutorials.html" title="Short Tutorials"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.2 documentation</a> &#187;</li>
-          <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &#187;</li> 
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.5.0 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="../tutorials.html" >Short Tutorials</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Genome-wide imputation pipeline</a></li> 
       </ul>
     </div>
 
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
     </div>
 
 <script>

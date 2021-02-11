@@ -2,25 +2,26 @@
 
 <!doctype html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html>
   <head>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>genipe.tools package &#8212; genipe 1.4.2 documentation</title>
-    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>genipe.tools package &#8212; genipe 1.5.0 documentation</title>
     <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
-    <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
-    <script type="text/javascript" src="../_static/jquery.js"></script>
-    <script type="text/javascript" src="../_static/underscore.js"></script>
-    <script type="text/javascript" src="../_static/doctools.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
-    <script type="text/javascript" src="../_static/bizstyle.js"></script>
+    <link rel="stylesheet" href="../_static/bizstyle.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+    <script src="../_static/jquery.js"></script>
+    <script src="../_static/underscore.js"></script>
+    <script src="../_static/doctools.js"></script>
+    <script async="async" src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <script src="../_static/bizstyle.js"></script>
     <link rel="index" title="Index" href="../genindex.html" />
     <link rel="search" title="Search" href="../search.html" />
     <link rel="prev" title="genipe.tests package" href="genipe.tests.html" />
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
     <!--[if lt IE 9]>
-    <script type="text/javascript" src="_static/css3-mediaqueries.js"></script>
+    <script src="_static/css3-mediaqueries.js"></script>
     <![endif]-->
   </head><body>
     <div class="related" role="navigation" aria-label="related navigation">
@@ -35,15 +36,969 @@
         <li class="right" >
           <a href="genipe.tests.html" title="genipe.tests package"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &#187;</li> 
+          <li class="nav-item nav-item-3"><a href="genipe.html" accesskey="U">genipe package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">genipe.tools package</a></li> 
       </ul>
-    </div>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="genipe-tools-package">
+<h1>genipe.tools package<a class="headerlink" href="#genipe-tools-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="module-genipe.tools">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-genipe.tools" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-genipe.tools.impute2_extractor">
+<span id="genipe-tools-impute2-extractor-module"></span><h2>genipe.tools.impute2_extractor module<a class="headerlink" href="#module-genipe.tools.impute2_extractor" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="genipe.tools.impute2_extractor.check_args">
+<code class="sig-prename descclassname">genipe.tools.impute2_extractor.</code><code class="sig-name descname">check_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#check_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.check_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the arguments and options.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.9)"><em>argparse.Namespace</em></a>) – the options to verify</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If there is a problem, a <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal notranslate"><span class="pre">genipe.error.GenipeError</span></code></a> is
+raised.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Noting is checked (apart from the impute2 files) if indexation is asked
+(<code class="docutils literal notranslate"><span class="pre">--index</span></code> option).</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.impute2_extractor.extract_companion_files">
+<code class="sig-prename descclassname">genipe.tools.impute2_extractor.</code><code class="sig-name descname">extract_companion_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i_prefix</span></em>, <em class="sig-param"><span class="n">o_prefix</span></em>, <em class="sig-param"><span class="n">to_extract</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#extract_companion_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.extract_companion_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extract markers from companion files (if they exists).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i_prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the prefix of the input file</p></li>
+<li><p><strong>o_prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the prefix of the output file</p></li>
+<li><p><strong>to_extract</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.9)"><em>set</em></a>) – the set of markers to extract</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.impute2_extractor.extract_markers">
+<code class="sig-prename descclassname">genipe.tools.impute2_extractor.</code><code class="sig-name descname">extract_markers</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">to_extract</span></em>, <em class="sig-param"><span class="n">out_prefix</span></em>, <em class="sig-param"><span class="n">out_format</span></em>, <em class="sig-param"><span class="n">prob_t</span></em>, <em class="sig-param"><span class="n">is_long</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#extract_markers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.extract_markers" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts according to names.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the input file</p></li>
+<li><p><strong>to_extract</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.9)"><em>set</em></a>) – the list of markers to extract for each input file</p></li>
+<li><p><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the output prefix</p></li>
+<li><p><strong>out_format</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – the output format(s)</p></li>
+<li><p><strong>prob_t</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the probability threshold</p></li>
+<li><p><strong>is_long</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – True if format needs to be long</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.impute2_extractor.gather_extraction">
+<code class="sig-prename descclassname">genipe.tools.impute2_extractor.</code><code class="sig-name descname">gather_extraction</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em>, <em class="sig-param"><span class="n">maf</span></em>, <em class="sig-param"><span class="n">rate</span></em>, <em class="sig-param"><span class="n">info</span></em>, <em class="sig-param"><span class="n">extract_filename</span></em>, <em class="sig-param"><span class="n">genomic_range</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#gather_extraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.gather_extraction" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gather positions that are required.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the impute2 filename</p></li>
+<li><p><strong>maf</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the minor allele frequency threshold (might be <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>rate</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the call rate threshold (might be <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>info</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the marker information value threshold (might be
+<code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>extract_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the file containing marker names to
+extract (might be <code class="docutils literal notranslate"><span class="pre">None</span></code>)</p></li>
+<li><p><strong>genomic_range</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the genomic range for extraction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the set of markers to extract</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.9)">set</a></p>
+</dd>
+</dl>
+<p>If extraction by marker name is required, only those markers will be
+extracted. Otherwise, <code class="docutils literal notranslate"><span class="pre">maf</span></code>, <code class="docutils literal notranslate"><span class="pre">rate</span></code>, <code class="docutils literal notranslate"><span class="pre">info</span></code> or <code class="docutils literal notranslate"><span class="pre">genomic_range</span></code> can
+be specified (alone or together) to extract markers according to minor
+allele frequency, call rate and genomic location.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.impute2_extractor.get_file_prefix">
+<code class="sig-prename descclassname">genipe.tools.impute2_extractor.</code><code class="sig-name descname">get_file_prefix</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#get_file_prefix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.get_file_prefix" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the filename prefix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the file from which the prefix is required</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the prefix of the file</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
+</dd>
+</dl>
+<p>This function removes the extension from the file name, and return its
+prefix (<em>e.g.</em> <code class="docutils literal notranslate"><span class="pre">test.impute2</span></code> returns <code class="docutils literal notranslate"><span class="pre">test</span></code>, and
+<code class="docutils literal notranslate"><span class="pre">../test.impute2.gz</span></code> returns <code class="docutils literal notranslate"><span class="pre">../test</span></code>).</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.impute2_extractor.get_samples">
+<code class="sig-prename descclassname">genipe.tools.impute2_extractor.</code><code class="sig-name descname">get_samples</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#get_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.get_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the sample files, and extract the information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the sample file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the sample information</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.2)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.impute2_extractor.index_file">
+<code class="sig-prename descclassname">genipe.tools.impute2_extractor.</code><code class="sig-name descname">index_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#index_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.index_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Indexes the impute2 file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the impute2 file</p>
+</dd>
+</dl>
+<p>This function uses the <a class="reference internal" href="genipe.formats.html#genipe.formats.index.get_index" title="genipe.formats.index.get_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">genipe.formats.index.get_index()</span></code></a> to create
+the index file if it’s missing.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We won’t catch the <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal notranslate"><span class="pre">genipe.error.GenipeError</span></code></a> exception if
+it’s raised, since the message will be relevant to the user.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.impute2_extractor.main">
+<code class="sig-prename descclassname">genipe.tools.impute2_extractor.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.9)"><em>argparse.Namespace</em></a>) – the arguments to be parsed (if
+<a class="reference internal" href="#genipe.tools.impute2_extractor.main" title="genipe.tools.impute2_extractor.main"><code class="xref py py-func docutils literal notranslate"><span class="pre">main()</span></code></a> is called by another
+modulel)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.impute2_extractor.parse_args">
+<code class="sig-prename descclassname">genipe.tools.impute2_extractor.</code><code class="sig-name descname">parse_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parser</span></em>, <em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.parse_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the command line options and arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.9)"><em>argparse.ArgumentParser</em></a>) – the argument parser</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the list of options and arguments</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.9)">argparse.Namespace</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The only check that is done here is by the parser itself. Values are
+verified later by the <a class="reference internal" href="#genipe.tools.impute2_extractor.check_args" title="genipe.tools.impute2_extractor.check_args"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_args()</span></code></a> function.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.impute2_extractor.print_data">
+<code class="sig-prename descclassname">genipe.tools.impute2_extractor.</code><code class="sig-name descname">print_data</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">o_files</span></em>, <em class="sig-param"><span class="n">prob_t</span></em>, <em class="sig-param"><span class="n">fid</span></em>, <em class="sig-param"><span class="n">iid</span></em>, <em class="sig-param"><span class="n">is_long</span></em>, <em class="sig-param"><span class="o">*</span></em>, <em class="sig-param"><span class="n">line</span><span class="o">=</span><span class="default_value">None</span></em>, <em class="sig-param"><span class="n">row</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#print_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.print_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Prints an impute2 line.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>o_files</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.9)"><em>dict</em></a>) – the output files</p></li>
+<li><p><strong>prob_t</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the probability threshold</p></li>
+<li><p><strong>fid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – the list of family IDs</p></li>
+<li><p><strong>iid</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – the list of sample IDs</p></li>
+<li><p><strong>is_long</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – True if the format is long (dosage, calls)</p></li>
+<li><p><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the impute2 line</p></li>
+<li><p><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – the impute2 line, split by spaces</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-genipe.tools.impute2_merger">
+<span id="genipe-tools-impute2-merger-module"></span><h2>genipe.tools.impute2_merger module<a class="headerlink" href="#module-genipe.tools.impute2_merger" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="genipe.tools.impute2_merger.check_args">
+<code class="sig-prename descclassname">genipe.tools.impute2_merger.</code><code class="sig-name descname">check_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_merger.html#check_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_merger.check_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the arguments and options.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.9)"><em>argparse.Namespace</em></a>) – the options to verify</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If there is a problem, a <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal notranslate"><span class="pre">genipe.error.GenipeError</span></code></a> is
+raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.impute2_merger.concatenate_files">
+<code class="sig-prename descclassname">genipe.tools.impute2_merger.</code><code class="sig-name descname">concatenate_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i_filenames</span></em>, <em class="sig-param"><span class="n">out_prefix</span></em>, <em class="sig-param"><span class="n">real_chrom</span></em>, <em class="sig-param"><span class="n">options</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_merger.html#concatenate_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_merger.concatenate_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Concatenates and extracts information from IMPUTE2 GEN file(s).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i_filenames</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – the list of input filenames (to concatenate)</p></li>
+<li><p><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the output prefix for the output files</p></li>
+<li><p><strong>real_chrom</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the chromosome contained in all the input files</p></li>
+<li><p><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.9)"><em>argparse.Namespace</em></a>) – the options</p></li>
+</ul>
+</dd>
+</dl>
+<p>This function will create the following seven files:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 32%" />
+<col style="width: 68%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>File name</p></th>
+<th class="head"><p>Description</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.impute2</span></code></p></td>
+<td><p>Imputation results (merged from all the input
+files).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.alleles</span></code></p></td>
+<td><p>Description of the reference and alternative
+allele at each sites.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.imputed_sites</span></code></p></td>
+<td><p>List of imputed sites (excluding sites that
+were previously genotyped in the study cohort).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.impute2_info</span></code></p></td>
+<td><p>SNP-wise information file with one line per SNP
+and a single header line at the beginning.</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.completion_rates</span></code></p></td>
+<td><p>Number of missing values and completion rate
+for all sites (using the probability threshold
+set by the user, where the default is higher
+and equal to 0.9).</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.good_sites</span></code></p></td>
+<td><p>List of sites which pass the completion rate
+threshold (set by the user, where the default
+is higher and equal to 0.98) using the
+probability threshold (set by the user, where
+the default is higher and equal to 0.9).</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">.map</span></code></p></td>
+<td><p>A map file describing the genomic location of
+all sites.</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">.maf</span></code></p></td>
+<td><p>File containing the minor allele frequency
+(along with minor allele identification) for
+all sites using the probabilitty threshold of
+0.9. When no genotypes are available (because
+they are all below the threshold), the MAF is
+<code class="docutils literal notranslate"><span class="pre">NA</span></code>.</p></td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.impute2_merger.main">
+<code class="sig-prename descclassname">genipe.tools.impute2_merger.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_merger.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_merger.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.9)"><em>argparse.Namespace</em></a>) – the arguments to be parsed (if
+<a class="reference internal" href="#genipe.tools.impute2_merger.main" title="genipe.tools.impute2_merger.main"><code class="xref py py-func docutils literal notranslate"><span class="pre">main()</span></code></a> is called by another
+modulel)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.impute2_merger.parse_args">
+<code class="sig-prename descclassname">genipe.tools.impute2_merger.</code><code class="sig-name descname">parse_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parser</span></em>, <em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_merger.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_merger.parse_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the command line options and arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.9)"><em>argparse.ArgumentParser</em></a>) – the argument parser</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the list of options and arguments</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.9)">argparse.Namespace</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The only check that is done here is by the parser itself. Values are
+verified later by the <a class="reference internal" href="#genipe.tools.impute2_merger.check_args" title="genipe.tools.impute2_merger.check_args"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_args()</span></code></a> function.</p>
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="module-genipe.tools.imputed_stats">
+<span id="genipe-tools-imputed-stats-module"></span><h2>genipe.tools.imputed_stats module<a class="headerlink" href="#module-genipe.tools.imputed_stats" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.check_args">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">check_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#check_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.check_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks the arguments and options.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.9)"><em>argparse.Namespace</em></a>) – the options to verify</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If there is a problem, a <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal notranslate"><span class="pre">genipe.error.GenipeError</span></code></a> is
+raised.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.compute_statistics">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">compute_statistics</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">impute2_filename</span></em>, <em class="sig-param"><span class="n">samples</span></em>, <em class="sig-param"><span class="n">markers_to_extract</span></em>, <em class="sig-param"><span class="n">phenotypes</span></em>, <em class="sig-param"><span class="n">remove_gender</span></em>, <em class="sig-param"><span class="n">out_prefix</span></em>, <em class="sig-param"><span class="n">options</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#compute_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.compute_statistics" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses IMPUTE2 file while computing statistics.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>impute2_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the input file</p></li>
+<li><p><strong>samples</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.2)"><em>pandas.DataFrame</em></a>) – the list of samples</p></li>
+<li><p><strong>markers_to_extract</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.9)"><em>set</em></a>) – the set of markers to extract</p></li>
+<li><p><strong>phenotypes</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.2)"><em>pandas.DataFrame</em></a>) – the phenotypes</p></li>
+<li><p><strong>remove_gender</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – whether or not to remove the gender column</p></li>
+<li><p><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the output prefix</p></li>
+<li><p><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.9)"><em>argparse.Namespace</em></a>) – the options</p></li>
+</ul>
+</dd>
+</dl>
+<p>This function takes care of parallelism. It reads the Impute2 file and
+fills a queue that will trigger the analysis when full.</p>
+<p>If the number of process to launch is 1, the rows are analyzed as they
+come.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.fit_cox">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">fit_cox</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">time_to_event</span></em>, <em class="sig-param"><span class="n">event</span></em>, <em class="sig-param"><span class="n">formula</span></em>, <em class="sig-param"><span class="n">result_col</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#fit_cox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.fit_cox" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a Cox’ proportional hazard to the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.2)"><em>pandas.DataFrame</em></a>) – the data to analyse</p></li>
+<li><p><strong>time_to_event</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the time to event column for the survival analysis</p></li>
+<li><p><strong>event</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the event column for the survival analysis</p></li>
+<li><p><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the formula for the data preparation</p></li>
+<li><p><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the column that will contain the results</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the results from the survival analysis</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p>numpy.array</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Using alpha of 0.95, and default parameters.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.fit_linear">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">fit_linear</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">formula</span></em>, <em class="sig-param"><span class="n">result_col</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#fit_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.fit_linear" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a linear regression to the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.2)"><em>pandas.DataFrame</em></a>) – the data to analyse</p></li>
+<li><p><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the formula for the linear regression</p></li>
+<li><p><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the column that will contain the results</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the results from the linear regression</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.fit_logistic">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">fit_logistic</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">formula</span></em>, <em class="sig-param"><span class="n">result_col</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#fit_logistic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.fit_logistic" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a logistic regression to the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.2)"><em>pandas.DataFrame</em></a>) – the data to analyse</p></li>
+<li><p><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the formula for the logistic regression</p></li>
+<li><p><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the column that will contain the results</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the results from the logistic regression</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.fit_mixedlm">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">fit_mixedlm</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">formula</span></em>, <em class="sig-param"><span class="n">use_ml</span></em>, <em class="sig-param"><span class="n">groups</span></em>, <em class="sig-param"><span class="n">result_col</span></em>, <em class="sig-param"><span class="n">random_effects</span></em>, <em class="sig-param"><span class="n">mixedlm_p</span></em>, <em class="sig-param"><span class="n">interaction</span></em>, <em class="sig-param"><span class="o">**</span><span class="n">kwargs</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#fit_mixedlm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.fit_mixedlm" title="Permalink to this definition">¶</a></dt>
+<dd><p>Fit a linear mixed effects model to the data.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.2)"><em>pandas.DataFrame</em></a>) – the data to analyse</p></li>
+<li><p><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the formula for the linear mixed effects model</p></li>
+<li><p><strong>use_ml</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – whether to use ML instead of REML</p></li>
+<li><p><strong>groups</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the column containing the groups</p></li>
+<li><p><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the column that will contain the results</p></li>
+<li><p><strong>random_effects</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Series.html#pandas.Series" title="(in pandas v1.2.2)"><em>pandas.Series</em></a>) – the random effects</p></li>
+<li><p><strong>mixedlm_p</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.9)"><em>float</em></a>) – the p-value threshold for which loci will be
+computed with the real MixedLM analysis</p></li>
+<li><p><strong>interaction</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – Whether there is an interaction or not</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the results from the linear mixed effects model</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.get_formula">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">get_formula</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">phenotype</span></em>, <em class="sig-param"><span class="n">covars</span></em>, <em class="sig-param"><span class="n">interaction</span></em>, <em class="sig-param"><span class="n">gender_c</span></em>, <em class="sig-param"><span class="n">categorical</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#get_formula"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.get_formula" title="Permalink to this definition">¶</a></dt>
+<dd><p>Creates the linear/logistic regression formula (for statsmodel).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>phenotype</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the phenotype column</p></li>
+<li><p><strong>covars</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – the list of co variable columns</p></li>
+<li><p><strong>interaction</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the interaction column</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the formula for the statistical analysis</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)">str</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The phenotype column needs to be specified. The list of co variables
+might be empty (if no co variables are necessary). The interaction
+column can be set to <code class="docutils literal notranslate"><span class="pre">None</span></code> if there is no interaction.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The gender column should be categorical (hence, the formula requires
+the gender to be included into <code class="docutils literal notranslate"><span class="pre">C()</span></code>, <em>e.g.</em> <code class="docutils literal notranslate"><span class="pre">C(Gender)</span></code>).</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.is_file_like">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">is_file_like</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#is_file_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.is_file_like" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks if the path is like a file (it might be a named pipe).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the path to check</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if path is like a file, False otherwise.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.main">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.9)"><em>argparse.Namespace</em></a>) – the arguments to be parsed (if
+<a class="reference internal" href="#genipe.tools.imputed_stats.main" title="genipe.tools.imputed_stats.main"><code class="xref py py-func docutils literal notranslate"><span class="pre">main()</span></code></a> is called by another
+modulel)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.parse_args">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">parse_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parser</span></em>, <em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.parse_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the command line options and arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.9)"><em>argparse.ArgumentParser</em></a>) – the argument parser</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the list of options and arguments</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.9)">argparse.Namespace</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The only check that is done here is by the parser itself. Values are
+verified later by the <a class="reference internal" href="#genipe.tools.imputed_stats.check_args" title="genipe.tools.imputed_stats.check_args"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_args()</span></code></a> function.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.process_impute2_site">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">process_impute2_site</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">site_info</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#process_impute2_site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.process_impute2_site" title="Permalink to this definition">¶</a></dt>
+<dd><p>Process an IMPUTE2 site (a line in an IMPUTE2 file).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>site_info</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – the impute2 line (split by space)</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the results of the analysis</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)">list</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.read_phenotype">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">read_phenotype</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i_filename</span></em>, <em class="sig-param"><span class="n">opts</span></em>, <em class="sig-param"><span class="n">check_duplicated</span><span class="o">=</span><span class="default_value">True</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#read_phenotype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.read_phenotype" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the phenotype file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>i_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the input file</p></li>
+<li><p><strong>opts</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.9)"><em>argparse.Namespace</em></a>) – the options</p></li>
+<li><p><strong>check_duplicated</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – whether or not to check for duplicated samples</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the phenotypes</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.2)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+<p>This file is expected to be a tab separated file of phenotypes and
+covariates. The columns to use will be determined by the
+<code class="docutils literal notranslate"><span class="pre">--sample-column</span></code> and the <code class="docutils literal notranslate"><span class="pre">--covar</span></code> options.</p>
+<p>For analysis including the X chromosome, the gender is automatically
+added as a covariate. The results are not shown to the user unless asked
+for.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.read_samples">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">read_samples</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i_filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#read_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.read_samples" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the sample file (produced by SHAPEIT).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the input file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the list of samples</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.2)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+<p>This file contains the list of samples that are contained in the
+<code class="docutils literal notranslate"><span class="pre">impute2</span></code> file (with same order). The expected format for this file is a
+tab separated file with a first row containing the following columns:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ID_1</span>    <span class="n">ID_2</span>    <span class="n">missing</span> <span class="n">father</span>  <span class="n">mother</span>  <span class="n">sex</span>     <span class="n">plink_pheno</span>
+</pre></div>
+</div>
+<p>The subsequent row will be discarded and should contain:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span> <span class="n">D</span>     <span class="n">D</span>       <span class="n">D</span>       <span class="n">B</span>
+</pre></div>
+</div>
+<p class="rubric">Notes</p>
+<p>We are mostly interested in the sample IDs corresponding to the
+<code class="docutils literal notranslate"><span class="pre">ID_2</span></code> column. Their uniqueness is verified by pandas.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.read_sites_to_extract">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">read_sites_to_extract</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i_filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#read_sites_to_extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.read_sites_to_extract" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the list of sites to extract.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – The input filename containing the IDs of the variants
+to consider for the analysis.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A set containing the variants.</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.9)">set</a></p>
+</dd>
+</dl>
+<p>The expected file format is simply a list of variants. Every row should
+correspond to a single variant identifier.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">3</span><span class="p">:</span><span class="mi">60069</span><span class="p">:</span><span class="n">t</span>
+<span class="n">rs123456</span><span class="p">:</span><span class="n">A</span>
+<span class="mi">3</span><span class="p">:</span><span class="mi">60322</span><span class="p">:</span><span class="n">A</span>
+</pre></div>
+</div>
+<p>Typically, this is used to analyze only variants that passed some QC
+threshold. The <a class="reference internal" href="genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a> pipeline generates this file at the
+‘merge_impute2’ step.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.samples_with_hetero_calls">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">samples_with_hetero_calls</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">data</span></em>, <em class="sig-param"><span class="n">hetero_c</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#samples_with_hetero_calls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.samples_with_hetero_calls" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets male and heterozygous calls.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>data</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.2)"><em>pandas.DataFrame</em></a>) – the probability matrix</p></li>
+<li><p><strong>hetero_c</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the heterozygous column</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>samples where call is heterozygous</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.Index.html#pandas.Index" title="(in pandas v1.2.2)">pandas.Index</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If there are no data (i.e. no males), an empty list is returned.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.skat_parse_impute2">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">skat_parse_impute2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">impute2_filename</span></em>, <em class="sig-param"><span class="n">samples</span></em>, <em class="sig-param"><span class="n">markers_to_extract</span></em>, <em class="sig-param"><span class="n">phenotypes</span></em>, <em class="sig-param"><span class="n">remove_gender</span></em>, <em class="sig-param"><span class="n">out_prefix</span></em>, <em class="sig-param"><span class="n">args</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#skat_parse_impute2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.skat_parse_impute2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Read the impute2 file and run the SKAT analysis.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>impute2_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the input file</p></li>
+<li><p><strong>samples</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.2)"><em>pandas.DataFrame</em></a>) – the samples</p></li>
+<li><p><strong>markers_to_extract</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#set" title="(in Python v3.9)"><em>set</em></a>) – the set of markers to analyse</p></li>
+<li><p><strong>phenotypes</strong> (<a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.2)"><em>pandas.DataFrame</em></a>) – the phenotypes</p></li>
+<li><p><strong>remove_gender</strong> (<a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)"><em>bool</em></a>) – whether or not to remove the gender column</p></li>
+<li><p><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the output prefix</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.9)"><em>argparse.Namespace</em></a>) – the options</p></li>
+</ul>
+</dd>
+</dl>
+<p>This function does most of the “dispatching” to run SKAT. It writes the
+input files to the disk, runs the generated R scripts to do the actual
+analysis and then writes the results to disk.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.imputed_stats.skat_read_snp_set">
+<code class="sig-prename descclassname">genipe.tools.imputed_stats.</code><code class="sig-name descname">skat_read_snp_set</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">i_filename</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#skat_read_snp_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.skat_read_snp_set" title="Permalink to this definition">¶</a></dt>
+<dd><p>Reads the SKAT SNP set file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>i_filename</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the input file</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the SNP set for the SKAT analysis</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://pandas.pydata.org/pandas-docs/stable/reference/api/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v1.2.2)">pandas.DataFrame</a></p>
+</dd>
+</dl>
+<p>This file has to be supplied by the user. The recognized columns are:
+<code class="docutils literal notranslate"><span class="pre">variant</span></code>, <code class="docutils literal notranslate"><span class="pre">snp_set</span></code> and <code class="docutils literal notranslate"><span class="pre">weight</span></code>. The <code class="docutils literal notranslate"><span class="pre">weight</span></code> column is optional
+and can be used to specify a custom weighting scheme for SKAT. If nothing
+is specified, the default Beta weights are used.</p>
+<p>The file has to be tab delimited.</p>
+</dd></dl>
+
+</div>
+<div class="section" id="module-genipe.tools.genipe_tutorial">
+<span id="genipe-tools-genipe-tutorial"></span><h2>genipe.tools.genipe_tutorial<a class="headerlink" href="#module-genipe.tools.genipe_tutorial" title="Permalink to this headline">¶</a></h2>
+<dl class="py function">
+<dt id="genipe.tools.genipe_tutorial.check_files">
+<code class="sig-prename descclassname">genipe.tools.genipe_tutorial.</code><code class="sig-name descname">check_files</code><span class="sig-paren">(</span><em class="sig-param"><span class="o">*</span><span class="n">filenames</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#check_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.check_files" title="Permalink to this definition">¶</a></dt>
+<dd><p>Checks that all files exists.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>filenames</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – the list of file to check</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if all files exist, False otherwise</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.9)">bool</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.genipe_tutorial.download_file">
+<code class="sig-prename descclassname">genipe.tools.genipe_tutorial.</code><code class="sig-name descname">download_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">url</span></em>, <em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#download_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.download_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Downloads a file from a URL to a path.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the url to download</p></li>
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the path where to save the file</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.genipe_tutorial.generate_bash">
+<code class="sig-prename descclassname">genipe.tools.genipe_tutorial.</code><code class="sig-name descname">generate_bash</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#generate_bash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.generate_bash" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generates a bash script to launch the imputation pipeline.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the path to write the bash script</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.genipe_tutorial.get_genotypes">
+<code class="sig-prename descclassname">genipe.tools.genipe_tutorial.</code><code class="sig-name descname">get_genotypes</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#get_genotypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.get_genotypes" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the genotypes files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the path where to put the genotypes</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.genipe_tutorial.get_hg19">
+<code class="sig-prename descclassname">genipe.tools.genipe_tutorial.</code><code class="sig-name descname">get_hg19</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#get_hg19"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.get_hg19" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the hg19 reference file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the path where to put the reference</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.genipe_tutorial.get_impute2">
+<code class="sig-prename descclassname">genipe.tools.genipe_tutorial.</code><code class="sig-name descname">get_impute2</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">os_name</span></em>, <em class="sig-param"><span class="n">arch</span></em>, <em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#get_impute2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.get_impute2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets impute2 depending of the system, and puts it in ‘path’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>os_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the OS</p></li>
+<li><p><strong>arch</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the architecture of the system</p></li>
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the path where to put impute2</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the binary is in the system path, it is copied to the destination
+path. Otherwise, we download it.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.genipe_tutorial.get_impute2_ref">
+<code class="sig-prename descclassname">genipe.tools.genipe_tutorial.</code><code class="sig-name descname">get_impute2_ref</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#get_impute2_ref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.get_impute2_ref" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets the impute2’s reference files.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the path where to put the reference files</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.genipe_tutorial.get_os_info">
+<code class="sig-prename descclassname">genipe.tools.genipe_tutorial.</code><code class="sig-name descname">get_os_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#get_os_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.get_os_info" title="Permalink to this definition">¶</a></dt>
+<dd><p>Getting the OS information.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p><dl class="simple">
+<dt>first element is the name of the os, and the second is the</dt><dd><p>system’s architecture</p>
+</dd>
+</dl>
+</p>
+</dd>
+<dt class="field-even">Return type</dt>
+<dd class="field-even"><p><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#tuple" title="(in Python v3.9)">tuple</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The tutorial does not work on the Windows operating system. The script
+will quit unless the operating system is Linux or Darwin (MacOSX).</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.genipe_tutorial.get_plink">
+<code class="sig-prename descclassname">genipe.tools.genipe_tutorial.</code><code class="sig-name descname">get_plink</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">os_name</span></em>, <em class="sig-param"><span class="n">arch</span></em>, <em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#get_plink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.get_plink" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets Plink depending of the system, and puts it in ‘path’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>os_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the OS</p></li>
+<li><p><strong>arch</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the architecture of the system</p></li>
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the path where to put Plink</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the binary is in the system path, it is copied to the destination
+path. Otherwise, we download it.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.genipe_tutorial.get_shapeit">
+<code class="sig-prename descclassname">genipe.tools.genipe_tutorial.</code><code class="sig-name descname">get_shapeit</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">os_name</span></em>, <em class="sig-param"><span class="n">arch</span></em>, <em class="sig-param"><span class="n">path</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#get_shapeit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.get_shapeit" title="Permalink to this definition">¶</a></dt>
+<dd><p>Gets shapeit depending of the system, and puts it in ‘path’.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>os_name</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the OS</p></li>
+<li><p><strong>arch</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the architecture of the system</p></li>
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the path where to put shapeit</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If the binary is in the system path, it is copied to the destination
+path. Otherwise, we download it.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.genipe_tutorial.main">
+<code class="sig-prename descclassname">genipe.tools.genipe_tutorial.</code><code class="sig-name descname">main</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.main" title="Permalink to this definition">¶</a></dt>
+<dd><p>The main function.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.9)"><em>argparse.Namespace</em></a>) – the arguments to be parsed (if
+<a class="reference internal" href="#genipe.tools.genipe_tutorial.main" title="genipe.tools.genipe_tutorial.main"><code class="xref py py-func docutils literal notranslate"><span class="pre">main()</span></code></a> is called by another
+modulel)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.genipe_tutorial.parse_args">
+<code class="sig-prename descclassname">genipe.tools.genipe_tutorial.</code><code class="sig-name descname">parse_args</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">parser</span></em>, <em class="sig-param"><span class="n">args</span><span class="o">=</span><span class="default_value">None</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.parse_args" title="Permalink to this definition">¶</a></dt>
+<dd><p>Parses the command line options and arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.9)"><em>argparse.ArgumentParser</em></a>) – the argument parser</p></li>
+<li><p><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#list" title="(in Python v3.9)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code>)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>the list of options and arguments</p>
+</dd>
+<dt class="field-odd">Return type</dt>
+<dd class="field-odd"><p><a class="reference external" href="https://docs.python.org/3/library/argparse.html#argparse.Namespace" title="(in Python v3.9)">argparse.Namespace</a></p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The only check that is done here is by the parser itself. Values are
+verified later by the <code class="xref py py-func docutils literal notranslate"><span class="pre">check_args()</span></code> function.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt id="genipe.tools.genipe_tutorial.untar_file">
+<code class="sig-prename descclassname">genipe.tools.genipe_tutorial.</code><code class="sig-name descname">untar_file</code><span class="sig-paren">(</span><em class="sig-param"><span class="n">path</span></em>, <em class="sig-param"><span class="n">fn</span></em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#untar_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.untar_file" title="Permalink to this definition">¶</a></dt>
+<dd><p>Extracts a tar archive.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the path to where the file will be extracted</p></li>
+<li><p><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.9)"><em>str</em></a>) – the name of the tar archive</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
-  <h3><a href="../index.html">Table Of Contents</a></h3>
+  <h3><a href="../index.html">Table of Contents</a></h3>
   <ul>
 <li><a class="reference internal" href="#">genipe.tools package</a><ul>
 <li><a class="reference internal" href="#module-genipe.tools">Module contents</a></li>
@@ -66,1107 +1021,15 @@
     </ul>
    </div>
 <div id="searchbox" style="display: none" role="search">
-  <h3>Quick search</h3>
+  <h3 id="searchlabel">Quick search</h3>
     <div class="searchformwrapper">
     <form class="search" action="../search.html" method="get">
-      <input type="text" name="q" />
+      <input type="text" name="q" aria-labelledby="searchlabel" />
       <input type="submit" value="Go" />
-      <input type="hidden" name="check_keywords" value="yes" />
-      <input type="hidden" name="area" value="default" />
     </form>
     </div>
 </div>
-<script type="text/javascript">$('#searchbox').show(0);</script>
-        </div>
-      </div>
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <div class="section" id="genipe-tools-package">
-<h1>genipe.tools package<a class="headerlink" href="#genipe-tools-package" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="module-genipe.tools">
-<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-genipe.tools" title="Permalink to this headline">¶</a></h2>
-</div>
-<div class="section" id="module-genipe.tools.impute2_extractor">
-<span id="genipe-tools-impute2-extractor-module"></span><h2>genipe.tools.impute2_extractor module<a class="headerlink" href="#module-genipe.tools.impute2_extractor" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="genipe.tools.impute2_extractor.check_args">
-<code class="descclassname">genipe.tools.impute2_extractor.</code><code class="descname">check_args</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#check_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.check_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks the arguments and options.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the options to verify</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If there is a problem, a <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal notranslate"><span class="pre">genipe.error.GenipeError</span></code></a> is
-raised.</p>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">Noting is checked (apart from the impute2 files) if indexation is asked
-(<code class="docutils literal notranslate"><span class="pre">--index</span></code> option).</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.impute2_extractor.extract_companion_files">
-<code class="descclassname">genipe.tools.impute2_extractor.</code><code class="descname">extract_companion_files</code><span class="sig-paren">(</span><em>i_prefix</em>, <em>o_prefix</em>, <em>to_extract</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#extract_companion_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.extract_companion_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extract markers from companion files (if they exists).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>i_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the prefix of the input file</li>
-<li><strong>o_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the prefix of the output file</li>
-<li><strong>to_extract</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#set" title="(in Python v3.4)"><em>set</em></a>) – the set of markers to extract</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.impute2_extractor.extract_markers">
-<code class="descclassname">genipe.tools.impute2_extractor.</code><code class="descname">extract_markers</code><span class="sig-paren">(</span><em>fn</em>, <em>to_extract</em>, <em>out_prefix</em>, <em>out_format</em>, <em>prob_t</em>, <em>is_long</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#extract_markers"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.extract_markers" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extracts according to names.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the input file</li>
-<li><strong>to_extract</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#set" title="(in Python v3.4)"><em>set</em></a>) – the list of markers to extract for each input file</li>
-<li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the output prefix</li>
-<li><strong>out_format</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the output format(s)</li>
-<li><strong>prob_t</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the probability threshold</li>
-<li><strong>is_long</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – True if format needs to be long</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.impute2_extractor.gather_extraction">
-<code class="descclassname">genipe.tools.impute2_extractor.</code><code class="descname">gather_extraction</code><span class="sig-paren">(</span><em>fn</em>, <em>maf</em>, <em>rate</em>, <em>info</em>, <em>extract_filename</em>, <em>genomic_range</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#gather_extraction"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.gather_extraction" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gather positions that are required.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the impute2 filename</li>
-<li><strong>maf</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the minor allele frequency threshold (might be <code class="docutils literal notranslate"><span class="pre">None</span></code>)</li>
-<li><strong>rate</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the call rate threshold (might be <code class="docutils literal notranslate"><span class="pre">None</span></code>)</li>
-<li><strong>info</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the marker information value threshold (might be
-<code class="docutils literal notranslate"><span class="pre">None</span></code>)</li>
-<li><strong>extract_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the file containing marker names to
-extract (might be <code class="docutils literal notranslate"><span class="pre">None</span></code>)</li>
-<li><strong>genomic_range</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the genomic range for extraction</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the set of markers to extract</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#set" title="(in Python v3.4)">set</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-<p>If extraction by marker name is required, only those markers will be
-extracted. Otherwise, <code class="docutils literal notranslate"><span class="pre">maf</span></code>, <code class="docutils literal notranslate"><span class="pre">rate</span></code>, <code class="docutils literal notranslate"><span class="pre">info</span></code> or <code class="docutils literal notranslate"><span class="pre">genomic_range</span></code> can
-be specified (alone or together) to extract markers according to minor
-allele frequency, call rate and genomic location.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.impute2_extractor.get_file_prefix">
-<code class="descclassname">genipe.tools.impute2_extractor.</code><code class="descname">get_file_prefix</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#get_file_prefix"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.get_file_prefix" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the filename prefix.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the file from which the prefix is required</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the prefix of the file</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)">str</a></td>
-</tr>
-</tbody>
-</table>
-<p>This function removes the extension from the file name, and return its
-prefix (<em>e.g.</em> <code class="docutils literal notranslate"><span class="pre">test.impute2</span></code> returns <code class="docutils literal notranslate"><span class="pre">test</span></code>, and
-<code class="docutils literal notranslate"><span class="pre">../test.impute2.gz</span></code> returns <code class="docutils literal notranslate"><span class="pre">../test</span></code>).</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.impute2_extractor.get_samples">
-<code class="descclassname">genipe.tools.impute2_extractor.</code><code class="descname">get_samples</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#get_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.get_samples" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads the sample files, and extract the information.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the sample file</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the sample information</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)">pandas.DataFrame</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.impute2_extractor.index_file">
-<code class="descclassname">genipe.tools.impute2_extractor.</code><code class="descname">index_file</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#index_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.index_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Indexes the impute2 file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the impute2 file</td>
-</tr>
-</tbody>
-</table>
-<p>This function uses the <a class="reference internal" href="genipe.formats.html#genipe.formats.index.get_index" title="genipe.formats.index.get_index"><code class="xref py py-func docutils literal notranslate"><span class="pre">genipe.formats.index.get_index()</span></code></a> to create
-the index file if it’s missing.</p>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">We won’t catch the <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal notranslate"><span class="pre">genipe.error.GenipeError</span></code></a> exception if
-it’s raised, since the message will be relevant to the user.</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.impute2_extractor.main">
-<code class="descclassname">genipe.tools.impute2_extractor.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>The main function.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the arguments to be parsed (if
-<a class="reference internal" href="#genipe.tools.impute2_extractor.main" title="genipe.tools.impute2_extractor.main"><code class="xref py py-func docutils literal notranslate"><span class="pre">main()</span></code></a> is called by another
-modulel)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.impute2_extractor.parse_args">
-<code class="descclassname">genipe.tools.impute2_extractor.</code><code class="descname">parse_args</code><span class="sig-paren">(</span><em>parser</em>, <em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.parse_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses the command line options and arguments.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.4)"><em>argparse.ArgumentParser</em></a>) – the argument parser</li>
-<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code>)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the list of options and arguments</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)">argparse.Namespace</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The only check that is done here is by the parser itself. Values are
-verified later by the <a class="reference internal" href="#genipe.tools.impute2_extractor.check_args" title="genipe.tools.impute2_extractor.check_args"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_args()</span></code></a> function.</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.impute2_extractor.print_data">
-<code class="descclassname">genipe.tools.impute2_extractor.</code><code class="descname">print_data</code><span class="sig-paren">(</span><em>o_files</em>, <em>prob_t</em>, <em>fid</em>, <em>iid</em>, <em>is_long</em>, <em>*</em>, <em>line=None</em>, <em>row=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_extractor.html#print_data"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_extractor.print_data" title="Permalink to this definition">¶</a></dt>
-<dd><p>Prints an impute2 line.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>o_files</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#dict" title="(in Python v3.4)"><em>dict</em></a>) – the output files</li>
-<li><strong>prob_t</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the probability threshold</li>
-<li><strong>fid</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of family IDs</li>
-<li><strong>iid</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of sample IDs</li>
-<li><strong>is_long</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – True if the format is long (dosage, calls)</li>
-<li><strong>line</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the impute2 line</li>
-<li><strong>row</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the impute2 line, split by spaces</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-<div class="section" id="module-genipe.tools.impute2_merger">
-<span id="genipe-tools-impute2-merger-module"></span><h2>genipe.tools.impute2_merger module<a class="headerlink" href="#module-genipe.tools.impute2_merger" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="genipe.tools.impute2_merger.check_args">
-<code class="descclassname">genipe.tools.impute2_merger.</code><code class="descname">check_args</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_merger.html#check_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_merger.check_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks the arguments and options.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the options to verify</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If there is a problem, a <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal notranslate"><span class="pre">genipe.error.GenipeError</span></code></a> is
-raised.</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.impute2_merger.concatenate_files">
-<code class="descclassname">genipe.tools.impute2_merger.</code><code class="descname">concatenate_files</code><span class="sig-paren">(</span><em>i_filenames</em>, <em>out_prefix</em>, <em>real_chrom</em>, <em>options</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_merger.html#concatenate_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_merger.concatenate_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Concatenates and extracts information from IMPUTE2 GEN file(s).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>i_filenames</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of input filenames (to concatenate)</li>
-<li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the output prefix for the output files</li>
-<li><strong>real_chrom</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the chromosome contained in all the input files</li>
-<li><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the options</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>This function will create the following seven files:</p>
-<table border="1" class="docutils">
-<colgroup>
-<col width="32%" />
-<col width="68%" />
-</colgroup>
-<thead valign="bottom">
-<tr class="row-odd"><th class="head">File name</th>
-<th class="head">Description</th>
-</tr>
-</thead>
-<tbody valign="top">
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.impute2</span></code></td>
-<td>Imputation results (merged from all the input
-files).</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.alleles</span></code></td>
-<td>Description of the reference and alternative
-allele at each sites.</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.imputed_sites</span></code></td>
-<td>List of imputed sites (excluding sites that
-were previously genotyped in the study cohort).</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.impute2_info</span></code></td>
-<td>SNP-wise information file with one line per SNP
-and a single header line at the beginning.</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.completion_rates</span></code></td>
-<td>Number of missing values and completion rate
-for all sites (using the probability threshold
-set by the user, where the default is higher
-and equal to 0.9).</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.good_sites</span></code></td>
-<td>List of sites which pass the completion rate
-threshold (set by the user, where the default
-is higher and equal to 0.98) using the
-probability threshold (set by the user, where
-the default is higher and equal to 0.9).</td>
-</tr>
-<tr class="row-even"><td><code class="docutils literal notranslate"><span class="pre">.map</span></code></td>
-<td>A map file describing the genomic location of
-all sites.</td>
-</tr>
-<tr class="row-odd"><td><code class="docutils literal notranslate"><span class="pre">.maf</span></code></td>
-<td>File containing the minor allele frequency
-(along with minor allele identification) for
-all sites using the probabilitty threshold of
-0.9. When no genotypes are available (because
-they are all below the threshold), the MAF is
-<code class="docutils literal notranslate"><span class="pre">NA</span></code>.</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.impute2_merger.main">
-<code class="descclassname">genipe.tools.impute2_merger.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_merger.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_merger.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>The main function.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the arguments to be parsed (if
-<a class="reference internal" href="#genipe.tools.impute2_merger.main" title="genipe.tools.impute2_merger.main"><code class="xref py py-func docutils literal notranslate"><span class="pre">main()</span></code></a> is called by another
-modulel)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.impute2_merger.parse_args">
-<code class="descclassname">genipe.tools.impute2_merger.</code><code class="descname">parse_args</code><span class="sig-paren">(</span><em>parser</em>, <em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/impute2_merger.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.impute2_merger.parse_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses the command line options and arguments.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.4)"><em>argparse.ArgumentParser</em></a>) – the argument parser</li>
-<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code>)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the list of options and arguments</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)">argparse.Namespace</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The only check that is done here is by the parser itself. Values are
-verified later by the <a class="reference internal" href="#genipe.tools.impute2_merger.check_args" title="genipe.tools.impute2_merger.check_args"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_args()</span></code></a> function.</p>
-</div>
-</dd></dl>
-
-</div>
-<div class="section" id="module-genipe.tools.imputed_stats">
-<span id="genipe-tools-imputed-stats-module"></span><h2>genipe.tools.imputed_stats module<a class="headerlink" href="#module-genipe.tools.imputed_stats" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.check_args">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">check_args</code><span class="sig-paren">(</span><em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#check_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.check_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks the arguments and options.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the options to verify</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If there is a problem, a <a class="reference internal" href="genipe.html#genipe.error.GenipeError" title="genipe.error.GenipeError"><code class="xref py py-class docutils literal notranslate"><span class="pre">genipe.error.GenipeError</span></code></a> is
-raised.</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.compute_statistics">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">compute_statistics</code><span class="sig-paren">(</span><em>impute2_filename</em>, <em>samples</em>, <em>markers_to_extract</em>, <em>phenotypes</em>, <em>remove_gender</em>, <em>out_prefix</em>, <em>options</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#compute_statistics"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.compute_statistics" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses IMPUTE2 file while computing statistics.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>impute2_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the input file</li>
-<li><strong>samples</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)"><em>pandas.DataFrame</em></a>) – the list of samples</li>
-<li><strong>markers_to_extract</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#set" title="(in Python v3.4)"><em>set</em></a>) – the set of markers to extract</li>
-<li><strong>phenotypes</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)"><em>pandas.DataFrame</em></a>) – the phenotypes</li>
-<li><strong>remove_gender</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – whether or not to remove the gender column</li>
-<li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the output prefix</li>
-<li><strong>options</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the options</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>This function takes care of parallelism. It reads the Impute2 file and
-fills a queue that will trigger the analysis when full.</p>
-<p>If the number of process to launch is 1, the rows are analyzed as they
-come.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.fit_cox">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">fit_cox</code><span class="sig-paren">(</span><em>data</em>, <em>time_to_event</em>, <em>event</em>, <em>formula</em>, <em>result_col</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#fit_cox"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.fit_cox" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit a Cox’ proportional hazard to the data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)"><em>pandas.DataFrame</em></a>) – the data to analyse</li>
-<li><strong>time_to_event</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the time to event column for the survival analysis</li>
-<li><strong>event</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the event column for the survival analysis</li>
-<li><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the formula for the data preparation</li>
-<li><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the column that will contain the results</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the results from the survival analysis</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last">numpy.array</p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The tie method used is <code class="docutils literal notranslate"><span class="pre">Efron</span></code>. Normalization is set to <code class="docutils literal notranslate"><span class="pre">False</span></code>.</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.fit_linear">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">fit_linear</code><span class="sig-paren">(</span><em>data</em>, <em>formula</em>, <em>result_col</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#fit_linear"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.fit_linear" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit a linear regression to the data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)"><em>pandas.DataFrame</em></a>) – the data to analyse</li>
-<li><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the formula for the linear regression</li>
-<li><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the column that will contain the results</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the results from the linear regression</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)">list</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.fit_logistic">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">fit_logistic</code><span class="sig-paren">(</span><em>data</em>, <em>formula</em>, <em>result_col</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#fit_logistic"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.fit_logistic" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit a logistic regression to the data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)"><em>pandas.DataFrame</em></a>) – the data to analyse</li>
-<li><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the formula for the logistic regression</li>
-<li><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the column that will contain the results</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the results from the logistic regression</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)">list</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.fit_mixedlm">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">fit_mixedlm</code><span class="sig-paren">(</span><em>data</em>, <em>formula</em>, <em>use_ml</em>, <em>groups</em>, <em>result_col</em>, <em>random_effects</em>, <em>mixedlm_p</em>, <em>interaction</em>, <em>**kwargs</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#fit_mixedlm"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.fit_mixedlm" title="Permalink to this definition">¶</a></dt>
-<dd><p>Fit a linear mixed effects model to the data.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)"><em>pandas.DataFrame</em></a>) – the data to analyse</li>
-<li><strong>formula</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the formula for the linear mixed effects model</li>
-<li><strong>use_ml</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – whether to use ML instead of REML</li>
-<li><strong>groups</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the column containing the groups</li>
-<li><strong>result_col</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the column that will contain the results</li>
-<li><strong>random_effects</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Series.html#pandas.Series" title="(in pandas v0.23.3)"><em>pandas.Series</em></a>) – the random effects</li>
-<li><strong>mixedlm_p</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#float" title="(in Python v3.4)"><em>float</em></a>) – the p-value threshold for which loci will be
-computed with the real MixedLM analysis</li>
-<li><strong>interaction</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – Whether there is an interaction or not</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the results from the linear mixed effects model</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)">list</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.get_formula">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">get_formula</code><span class="sig-paren">(</span><em>phenotype</em>, <em>covars</em>, <em>interaction</em>, <em>gender_c</em>, <em>categorical</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#get_formula"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.get_formula" title="Permalink to this definition">¶</a></dt>
-<dd><p>Creates the linear/logistic regression formula (for statsmodel).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>phenotype</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the phenotype column</li>
-<li><strong>covars</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of co variable columns</li>
-<li><strong>interaction</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the interaction column</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the formula for the statistical analysis</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)">str</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The phenotype column needs to be specified. The list of co variables
-might be empty (if no co variables are necessary). The interaction
-column can be set to <code class="docutils literal notranslate"><span class="pre">None</span></code> if there is no interaction.</p>
-</div>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The gender column should be categorical (hence, the formula requires
-the gender to be included into <code class="docutils literal notranslate"><span class="pre">C()</span></code>, <em>e.g.</em> <code class="docutils literal notranslate"><span class="pre">C(Gender)</span></code>).</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.is_file_like">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">is_file_like</code><span class="sig-paren">(</span><em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#is_file_like"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.is_file_like" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks if the path is like a file (it might be a named pipe).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the path to check</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if path is like a file, False otherwise.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)">bool</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.main">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>The main function.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the arguments to be parsed (if
-<a class="reference internal" href="#genipe.tools.imputed_stats.main" title="genipe.tools.imputed_stats.main"><code class="xref py py-func docutils literal notranslate"><span class="pre">main()</span></code></a> is called by another
-modulel)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.parse_args">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">parse_args</code><span class="sig-paren">(</span><em>parser</em>, <em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.parse_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses the command line options and arguments.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.4)"><em>argparse.ArgumentParser</em></a>) – the argument parser</li>
-<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code>)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the list of options and arguments</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)">argparse.Namespace</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The only check that is done here is by the parser itself. Values are
-verified later by the <a class="reference internal" href="#genipe.tools.imputed_stats.check_args" title="genipe.tools.imputed_stats.check_args"><code class="xref py py-func docutils literal notranslate"><span class="pre">check_args()</span></code></a> function.</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.process_impute2_site">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">process_impute2_site</code><span class="sig-paren">(</span><em>site_info</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#process_impute2_site"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.process_impute2_site" title="Permalink to this definition">¶</a></dt>
-<dd><p>Process an IMPUTE2 site (a line in an IMPUTE2 file).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>site_info</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the impute2 line (split by space)</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the results of the analysis</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)">list</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.read_phenotype">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">read_phenotype</code><span class="sig-paren">(</span><em>i_filename</em>, <em>opts</em>, <em>check_duplicated=True</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#read_phenotype"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.read_phenotype" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads the phenotype file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>i_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the input file</li>
-<li><strong>opts</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the options</li>
-<li><strong>check_duplicated</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – whether or not to check for duplicated samples</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the phenotypes</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)">pandas.DataFrame</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-<p>This file is expected to be a tab separated file of phenotypes and
-covariates. The columns to use will be determined by the
-<code class="docutils literal notranslate"><span class="pre">--sample-column</span></code> and the <code class="docutils literal notranslate"><span class="pre">--covar</span></code> options.</p>
-<p>For analysis including the X chromosome, the gender is automatically
-added as a covariate. The results are not shown to the user unless asked
-for.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.read_samples">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">read_samples</code><span class="sig-paren">(</span><em>i_filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#read_samples"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.read_samples" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads the sample file (produced by SHAPEIT).</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>i_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the input file</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the list of samples</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)">pandas.DataFrame</a></td>
-</tr>
-</tbody>
-</table>
-<p>This file contains the list of samples that are contained in the
-<code class="docutils literal notranslate"><span class="pre">impute2</span></code> file (with same order). The expected format for this file is a
-tab separated file with a first row containing the following columns:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">ID_1</span>    <span class="n">ID_2</span>    <span class="n">missing</span> <span class="n">father</span>  <span class="n">mother</span>  <span class="n">sex</span>     <span class="n">plink_pheno</span>
-</pre></div>
-</div>
-<p>The subsequent row will be discarded and should contain:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">0</span>       <span class="mi">0</span>       <span class="mi">0</span> <span class="n">D</span>     <span class="n">D</span>       <span class="n">D</span>       <span class="n">B</span>
-</pre></div>
-</div>
-<p class="rubric">Notes</p>
-<p>We are mostly interested in the sample IDs corresponding to the
-<code class="docutils literal notranslate"><span class="pre">ID_2</span></code> column. Their uniqueness is verified by pandas.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.read_sites_to_extract">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">read_sites_to_extract</code><span class="sig-paren">(</span><em>i_filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#read_sites_to_extract"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.read_sites_to_extract" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads the list of sites to extract.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>i_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – The input filename containing the IDs of the variants
-to consider for the analysis.</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">A set containing the variants.</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#set" title="(in Python v3.4)">set</a></td>
-</tr>
-</tbody>
-</table>
-<p>The expected file format is simply a list of variants. Every row should
-correspond to a single variant identifier.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">3</span><span class="p">:</span><span class="mi">60069</span><span class="p">:</span><span class="n">t</span>
-<span class="n">rs123456</span><span class="p">:</span><span class="n">A</span>
-<span class="mi">3</span><span class="p">:</span><span class="mi">60322</span><span class="p">:</span><span class="n">A</span>
-</pre></div>
-</div>
-<p>Typically, this is used to analyze only variants that passed some QC
-threshold. The <a class="reference internal" href="genipe.html#module-genipe" title="genipe"><code class="xref py py-mod docutils literal notranslate"><span class="pre">genipe</span></code></a> pipeline generates this file at the
-‘merge_impute2’ step.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.samples_with_hetero_calls">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">samples_with_hetero_calls</code><span class="sig-paren">(</span><em>data</em>, <em>hetero_c</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#samples_with_hetero_calls"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.samples_with_hetero_calls" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets male and heterozygous calls.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>data</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)"><em>pandas.DataFrame</em></a>) – the probability matrix</li>
-<li><strong>hetero_c</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the heterozygous column</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">samples where call is heterozygous</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.Index.html#pandas.Index" title="(in pandas v0.23.3)">pandas.Index</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If there are no data (i.e. no males), an empty list is returned.</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.skat_parse_impute2">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">skat_parse_impute2</code><span class="sig-paren">(</span><em>impute2_filename</em>, <em>samples</em>, <em>markers_to_extract</em>, <em>phenotypes</em>, <em>remove_gender</em>, <em>out_prefix</em>, <em>args</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#skat_parse_impute2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.skat_parse_impute2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Read the impute2 file and run the SKAT analysis.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>impute2_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the input file</li>
-<li><strong>samples</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)"><em>pandas.DataFrame</em></a>) – the samples</li>
-<li><strong>markers_to_extract</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#set" title="(in Python v3.4)"><em>set</em></a>) – the set of markers to analyse</li>
-<li><strong>phenotypes</strong> (<a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)"><em>pandas.DataFrame</em></a>) – the phenotypes</li>
-<li><strong>remove_gender</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)"><em>bool</em></a>) – whether or not to remove the gender column</li>
-<li><strong>out_prefix</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the output prefix</li>
-<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the options</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<p>This function does most of the “dispatching” to run SKAT. It writes the
-input files to the disk, runs the generated R scripts to do the actual
-analysis and then writes the results to disk.</p>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.imputed_stats.skat_read_snp_set">
-<code class="descclassname">genipe.tools.imputed_stats.</code><code class="descname">skat_read_snp_set</code><span class="sig-paren">(</span><em>i_filename</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/imputed_stats.html#skat_read_snp_set"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.imputed_stats.skat_read_snp_set" title="Permalink to this definition">¶</a></dt>
-<dd><p>Reads the SKAT SNP set file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>i_filename</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the input file</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">the SNP set for the SKAT analysis</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="http://pandas.pydata.org/pandas-docs/stable/generated/pandas.DataFrame.html#pandas.DataFrame" title="(in pandas v0.23.3)">pandas.DataFrame</a></td>
-</tr>
-</tbody>
-</table>
-<p>This file has to be supplied by the user. The recognized columns are:
-<code class="docutils literal notranslate"><span class="pre">variant</span></code>, <code class="docutils literal notranslate"><span class="pre">snp_set</span></code> and <code class="docutils literal notranslate"><span class="pre">weight</span></code>. The <code class="docutils literal notranslate"><span class="pre">weight</span></code> column is optional
-and can be used to specify a custom weighting scheme for SKAT. If nothing
-is specified, the default Beta weights are used.</p>
-<p>The file has to be tab delimited.</p>
-</dd></dl>
-
-</div>
-<div class="section" id="module-genipe.tools.genipe_tutorial">
-<span id="genipe-tools-genipe-tutorial"></span><h2>genipe.tools.genipe_tutorial<a class="headerlink" href="#module-genipe.tools.genipe_tutorial" title="Permalink to this headline">¶</a></h2>
-<dl class="function">
-<dt id="genipe.tools.genipe_tutorial.check_files">
-<code class="descclassname">genipe.tools.genipe_tutorial.</code><code class="descname">check_files</code><span class="sig-paren">(</span><em>*filenames</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#check_files"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.check_files" title="Permalink to this definition">¶</a></dt>
-<dd><p>Checks that all files exists.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>filenames</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of file to check</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">True if all files exist, False otherwise</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.4/library/functions.html#bool" title="(in Python v3.4)">bool</a></td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.genipe_tutorial.download_file">
-<code class="descclassname">genipe.tools.genipe_tutorial.</code><code class="descname">download_file</code><span class="sig-paren">(</span><em>url</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#download_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.download_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Downloads a file from a URL to a path.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>url</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the url to download</li>
-<li><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the path where to save the file</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.genipe_tutorial.generate_bash">
-<code class="descclassname">genipe.tools.genipe_tutorial.</code><code class="descname">generate_bash</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#generate_bash"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.generate_bash" title="Permalink to this definition">¶</a></dt>
-<dd><p>Generates a bash script to launch the imputation pipeline.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the path to write the bash script</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.genipe_tutorial.get_genotypes">
-<code class="descclassname">genipe.tools.genipe_tutorial.</code><code class="descname">get_genotypes</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#get_genotypes"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.get_genotypes" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the genotypes files.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the path where to put the genotypes</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.genipe_tutorial.get_hg19">
-<code class="descclassname">genipe.tools.genipe_tutorial.</code><code class="descname">get_hg19</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#get_hg19"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.get_hg19" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the hg19 reference file.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the path where to put the reference</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.genipe_tutorial.get_impute2">
-<code class="descclassname">genipe.tools.genipe_tutorial.</code><code class="descname">get_impute2</code><span class="sig-paren">(</span><em>os_name</em>, <em>arch</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#get_impute2"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.get_impute2" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets impute2 depending of the system, and puts it in ‘path’.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>os_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the OS</li>
-<li><strong>arch</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the architecture of the system</li>
-<li><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the path where to put impute2</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If the binary is in the system path, it is copied to the destination
-path. Otherwise, we download it.</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.genipe_tutorial.get_impute2_ref">
-<code class="descclassname">genipe.tools.genipe_tutorial.</code><code class="descname">get_impute2_ref</code><span class="sig-paren">(</span><em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#get_impute2_ref"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.get_impute2_ref" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets the impute2’s reference files.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the path where to put the reference files</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.genipe_tutorial.get_os_info">
-<code class="descclassname">genipe.tools.genipe_tutorial.</code><code class="descname">get_os_info</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#get_os_info"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.get_os_info" title="Permalink to this definition">¶</a></dt>
-<dd><p>Getting the OS information.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Returns:</th><td class="field-body"><dl class="docutils">
-<dt>first element is the name of the os, and the second is the</dt>
-<dd>system’s architecture</dd>
-</dl>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Return type:</th><td class="field-body"><a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#tuple" title="(in Python v3.4)">tuple</a></td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The tutorial does not work on the Windows operating system. The script
-will quit unless the operating system is Linux or Darwin (MacOSX).</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.genipe_tutorial.get_plink">
-<code class="descclassname">genipe.tools.genipe_tutorial.</code><code class="descname">get_plink</code><span class="sig-paren">(</span><em>os_name</em>, <em>arch</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#get_plink"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.get_plink" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets Plink depending of the system, and puts it in ‘path’.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>os_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the OS</li>
-<li><strong>arch</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the architecture of the system</li>
-<li><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the path where to put Plink</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If the binary is in the system path, it is copied to the destination
-path. Otherwise, we download it.</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.genipe_tutorial.get_shapeit">
-<code class="descclassname">genipe.tools.genipe_tutorial.</code><code class="descname">get_shapeit</code><span class="sig-paren">(</span><em>os_name</em>, <em>arch</em>, <em>path</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#get_shapeit"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.get_shapeit" title="Permalink to this definition">¶</a></dt>
-<dd><p>Gets shapeit depending of the system, and puts it in ‘path’.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>os_name</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the OS</li>
-<li><strong>arch</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the architecture of the system</li>
-<li><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the path where to put shapeit</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">If the binary is in the system path, it is copied to the destination
-path. Otherwise, we download it.</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.genipe_tutorial.main">
-<code class="descclassname">genipe.tools.genipe_tutorial.</code><code class="descname">main</code><span class="sig-paren">(</span><em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#main"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.main" title="Permalink to this definition">¶</a></dt>
-<dd><p>The main function.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)"><em>argparse.Namespace</em></a>) – the arguments to be parsed (if
-<a class="reference internal" href="#genipe.tools.genipe_tutorial.main" title="genipe.tools.genipe_tutorial.main"><code class="xref py py-func docutils literal notranslate"><span class="pre">main()</span></code></a> is called by another
-modulel)</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.genipe_tutorial.parse_args">
-<code class="descclassname">genipe.tools.genipe_tutorial.</code><code class="descname">parse_args</code><span class="sig-paren">(</span><em>parser</em>, <em>args=None</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#parse_args"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.parse_args" title="Permalink to this definition">¶</a></dt>
-<dd><p>Parses the command line options and arguments.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
-<li><strong>parser</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.ArgumentParser" title="(in Python v3.4)"><em>argparse.ArgumentParser</em></a>) – the argument parser</li>
-<li><strong>args</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#list" title="(in Python v3.4)"><em>list</em></a>) – the list of arguments (if not taken from <code class="docutils literal notranslate"><span class="pre">sys.argv</span></code>)</li>
-</ul>
-</td>
-</tr>
-<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first">the list of options and arguments</p>
-</td>
-</tr>
-<tr class="field-odd field"><th class="field-name">Return type:</th><td class="field-body"><p class="first last"><a class="reference external" href="https://docs.python.org/3.4/library/argparse.html#argparse.Namespace" title="(in Python v3.4)">argparse.Namespace</a></p>
-</td>
-</tr>
-</tbody>
-</table>
-<div class="admonition note">
-<p class="first admonition-title">Note</p>
-<p class="last">The only check that is done here is by the parser itself. Values are
-verified later by the <code class="xref py py-func docutils literal notranslate"><span class="pre">check_args()</span></code> function.</p>
-</div>
-</dd></dl>
-
-<dl class="function">
-<dt id="genipe.tools.genipe_tutorial.untar_file">
-<code class="descclassname">genipe.tools.genipe_tutorial.</code><code class="descname">untar_file</code><span class="sig-paren">(</span><em>path</em>, <em>fn</em><span class="sig-paren">)</span><a class="reference internal" href="../_modules/genipe/tools/genipe_tutorial.html#untar_file"><span class="viewcode-link">[source]</span></a><a class="headerlink" href="#genipe.tools.genipe_tutorial.untar_file" title="Permalink to this definition">¶</a></dt>
-<dd><p>Extracts a tar archive.</p>
-<table class="docutils field-list" frame="void" rules="none">
-<col class="field-name" />
-<col class="field-body" />
-<tbody valign="top">
-<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first last simple">
-<li><strong>path</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the path to where the file will be extracted</li>
-<li><strong>fn</strong> (<a class="reference external" href="https://docs.python.org/3.4/library/stdtypes.html#str" title="(in Python v3.4)"><em>str</em></a>) – the name of the tar archive</li>
-</ul>
-</td>
-</tr>
-</tbody>
-</table>
-</dd></dl>
-
-</div>
-</div>
-
-
-          </div>
+<script>$('#searchbox').show(0);</script>
         </div>
       </div>
       <div class="clearer"></div>
@@ -1183,17 +1046,18 @@ verified later by the <code class="xref py py-func docutils literal notranslate"
         <li class="right" >
           <a href="genipe.tests.html" title="genipe.tests package"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.4.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="../index.html">genipe 1.5.0 documentation</a> &#187;</li>
           <li class="nav-item nav-item-1"><a href="../implementation.html" >Implementation</a> &#187;</li>
           <li class="nav-item nav-item-2"><a href="modules.html" >genipe</a> &#187;</li>
-          <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &#187;</li> 
+          <li class="nav-item nav-item-3"><a href="genipe.html" >genipe package</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">genipe.tools package</a></li> 
       </ul>
     </div>
 
 
     <div class="footer" role="contentinfo">
         &#169; Copyright 2015, Beaulieu-Saucier Pharmacogenomics Centre.
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.7.6.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
     </div>
 
 <script>
