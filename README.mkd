@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/pgxcentre/genipe.svg?branch=master)](https://travis-ci.org/pgxcentre/genipe)
-[![PyPI version](https://badge.fury.io/py/genipe.svg)](http://badge.fury.io/py/genipe)
+[![PyPI version](https://badgen.net/pypi/v/genipe)](https://pypi.org/project/genipe/)
 
 
 # genipe - A Python module to perform genome-wide imputation analysis
