@@ -2569,7 +2569,7 @@ def gather_maf_stats(required_chrom, o_dir):
 
         # Saving and closing the figure
         frequency_barh = os.path.join(o_dir, "frequency_barh.pdf")
-        plt.savefig(frequency_barh, bbox_inches="tight", figure=figure)
+        plt.savefig(frequency_barh, bbox_inches="tight")
         plt.close(figure)
 
     return {
