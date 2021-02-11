@@ -2163,7 +2163,7 @@ class TestImputedStatsMixedLM(unittest.TestCase):
         # This dataset contains 3 markers + 6 covariables (including visit)
         data = pd.read_csv(cls.data_filename, sep="\t", compression="bz2")
         data = data[data.gender != 0].set_index("SampleID")
-        del data.index.name
+        data.index.name = "index"
         cls.data = data
 
         # Computing the random effect for REML

@@ -81,7 +81,9 @@ _Row = namedtuple("_Row", ("row", "samples", "pheno", "pheno_name", "use_ml",
                            "number_to_print", "random_effects", "mixedlm_p"))
 
 # The Cox's regression required values
-_COX_REQ_COLS = ["coef", "se(coef)", "lower 0.95", "upper 0.95", "z", "p"]
+_COX_REQ_COLS = [
+    "coef", "se(coef)", "coef lower 95%", "coef upper 95%", "z", "p",
+]
 
 
 def main(args=None):
@@ -1140,7 +1142,7 @@ def fit_cox(data, time_to_event, event, formula, result_col, **kwargs):
 
     Note
     ----
-        The tie method used is ``Efron``. Normalization is set to ``False``.
+        Using alpha of 0.95, and default parameters.
 
     """
     # Preparing the data using Patsy
@@ -1149,7 +1151,7 @@ def fit_cox(data, time_to_event, event, formula, result_col, **kwargs):
                     right_index=True)
 
     # Fitting
-    cf = CoxPHFitter(alpha=0.95, tie_method="Efron")
+    cf = CoxPHFitter()
     cf.fit(data, duration_col=time_to_event, event_col=event)
     return cf.summary.loc[result_col, _COX_REQ_COLS].values
 
