@@ -13,3 +13,4 @@ genipe/version.py
 .tox
 .coverage
 htmlcov
+.mypy_cache
