@@ -1,4 +1,3 @@
-[![Build Status](https://travis-ci.com/pgxcentre/genipe.svg?branch=master)](https://travis-ci.com/pgxcentre/genipe)
 [![PyPI version](https://badgen.net/pypi/v/genipe)](https://pypi.org/project/genipe/)
 
 
